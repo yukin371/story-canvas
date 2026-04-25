@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List
 
+from story_harness_cli.commands.illustration_support import decorate_generated_entry
 from story_harness_cli.protocol import chapter_path, choose_style_profile_name, root_file
 from story_harness_cli.protocol.files import resolve_state_path
 from story_harness_cli.protocol.io import load_json_compatible_yaml
@@ -89,6 +90,17 @@ def validate_layout_aware_file(
 def validate_project_shape(root: Path, checks: List[Dict[str, str]]) -> Dict[str, Dict[str, Any]]:
     defaults = default_project_state()
     project_payload = validate_json_compatible_file(root, "project.yaml", defaults["project"], checks)
+    illustrations_path = resolve_state_path(root, "illustrations")
+    illustrations_payload = defaults["illustrations"]
+    if illustrations_path.exists():
+        display = illustrations_path.relative_to(root) if illustrations_path.is_relative_to(root) else str(illustrations_path)
+        try:
+            illustrations_payload = load_json_compatible_yaml(illustrations_path, defaults["illustrations"])
+        except SystemExit as exc:
+            record_check(checks, "error", "invalid-illustrations", str(exc))
+            illustrations_payload = json.loads(json.dumps(defaults["illustrations"]))
+        else:
+            record_check(checks, "info", "parsed-file", f"文件可解析: {display}")
     state = {
         "project": merge_defaults(project_payload, defaults["project"]),
         "outline": validate_layout_aware_file(root, "outline", defaults["outline"], checks),
@@ -97,6 +109,7 @@ def validate_project_shape(root: Path, checks: List[Dict[str, str]]) -> Dict[str
         "branches": validate_json_compatible_file(root, "branches.yaml", defaults["branches"], checks),
         "threads": validate_layout_aware_file(root, "threads", defaults["threads"], checks),
         "structures": validate_layout_aware_file(root, "structures", defaults["structures"], checks),
+        "illustrations": merge_defaults(illustrations_payload, defaults["illustrations"]),
     }
     for key, relative_path in WORKFLOW_FILES.items():
         state[key] = validate_json_compatible_file(root, relative_path, defaults[key], checks)
@@ -439,6 +452,113 @@ def _check_style_profiles(root: Path, state: Dict[str, Dict[str, Any]], checks: 
             record_check(checks, "info", "style-profile-custom", f"profile '{profile_name}' 是项目自定义 style profile")
 
 
+def _check_illustration_assets(root: Path, state: Dict[str, Dict[str, Any]], checks: List[Dict[str, str]]) -> None:
+    generated = state.get("illustrations", {}).get("generated", [])
+
+    asset_root = root / "assets" / "illustrations"
+    referenced_paths: set[Path] = set()
+    for entry in generated:
+        decorated = decorate_generated_entry(root, entry)
+        illustration_id = (
+            decorated.get("id")
+            or decorated.get("chapterId")
+            or decorated.get("entityId")
+            or decorated.get("type")
+            or "unknown-illustration"
+        )
+        assets = decorated.get("artifacts", [])
+        if not assets:
+            record_check(
+                checks,
+                "warning",
+                "illustration-missing-assets",
+                f"插图记录 {illustration_id} 缺少 filePath/artifacts，无法校验资产落盘状态",
+            )
+            continue
+
+        metadata_asset_count = decorated.get("metadata", {}).get("assetCount", 0)
+        if metadata_asset_count and metadata_asset_count != len(assets):
+            record_check(
+                checks,
+                "warning",
+                "illustration-asset-count-mismatch",
+                f"插图记录 {illustration_id} 的 metadata.assetCount={metadata_asset_count} 与 artifacts 数量 {len(assets)} 不一致",
+            )
+
+        primary_assets = [asset for asset in assets if asset.get("isPrimary")]
+        if len(primary_assets) != 1:
+            record_check(
+                checks,
+                "warning",
+                "illustration-primary-asset-invalid",
+                f"插图记录 {illustration_id} 的主图标记异常，当前 primary 数量为 {len(primary_assets)}",
+            )
+        elif decorated.get("filePath") and decorated.get("filePath") != primary_assets[0].get("filePath"):
+            record_check(
+                checks,
+                "warning",
+                "illustration-primary-path-mismatch",
+                f"插图记录 {illustration_id} 的 filePath 与主图 artifacts[isPrimary] 不一致",
+            )
+
+        for asset in assets:
+            file_path = asset.get("filePath", "")
+            if not file_path:
+                record_check(
+                    checks,
+                    "warning",
+                    "illustration-asset-path-missing",
+                    f"插图记录 {illustration_id} 存在缺少 filePath 的资产条目",
+                )
+                continue
+
+            path = Path(file_path)
+            resolved_path = path.resolve()
+            referenced_paths.add(resolved_path)
+            try:
+                relative_display = resolved_path.relative_to(root)
+            except ValueError:
+                record_check(
+                    checks,
+                    "warning",
+                    "illustration-asset-outside-root",
+                    f"插图记录 {illustration_id} 的资产位于项目外部: {file_path}",
+                )
+                continue
+
+            if not asset.get("exists"):
+                record_check(
+                    checks,
+                    "warning",
+                    "missing-illustration-asset",
+                    f"插图记录 {illustration_id} 缺少资产文件: {relative_display}",
+                )
+                continue
+
+            if asset.get("bytes", 0) and resolved_path.stat().st_size != asset.get("bytes", 0):
+                record_check(
+                    checks,
+                    "warning",
+                    "illustration-asset-bytes-mismatch",
+                    f"插图记录 {illustration_id} 的资产字节数与记录不一致: {relative_display}",
+                )
+
+    if asset_root.exists():
+        orphan_files = []
+        for path in asset_root.rglob("*"):
+            if not path.is_file():
+                continue
+            if path.resolve() not in referenced_paths:
+                orphan_files.append(path.relative_to(root))
+        for relative_path in sorted(orphan_files):
+            record_check(
+                checks,
+                "info",
+                "orphan-illustration-asset",
+                f"发现未被 illustrations.yaml 引用的插图资产: {relative_path}",
+            )
+
+
 def command_doctor(args) -> int:
     root = Path(args.root).resolve()
     checks: List[Dict[str, str]] = []
@@ -480,6 +600,7 @@ def command_doctor(args) -> int:
     _check_project_positioning(state, checks)
     _check_commercial_positioning(state, checks)
     _check_style_profiles(root, state, checks)
+    _check_illustration_assets(root, state, checks)
     _check_outline_volumes(root, checks)
     _check_outline_readiness(root, state, checks)
     _check_entity_profiles(root, checks)

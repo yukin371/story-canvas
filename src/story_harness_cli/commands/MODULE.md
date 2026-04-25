@@ -22,6 +22,7 @@
 - 项目初始化参数装配（如 `init` 写入 positioning / storyContract / commercialPositioning）
 - doctor 类命令中的项目元数据校验编排
 - doctor 现在还负责校验可选项目配置如 `style-profiles.yaml` 的基本结构
+- doctor 现在还会校验 `illustrations.yaml` 中的主图/多图资产引用、缺失文件和孤儿资产
 - `style check` / `style constraints` / `style report` / `style repair` 这组风格治理命令，以及 optional scorer 的 command-side 装配
 - `illustration prompt` / `illustration generate` / `illustration list` / `illustration config` 这组插图命令，负责编排 prompt 构造、文生图/图生图 provider 请求与 `illustrations.yaml` 配置读写
 - `workflow status` / `workflow run` / `workflow advance` / `workflow reset` / `workflow export` 这组 workflow 状态机入口，负责把 protocol + service 的推断结果、gate 决策和快照导出编排到 `workflow.yaml`
@@ -69,6 +70,7 @@
 - `illustration generate --mode image-to-image --mask <path>` 会把 mask 一并上传给 provider，mask 仅作用于第一张输入图
 - `illustration generate` 真实执行时会把返回图批量写入 `assets/illustrations/`；`filePath` 仍指向主图，额外结果写入 `artifacts[]`
 - `illustration list` 会补充资产存在性、数量和主图标记，便于快速检查落盘状态
+- `doctor` 会基于 `illustrations.yaml` 检查缺失资产、主图路径不一致和 `assets/illustrations/` 下的孤儿文件
 
 ## 8. 测试方式
 

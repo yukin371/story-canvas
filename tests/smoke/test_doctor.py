@@ -272,6 +272,76 @@ class DoctorSmokeTest(unittest.TestCase):
         self.assertIn("invalid-style-threshold-value", codes)
         self.assertIn("invalid-style-pattern-list", codes)
 
+    def test_doctor_warns_for_missing_illustration_asset(self) -> None:
+        (self.temp_dir / "illustrations.yaml").write_text(
+            json.dumps(
+                {
+                    "adapter": {
+                        "name": "openai",
+                        "model": "gpt-image-2",
+                        "defaultSize": "1024x1024",
+                        "quality": "standard",
+                    },
+                    "promptPack": {"name": "default", "version": "builtin"},
+                    "generated": [
+                        {
+                            "id": "ill-001",
+                            "type": "chapter",
+                            "mode": "text-to-image",
+                            "chapterId": "chapter-001",
+                            "entityId": None,
+                            "promptText": "test",
+                            "revisedPrompt": "test",
+                            "inputImages": [],
+                            "maskPath": "",
+                            "filePath": str(self.temp_dir / "assets" / "illustrations" / "chapter-001_scene.png"),
+                            "artifacts": [
+                                {
+                                    "index": 0,
+                                    "filePath": str(self.temp_dir / "assets" / "illustrations" / "chapter-001_scene.png"),
+                                    "bytes": 4,
+                                    "source": "b64_json",
+                                    "extension": "png",
+                                    "isPrimary": True,
+                                }
+                            ],
+                            "metadata": {"assetCount": 1},
+                            "generatedAt": "2026-04-25T00:00:00+08:00",
+                        }
+                    ],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["doctor", "--root", str(self.temp_dir)])
+        payload = json.loads(buffer.getvalue())
+        codes = {item.get("code") for item in payload["checks"] if item.get("level") == "warning"}
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("missing-illustration-asset", codes)
+
+    def test_doctor_reports_orphan_illustration_asset(self) -> None:
+        asset_dir = self.temp_dir / "assets" / "illustrations"
+        asset_dir.mkdir(parents=True, exist_ok=True)
+        (asset_dir / "orphan.png").write_bytes(b"orphan")
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["doctor", "--root", str(self.temp_dir)])
+        payload = json.loads(buffer.getvalue())
+        codes = {item.get("code") for item in payload["checks"]}
+        orphan_items = [item for item in payload["checks"] if item.get("code") == "orphan-illustration-asset"]
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("orphan-illustration-asset", codes)
+        self.assertEqual(len(orphan_items), 1)
+        self.assertIn("assets", orphan_items[0]["message"])
+
 
 if __name__ == "__main__":
     unittest.main()

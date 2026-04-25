@@ -38,7 +38,7 @@ Agent-native 小说创作工作流 CLI。将长篇小说的创作状态拆分为
 | `consistency` | `check` | 一致性校验 |
 | `stats` | — | 项目统计 |
 | `export` | — | 导出纯文本 |
-| `doctor` | — | 项目校验 |
+| `doctor` | — | 项目校验（含 style profile、商业蓝图、插图资产引用与落盘状态检查） |
 
 ## 4. 技术栈
 

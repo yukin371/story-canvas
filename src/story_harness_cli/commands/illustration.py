@@ -12,6 +12,10 @@ from story_harness_cli.protocol import (
     save_state,
 )
 from story_harness_cli.providers.image import OpenAIImageHTTPClient
+from story_harness_cli.commands.illustration_support import (
+    decorate_generated_entry,
+    resolve_output_path_for_index,
+)
 from story_harness_cli.services import (
     build_chapter_illustration_payload,
     build_entity_illustration_payload,
@@ -76,68 +80,6 @@ def _build_payload(root: Path, state: dict[str, Any], args) -> dict[str, Any]:
         mask_path=mask_path,
         prompt_pack_name=prompt_pack_name,
     )
-
-
-def _resolve_output_path(output_path: Path, extension: str) -> Path:
-    normalized_extension = f".{extension.lstrip('.')}"
-    if output_path.suffix.lower() == normalized_extension.lower():
-        return output_path
-    return output_path.with_suffix(normalized_extension)
-
-
-def _resolve_output_path_for_index(output_path: Path, index: int, extension: str) -> Path:
-    base_path = _resolve_output_path(output_path, extension)
-    if index == 0:
-        return base_path
-    return base_path.with_name(f"{base_path.stem}_{index + 1:02d}{base_path.suffix}")
-
-
-def _asset_records_from_entry(root: Path, entry: dict[str, Any]) -> list[dict[str, Any]]:
-    records = entry.get("artifacts", [])
-    if records:
-        normalized = []
-        for record in records:
-            path = Path(record.get("filePath", ""))
-            exists = path.exists() if path else False
-            normalized.append(
-                {
-                    "index": record.get("index", len(normalized)),
-                    "filePath": str(path) if path else "",
-                    "exists": exists,
-                    "bytes": record.get("bytes", 0),
-                    "source": record.get("source", ""),
-                    "extension": record.get("extension", ""),
-                    "isPrimary": bool(record.get("isPrimary", False)),
-                }
-            )
-        return normalized
-
-    file_path = entry.get("filePath", "")
-    if not file_path:
-        return []
-    path = Path(file_path)
-    return [
-        {
-            "index": 0,
-            "filePath": str(path),
-            "exists": path.exists(),
-            "bytes": entry.get("metadata", {}).get("asset", {}).get("bytes", 0),
-            "source": entry.get("metadata", {}).get("asset", {}).get("source", ""),
-            "extension": entry.get("metadata", {}).get("asset", {}).get("extension", ""),
-            "isPrimary": True,
-        }
-    ]
-
-
-def _decorate_generated_entry(root: Path, entry: dict[str, Any]) -> dict[str, Any]:
-    decorated = dict(entry)
-    assets = _asset_records_from_entry(root, entry)
-    decorated["artifacts"] = assets
-    decorated["assetCount"] = len(assets)
-    decorated["existingAssetCount"] = sum(1 for asset in assets if asset["exists"])
-    decorated["allAssetsPresent"] = bool(assets) and decorated["assetCount"] == decorated["existingAssetCount"]
-    return decorated
-
 
 def command_illustration_prompt(args) -> int:
     root = Path(args.root).resolve()
@@ -214,7 +156,7 @@ def command_illustration_generate(args) -> int:
     assets = client.materialize_artifacts(result)
     artifact_records = []
     for asset in assets:
-        resolved_output_path = _resolve_output_path_for_index(output_path, asset["index"], asset["extension"])
+        resolved_output_path = resolve_output_path_for_index(output_path, asset["index"], asset["extension"])
         resolved_output_path.parent.mkdir(parents=True, exist_ok=True)
         resolved_output_path.write_bytes(asset["content"])
         artifact_records.append(
@@ -270,7 +212,7 @@ def command_illustration_list(args) -> int:
         "adapter": state.get("illustrations", {}).get("adapter", {}),
         "promptPack": state.get("illustrations", {}).get("promptPack", {}),
         "generated": [
-            _decorate_generated_entry(root, entry)
+            decorate_generated_entry(root, entry)
             for entry in state.get("illustrations", {}).get("generated", [])
         ],
     }
