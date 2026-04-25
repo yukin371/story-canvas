@@ -12,16 +12,19 @@
 ## 2. Owns
 
 - `analyzer.py`: 章节分析（实体识别、状态检测、关系检测、场景范围）
+- `analyzer.py`: 章节分析（实体识别、状态检测、关系检测、场景范围），以及正文名称到 `entities/worldbook` 建档条目的引用对齐
 - `change_requests.py`: 变更请求生成与审核
 - `projection_engine.py`: 投影状态管理（upsert_by_key 去重），并在 `projection apply` 时吸纳高置信、无冲突的新设定候选到 `worldbook.premiseFacts`
-- `consistency_engine.py`: 一致性校验（hard checks: 状态/关系矛盾; soft checks: 大纲偏离），并输出正文中新设定候选与和既有世界设定的冲突预警
+- `consistency_engine.py`: 一致性校验（hard checks: 状态/关系矛盾; soft checks: 大纲偏离），并输出正文中新设定候选、和既有世界设定的冲突预警，以及高置信的“姓名/身份无来源提前揭露”与“能力层级 vs 任务风险不匹配”风险
+- `rule_semantics.py`: 统一规则 judgement 语义包装，负责给现有检测结果补 `ruleId/source/scope/kind/severity` 等规范字段
 - `entity_enricher.py`: 角色外貌/能力提取与丰富化提案
 - `context_lens.py`: 写作上下文构建（活跃角色/关系 + 情绪契约 + 题材模板 + 世界约束 + 线索/伏笔切片）
 - `outline_guard.py`: 章节大纲前置检查，判断是否具备项目定位 / 故事契约 + direction / beats / scenePlans 进入写作或细化
 - `story_review.py`: 章节回顾评分、一幕评审、类型/平台加权评分、评论、改稿建议、契约对齐与商业连载对齐检查，并开始消费情绪契约、揭露偏好、模板关注点、伏笔窗口、世界规则、角色动态状态，以及 style/consistency 护栏信号
-- `style_detector.py`: AI 风格启发式检测与约束生成；允许通过外部注入 scorer 增强句式近似判断，但默认保持 builtin fallback，并支持基于 profile 的术语观察词、重复白名单和词级阈值
+- `style_detector.py`: AI 风格启发式检测与约束生成；允许通过外部注入 scorer 增强句式近似判断，但默认保持 builtin fallback，并支持基于 profile 的术语观察词、重复白名单、词级阈值、题材语域失真词表，以及叙事支架复用检测
 - `illustration_prompting.py`: chapter / entity 插图 prompt 构造、目标元数据整理与 dry-run request 组装
 - `workflow_engine.py`: workflow 状态机纯函数，负责阶段推断、状态 hydration/build、gate 决策推进、reset 与导出快照
+- `workflow_engine.py`: workflow gate 现会为阻塞项补统一 `ruleJudgements` 与 `gateDecision`，让门禁结果能引用具体规则 id，而不是只返回散乱说明
 - `inspiration.py`: 随机灵感生成（姓名、角色、世界、大纲骨架）
 - `stats.py`: 项目统计（进度、字数、实体、投影）
 
@@ -87,9 +90,16 @@
 - 一幕级 `contractAlignment` 复用了章节级契约思想，但阈值更偏向“局部兑现/局部钩子”，不等同于整章判断
 - `story_review.py` 现在还会输出 `storyConstraintSignals`，用于暴露当前章评审实际消费到的情绪契约、世界规则、到窗伏笔和角色状态切片
 - `story_review.py` 现在还会在 chapter review 中输出 `consistencySignals`，用于暴露高频特殊术语复用、设定候选和设定冲突
+- `story_review.py` 现在还会通过 `consistencySignals.unintroducedNameReveals` 暴露“先匿名描写、后突兀报姓名”这类认知边界问题
+- `story_review.py` 现在还会通过 `consistencySignals.capabilityTaskRisks` 暴露“低修为角色直接承担高风险任务但缺少例外说明”这类设定合理性问题
+- `style_detector.py` / `consistency_engine.py` 现已开始输出统一 `judgements`；`story_review.py` 会进一步汇总成 `ruleJudgements`
+- `workflow_engine.py` 现在会把 gate 的 `missing` 项归一成 `ruleJudgements`，并在 `gateDecision.blockingRules` 中引用对应 rule ids
 - `story_review.py` 现在也会在 scene review 中输出 `styleAnalysis` 与 `consistencySignals`，避免局部审查遗漏术语复用和设定漂移
+- `story_review.py` 现在还会输出 `wrappedEntitySignals`，用于审查当前章/幕中已包裹实体是否都能对齐到角色卡、势力、地点或特殊物品设定
 - `story_review.py` 对 `storyTemplate.reviewFocus` 和 `emotionalContract.revealPreference` 的消费仍是启发式提示，不应被误读成严格剧情证明器
 - `style_detector.py` 的特殊术语复用检测默认是启发式；若项目存在刻意反复强化的母题，应该放进 `style-profiles.yaml -> termPolicy.allowRepeated`
+- `style_detector.py` 的题材语域失真检测依赖 `style-profiles.yaml -> registerPolicy`；玄幻这类题材的现代项目管理语汇应优先通过 profile 管理，而不是硬编码在 review 层
+- `style_detector.py` 的“前世的记忆 / 前世的经验”这类问题不走纯词典匹配，而是通过 `framePolicy` + 结构启发式识别重复叙事支架
 - `commercialAlignment` 目前基于 hook、字数目标、章末钩子等启发式信号，不等同于真实市场反馈预测
 - `evaluate_project_story_gate` 的用途是把“先确定市场定位和故事承诺，再拆章节”变成硬门禁，而不是 review 阶段的软建议
 - workflow 的 `currentStage` 口径是“第一个未满足 inferred 条件的 gate”，不是“所有前置 gate 都必须先人工 accept 才算通过”

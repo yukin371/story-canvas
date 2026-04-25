@@ -118,6 +118,27 @@ class ExportCommandTest(unittest.TestCase):
         self.assertNotIn("## ", content)
         self.assertNotIn("@{", content)
 
+    def test_export_strips_source_chapter_heading_from_body(self):
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(
+            "# 第一章 停电夜\n\n"
+            "但脑海中反复浮现的，始终是那道银色的剑光。\n",
+            encoding="utf-8",
+        )
+        outline = json.loads((self.temp_dir / "outline.yaml").read_text(encoding="utf-8"))
+        outline["chapters"][0]["title"] = "第一章 停电夜"
+        (self.temp_dir / "outline.yaml").write_text(json.dumps(outline, ensure_ascii=False, indent=2), encoding="utf-8")
+
+        out_file = self.temp_dir / "output.txt"
+        result = main([
+            "export", "--root", str(self.temp_dir),
+            "--output", str(out_file),
+        ])
+        self.assertEqual(result, 0)
+        content = out_file.read_text(encoding="utf-8")
+        self.assertIn("但脑海中反复浮现的，始终是那道银色的剑光。", content)
+        self.assertNotIn("第一章 停电夜", content)
+
 
 if __name__ == "__main__":
     unittest.main()

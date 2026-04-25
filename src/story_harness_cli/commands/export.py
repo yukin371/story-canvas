@@ -79,10 +79,10 @@ def _export_chapter_prose(state: dict, root: Path, fmt: str, chapter_id: str | N
         if not cp:
             continue
         raw = cp.read_text(encoding="utf-8")
-        clean = strip_entity_tags(raw)
+        title = _chapter_title(state, cid)
+        clean = _strip_chapter_heading(strip_entity_tags(raw), title)
         if fmt == "txt":
             clean = strip_markdown(clean)
-        title = _chapter_title(state, cid)
         chapters_data.append({"chapterId": cid, "title": title, "content": clean, "wordCount": count_words(clean)})
 
     if not chapters_data:
@@ -473,6 +473,46 @@ def _find_chapter_file(root: Path, chapter_id: str) -> Path | None:
         if item.stem == chapter_id:
             return item
     return None
+
+
+def _strip_chapter_heading(text: str, title: str) -> str:
+    lines = text.splitlines()
+    while lines and not lines[0].strip():
+        lines.pop(0)
+    if not lines:
+        return ""
+
+    first = lines[0].strip()
+    heading_match = None
+    if first.startswith("#"):
+        heading_match = first.lstrip("#").strip()
+    elif _looks_like_chapter_heading(first):
+        heading_match = first
+
+    if heading_match and _heading_matches_title(heading_match, title):
+        lines.pop(0)
+        while lines and not lines[0].strip():
+            lines.pop(0)
+    return "\n".join(lines).strip()
+
+
+def _heading_matches_title(heading: str, title: str) -> bool:
+    heading_norm = _normalize_heading_text(heading)
+    title_norm = _normalize_heading_text(title)
+    if heading_norm and title_norm and heading_norm == title_norm:
+        return True
+    if heading_norm and _looks_like_chapter_heading(heading):
+        return True
+    return False
+
+
+def _normalize_heading_text(text: str) -> str:
+    return "".join(text.strip().split())
+
+
+def _looks_like_chapter_heading(text: str) -> bool:
+    normalized = text.strip()
+    return len(normalized) <= 40 and normalized.startswith("第") and "章" in normalized[:12]
 
 
 def register_export_commands(subparsers) -> None:

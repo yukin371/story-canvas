@@ -35,7 +35,7 @@ def chapter_path(root: Path, chapter_id: str) -> Path:
 LAYOUT_FLAT = "flat"
 LAYOUT_LAYERED = "layered"
 
-_SPEC_KEYS = {"outline", "entities", "timeline", "threads", "structures", "foreshadowing", "detailed_outlines"}
+_SPEC_KEYS = {"outline", "entities", "timeline", "threads", "structures", "worldbook", "foreshadowing", "detailed_outlines"}
 
 _SUBDIR_KEYS = {
     "proposals": "proposals/draft-proposals.yaml",

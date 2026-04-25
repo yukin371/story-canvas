@@ -31,6 +31,7 @@ class StyleProfilesTest(unittest.TestCase):
         self.assertIn("default", defaults)
         self.assertIn("web-serial-zh", defaults)
         self.assertIn("literary-zh", defaults)
+        self.assertIn("xuanhuan-zh", defaults)
 
     def test_load_with_project_override_merges_profile(self) -> None:
         custom = {
@@ -42,6 +43,21 @@ class StyleProfilesTest(unittest.TestCase):
                         "watchTerms": ["归墟潮"],
                         "allowRepeated": ["蝴蝶效应"],
                         "perTermThresholds": {"归墟潮": 4},
+                    },
+                    "registerPolicy": {
+                        "allowTerms": ["时间框架"],
+                        "disallowedCategories": [
+                            {
+                                "id": "modern-planning",
+                                "label": "现代项目管理语汇",
+                                "terms": ["优先级"],
+                                "suggestion": "避免使用现代项目管理语汇。",
+                            }
+                        ],
+                    },
+                    "framePolicy": {
+                        "allowPrefixes": ["前世的"],
+                        "perPrefixThresholds": {"前世的": 4},
                     },
                 }
             }
@@ -56,6 +72,10 @@ class StyleProfilesTest(unittest.TestCase):
         self.assertIn("归墟潮", profile["termPolicy"]["watchTerms"])
         self.assertIn("蝴蝶效应", profile["termPolicy"]["allowRepeated"])
         self.assertEqual(profile["termPolicy"]["perTermThresholds"]["归墟潮"], 4)
+        self.assertIn("时间框架", profile["registerPolicy"]["allowTerms"])
+        self.assertEqual(profile["registerPolicy"]["disallowedCategories"][0]["terms"], ["优先级"])
+        self.assertIn("前世的", profile["framePolicy"]["allowPrefixes"])
+        self.assertEqual(profile["framePolicy"]["perPrefixThresholds"]["前世的"], 4)
 
     def test_choose_profile_name_from_project_positioning(self) -> None:
         project = {"positioning": {"primaryGenre": "fantasy", "styleTags": ["web-serial"]}}
@@ -63,6 +83,14 @@ class StyleProfilesTest(unittest.TestCase):
 
         literary_project = {"positioning": {"primaryGenre": "literary", "styleTags": []}}
         self.assertEqual(choose_style_profile_name(literary_project), "literary-zh")
+
+        xuanhuan_project = {"genre": "玄幻", "positioning": {"primaryGenre": "fantasy", "subGenre": "", "styleTags": []}}
+        self.assertEqual(choose_style_profile_name(xuanhuan_project), "xuanhuan-zh")
+
+        xuanhuan_subgenre_project = {
+            "positioning": {"primaryGenre": "fantasy", "subGenre": "xuanhuan", "styleTags": []}
+        }
+        self.assertEqual(choose_style_profile_name(xuanhuan_subgenre_project), "xuanhuan-zh")
 
         default_project = {"positioning": {"primaryGenre": "mystery", "styleTags": []}}
         self.assertEqual(choose_style_profile_name(default_project), "default")

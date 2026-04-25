@@ -566,7 +566,95 @@
   - `services/foreshadow_engine.py`
   - `services/entity_state_engine.py`
 
-## 13. 实施顺序
+## 13. 协议落地矩阵
+
+### 13.1 状态域与 owner
+
+| 状态域 | 文件 | owner | 作用 |
+|------|------|------|------|
+| `project.emotionalContract` | `project.yaml` | `protocol/schema.py` | 读者情绪体验承诺 |
+| `project.storyTemplate` | `project.yaml` | `protocol/schema.py` | 决定哪些约束模块 required / optional / off |
+| `worldbook` | `spec/worldbook.yaml` | `protocol/schema.py` + `protocol/files.py` | 世界真相层 |
+| `entities.state` / `entities.changeLog` | `spec/entities.yaml` | `protocol/schema.py` | 角色动态状态与追溯 |
+| `foreshadowing.origin/payoffPlan` | `spec/foreshadowing.yaml` | `protocol/schema.py` | 伏笔来源、窗口、显隐策略 |
+| `threads` | `spec/threads.yaml` | `protocol/schema.py` | 主线/支线/人物线索引 |
+
+### 13.2 命令面消费矩阵
+
+| 命令/模块 | 应读取 | 用途 |
+|------|------|------|
+| `init` | `emotionalContract`, `storyTemplate` | 初始化作品级约束 |
+| `doctor` | `storyTemplate`, `worldbook`, `entities.changeLog`, `foreshadowing.payoffPlan` | 结构与到期风险检查 |
+| `outline check` | `storyTemplate`, `emotionalContract` | 写前门禁 |
+| `context refresh` | `worldbook`, `threads`, `entities.state`, `foreshadowing` | 加载当前章最小必要约束 |
+| `review chapter` | `emotionalContract`, `entities.state`, `foreshadowing` | 启发式评估情绪兑现与回收进度 |
+| `review scene` | `emotionalContract`, `foreshadowing` | 局部场景的伏笔/情绪检查 |
+| `entity` | `entities.state`, `entities.changeLog` | 状态更新与历史查询 |
+| `foreshadow` | `foreshadowing.origin`, `foreshadowing.payoffPlan` | 伏笔台账管理 |
+
+### 13.3 最小 schema 切片
+
+建议不要一次把全部字段打满，而按以下最小切片落地：
+
+#### Slice A: 作品级约束
+
+- `project.emotionalContract`
+- `project.storyTemplate`
+
+#### Slice B: 世界真相层
+
+- `worldbook.premiseFacts`
+- `worldbook.worldRules`
+- `worldbook.factions`
+
+#### Slice C: 角色动态层
+
+- `entities.state`
+- `entities.changeLog`
+
+#### Slice D: 伏笔账本增强
+
+- `foreshadowing.origin`
+- `foreshadowing.plantPoints`
+- `foreshadowing.payoffPlan`
+
+`v1.0` 最低要求是 Slice A + B + D 可以被 `doctor` / `context refresh` / `review` 基础消费。
+
+## 14. 兼容迁移策略
+
+### 14.1 老项目回填原则
+
+- 缺失 `emotionalContract` 时回填空默认值
+- 缺失 `storyTemplate` 时回填 `default` 模板或 `modulePolicy = optional`
+- 缺失 `worldbook.yaml` 时允许加载为空状态
+- 旧版 `entities.yaml` 没有 `state/changeLog` 时，保持 profile-only 模式
+- 旧版 `foreshadowing.yaml` 没有 `origin/payoffPlan` 时，回填为最小兼容结构
+
+### 14.2 不做一次性 breaking change
+
+不建议在 `v1.0` 前：
+
+- 强制所有旧项目立即补全 `worldbook`
+- 强制所有角色都必须拥有 `state`
+- 强制所有伏笔都必须立即细化到 `payoffPlan`
+
+更稳的口径是：
+
+- schema 可兼容
+- `doctor` 先 warning
+- 只有 `storyTemplate.modulePolicy = required` 的项目才逐步变成硬门禁
+
+### 14.3 《归墟》作为重协议试点
+
+《归墟》适合作为重协议试点，但不应要求所有项目都达到 `demo-guixu` 的维护密度。
+
+建议口径：
+
+- `demo-short-story`: 轻协议基线
+- `demo-urban-occult-long`: 商业长篇基线
+- `demo-guixu`: 重规则 + 长伏笔 + 角色动态基线
+
+## 15. 实施顺序
 
 ### P0：协议落盘
 
@@ -594,9 +682,28 @@
 - 先有检查，再让评审消费
 - 先把“记得住”解决，再优化“判得准”
 
-## 14. 风险
+## 16. 验收口径
 
-### 14.1 过度结构化
+### 16.1 协议层完成的最低判断
+
+以下条件满足时，才算“故事约束协议已经不是纯设计稿”：
+
+- schema 与文件路径已落地
+- 老项目可兼容加载
+- 至少一个命令会真正消费新字段，而不是只写文档
+- 至少一个样例项目写入新结构
+
+### 16.2 `v1.0` 口径下的最低消费闭环
+
+- `doctor` 能检查 `storyTemplate` required 模块
+- `context refresh` 能加载最小的 `worldbook` / `entities.state` / `foreshadowing`
+- `review chapter` 能引用 `emotionalContract` 或伏笔窗口
+
+如果这三项都还没落地，就不能宣称“完整、有效的故事管理能力”已经完成。
+
+## 17. 风险
+
+### 17.1 过度结构化
 
 风险：
 作者被迫维护太多字段，创作负担过重。
@@ -606,7 +713,7 @@
 - 所有新模块都走 `storyTemplate.modulePolicy`
 - `required` 才强校验，`optional` 只提醒，`off` 直接跳过
 
-### 14.2 状态漂移
+### 17.2 状态漂移
 
 风险：
 正文已变化，但 `entity state` / `foreshadow ledger` 未更新。
@@ -616,7 +723,7 @@
 - `doctor` 做弱提醒
 - `context refresh` 优先提示“已到回收窗口但未处理”的项目
 
-### 14.3 评审幻觉
+### 17.3 评审幻觉
 
 风险：
 把启发式评审误当成真实证明器。
@@ -626,7 +733,7 @@
 - 文档和输出中继续保留“启发式”口径
 - 不把 `review scene` 冒充为逻辑证明器
 
-## 15. 结论
+## 18. 结论
 
 这个设计的核心不是再多加几张表，而是把小说工程从：
 

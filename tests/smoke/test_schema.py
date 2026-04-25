@@ -42,13 +42,25 @@ class SchemaTest(unittest.TestCase):
         project = state["project"]
         self.assertIn("positioning", project)
         self.assertIn("storyContract", project)
+        self.assertIn("emotionalContract", project)
+        self.assertIn("storyTemplate", project)
         self.assertIn("commercialPositioning", project)
         self.assertIn("primaryGenre", project["positioning"])
         self.assertIn("targetAudience", project["positioning"])
         self.assertIn("corePromises", project["storyContract"])
         self.assertIn("endingContract", project["storyContract"])
+        self.assertIn("coreEmotions", project["emotionalContract"])
+        self.assertIn("modulePolicy", project["storyTemplate"])
         self.assertIn("premise", project["commercialPositioning"])
         self.assertIn("chapterWordTarget", project["commercialPositioning"])
+
+    def test_state_has_worldbook_domain(self):
+        state = default_project_state()
+        worldbook = state["worldbook"]
+        self.assertIn("premiseFacts", worldbook)
+        self.assertIn("worldRules", worldbook)
+        self.assertIn("factions", worldbook)
+        self.assertIn("mysteries", worldbook)
 
     def test_workflow_progress_has_minimal_fields(self):
         state = default_project_state()
@@ -92,8 +104,11 @@ class SchemaTest(unittest.TestCase):
             self.assertEqual(state["project"]["positioning"]["primaryGenre"], "")
             self.assertEqual(state["project"]["positioning"]["styleTags"], [])
             self.assertEqual(state["project"]["storyContract"]["corePromises"], [])
+            self.assertEqual(state["project"]["emotionalContract"]["coreEmotions"], [])
+            self.assertEqual(state["project"]["storyTemplate"]["modulePolicy"], {})
             self.assertEqual(state["project"]["commercialPositioning"]["hookStack"], [])
             self.assertEqual(state["project"]["commercialPositioning"]["chapterWordTarget"], 0)
+            self.assertEqual(state["worldbook"]["worldRules"], [])
             self.assertEqual(state["story_reviews"]["sceneRubricVersion"], "scene-review-v1")
             self.assertEqual(state["story_reviews"]["sceneReviews"], [])
             self.assertEqual(state["workflow_progress"]["currentStage"], "")

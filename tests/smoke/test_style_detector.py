@@ -23,6 +23,7 @@ class StyleDetectorTests(unittest.TestCase):
 
         self.assertTrue(pattern["detected"])
         self.assertIn("蝴蝶效应", "".join(pattern["evidence"]))
+        self.assertTrue(any(item["ruleId"] == "specialTermRepetition" for item in result["judgements"]))
 
     def test_detect_ai_style_respects_allow_repeated_terms(self) -> None:
         paragraphs = [
@@ -58,6 +59,80 @@ class StyleDetectorTests(unittest.TestCase):
 
         self.assertTrue(pattern["detected"])
         self.assertIn("归墟潮", "".join(pattern["evidence"]))
+
+    def test_detect_ai_style_flags_register_drift_terms(self) -> None:
+        paragraphs = [
+            "沈玄先把所有线索整合成一个时间框架。",
+            "第一优先级是隐藏归墟体，第二优先级是站稳脚跟。",
+            "他决定暂时不再用这种框架式的说法。",
+        ]
+        clean_text = "".join(paragraphs) * 2
+
+        result = detect_ai_style(
+            paragraphs,
+            clean_text,
+            profile_config={
+                "registerPolicy": {
+                    "disallowedCategories": [
+                        {
+                            "id": "modern-planning",
+                            "label": "现代项目管理语汇",
+                            "terms": ["时间框架", "优先级", "框架"],
+                            "suggestion": "避免使用现代项目管理语汇。",
+                        }
+                    ]
+                }
+            },
+        )
+        pattern = next(item for item in result["patternResults"] if item["id"] == "registerDrift")
+
+        self.assertTrue(pattern["detected"])
+        self.assertIn("优先级", "".join(pattern["evidence"]))
+        judgement = next(item for item in result["judgements"] if item["ruleId"] == "registerDrift")
+        self.assertEqual(judgement["kind"], "style")
+        self.assertEqual(judgement["source"], "genre-pack")
+
+    def test_detect_ai_style_respects_register_allow_terms(self) -> None:
+        paragraphs = [
+            "沈玄先把所有线索整合成一个时间框架。",
+            "第一优先级是隐藏归墟体。",
+        ]
+        clean_text = "".join(paragraphs) * 2
+
+        result = detect_ai_style(
+            paragraphs,
+            clean_text,
+            profile_config={
+                "registerPolicy": {
+                    "allowTerms": ["时间框架", "优先级"],
+                    "disallowedCategories": [
+                        {
+                            "id": "modern-planning",
+                            "label": "现代项目管理语汇",
+                            "terms": ["时间框架", "优先级"],
+                            "suggestion": "避免使用现代项目管理语汇。",
+                        }
+                    ],
+                }
+            },
+        )
+        pattern = next(item for item in result["patternResults"] if item["id"] == "registerDrift")
+
+        self.assertFalse(pattern["detected"])
+
+    def test_detect_ai_style_flags_repeated_narrative_frames(self) -> None:
+        paragraphs = [
+            "前世的记忆在他心里翻涌，让他不敢轻信眼前的一切。",
+            "前世的经验提醒他，越是看似平静的局面越藏着杀机。",
+            "前世的判断曾救过他一次，可这一次他不想再完全依赖旧路。",
+        ]
+        clean_text = "".join(paragraphs) * 2
+
+        result = detect_ai_style(paragraphs, clean_text)
+        pattern = next(item for item in result["patternResults"] if item["id"] == "narrativeFrameRepetition")
+
+        self.assertTrue(pattern["detected"])
+        self.assertIn("前世的", "".join(pattern["evidence"]))
 
     def test_detect_ai_style_uses_builtin_repetition_fallback(self) -> None:
         paragraphs = [

@@ -18,6 +18,14 @@ def get_default_style_profiles() -> Dict[str, Dict[str, Any]]:
                 "perTermThresholds": {},
                 "specialTermSuffixes": [],
             },
+            "registerPolicy": {
+                "allowTerms": [],
+                "disallowedCategories": [],
+            },
+            "framePolicy": {
+                "allowPrefixes": [],
+                "perPrefixThresholds": {},
+            },
         },
         "web-serial-zh": {
             "patternThresholds": {
@@ -32,6 +40,14 @@ def get_default_style_profiles() -> Dict[str, Dict[str, Any]]:
                 "allowRepeated": [],
                 "perTermThresholds": {},
                 "specialTermSuffixes": [],
+            },
+            "registerPolicy": {
+                "allowTerms": [],
+                "disallowedCategories": [],
+            },
+            "framePolicy": {
+                "allowPrefixes": [],
+                "perPrefixThresholds": {},
             },
         },
         "literary-zh": {
@@ -48,6 +64,54 @@ def get_default_style_profiles() -> Dict[str, Dict[str, Any]]:
                 "allowRepeated": [],
                 "perTermThresholds": {},
                 "specialTermSuffixes": [],
+            },
+            "registerPolicy": {
+                "allowTerms": [],
+                "disallowedCategories": [],
+            },
+            "framePolicy": {
+                "allowPrefixes": [],
+                "perPrefixThresholds": {},
+            },
+        },
+        "xuanhuan-zh": {
+            "patternThresholds": {
+                "formulaicTransition": 2.5,
+            },
+            "extraPatterns": {},
+            "termPolicy": {
+                "watchTerms": [],
+                "allowRepeated": [],
+                "perTermThresholds": {},
+                "specialTermSuffixes": [],
+            },
+            "registerPolicy": {
+                "allowTerms": [],
+                "disallowedCategories": [
+                    {
+                        "id": "modern-planning",
+                        "label": "现代项目管理语汇",
+                        "terms": [
+                            "优先级",
+                            "第一优先级",
+                            "第二优先级",
+                            "第三优先级",
+                            "时间框架",
+                            "框架",
+                            "底层逻辑",
+                            "版本迭代",
+                            "模块化",
+                            "工作流",
+                            "配置项",
+                            "闭环",
+                        ],
+                        "suggestion": "玄幻正文避免直接使用“优先级”“框架”这类现代项目管理语汇，可改写为“头等要务”“先后次序”“谋划”“脉络”。",
+                    }
+                ],
+            },
+            "framePolicy": {
+                "allowPrefixes": [],
+                "perPrefixThresholds": {},
             },
         },
     }
@@ -95,8 +159,12 @@ def resolve_style_profile(root: Path, profile_name: str) -> Tuple[Dict[str, Any]
 def choose_style_profile_name(project: Dict[str, Any]) -> str:
     positioning = project.get("positioning", {})
     primary_genre = normalize_primary_genre(positioning.get("primaryGenre", ""))
+    sub_genre = normalize_machine_label(positioning.get("subGenre", ""))
     style_tags = [normalize_machine_label(item) for item in positioning.get("styleTags", []) if item]
+    raw_genre = normalize_machine_label(project.get("genre", "")) if isinstance(project, dict) else ""
 
+    if sub_genre == "xuanhuan" or "xuanhuan" in style_tags or raw_genre == "xuanhuan":
+        return "xuanhuan-zh"
     if "web-serial" in style_tags:
         return "web-serial-zh"
     if primary_genre == "literary":

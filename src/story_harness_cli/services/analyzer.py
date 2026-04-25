@@ -82,6 +82,45 @@ def resolve_entities(text: str, entities_state: Dict[str, Any]) -> Dict[str, Dic
     return resolved
 
 
+def resolve_named_reference(state: Dict[str, Dict[str, Any]], name: str) -> Dict[str, Any] | None:
+    entities_state = state.get("entities", {})
+    for entity in entities_state.get("entities", []):
+        if not isinstance(entity, dict):
+            continue
+        aliases = [alias for alias in entity.get("aliases", []) if isinstance(alias, str)]
+        if name == entity.get("name") or name in aliases:
+            return {
+                "name": name,
+                "kind": entity.get("type", "character"),
+                "id": entity.get("id", ""),
+                "source": "entities",
+            }
+
+    worldbook = state.get("worldbook", {})
+    for key, kind in (
+        ("factions", "faction"),
+        ("artifacts", "artifact"),
+        ("locations", "location"),
+        ("mysteries", "mystery"),
+    ):
+        for item in worldbook.get(key, []):
+            if not isinstance(item, dict):
+                continue
+            candidate_names = [
+                value for value in (item.get("name"), item.get("title"), item.get("label"))
+                if isinstance(value, str) and value
+            ]
+            aliases = [alias for alias in item.get("aliases", []) if isinstance(alias, str)]
+            if name in candidate_names or name in aliases:
+                return {
+                    "name": name,
+                    "kind": kind,
+                    "id": item.get("id", ""),
+                    "source": f"worldbook.{key}",
+                }
+    return None
+
+
 def analyze_chapter(root: Path, state: Dict[str, Dict[str, Any]], chapter_id: str) -> Dict[str, Any]:
     chapter_file = chapter_path(root, chapter_id)
     if not chapter_file.exists():

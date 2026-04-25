@@ -73,6 +73,7 @@ class ReviewChapterSmokeTest(unittest.TestCase):
         self.assertIn("styleAnalysis", payload)
         self.assertIn("styleAnalysis", payload["styleAnalysis"])
         self.assertIn("profileSource", payload["styleAnalysis"])
+        self.assertIn("ruleJudgements", payload)
         self.assertTrue(payload["priorityActions"])
         self.assertEqual(payload["projectContext"]["positioning"]["primaryGenre"], "mystery")
         self.assertEqual(payload["projectContext"]["commercialPositioning"]["targetPlatform"], "")
@@ -288,6 +289,149 @@ class ReviewChapterSmokeTest(unittest.TestCase):
         self.assertTrue(any("高频特殊术语复用" in item for item in alignment_text))
         self.assertTrue(any("设定冲突" in item or "守夜代价" in item for item in alignment_text))
         self.assertTrue(any("蝴蝶效应" in item for item in payload["consistencySignals"]["specialTermRepetition"]["evidence"]))
+
+    def test_review_chapter_flags_genre_register_drift_for_xuanhuan(self) -> None:
+        project = json.loads((self.temp_dir / "project.yaml").read_text(encoding="utf-8"))
+        project["genre"] = "玄幻"
+        project["positioning"]["primaryGenre"] = "fantasy"
+        project["positioning"]["subGenre"] = "xuanhuan"
+        (self.temp_dir / "project.yaml").write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding="utf-8")
+
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(
+            "# 第一章\n\n"
+            "沈玄将所有信息整合成一个时间框架，把接下来一年里最危险的变数都压进脑海深处，像在给自己列一张不合时宜的清单。\n\n"
+            "第一优先级是压制归墟体气息，第二优先级是在苍梧域站稳脚跟，第三优先级则是摸清顾长渊的动向。这样的优先级口吻与整段玄幻叙事格格不入，连他自己都隐约觉得生硬。\n\n"
+            "前世的记忆催他立刻动手，前世的经验又提醒他必须忍耐，前世的判断更让他反复回到同一套解释框架里。",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["styleAnalysis"]["profile"], "xuanhuan-zh")
+        self.assertTrue(
+            any(item["id"] == "registerDrift" and item["detected"] for item in payload["styleAnalysis"]["styleAnalysis"]["patternResults"])
+        )
+        self.assertTrue(
+            any(item["id"] == "narrativeFrameRepetition" and item["detected"] for item in payload["styleAnalysis"]["styleAnalysis"]["patternResults"])
+        )
+        self.assertTrue(any("优先级" in item or "框架" in item for item in payload["priorityActions"]))
+        self.assertTrue(any("前世的" in item or "叙事支架" in item for item in payload["priorityActions"]))
+        alignment_text = payload["contractAlignment"]["matched"] + payload["contractAlignment"]["risks"] + payload["contractAlignment"]["notes"]
+        self.assertTrue(any("题材语域失真" in item or "现代项目管理口吻" in item for item in alignment_text))
+
+    def test_review_chapter_exposes_wrapped_entity_registry_gaps(self) -> None:
+        (self.temp_dir / "entities.yaml").write_text(
+            json.dumps(
+                {
+                    "entities": [
+                        {
+                            "id": "char-shenxuan",
+                            "name": "沈玄",
+                            "type": "character",
+                            "aliases": [],
+                        }
+                    ],
+                    "enrichmentProposals": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(
+            "# 第一章\n\n"
+            "@{沈玄}抬头望向山门尽头的 @{青云宗}，又低头看了一眼掌中的 @{镇海印}。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["wrappedEntitySignals"]["count"], 3)
+        self.assertTrue(any(item["name"] == "沈玄" and item["source"] == "entities" for item in payload["wrappedEntitySignals"]["covered"]))
+        self.assertTrue(any(item["name"] == "青云宗" for item in payload["wrappedEntitySignals"]["missing"]))
+        self.assertTrue(any(item["name"] == "镇海印" for item in payload["wrappedEntitySignals"]["missing"]))
+        self.assertGreaterEqual(payload["analysisSignals"]["wrappedEntityMissingCount"], 2)
+        self.assertTrue(any("青云宗" in item or "镇海印" in item for item in payload["priorityActions"]))
+        alignment_text = payload["contractAlignment"]["matched"] + payload["contractAlignment"]["risks"] + payload["contractAlignment"]["notes"]
+        self.assertTrue(any("未建档" in item or "真相源" in item for item in alignment_text))
+
+    def test_review_chapter_flags_unintroduced_name_reveal(self) -> None:
+        chapter_path = self.temp_dir / "chapters" / "chapter-005.md"
+        chapter_path.write_text(
+            "# 第五章\n\n"
+            "人家是散修，想走哪条路走哪条路。不过青云宗的试炼她也报了名，说是要在试炼中找一条线索。\n\n"
+            "女散修。黑鞘剑。冰寒的剑意。\n\n"
+            "叶清漪。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-005"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["analysisSignals"]["unintroducedNameRevealCount"], 1)
+        self.assertTrue(payload["consistencySignals"]["unintroducedNameReveals"])
+        self.assertEqual(payload["consistencySignals"]["unintroducedNameReveals"][0]["name"], "叶清漪")
+        self.assertTrue(any("叶清漪" in item for item in payload["priorityActions"]))
+        alignment_text = payload["contractAlignment"]["matched"] + payload["contractAlignment"]["risks"] + payload["contractAlignment"]["notes"]
+        self.assertTrue(any("无来源提前揭露" in item or "旁白越界" in item for item in alignment_text))
+
+    def test_review_chapter_flags_capability_task_mismatch(self) -> None:
+        (self.temp_dir / "entities.yaml").write_text(
+            json.dumps(
+                {
+                    "entities": [
+                        {
+                            "id": "char-shenxuan",
+                            "name": "沈玄",
+                            "type": "character",
+                            "state": {
+                                "powerLevel": {"publicLevel": "练气一层"},
+                            },
+                        }
+                    ],
+                    "enrichmentProposals": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
+        chapter_path = self.temp_dir / "chapters" / "chapter-006.md"
+        chapter_path.write_text(
+            "# 第六章\n\n"
+            "沈玄入门之后还未真正站稳脚跟，眼下也只在练气一层。\n\n"
+            "可执事仍让沈玄参加宗门试炼，最终环节不是比武，而是进入秘境探索。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-006"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["analysisSignals"]["capabilityTaskRiskCount"], 1)
+        self.assertTrue(payload["consistencySignals"]["capabilityTaskRisks"])
+        self.assertEqual(payload["consistencySignals"]["capabilityTaskRisks"][0]["entityName"], "沈玄")
+        self.assertTrue(any(item["ruleId"] == "capabilityTaskMismatch" for item in payload["ruleJudgements"]))
+        self.assertTrue(any("沈玄" in item for item in payload["priorityActions"]))
+        alignment_text = payload["contractAlignment"]["matched"] + payload["contractAlignment"]["risks"] + payload["contractAlignment"]["notes"]
+        self.assertTrue(any("任务门槛" in item or "保护条件" in item for item in alignment_text))
 
 
 if __name__ == "__main__":

@@ -50,6 +50,7 @@ class ConsistencyCommandTest(unittest.TestCase):
         self.assertIn("softChecks", data)
         self.assertIn("settingCandidates", data)
         self.assertIn("settingConflicts", data)
+        self.assertIn("judgements", data)
         self.assertIn("contextForAI", data)
 
 

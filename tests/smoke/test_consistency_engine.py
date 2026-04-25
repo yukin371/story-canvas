@@ -129,6 +129,94 @@ class ConsistencyEngineTest(unittest.TestCase):
         )
         self.assertTrue(result["settingConflicts"])
         self.assertIn("守夜代价", result["settingConflicts"][0]["issue"])
+        self.assertTrue(any(item["ruleId"] == "settingConflict" for item in result["judgements"]))
+
+    def test_flags_unintroduced_name_reveal_after_anonymous_descriptor_block(self):
+        state = {
+            "entities": {"entities": [], "enrichmentProposals": []},
+            "projection": {"snapshotProjections": [], "relationProjections": [], "sceneScopeProjections": [], "timelineProjections": [], "causalityProjections": []},
+            "worldbook": {"premiseFacts": [], "worldRules": [], "factions": [], "locations": [], "artifacts": [], "mysteries": []},
+            "outline": {"volumes": [], "chapters": [], "chapterDirections": []},
+        }
+        result = check_consistency(
+            state,
+            "人家是散修，想走哪条路走哪条路。不过青云宗的试炼她也报了名，说是要在试炼中找一条线索。\n\n"
+            "女散修。黑鞘剑。冰寒的剑意。\n\n"
+            "叶清漪。",
+            "chapter-005",
+        )
+        self.assertTrue(result["unintroducedNameReveals"])
+        self.assertEqual(result["unintroducedNameReveals"][0]["name"], "叶清漪")
+        self.assertEqual(result["unintroducedNameReveals"][0]["paragraphIndex"], 3)
+        judgement = next(item for item in result["judgements"] if item["ruleId"] == "unintroducedNameReveal")
+        self.assertEqual(judgement["kind"], "soft")
+        self.assertEqual(judgement["scopeRef"]["chapterId"], "chapter-005")
+
+    def test_does_not_flag_name_with_explicit_intro_source(self):
+        state = {
+            "entities": {"entities": [], "enrichmentProposals": []},
+            "projection": {"snapshotProjections": [], "relationProjections": [], "sceneScopeProjections": [], "timelineProjections": [], "causalityProjections": []},
+            "worldbook": {"premiseFacts": [], "worldRules": [], "factions": [], "locations": [], "artifacts": [], "mysteries": []},
+            "outline": {"volumes": [], "chapters": [], "chapterDirections": []},
+        }
+        result = check_consistency(
+            state,
+            "女散修背着黑鞘剑站在山道尽头，周身寒意逼人。\n\n"
+            "旁边有人低声说她叫叶清漪，是个独来独往的散修。",
+            "chapter-005",
+        )
+        self.assertEqual(result["unintroducedNameReveals"], [])
+
+    def test_flags_low_power_character_on_high_risk_task_without_safeguards(self):
+        state = {
+            "entities": {
+                "entities": [
+                    {
+                        "id": "char-shenxuan",
+                        "name": "沈玄",
+                        "state": {"powerLevel": {"publicLevel": "练气一层"}},
+                    }
+                ],
+                "enrichmentProposals": [],
+            },
+            "projection": {"snapshotProjections": [], "relationProjections": [], "sceneScopeProjections": [], "timelineProjections": [], "causalityProjections": []},
+            "worldbook": {"premiseFacts": [], "worldRules": [], "factions": [], "locations": [], "artifacts": [], "mysteries": []},
+            "outline": {"volumes": [], "chapters": [], "chapterDirections": []},
+        }
+        result = check_consistency(
+            state,
+            "沈玄刚入青云宗不久，眼下还只是练气一层。\n\n"
+            "可执事仍让沈玄参加宗门试炼，最终环节不是比武，而是进入秘境探索。",
+            "chapter-006",
+        )
+        self.assertTrue(result["capabilityTaskRisks"])
+        self.assertEqual(result["capabilityTaskRisks"][0]["entityName"], "沈玄")
+        self.assertEqual(result["capabilityTaskRisks"][0]["taskLabel"], "秘境探索")
+        self.assertTrue(any(item["ruleId"] == "capabilityTaskMismatch" for item in result["judgements"]))
+
+    def test_does_not_flag_low_power_character_when_safeguards_are_explicit(self):
+        state = {
+            "entities": {
+                "entities": [
+                    {
+                        "id": "char-shenxuan",
+                        "name": "沈玄",
+                        "state": {"powerLevel": {"publicLevel": "练气二层"}},
+                    }
+                ],
+                "enrichmentProposals": [],
+            },
+            "projection": {"snapshotProjections": [], "relationProjections": [], "sceneScopeProjections": [], "timelineProjections": [], "causalityProjections": []},
+            "worldbook": {"premiseFacts": [], "worldRules": [], "factions": [], "locations": [], "artifacts": [], "mysteries": []},
+            "outline": {"volumes": [], "chapters": [], "chapterDirections": []},
+        }
+        result = check_consistency(
+            state,
+            "沈玄如今只是练气二层。\n\n"
+            "这场宗门试炼只限练气弟子参加，秘境探索也只在外围进行，且有长老带队并提前发下护符，因此沈玄也在名单里。",
+            "chapter-006",
+        )
+        self.assertEqual(result["capabilityTaskRisks"], [])
 
 
 if __name__ == "__main__":

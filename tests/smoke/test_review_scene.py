@@ -85,6 +85,7 @@ class ReviewSceneSmokeTest(unittest.TestCase):
         self.assertTrue(payload["priorityActions"])
         self.assertIn("projectContext", payload)
         self.assertEqual(payload["projectContext"]["commercialPositioning"]["targetPlatform"], "")
+        self.assertIn("ruleJudgements", payload)
         self.assertIn("contractAlignment", payload)
         self.assertEqual(payload["commercialAlignment"]["status"], "not-applicable")
 

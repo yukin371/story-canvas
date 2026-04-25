@@ -6,11 +6,13 @@ from typing import Any
 
 from story_harness_cli.protocol import (
     chapter_path,
+    choose_style_profile_name,
     ensure_project_root,
     load_project_state,
     resolve_style_profile,
 )
 from story_harness_cli.providers import load_style_similarity_scorer
+from story_harness_cli.services.rule_semantics import chapter_scope_ref
 from story_harness_cli.services import (
     analyze_style_text,
     build_style_change_request_drafts,
@@ -33,6 +35,12 @@ def _load_chapter_text(root: Path, chapter_id: str) -> str:
     return chapter_file.read_text(encoding="utf-8")
 
 
+def _resolve_profile_name(args_profile: str | None, state: dict[str, Any]) -> str:
+    if args_profile:
+        return args_profile
+    return choose_style_profile_name(state.get("project", {}))
+
+
 def _build_style_report(
     chapter_id: str,
     chapter_text: str,
@@ -48,6 +56,7 @@ def _build_style_report(
         profile_name=profile_name,
         profile_config=profile_config,
     )
+    report["judgements"] = _attach_chapter_scope(report.get("judgements", []), chapter_id)
     report["chapterId"] = chapter_id
     report["source"] = source
     return report
@@ -67,17 +76,30 @@ def _target_chapter_ids(state: dict[str, Any], volume_id: str | None) -> tuple[l
     return [], ""
 
 
+def _attach_chapter_scope(judgements: list[dict[str, Any]], chapter_id: str) -> list[dict[str, Any]]:
+    scoped: list[dict[str, Any]] = []
+    for item in judgements:
+        enriched = dict(item)
+        scope_ref = dict(item.get("scopeRef", {}))
+        if "chapterId" not in scope_ref:
+            scope_ref.update(chapter_scope_ref(chapter_id))
+        enriched["scopeRef"] = scope_ref
+        scoped.append(enriched)
+    return scoped
+
+
 def command_style_check(args) -> int:
     root = Path(args.root).resolve()
     ensure_project_root(root)
     state = load_project_state(root)
     chapter_id = _resolve_chapter_id(args, state)
     chapter_text = _load_chapter_text(root, chapter_id)
-    profile_config, profile_source = resolve_style_profile(root, args.profile)
+    profile_name = _resolve_profile_name(args.profile, state)
+    profile_config, profile_source = resolve_style_profile(root, profile_name)
     report = _build_style_report(
         chapter_id,
         chapter_text,
-        profile_name=args.profile,
+        profile_name=profile_name,
         profile_config=profile_config,
     )
     report["profileSource"] = profile_source
@@ -91,11 +113,12 @@ def command_style_constraints(args) -> int:
     state = load_project_state(root)
     chapter_id = _resolve_chapter_id(args, state)
     chapter_text = _load_chapter_text(root, chapter_id)
-    profile_config, profile_source = resolve_style_profile(root, args.profile)
+    profile_name = _resolve_profile_name(args.profile, state)
+    profile_config, profile_source = resolve_style_profile(root, profile_name)
     report = _build_style_report(
         chapter_id,
         chapter_text,
-        profile_name=args.profile,
+        profile_name=profile_name,
         profile_config=profile_config,
     )
     payload = {
@@ -121,7 +144,8 @@ def command_style_report(args) -> int:
 
     chapter_reports = []
     missing_chapters = []
-    profile_config, profile_source = resolve_style_profile(root, args.profile)
+    profile_name = _resolve_profile_name(args.profile, state)
+    profile_config, profile_source = resolve_style_profile(root, profile_name)
     for chapter_id in chapter_ids:
         chapter_file = chapter_path(root, chapter_id)
         if not chapter_file.exists():
@@ -130,7 +154,7 @@ def command_style_report(args) -> int:
         report = _build_style_report(
             chapter_id,
             chapter_file.read_text(encoding="utf-8"),
-            profile_name=args.profile,
+            profile_name=profile_name,
             profile_config=profile_config,
         )
         chapter_reports.append(
@@ -146,9 +170,9 @@ def command_style_report(args) -> int:
             }
         )
 
-    aggregate = build_style_report(chapter_reports, volume_id=resolved_volume_id, profile_name=args.profile)
+    aggregate = build_style_report(chapter_reports, volume_id=resolved_volume_id, profile_name=profile_name)
     payload = {
-        "profile": args.profile,
+        "profile": profile_name,
         "profileSource": profile_source,
         "volumeId": resolved_volume_id,
         "chapterCount": len(chapter_reports),
@@ -175,11 +199,12 @@ def command_style_repair(args) -> int:
     state = load_project_state(root)
     chapter_id = _resolve_chapter_id(args, state)
     chapter_text = _load_chapter_text(root, chapter_id)
-    profile_config, profile_source = resolve_style_profile(root, args.profile)
+    profile_name = _resolve_profile_name(args.profile, state)
+    profile_config, profile_source = resolve_style_profile(root, profile_name)
     report = _build_style_report(
         chapter_id,
         chapter_text,
-        profile_name=args.profile,
+        profile_name=profile_name,
         profile_config=profile_config,
     )
 
@@ -217,24 +242,24 @@ def register_style_commands(subparsers) -> None:
     check_parser = style_subparsers.add_parser("check", help="Analyze one chapter for AI-style patterns")
     check_parser.add_argument("--root", required=True)
     check_parser.add_argument("--chapter-id")
-    check_parser.add_argument("--profile", default="default")
+    check_parser.add_argument("--profile")
     check_parser.set_defaults(func=command_style_check)
 
     constraints_parser = style_subparsers.add_parser("constraints", help="Generate rewrite constraints for one chapter")
     constraints_parser.add_argument("--root", required=True)
     constraints_parser.add_argument("--chapter-id")
-    constraints_parser.add_argument("--profile", default="default")
+    constraints_parser.add_argument("--profile")
     constraints_parser.set_defaults(func=command_style_constraints)
 
     report_parser = style_subparsers.add_parser("report", help="Aggregate style analysis across chapters")
     report_parser.add_argument("--root", required=True)
     report_parser.add_argument("--volume-id")
-    report_parser.add_argument("--profile", default="default")
+    report_parser.add_argument("--profile")
     report_parser.set_defaults(func=command_style_report)
 
     repair_parser = style_subparsers.add_parser("repair", help="Build repair guidance from style analysis")
     repair_parser.add_argument("--root", required=True)
     repair_parser.add_argument("--chapter-id")
-    repair_parser.add_argument("--profile", default="default")
+    repair_parser.add_argument("--profile")
     repair_parser.add_argument("--format", choices=["prompt", "change-requests"], default="prompt")
     repair_parser.set_defaults(func=command_style_repair)

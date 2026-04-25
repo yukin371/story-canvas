@@ -28,6 +28,7 @@ STATE_FILE_NAMES = (
     "illustrations.yaml",
     "threads.yaml",
     "structures.yaml",
+    "worldbook.yaml",
     "foreshadowing.yaml",
     "detailed_outlines.yaml",
 )
@@ -50,6 +51,7 @@ STATE_KEY_MAP = {
     "illustrations": "illustrations",
     "threads": "threads",
     "structures": "structures",
+    "worldbook": "worldbook",
     "foreshadowing": "foreshadowing",
     "detailed_outlines": "detailed_outlines",
 }
@@ -65,7 +67,7 @@ def load_project_state(root: Path) -> Dict[str, Any]:
     for state_key, internal_key in STATE_KEY_MAP.items():
         fpath = resolve_state_path(root, state_key)
         raw = load_json_compatible_yaml(fpath, defaults[internal_key])
-        if state_key in ("project", "story_reviews", "workflow_progress", "illustrations"):
+        if state_key in ("project", "story_reviews", "workflow_progress", "illustrations", "worldbook"):
             state[internal_key] = merge_defaults(raw, defaults[internal_key])
         else:
             state[internal_key] = raw

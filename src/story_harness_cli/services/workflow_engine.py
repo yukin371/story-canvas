@@ -6,6 +6,7 @@ from story_harness_cli.services.outline_guard import (
     evaluate_chapter_outline_readiness,
     evaluate_project_story_gate,
 )
+from story_harness_cli.services.rule_semantics import build_rule_judgement, chapter_scope_ref
 
 
 WORKFLOW_STAGE_ORDER = (
@@ -72,6 +73,11 @@ def infer_workflow_status(
         chapter_review_count=len(chapter_reviews),
         scene_review_count=len(scene_reviews),
     )
+    stage_results["project_contract"] = _attach_gate_semantics(stage_results["project_contract"], scope="project")
+    stage_results["outline_ready"] = _attach_gate_semantics(stage_results["outline_ready"], scope="chapter")
+    stage_results["chapter_review_ready"] = _attach_gate_semantics(stage_results["chapter_review_ready"], scope="chapter")
+    stage_results["scene_review_ready"] = _attach_gate_semantics(stage_results["scene_review_ready"], scope="scene")
+    stage_results["export_ready"] = _attach_gate_semantics(stage_results["export_ready"], scope="export")
 
     current_stage = first_incomplete_stage(stage_results)
     workflow_status = "completed" if all(item["completed"] for item in stage_results.values()) else "in_progress"
@@ -84,6 +90,8 @@ def infer_workflow_status(
         "stageOrder": list(WORKFLOW_STAGE_ORDER),
         "projectGate": project_gate,
         "stageResults": stage_results,
+        "currentGateDecision": stage_results[current_stage]["gateDecision"],
+        "currentRuleJudgements": stage_results[current_stage]["ruleJudgements"],
         "nextActions": stage_results[current_stage]["nextActions"],
     }
 
@@ -264,6 +272,8 @@ def export_workflow_payload(
         "stageOrder": list(WORKFLOW_STAGE_ORDER),
         "gateHistory": hydrated["gateHistory"],
         "stageResults": hydrated["stageResults"],
+        "currentGateDecision": hydrated["stageResults"][current_stage]["gateDecision"],
+        "currentRuleJudgements": hydrated["stageResults"][current_stage]["ruleJudgements"],
         "nextActions": hydrated["stageResults"][current_stage]["nextActions"],
         "updatedAt": hydrated["updatedAt"],
         "lastRunMode": hydrated["lastRunMode"],
@@ -342,10 +352,13 @@ def _build_chapter_review_stage(
     chapter_exists: bool,
     chapter_review_count: int,
 ) -> Dict[str, Any]:
+    missing = []
     next_actions = []
     if not chapter_exists:
+        missing.append({"code": "missing-chapter-file", "message": "缺少目标章节正文文件"})
         next_actions.append("先补正文章节文件，再进入 review chapter")
     elif chapter_review_count == 0:
+        missing.append({"code": "missing-chapter-review", "message": "缺少章节级评审结果"})
         next_actions.append("先运行 review chapter，为目标章节生成章节级评审")
 
     return {
@@ -359,6 +372,7 @@ def _build_chapter_review_stage(
         "chapterId": chapter_id,
         "chapterFileExists": chapter_exists,
         "chapterReviewCount": chapter_review_count,
+        "missing": missing,
         "nextActions": next_actions,
     }
 
@@ -369,10 +383,13 @@ def _build_scene_review_stage(
     chapter_exists: bool,
     scene_review_count: int,
 ) -> Dict[str, Any]:
+    missing = []
     next_actions = []
     if not chapter_exists:
+        missing.append({"code": "missing-chapter-file", "message": "缺少目标章节正文文件"})
         next_actions.append("先补正文章节文件，再进入 review scene")
     elif scene_review_count == 0:
+        missing.append({"code": "missing-scene-review", "message": "缺少场景级评审结果"})
         next_actions.append("先运行 review scene，为目标章节生成场景级评审")
 
     return {
@@ -386,6 +403,7 @@ def _build_scene_review_stage(
         "chapterId": chapter_id,
         "chapterFileExists": chapter_exists,
         "sceneReviewCount": scene_review_count,
+        "missing": missing,
         "nextActions": next_actions,
     }
 
@@ -397,12 +415,16 @@ def _build_export_stage(
     chapter_review_count: int,
     scene_review_count: int,
 ) -> Dict[str, Any]:
+    missing = []
     next_actions = []
     if not chapter_exists:
+        missing.append({"code": "missing-chapter-file", "message": "缺少目标章节正文文件"})
         next_actions.append("先补正文章节文件")
     if chapter_review_count == 0:
+        missing.append({"code": "missing-chapter-review", "message": "缺少章节级评审结果"})
         next_actions.append("先完成 review chapter")
     if scene_review_count == 0:
+        missing.append({"code": "missing-scene-review", "message": "缺少场景级评审结果"})
         next_actions.append("先完成 review scene")
     if chapter_exists and chapter_review_count > 0 and scene_review_count > 0:
         next_actions.append("当前章节已具备导出前的最小 review 信号，可继续 export 或转入下一章")
@@ -416,8 +438,45 @@ def _build_export_stage(
         "chapterFileExists": chapter_exists,
         "chapterReviewCount": chapter_review_count,
         "sceneReviewCount": scene_review_count,
+        "missing": missing,
         "nextActions": next_actions,
     }
+
+
+def _attach_gate_semantics(stage_result: Dict[str, Any], *, scope: str) -> Dict[str, Any]:
+    enriched = dict(stage_result)
+    chapter_id = stage_result.get("chapterId")
+    scope_ref = chapter_scope_ref(chapter_id) if chapter_id else {}
+    next_actions = [str(item) for item in stage_result.get("nextActions", []) if item]
+    judgements: list[Dict[str, Any]] = []
+    for item in stage_result.get("missing", []):
+        if not isinstance(item, dict):
+            continue
+        rule_id = str(item.get("code", "workflow-gate-blocked"))
+        message = str(item.get("message", stage_result.get("status", "当前 workflow gate 尚未满足推进条件")))
+        judgements.append(
+            build_rule_judgement(
+                rule_id=rule_id,
+                source="core",
+                scope=scope,
+                kind="gate",
+                severity="warning",
+                message=message,
+                suggestion=next_actions[0] if next_actions else "",
+                evidence=[message],
+                scope_ref=scope_ref,
+                payload=item,
+                tags=["workflow", str(stage_result.get("stageId", ""))],
+            )
+        )
+    enriched["ruleJudgements"] = judgements
+    enriched["gateDecision"] = {
+        "gateId": stage_result.get("stageId", ""),
+        "status": "ready" if stage_result.get("completed") else "blocked",
+        "blockingRules": [item["ruleId"] for item in judgements],
+        "notes": next_actions[:3],
+    }
+    return enriched
 
 
 def _reviews_for_chapter(reviews: Iterable[Dict[str, Any]], chapter_id: str | None) -> list[Dict[str, Any]]:

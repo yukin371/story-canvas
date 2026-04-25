@@ -35,7 +35,7 @@
 - `protocol/__init__.py`: `ensure_project_root`, `load_project_state`, `save_state`
 - `protocol/files.py`: `ROOT_FILES`, `chapter_path`, `root_file`
 - `protocol/io.py`: `dump_json_compatible_yaml`, `load_json_compatible_yaml`
-- `protocol/style_profiles.py`: style profile 的 builtin 默认值、项目级覆盖与自动选择；当前也承载术语观察词、重复白名单和词级阈值
+- `protocol/style_profiles.py`: style profile 的 builtin 默认值、项目级覆盖与自动选择；当前也承载术语观察词、重复白名单、词级阈值、题材语域失真词表，以及叙事支架例外配置
 - `protocol/schema.py`: `default_project_state`
 - `protocol/state.py`: `_sync_outline`, re-exports
 
@@ -56,7 +56,7 @@
 - `load_project_state` 会为缺失的 `illustrations.yaml` 回填完整 `illustrations` 默认结构
 - `load_project_state` 会为缺失的 `worldbook.yaml` 回填完整 `worldbook` 默认结构
 - `chapter_path` 的 fallback glob 查找只在 `chapters/` 目录内
-- `style-profiles.yaml` 是可选配置文件，缺失时必须回退 builtin profile；除 pattern thresholds 外，也允许承载 `termPolicy.watchTerms/allowRepeated/perTermThresholds`
+- `style-profiles.yaml` 是可选配置文件，缺失时必须回退 builtin profile；除 pattern thresholds 外，也允许承载 `termPolicy.watchTerms/allowRepeated/perTermThresholds`、`registerPolicy.allowTerms/disallowedCategories` 与 `framePolicy.allowPrefixes/perPrefixThresholds`
 
 ## 7. 常见坑
 

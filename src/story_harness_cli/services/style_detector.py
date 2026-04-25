@@ -13,10 +13,21 @@ from typing import Any, Callable, Dict, List, Tuple
 from story_harness_cli.utils import now_iso, stable_hash
 
 from story_harness_cli.utils.text import count_words, paragraphs_from_text, strip_entity_tags
+from .rule_semantics import build_rule_judgement, chapter_scope_ref
 
 
 SimilarityScorer = Callable[[str, str], float]
 CJK_RANGE = f"{chr(0x4E00)}-{chr(0x9FFF)}"
+ABSTRACT_FRAME_TAILS = {
+    "记忆", "经验", "情报", "判断", "认知", "印象", "念头", "念想",
+    "直觉", "意识", "本能", "认定", "结论", "推断", "推演", "理解",
+    "认知", "知识", "筹算", "计划", "谋划",
+}
+CONCRETE_FRAME_PREFIXES = {
+    "黑色的", "白色的", "漆黑的", "明亮的", "昏暗的", "冰冷的", "滚烫的",
+    "锋利的", "柔软的", "巨大的", "沉重的", "苍白的", "熟悉的", "陌生的",
+    "手中的", "眼前的", "身后的", "脚下的", "耳边的", "掌中的", "心里的",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -166,6 +177,18 @@ def detect_ai_style(
         total_deduction += 1 if special_terms["severity"] == "low" else 2
     results.append(_special_term_result(special_terms))
 
+    # Narrative frame repetition
+    narrative_frames = _detect_narrative_frame_repetition(clean_text, profile_config or {})
+    if narrative_frames["detected"]:
+        total_deduction += 1 if narrative_frames["severity"] == "low" else 2
+    results.append(_narrative_frame_result(narrative_frames))
+
+    # Genre/register drift
+    register_drift = _detect_register_drift(clean_text, profile_config or {})
+    if register_drift["detected"]:
+        total_deduction += 1 if register_drift["severity"] == "low" else 2
+    results.append(_register_drift_result(register_drift))
+
     # Cap total deduction at 6
     total_deduction = min(total_deduction, 6)
 
@@ -182,9 +205,12 @@ def detect_ai_style(
         "paragraphUniformity": uniformity,
         "sentenceRepetition": repetition,
         "specialTermRepetition": special_terms,
+        "narrativeFrameRepetition": narrative_frames,
+        "registerDrift": register_drift,
         "sources": {
             "sentenceRepetition": repetition["source"],
         },
+        "judgements": _build_style_judgements(results, profile_config or {}),
         "summary": _generate_summary(results, total_deduction),
         "suggestions": suggestions[:5],
     }
@@ -212,6 +238,7 @@ def analyze_style_text(
     return {
         "profile": profile_name,
         "styleAnalysis": style_analysis,
+        "judgements": _attach_style_scope(style_analysis.get("judgements", []), chapter_id=""),
         "constraints": constraints,
         "textMetrics": {
             "wordCount": count_words(clean_text),
@@ -278,6 +305,65 @@ def build_style_report(
         "flaggedChapters": sorted(flagged, key=lambda item: (-item["totalDeduction"], item["chapterId"])),
         "patternCounts": pattern_summary,
     }
+
+
+def _build_style_judgements(
+    pattern_results: List[Dict[str, Any]],
+    profile_config: Dict[str, Any],
+) -> List[Dict[str, Any]]:
+    judgements: List[Dict[str, Any]] = []
+    for item in pattern_results:
+        if not item.get("detected"):
+            continue
+        severity = item.get("severity", "none")
+        if severity == "none":
+            continue
+        rule_id = str(item.get("id", "style-pattern"))
+        kind = "style"
+        source = _style_rule_source(rule_id, profile_config)
+        judgements.append(
+            build_rule_judgement(
+                rule_id=rule_id,
+                source=source,
+                scope="chapter",
+                kind=kind,
+                severity=severity,
+                message=_style_rule_message(item),
+                suggestion=str(item.get("suggestion", "")),
+                evidence=list(item.get("evidence", [])),
+                tags=["style"],
+            )
+        )
+    return judgements
+
+
+def _style_rule_source(rule_id: str, profile_config: Dict[str, Any]) -> str:
+    if rule_id == "registerDrift":
+        register_policy = profile_config.get("registerPolicy", {}) if isinstance(profile_config, dict) else {}
+        if register_policy.get("disallowedCategories"):
+            return "genre-pack"
+    return "core"
+
+
+def _style_rule_message(item: Dict[str, Any]) -> str:
+    label = str(item.get("label", item.get("id", "风格信号")))
+    evidence = list(item.get("evidence", []))
+    evidence_suffix = f"，例如 {evidence[0]}" if evidence else ""
+    return f"检测到{label}问题{evidence_suffix}。"
+
+
+def _attach_style_scope(judgements: List[Dict[str, Any]], chapter_id: str) -> List[Dict[str, Any]]:
+    if not chapter_id:
+        return [dict(item) for item in judgements]
+    scoped: List[Dict[str, Any]] = []
+    for item in judgements:
+        enriched = dict(item)
+        scope_ref = dict(item.get("scopeRef", {}))
+        if "chapterId" not in scope_ref:
+            scope_ref.update(chapter_scope_ref(chapter_id))
+        enriched["scopeRef"] = scope_ref
+        scoped.append(enriched)
+    return scoped
 
 
 # ---------------------------------------------------------------------------
@@ -487,6 +573,149 @@ def _detect_special_term_repetition(text: str, profile_config: Dict[str, Any]) -
     }
 
 
+def _detect_register_drift(text: str, profile_config: Dict[str, Any]) -> Dict[str, Any]:
+    register_policy = profile_config.get("registerPolicy", {}) if isinstance(profile_config, dict) else {}
+    allow_terms = {
+        item for item in register_policy.get("allowTerms", [])
+        if isinstance(item, str) and item
+    }
+    categories = [
+        item for item in register_policy.get("disallowedCategories", [])
+        if isinstance(item, dict)
+    ]
+    matched_categories: List[Dict[str, Any]] = []
+    evidence: List[str] = []
+    total_hits = 0
+
+    for category in categories:
+        terms = [
+            item for item in category.get("terms", [])
+            if isinstance(item, str) and item and not _term_is_allowlisted(item, allow_terms)
+        ]
+        matches = []
+        for term in terms:
+            count = text.count(term)
+            if count <= 0:
+                continue
+            matches.append({"term": term, "count": count})
+            total_hits += count
+        if not matches:
+            continue
+        matches.sort(key=lambda item: (-item["count"], item["term"]))
+        matched_categories.append(
+            {
+                "id": category.get("id", ""),
+                "label": category.get("label", ""),
+                "matches": matches,
+                "suggestion": category.get("suggestion", ""),
+            }
+        )
+        top_terms = "、".join(f"{item['term']}×{item['count']}" for item in matches[:3])
+        label = category.get("label", "题材语域失真")
+        evidence.append(f"{label}：{top_terms}")
+
+    if not matched_categories:
+        return {
+            "detected": False,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedCategories": [],
+            "suggestion": "",
+        }
+
+    distinct_terms = sum(len(item.get("matches", [])) for item in matched_categories)
+    if total_hits >= 4 or distinct_terms >= 3:
+        severity = "high"
+    elif total_hits >= 2 or distinct_terms >= 2:
+        severity = "medium"
+    else:
+        severity = "low"
+
+    suggestion = matched_categories[0].get("suggestion", "")
+    return {
+        "detected": True,
+        "severity": severity,
+        "count": total_hits,
+        "evidence": evidence[:3],
+        "matchedCategories": matched_categories[:5],
+        "suggestion": suggestion,
+    }
+
+
+def _detect_narrative_frame_repetition(text: str, profile_config: Dict[str, Any]) -> Dict[str, Any]:
+    frame_policy = profile_config.get("framePolicy", {}) if isinstance(profile_config, dict) else {}
+    allow_prefixes = {
+        item for item in frame_policy.get("allowPrefixes", [])
+        if isinstance(item, str) and item
+    }
+    per_prefix_thresholds = {
+        key: int(value)
+        for key, value in frame_policy.get("perPrefixThresholds", {}).items()
+        if isinstance(key, str) and key and isinstance(value, int) and value >= 1
+    }
+    prefix_counts: Counter[str] = Counter()
+    prefix_tails: Dict[str, set[str]] = {}
+
+    tail_pattern = "|".join(sorted((re.escape(item) for item in ABSTRACT_FRAME_TAILS), key=len, reverse=True))
+    if not tail_pattern:
+        return {
+            "detected": False,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topFrames": [],
+        }
+
+    pattern = re.compile(f"([{CJK_RANGE}]{{2,6}}的)({tail_pattern})")
+    for prefix, tail in pattern.findall(text):
+        if prefix in allow_prefixes:
+            continue
+        if prefix in CONCRETE_FRAME_PREFIXES:
+            continue
+        prefix_counts[prefix] += 1
+        prefix_tails.setdefault(prefix, set()).add(tail)
+
+    repeated = []
+    for prefix, count in prefix_counts.items():
+        threshold = per_prefix_thresholds.get(prefix, 3)
+        tails = sorted(prefix_tails.get(prefix, set()))
+        if count < threshold or len(tails) < 2:
+            continue
+        repeated.append(
+            {
+                "prefix": prefix,
+                "count": count,
+                "tails": tails[:5],
+            }
+        )
+    repeated.sort(key=lambda item: (-item["count"], item["prefix"]))
+
+    if not repeated:
+        return {
+            "detected": False,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topFrames": [],
+        }
+
+    top_count = repeated[0]["count"]
+    if top_count >= 4:
+        severity = "high"
+    elif top_count >= 3:
+        severity = "medium"
+    else:
+        severity = "low"
+    return {
+        "detected": True,
+        "severity": severity,
+        "count": sum(item["count"] for item in repeated),
+        "evidence": [f"{item['prefix']}×{item['count']}（{ '、'.join(item['tails'][:3]) }）" for item in repeated[:3]],
+        "topFrames": repeated[:5],
+    }
+
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -578,6 +807,40 @@ def _special_term_result(special_terms: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def _register_drift_result(register_drift: Dict[str, Any]) -> Dict[str, Any]:
+    suggestion = register_drift.get("suggestion", "") if register_drift.get("detected") else ""
+    return {
+        "id": "registerDrift",
+        "label": "题材语域失真",
+        "detected": register_drift.get("detected", False),
+        "count": register_drift.get("count", 0),
+        "perThousand": 0,
+        "threshold": 0,
+        "severity": register_drift.get("severity", "none"),
+        "evidence": register_drift.get("evidence", []),
+        "suggestion": suggestion,
+    }
+
+
+def _narrative_frame_result(narrative_frames: Dict[str, Any]) -> Dict[str, Any]:
+    suggestion = ""
+    top_frames = narrative_frames.get("topFrames", [])
+    if narrative_frames.get("detected") and top_frames:
+        sample = top_frames[0]["prefix"]
+        suggestion = f"叙事支架短语复用偏多（如 {sample}××），可改用当下动作、代价反馈或新的认知落点承接，不要反复用同一解释框架起句"
+    return {
+        "id": "narrativeFrameRepetition",
+        "label": "叙事支架复用",
+        "detected": narrative_frames.get("detected", False),
+        "count": narrative_frames.get("count", 0),
+        "perThousand": 0,
+        "threshold": 3,
+        "severity": narrative_frames.get("severity", "none"),
+        "evidence": narrative_frames.get("evidence", []),
+        "suggestion": suggestion,
+    }
+
+
 def _exact_similarity(left: str, right: str) -> float:
     return 100.0 if left == right else 0.0
 
@@ -601,6 +864,9 @@ def _empty_result() -> Dict[str, Any]:
         "paragraphUniformity": {},
         "sentenceRepetition": {},
         "specialTermRepetition": {},
+        "narrativeFrameRepetition": {},
+        "registerDrift": {},
+        "judgements": [],
         "summary": "文本过短，跳过风格检测",
         "suggestions": [],
     }

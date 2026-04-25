@@ -11,8 +11,11 @@ from story_harness_cli.protocol.io import load_json_compatible_yaml
 from story_harness_cli.protocol.schema import default_project_state
 from story_harness_cli.protocol.state import merge_defaults
 from story_harness_cli.protocol.style_profiles import get_default_style_profiles, merge_with_defaults
+from story_harness_cli.services.analyzer import resolve_named_reference
 from story_harness_cli.services.outline_guard import evaluate_chapter_outline_readiness
+from story_harness_cli.services.rule_semantics import build_rule_judgement
 from story_harness_cli.services.stats import compute_project_stats
+from story_harness_cli.utils.text import extract_tag_mentions
 from story_harness_cli.utils.project_meta import (
     is_commercial_serial_project,
     is_machine_label,
@@ -43,6 +46,58 @@ _TEMPLATE_OPTION_VALUES = {"required", "optional", "off"}
 
 def record_check(checks: List[Dict[str, str]], level: str, code: str, message: str) -> None:
     checks.append({"level": level, "code": code, "message": message})
+
+
+def _doctor_scope_for_code(code: str) -> str:
+    if code.startswith("wrapped-entity") or "entity-profile" in code or "character-state" in code:
+        return "entity"
+    if "world" in code or "faction" in code or "foreshadow" in code:
+        return "world"
+    if "chapter" in code or "outline" in code or "scene" in code or "context-chapter" in code:
+        return "chapter"
+    if "illustration" in code:
+        return "export"
+    return "project"
+
+
+def _doctor_source_for_code(code: str) -> str:
+    if code.startswith("missing-required-") or code.startswith("empty-required-"):
+        return "project-pack"
+    if "style-profile" in code or code in {
+        "missing-style-profiles",
+        "invalid-style-profiles",
+        "invalid-style-profiles-shape",
+        "missing-active-style-profile",
+    }:
+        return "project-pack"
+    return "core"
+
+
+def _build_doctor_judgements(checks: List[Dict[str, str]]) -> List[Dict[str, Any]]:
+    judgements: List[Dict[str, Any]] = []
+    for item in checks:
+        level = str(item.get("level", ""))
+        if level not in {"warning", "error"}:
+            continue
+        code = str(item.get("code", "doctor-check"))
+        message = str(item.get("message", "")).strip()
+        if not message:
+            continue
+        judgements.append(
+            build_rule_judgement(
+                rule_id=code,
+                source=_doctor_source_for_code(code),
+                scope=_doctor_scope_for_code(code),
+                kind="hard" if level == "error" else "soft",
+                severity=level,
+                message=message,
+                suggestion="",
+                evidence=[message],
+                payload=item,
+                tags=["doctor"],
+            )
+        )
+    return judgements
 
 
 def validate_json_compatible_file(
@@ -538,6 +593,50 @@ def _check_style_profiles(root: Path, state: Dict[str, Dict[str, Any]], checks: 
             record_check(checks, "info", "style-profile-custom", f"profile '{profile_name}' 是项目自定义 style profile")
 
 
+def _check_wrapped_entity_registry(root: Path, state: Dict[str, Dict[str, Any]], checks: List[Dict[str, str]]) -> None:
+    outline_chapters = state.get("outline", {}).get("chapters", [])
+    missing_refs: Dict[str, Dict[str, Any]] = {}
+    covered_count = 0
+    wrapped_count = 0
+
+    for chapter in outline_chapters:
+        chapter_id = chapter.get("id")
+        if not chapter_id:
+            continue
+        chapter_file = chapter_path(root, chapter_id)
+        if not chapter_file.exists():
+            continue
+        chapter_text = chapter_file.read_text(encoding="utf-8")
+        wrapped_names = sorted({name for name in extract_tag_mentions(chapter_text) if name})
+        wrapped_count += len(wrapped_names)
+        for name in wrapped_names:
+            resolved = resolve_named_reference(state, name)
+            if resolved:
+                covered_count += 1
+                continue
+            if name not in missing_refs:
+                missing_refs[name] = {"name": name, "chapters": [chapter_id]}
+            elif chapter_id not in missing_refs[name]["chapters"]:
+                missing_refs[name]["chapters"].append(chapter_id)
+
+    if wrapped_count:
+        record_check(
+            checks,
+            "info",
+            "wrapped-entity-coverage",
+            f"扫描到 {wrapped_count} 个包裹实体引用，其中 {covered_count} 个已能对齐到角色卡或世界设定",
+        )
+
+    for name, item in sorted(missing_refs.items()):
+        chapter_list = "、".join(item["chapters"][:3])
+        record_check(
+            checks,
+            "warning",
+            "wrapped-entity-missing-registry",
+            f"已包裹实体“{name}”尚未在 entities/worldbook 建档，出现在: {chapter_list}",
+        )
+
+
 def _check_illustration_assets(root: Path, state: Dict[str, Dict[str, Any]], checks: List[Dict[str, str]]) -> None:
     generated = state.get("illustrations", {}).get("generated", [])
 
@@ -736,6 +835,7 @@ def command_doctor(args) -> int:
     _check_commercial_positioning(state, checks)
     _check_story_constraint_modules(root, state, checks)
     _check_style_profiles(root, state, checks)
+    _check_wrapped_entity_registry(root, state, checks)
     _check_illustration_assets(root, state, checks)
     _check_outline_volumes(root, checks)
     _check_outline_readiness(root, state, checks)
@@ -764,6 +864,7 @@ def command_doctor(args) -> int:
             "infos": sum(1 for item in checks if item["level"] == "info"),
         },
         "checks": checks,
+        "judgements": _build_doctor_judgements(checks),
     }
     print(json.dumps(payload, ensure_ascii=False, indent=2))
     return 0 if ok else 1

@@ -102,6 +102,9 @@ class WorkflowCommandSmokeTest(unittest.TestCase):
         self.assertEqual(payload["inferredCurrentStage"], "project_contract")
         self.assertEqual(payload["workflowStatus"], "in_progress")
         self.assertFalse(payload["stageResults"]["project_contract"]["completed"])
+        self.assertEqual(payload["currentGateDecision"]["gateId"], "project_contract")
+        self.assertIn("missing-target-audience", payload["currentGateDecision"]["blockingRules"])
+        self.assertTrue(payload["currentRuleJudgements"])
 
     def test_workflow_run_persists_workflow_yaml(self) -> None:
         self._init_project(ready_project_gate=True)
@@ -218,6 +221,7 @@ class WorkflowCommandSmokeTest(unittest.TestCase):
         saved = json.loads(output_path.read_text(encoding="utf-8"))
         self.assertEqual(saved["currentStage"], payload["currentStage"])
         self.assertIn("stageResults", saved)
+        self.assertIn("currentGateDecision", saved)
 
     def test_workflow_advance_rejects_incomplete_gate(self) -> None:
         self._init_project(ready_project_gate=True)

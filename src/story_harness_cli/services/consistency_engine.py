@@ -4,6 +4,7 @@ import re
 from typing import Any, Dict, List
 
 from story_harness_cli.utils.text import paragraphs_from_text
+from .rule_semantics import build_rule_judgement, chapter_scope_ref
 
 
 ACTIVE_BEHAVIOR_KEYWORDS = [
@@ -50,6 +51,52 @@ SETTING_OPPOSITE_PAIRS = (
     ("暴露", "不会暴露"),
     ("失去", "不会失去"),
 )
+IDENTITY_INTRO_PATTERNS = (
+    r"自称",
+    r"报上名号",
+    r"报出姓名",
+    r"说自己叫",
+    r"说她叫",
+    r"说他叫",
+    r"名叫",
+    r"名为",
+    r"唤作",
+    r"唤做",
+    r"被称作",
+    r"有人叫(?:她|他)?",
+    r"听见(?:有人)?叫(?:她|他)?",
+    r"听到(?:有人)?喊(?:她|他)?",
+    r"有人喊出了?她的名字",
+)
+ANONYMOUS_ROLE_CUES = (
+    "散修", "剑修", "修士", "女修", "男修", "少女", "女子", "女人", "少年", "青年",
+    "来人", "那人", "对方", "她", "他",
+)
+ANONYMOUS_DESCRIPTOR_CUES = (
+    "剑", "鞘", "剑意", "气息", "寒意", "杀意", "灵压", "目光", "眼神", "嗓音",
+    "声音", "步伐", "背影", "衣", "袍", "发", "眸", "面容",
+)
+NON_PERSON_NAME_SUFFIXES = ("宗", "门", "阁", "城", "域", "印", "诀", "术", "丹", "符", "珠", "塔", "阵", "殿", "宫", "盟", "谷", "山", "海")
+LOW_POWER_TERMS = (
+    "凡人", "未入练气", "未入炼气", "未入道", "练气", "炼气", "练气初期", "炼气初期",
+    "练气一层", "炼气一层", "练气二层", "炼气二层", "练气三层", "炼气三层",
+)
+HIGH_POWER_TERMS = (
+    "筑基", "结丹", "金丹", "元婴", "化神", "洞虚", "洞天", "通玄", "先天", "圣阶",
+)
+HIGH_RISK_TASK_PATTERNS = (
+    ("秘境探索", (r"秘境", r"探索|探路|深入")),
+    ("宗门试炼", (r"试炼", r"秘境|险地|禁地|猎杀|历练")),
+    ("险地任务", (r"禁地|险地|绝地", r"前往|进入|深入|探索")),
+)
+TASK_PARTICIPATION_CUES = (
+    "参加", "报名", "被派", "派去", "前往", "进入", "去往", "赴", "安排", "最终环节",
+)
+TASK_SAFEGUARD_CUES = (
+    "外围", "外层", "边缘", "低阶弟子", "只限练气", "只许练气", "练气弟子试炼",
+    "长老带队", "随行长老", "护道", "护符", "保命符", "传送符", "接应", "安全区域",
+    "不得深入", "不许深入", "禁制压制", "风险可控", "不会致命", "演练",
+)
 
 
 def check_consistency(
@@ -80,14 +127,27 @@ def check_consistency(
     _check_arc_alignment(state, chapter_text, chapter_id, soft["outlineDeviations"])
     setting_candidates = _extract_setting_candidates(chapter_text, chapter_id)
     setting_conflicts = _check_setting_conflicts(state, setting_candidates)
+    unintroduced_name_reveals = _detect_unintroduced_name_reveals(chapter_text, chapter_id)
+    capability_task_risks = _detect_capability_task_risks(state, chapter_text, chapter_id)
 
     context_for_ai = _build_ai_context(state, chapter_text, chapter_id)
+    judgements = _build_consistency_judgements(
+        hard=hard,
+        soft=soft,
+        setting_conflicts=setting_conflicts,
+        unintroduced_name_reveals=unintroduced_name_reveals,
+        capability_task_risks=capability_task_risks,
+        chapter_id=chapter_id,
+    )
 
     return {
         "hardChecks": hard,
         "softChecks": soft,
         "settingCandidates": setting_candidates,
         "settingConflicts": setting_conflicts,
+        "unintroducedNameReveals": unintroduced_name_reveals,
+        "capabilityTaskRisks": capability_task_risks,
+        "judgements": judgements,
         "contextForAI": context_for_ai,
     }
 
@@ -369,6 +429,18 @@ def _check_setting_conflicts(
 
 
 def _extract_setting_label(text: str) -> str:
+    direct_patterns = (
+        r"所谓([^\s，。；：]{2,10})",
+        r"([^\s，。；：]{2,10})被称为",
+        r"([^\s，。；：]{2,10})叫做",
+        r"([^\s，。；：]{2,10})称作",
+    )
+    for pattern in direct_patterns:
+        match = re.search(pattern, text)
+        if match:
+            label = match.group(1).strip("“”「」『』《》")
+            if 2 <= len(label) <= 12:
+                return label
     for pattern in SETTING_LABEL_PATTERNS:
         match = re.search(pattern, text)
         if match:
@@ -407,3 +479,286 @@ def _setting_texts_conflict(left: str, right: str) -> bool:
         if (positive in left and negative in right) or (positive in right and negative in left):
             return True
     return False
+
+
+def _detect_unintroduced_name_reveals(
+    chapter_text: str,
+    chapter_id: str,
+) -> List[Dict[str, Any]]:
+    paragraphs = paragraphs_from_text(chapter_text)
+    results: List[Dict[str, Any]] = []
+    for paragraph_index, paragraph in enumerate(paragraphs, start=1):
+        candidate_name = _extract_isolated_name_candidate(paragraph)
+        if not candidate_name:
+            continue
+        previous_text = "\n".join(paragraphs[: paragraph_index - 1])
+        if candidate_name and candidate_name in previous_text:
+            continue
+        window_start = max(0, paragraph_index - 3)
+        nearby_text = "\n".join(paragraphs[window_start:paragraph_index])
+        if _has_identity_intro_cue(nearby_text, candidate_name):
+            continue
+        anonymous_context = paragraphs[window_start: paragraph_index - 1]
+        context_score = _score_anonymous_character_context(anonymous_context)
+        if context_score < 2:
+            continue
+        before_excerpt = " / ".join(item.strip() for item in anonymous_context[-2:] if item.strip())
+        current_excerpt = paragraph.strip()
+        results.append(
+            {
+                "name": candidate_name,
+                "issue": f"角色“{candidate_name}”首次出现时缺少明确来源，像是旁白直接得知了姓名",
+                "chapterId": chapter_id,
+                "paragraphIndex": paragraph_index,
+                "severity": "warning",
+                "evidence": [
+                    f"前置匿名描写: {before_excerpt[:80]}",
+                    f"直接命名段落: {current_excerpt[:40]}",
+                ],
+                "suggestion": f"在揭示“{candidate_name}”前补一处来源，例如自报名号、他人称呼，或 POV 明确听见/得知其姓名。",
+            }
+        )
+    return results
+
+
+def _extract_isolated_name_candidate(paragraph: str) -> str:
+    text = paragraph.strip()
+    if not text or text.startswith("#"):
+        return ""
+    normalized = re.sub(r"[。！？；：、\s]", "", text)
+    normalized = normalized.strip("“”「」『』《》()（）[]【】")
+    if not re.fullmatch(f"[{CJK_RANGE}]{{2,4}}", normalized):
+        return ""
+    if normalized.endswith(NON_PERSON_NAME_SUFFIXES):
+        return ""
+    return normalized
+
+
+def _has_identity_intro_cue(text: str, name: str) -> bool:
+    if not text:
+        return False
+    for pattern in IDENTITY_INTRO_PATTERNS:
+        if re.search(pattern, text):
+            return True
+    if name and re.search(rf"[“\"「『]?{re.escape(name)}[”\"」』]?[，,:：]?", text):
+        intro_near_name = (
+            rf"(?:叫|名叫|名为|唤作|唤做|自称|报上名号|报出姓名).{{0,6}}{re.escape(name)}"
+            rf"|{re.escape(name)}.{{0,6}}(?:这个名字|三个字|之名)"
+        )
+        if re.search(intro_near_name, text):
+            return True
+    return False
+
+
+def _score_anonymous_character_context(paragraphs: List[str]) -> int:
+    if not paragraphs:
+        return 0
+    joined = "\n".join(paragraphs)
+    score = 0
+    if any(cue in joined for cue in ANONYMOUS_ROLE_CUES):
+        score += 1
+    if any(cue in joined for cue in ANONYMOUS_DESCRIPTOR_CUES):
+        score += 1
+    short_fragments = 0
+    for paragraph in paragraphs:
+        for fragment in re.split(r"[。！？；]", paragraph):
+            unit = fragment.strip()
+            if 2 <= len(unit) <= 8:
+                short_fragments += 1
+    if short_fragments >= 2:
+        score += 1
+    if any(re.search(pattern, joined) for pattern in IDENTITY_INTRO_PATTERNS):
+        score -= 2
+    return score
+
+
+def _detect_capability_task_risks(
+    state: Dict[str, Dict[str, Any]],
+    chapter_text: str,
+    chapter_id: str,
+) -> List[Dict[str, Any]]:
+    paragraphs = paragraphs_from_text(chapter_text)
+    if not paragraphs:
+        return []
+    low_power_entities = _collect_low_power_entities(state)
+    results: List[Dict[str, Any]] = []
+    for entity in low_power_entities:
+        name = entity.get("name", "")
+        if not name:
+            continue
+        for paragraph_index, _paragraph in enumerate(paragraphs, start=1):
+            window_text = _paragraph_window_text(paragraphs, paragraph_index)
+            if name not in window_text:
+                continue
+            task_label = _detect_high_risk_task_label(window_text)
+            if not task_label:
+                continue
+            if not any(cue in window_text for cue in TASK_PARTICIPATION_CUES):
+                continue
+            if any(cue in window_text for cue in TASK_SAFEGUARD_CUES):
+                continue
+            power_label = entity.get("powerLabel", "")
+            results.append(
+                {
+                    "entityId": entity.get("id", ""),
+                    "entityName": name,
+                    "powerLevel": power_label,
+                    "taskLabel": task_label,
+                    "issue": f"{name} 当前实力“{power_label}”却被卷入“{task_label}”，正文缺少安全边界或世界规则例外说明",
+                    "chapterId": chapter_id,
+                    "paragraphIndex": paragraph_index,
+                    "severity": "warning",
+                    "evidence": [window_text.strip()[:120]],
+                    "suggestion": (
+                        f"补足 {task_label} 的合理性依据，例如低阶试炼限定、外围活动、长老带队、护符保护，"
+                        f"或明确 {name} 此时已具备足以应对的术法/手段。"
+                    ),
+                }
+            )
+            break
+    return results
+
+
+def _collect_low_power_entities(state: Dict[str, Dict[str, Any]]) -> List[Dict[str, str]]:
+    entities = state.get("entities", {}).get("entities", [])
+    results: List[Dict[str, str]] = []
+    for entity in entities:
+        if not isinstance(entity, dict):
+            continue
+        power_label = _extract_power_label(entity)
+        if not power_label:
+            continue
+        if any(term in power_label for term in HIGH_POWER_TERMS):
+            continue
+        if not any(term in power_label for term in LOW_POWER_TERMS):
+            continue
+        results.append(
+            {
+                "id": str(entity.get("id", "")),
+                "name": str(entity.get("name", "")),
+                "powerLabel": power_label,
+            }
+        )
+    return results
+
+
+def _extract_power_label(entity: Dict[str, Any]) -> str:
+    state_info = entity.get("state", {}) if isinstance(entity.get("state"), dict) else {}
+    power_level = state_info.get("powerLevel", {}) if isinstance(state_info.get("powerLevel"), dict) else {}
+    labels = []
+    for key in ("publicLevel", "trueLevel"):
+        value = power_level.get(key)
+        if isinstance(value, str) and value:
+            labels.append(value)
+    if labels:
+        return "/".join(labels)
+    current_state = entity.get("currentState")
+    if isinstance(current_state, dict):
+        value = current_state.get("powerLevel")
+        if isinstance(value, str) and value:
+            return value
+    return ""
+
+
+def _paragraph_window_text(paragraphs: List[str], paragraph_index: int) -> str:
+    start = max(0, paragraph_index - 2)
+    end = min(len(paragraphs), paragraph_index + 1)
+    return "\n".join(paragraphs[start:end])
+
+
+def _detect_high_risk_task_label(text: str) -> str:
+    for label, patterns in HIGH_RISK_TASK_PATTERNS:
+        if all(re.search(pattern, text) for pattern in patterns):
+            return label
+    return ""
+
+
+def _build_consistency_judgements(
+    *,
+    hard: Dict[str, List[Any]],
+    soft: Dict[str, List[Any]],
+    setting_conflicts: List[Dict[str, Any]],
+    unintroduced_name_reveals: List[Dict[str, Any]],
+    capability_task_risks: List[Dict[str, Any]],
+    chapter_id: str,
+) -> List[Dict[str, Any]]:
+    judgements: List[Dict[str, Any]] = []
+    judgements.extend(_judgements_from_items(hard.get("stateContradictions", []), "stateContradiction", "chapter", "hard", "error", chapter_id))
+    judgements.extend(_judgements_from_items(hard.get("relationContradictions", []), "relationContradiction", "chapter", "hard", "error", chapter_id))
+    judgements.extend(_judgements_from_items(hard.get("timelineConflicts", []), "timelineConflict", "chapter", "hard", "error", chapter_id))
+    judgements.extend(_judgements_from_items(soft.get("outlineDeviations", []), "outlineDeviation", "chapter", "soft", "warning", chapter_id))
+    judgements.extend(_judgements_from_items(setting_conflicts, "settingConflict", "world", "hard", "warning", chapter_id))
+    judgements.extend(_judgements_from_items(unintroduced_name_reveals, "unintroducedNameReveal", "chapter", "soft", "warning", chapter_id))
+    judgements.extend(_judgements_from_items(capability_task_risks, "capabilityTaskMismatch", "chapter", "soft", "warning", chapter_id))
+    return judgements
+
+
+def _judgements_from_items(
+    items: List[Dict[str, Any]],
+    rule_id: str,
+    scope: str,
+    kind: str,
+    default_severity: str,
+    chapter_id: str,
+) -> List[Dict[str, Any]]:
+    judgements: List[Dict[str, Any]] = []
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        paragraph_index = item.get("paragraphIndex")
+        scope_ref = chapter_scope_ref(chapter_id, paragraph_index if isinstance(paragraph_index, int) else None)
+        message = _consistency_item_message(item)
+        suggestion = str(item.get("suggestion", ""))
+        evidence = _consistency_item_evidence(item)
+        judgements.append(
+            build_rule_judgement(
+                rule_id=rule_id,
+                source="core",
+                scope=scope,
+                kind=kind,
+                severity=_normalize_consistency_severity(str(item.get("severity", default_severity)), default_severity),
+                message=message,
+                suggestion=suggestion,
+                evidence=evidence,
+                scope_ref=scope_ref,
+                payload=item,
+                tags=["consistency"],
+            )
+        )
+    return judgements
+
+
+def _normalize_consistency_severity(severity: str, default_severity: str) -> str:
+    if severity in {"error", "warning", "info"}:
+        return severity
+    mapping = {
+        "strict": "error",
+        "advisory": "warning",
+        "high-risk": "warning",
+    }
+    return mapping.get(severity, default_severity)
+
+
+def _consistency_item_message(item: Dict[str, Any]) -> str:
+    for key in ("issue", "note", "summary"):
+        value = item.get(key)
+        if isinstance(value, str) and value:
+            return value
+    return "检测到一致性风险。"
+
+
+def _consistency_item_evidence(item: Dict[str, Any]) -> List[str]:
+    evidence = item.get("evidence")
+    if isinstance(evidence, list):
+        return [str(value) for value in evidence if value]
+    current = item.get("currentEvidence")
+    if isinstance(current, str) and current:
+        return [current]
+    existing = item.get("existingText")
+    candidate = item.get("candidateText")
+    merged = []
+    if isinstance(existing, str) and existing:
+        merged.append(existing)
+    if isinstance(candidate, str) and candidate:
+        merged.append(candidate)
+    return merged

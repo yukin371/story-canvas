@@ -59,6 +59,7 @@ class DoctorSmokeTest(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertTrue(payload["ok"])
         self.assertEqual(payload["summary"]["errors"], 0)
+        self.assertIn("judgements", payload)
 
     def test_doctor_fails_for_missing_chapter_file(self) -> None:
         (self.temp_dir / "chapters" / "chapter-001.md").unlink()
@@ -478,6 +479,48 @@ class DoctorSmokeTest(unittest.TestCase):
         self.assertIn("illustration-target-not-found", codes)
         self.assertIn("illustration-input-not-found", codes)
         self.assertIn("illustration-mask-not-found", codes)
+
+    def test_doctor_warns_for_wrapped_entities_missing_registry(self) -> None:
+        (self.temp_dir / "entities.yaml").write_text(
+            json.dumps(
+                {
+                    "entities": [
+                        {
+                            "id": "char-shenxuan",
+                            "name": "沈玄",
+                            "type": "character",
+                            "aliases": [],
+                        }
+                    ],
+                    "enrichmentProposals": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 第一章\n\n"
+            "@{沈玄}站在山门前，看向云雾深处的 @{青云宗}，又低头摩挲掌中的 @{镇海印}。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["doctor", "--root", str(self.temp_dir)])
+        payload = json.loads(buffer.getvalue())
+        warning_items = [item for item in payload["checks"] if item.get("code") == "wrapped-entity-missing-registry"]
+        info_items = [item for item in payload["checks"] if item.get("code") == "wrapped-entity-coverage"]
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(len(info_items), 1)
+        self.assertEqual(len(warning_items), 2)
+        self.assertTrue(any("青云宗" in item["message"] for item in warning_items))
+        self.assertTrue(any("镇海印" in item["message"] for item in warning_items))
+        judgement_rule_ids = [item["ruleId"] for item in payload["judgements"]]
+        self.assertIn("wrapped-entity-missing-registry", judgement_rule_ids)
+        wrapped_judgements = [item for item in payload["judgements"] if item["ruleId"] == "wrapped-entity-missing-registry"]
+        self.assertTrue(all(item["scope"] == "entity" for item in wrapped_judgements))
 
 
 if __name__ == "__main__":

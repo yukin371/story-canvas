@@ -63,6 +63,8 @@ def command_workflow_status(args) -> int:
         "targetChapterTitle": inferred["targetChapterTitle"],
         **workflow_progress,
         "stageOrder": inferred["stageOrder"],
+        "currentGateDecision": workflow_progress["stageResults"][workflow_progress["currentStage"]]["gateDecision"],
+        "currentRuleJudgements": workflow_progress["stageResults"][workflow_progress["currentStage"]]["ruleJudgements"],
         "nextActions": workflow_progress["stageResults"][workflow_progress["currentStage"]]["nextActions"],
     }
     print(json.dumps(payload, ensure_ascii=False, indent=2))

@@ -22,6 +22,21 @@ def default_project_state() -> Dict[str, Dict[str, Any]]:
                 "endingContract": "",
                 "paceContract": "",
             },
+            "emotionalContract": {
+                "coreEmotions": [],
+                "chapterEmotionFloor": [],
+                "forbiddenEmotions": [],
+                "revealPreference": {
+                    "defaultMode": "",
+                    "allowDirectExplainAtClimax": False,
+                },
+            },
+            "storyTemplate": {
+                "id": "",
+                "label": "",
+                "modulePolicy": {},
+                "reviewFocus": [],
+            },
             "commercialPositioning": {
                 "premise": "",
                 "hookLine": "",
@@ -81,6 +96,14 @@ def default_project_state() -> Dict[str, Dict[str, Any]]:
         },
         "threads": {"threads": []},
         "structures": {"activeStructure": None, "mappings": []},
+        "worldbook": {
+            "premiseFacts": [],
+            "worldRules": [],
+            "factions": [],
+            "locations": [],
+            "artifacts": [],
+            "mysteries": [],
+        },
         "foreshadowing": {"foreshadows": []},
         "detailed_outlines": {"entries": []},
     }

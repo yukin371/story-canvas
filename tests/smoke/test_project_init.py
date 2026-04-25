@@ -58,6 +58,31 @@ class ProjectInitSmokeTest(unittest.TestCase):
                     "阶段性胜利+保留更大危机",
                     "--pace-contract",
                     "快节奏",
+                    "--core-emotion",
+                    "压迫下反制",
+                    "--core-emotion",
+                    "真相落地时的原来如此",
+                    "--chapter-emotion-floor",
+                    "每章至少有一个情绪推进点",
+                    "--forbidden-emotion",
+                    "空转讲设定",
+                    "--default-reveal-mode",
+                    "partial-inference",
+                    "--allow-direct-explain-at-climax",
+                    "--story-template-id",
+                    "xianxia-revenge-serial",
+                    "--story-template-label",
+                    "仙侠复仇连载长篇",
+                    "--module-policy",
+                    "worldbook=required",
+                    "--module-policy",
+                    "factions=required",
+                    "--module-policy",
+                    "artifacts=optional",
+                    "--review-focus",
+                    "世界规则兑现",
+                    "--review-focus",
+                    "伏笔长回收",
                     "--premise",
                     "底层少年从宗门弃子一路升级到界域执掌者",
                     "--hook-line",
@@ -84,6 +109,8 @@ class ProjectInitSmokeTest(unittest.TestCase):
             )
         payload = json.loads(buffer.getvalue())
         project = json.loads((self.temp_dir / "project.yaml").read_text(encoding="utf-8"))
+        worldbook = json.loads((self.temp_dir / "worldbook.yaml").read_text(encoding="utf-8"))
+        foreshadowing = json.loads((self.temp_dir / "foreshadowing.yaml").read_text(encoding="utf-8"))
 
         self.assertEqual(exit_code, 0)
         self.assertEqual(project["genre"], "奇幻")
@@ -95,6 +122,18 @@ class ProjectInitSmokeTest(unittest.TestCase):
         self.assertEqual(project["storyContract"]["avoidances"], ["长时间无主线推进"])
         self.assertEqual(project["storyContract"]["endingContract"], "阶段性胜利+保留更大危机")
         self.assertEqual(project["storyContract"]["paceContract"], "快节奏")
+        self.assertEqual(project["emotionalContract"]["coreEmotions"], ["压迫下反制", "真相落地时的原来如此"])
+        self.assertEqual(project["emotionalContract"]["chapterEmotionFloor"], ["每章至少有一个情绪推进点"])
+        self.assertEqual(project["emotionalContract"]["forbiddenEmotions"], ["空转讲设定"])
+        self.assertEqual(project["emotionalContract"]["revealPreference"]["defaultMode"], "partial-inference")
+        self.assertTrue(project["emotionalContract"]["revealPreference"]["allowDirectExplainAtClimax"])
+        self.assertEqual(project["storyTemplate"]["id"], "xianxia-revenge-serial")
+        self.assertEqual(project["storyTemplate"]["label"], "仙侠复仇连载长篇")
+        self.assertEqual(
+            project["storyTemplate"]["modulePolicy"],
+            {"worldbook": "required", "factions": "required", "artifacts": "optional"},
+        )
+        self.assertEqual(project["storyTemplate"]["reviewFocus"], ["世界规则兑现", "伏笔长回收"])
         self.assertEqual(project["commercialPositioning"]["premise"], "底层少年从宗门弃子一路升级到界域执掌者")
         self.assertEqual(project["commercialPositioning"]["hookLine"], "废柴少爷觉醒残卷传承，每三章一跃迁，步步掀翻旧秩序。")
         self.assertEqual(project["commercialPositioning"]["hookStack"], ["upgrade-payoff", "cliffhanger-end"])
@@ -104,7 +143,11 @@ class ProjectInitSmokeTest(unittest.TestCase):
         self.assertEqual(project["commercialPositioning"]["releaseCadence"], "日更两章")
         self.assertEqual(project["commercialPositioning"]["chapterWordFloor"], 2000)
         self.assertEqual(project["commercialPositioning"]["chapterWordTarget"], 3000)
+        self.assertEqual(worldbook["worldRules"], [])
+        self.assertEqual(foreshadowing["foreshadows"], [])
         self.assertEqual(payload["positioning"]["primaryGenre"], "fantasy")
+        self.assertEqual(payload["emotionalContract"]["coreEmotions"], ["压迫下反制", "真相落地时的原来如此"])
+        self.assertEqual(payload["storyTemplate"]["modulePolicy"]["worldbook"], "required")
         self.assertEqual(payload["commercialPositioning"]["targetPlatform"], "qidian")
 
     def test_init_defaults_primary_genre_to_genre_when_not_provided(self) -> None:
@@ -127,6 +170,8 @@ class ProjectInitSmokeTest(unittest.TestCase):
         self.assertEqual(project["positioning"]["subGenre"], "")
         self.assertEqual(project["positioning"]["styleTags"], [])
         self.assertEqual(project["storyContract"]["corePromises"], [])
+        self.assertEqual(project["emotionalContract"]["coreEmotions"], [])
+        self.assertEqual(project["storyTemplate"]["modulePolicy"], {})
         self.assertEqual(project["commercialPositioning"]["hookStack"], [])
         self.assertEqual(project["commercialPositioning"]["chapterWordTarget"], 0)
 
