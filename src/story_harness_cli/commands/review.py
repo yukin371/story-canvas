@@ -17,6 +17,7 @@ from story_harness_cli.services import (
     analyze_style_text,
     build_chapter_review,
     build_scene_review,
+    check_consistency,
     resolve_scene_candidates,
     review_change_requests,
 )
@@ -61,6 +62,7 @@ def command_review_chapter(args) -> int:
     scorer, source = load_style_similarity_scorer()
     profile_name = choose_style_profile_name(state.get("project", {}))
     profile_config, profile_source = resolve_style_profile(root, profile_name)
+    consistency_result = check_consistency(state, chapter_text, chapter_id)
     review = build_chapter_review(
         state,
         chapter_id=chapter_id,
@@ -73,6 +75,7 @@ def command_review_chapter(args) -> int:
             profile_name=profile_name,
             profile_config=profile_config,
         ),
+        consistency_result=consistency_result,
     )
     review["styleAnalysis"]["profileSource"] = profile_source
 

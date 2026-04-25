@@ -197,6 +197,7 @@ def build_chapter_review(
     chapter_text: str,
     analysis: Dict[str, Any] | None = None,
     style_report: Dict[str, Any] | None = None,
+    consistency_result: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
     analysis = analysis or {}
     clean_text = strip_entity_tags(chapter_text)
@@ -209,6 +210,8 @@ def build_chapter_review(
     relation_candidates = list(analysis.get("relationCandidates", []))
     scene_entities = analysis.get("sceneScope", {}).get("activeEntityNames", []) or mention_names[:6]
     story_constraint_signals = _build_story_constraint_signals(state, chapter_id, scene_entities or mention_names)
+    consistency_result = consistency_result or {}
+    consistency_signals = _build_consistency_signals(style_report, consistency_result)
 
     text_metrics = {
         "wordCount": word_count,
@@ -223,6 +226,8 @@ def build_chapter_review(
         "snapshotCandidateCount": len(snapshot_candidates),
         "relationCandidateCount": len(relation_candidates),
         "sceneEntityNames": scene_entities,
+        "settingCandidateCount": len(consistency_signals["settingCandidates"]),
+        "settingConflictCount": len(consistency_signals["settingConflicts"]),
     }
 
     dimensions = [
@@ -251,8 +256,21 @@ def build_chapter_review(
                 break
         if len(priority_actions) >= 4:
             break
+    for suggestion in _consistency_priority_actions(consistency_signals):
+        if suggestion not in priority_actions:
+            priority_actions.insert(0, suggestion)
+        if len(priority_actions) > 4:
+            priority_actions = priority_actions[:4]
 
     fingerprint = f"{RUBRIC_VERSION}:{chapter_id}:{stable_hash(clean_text, size=16)}"
+    contract_alignment = _evaluate_contract_alignment(
+        state.get("project", {}),
+        dimension_map,
+        text_metrics,
+        clean_text,
+        story_constraint_signals,
+    )
+    _apply_consistency_signals_to_alignment(contract_alignment, consistency_signals)
     return {
         "reviewId": f"chapter-review-{stable_hash(fingerprint)}",
         "fingerprint": fingerprint,
@@ -282,13 +300,8 @@ def build_chapter_review(
             "commercialPositioning": state.get("project", {}).get("commercialPositioning", {}),
         },
         "storyConstraintSignals": story_constraint_signals,
-        "contractAlignment": _evaluate_contract_alignment(
-            state.get("project", {}),
-            dimension_map,
-            text_metrics,
-            clean_text,
-            story_constraint_signals,
-        ),
+        "consistencySignals": consistency_signals,
+        "contractAlignment": contract_alignment,
         "commercialAlignment": _evaluate_commercial_chapter_alignment(
             state.get("project", {}),
             dimension_map,
@@ -1598,6 +1611,75 @@ def _foreshadow_due_in_chapter(item: Dict[str, Any], chapter_id: str) -> bool:
     if not isinstance(payoff_plan, dict):
         return False
     return _chapter_in_window(chapter_id, payoff_plan.get("window", {}))
+
+
+def _build_consistency_signals(
+    style_report: Dict[str, Any],
+    consistency_result: Dict[str, Any],
+) -> Dict[str, Any]:
+    style_analysis = style_report.get("styleAnalysis", {}) if isinstance(style_report, dict) else {}
+    special_terms = style_analysis.get("specialTermRepetition", {})
+    return {
+        "specialTermRepetition": {
+            "detected": bool(special_terms.get("detected", False)),
+            "severity": special_terms.get("severity", "none"),
+            "evidence": list(special_terms.get("evidence", []))[:3],
+            "suggestion": special_terms.get("suggestion", ""),
+        },
+        "settingCandidates": list(consistency_result.get("settingCandidates", []))[:5],
+        "settingConflicts": list(consistency_result.get("settingConflicts", []))[:5],
+    }
+
+
+def _consistency_priority_actions(consistency_signals: Dict[str, Any]) -> List[str]:
+    actions: List[str] = []
+    term_signal = consistency_signals.get("specialTermRepetition", {})
+    if term_signal.get("detected") and term_signal.get("suggestion"):
+        actions.append(term_signal["suggestion"])
+    conflicts = consistency_signals.get("settingConflicts", [])
+    if conflicts:
+        actions.append(f"处理新设定与旧设定的冲突：{conflicts[0].get('label', '未知设定')}")
+    elif consistency_signals.get("settingCandidates"):
+        actions.append("确认本章产生的新设定候选是否应写入世界真相层。")
+    return actions
+
+
+def _apply_consistency_signals_to_alignment(
+    contract_alignment: Dict[str, Any],
+    consistency_signals: Dict[str, Any],
+) -> None:
+    matched = contract_alignment.setdefault("matched", [])
+    risks = contract_alignment.setdefault("risks", [])
+    notes = contract_alignment.setdefault("notes", [])
+
+    term_signal = consistency_signals.get("specialTermRepetition", {})
+    if term_signal.get("detected"):
+        evidence = term_signal.get("evidence", [])
+        evidence_suffix = f"，例如 {evidence[0]}" if evidence else ""
+        risks.append(f"检测到高频特殊术语复用{evidence_suffix}，容易形成 AI 痕迹或阅读突兀感。")
+
+    setting_conflicts = consistency_signals.get("settingConflicts", [])
+    if setting_conflicts:
+        first = setting_conflicts[0]
+        risks.append(f"当前章引入的新设定可能与既有设定冲突：{first.get('issue', '设定冲突待核查')}。")
+
+    setting_candidates = consistency_signals.get("settingCandidates", [])
+    if setting_candidates and not setting_conflicts:
+        labels = [item.get("label") for item in setting_candidates if item.get("label")]
+        if labels:
+            notes.append(f"当前章产出 {len(setting_candidates)} 条新设定候选，如“{labels[0]}”，可纳入后续世界真相层比对。")
+
+    if not setting_conflicts and not term_signal.get("detected") and setting_candidates:
+        matched.append("章节产生了可追踪的新设定候选，系统已开始承担设定入账与后续比对。")
+
+    if risks and matched:
+        contract_alignment["status"] = "mixed"
+    elif risks:
+        contract_alignment["status"] = "at-risk"
+
+    contract_alignment["matched"] = matched[:5]
+    contract_alignment["risks"] = risks[:5]
+    contract_alignment["notes"] = notes[:5]
 
 
 def _signal_values(items: List[Dict[str, Any]], key: str, limit: int = 2) -> List[str]:
