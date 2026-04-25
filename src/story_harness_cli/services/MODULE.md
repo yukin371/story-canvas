@@ -18,7 +18,7 @@
 - `entity_enricher.py`: 角色外貌/能力提取与丰富化提案
 - `context_lens.py`: 写作上下文构建（活跃角色/关系 + 情绪契约 + 题材模板 + 世界约束 + 线索/伏笔切片）
 - `outline_guard.py`: 章节大纲前置检查，判断是否具备项目定位 / 故事契约 + direction / beats / scenePlans 进入写作或细化
-- `story_review.py`: 章节回顾评分、一幕评审、类型/平台加权评分、评论、改稿建议、契约对齐与商业连载对齐检查，并开始消费情绪契约、伏笔窗口、世界规则与角色动态状态
+- `story_review.py`: 章节回顾评分、一幕评审、类型/平台加权评分、评论、改稿建议、契约对齐与商业连载对齐检查，并开始消费情绪契约、揭露偏好、模板关注点、伏笔窗口、世界规则与角色动态状态
 - `style_detector.py`: AI 风格启发式检测与约束生成；允许通过外部注入 scorer 增强句式近似判断，但默认保持 builtin fallback
 - `illustration_prompting.py`: chapter / entity 插图 prompt 构造、目标元数据整理与 dry-run request 组装
 - `workflow_engine.py`: workflow 状态机纯函数，负责阶段推断、状态 hydration/build、gate 决策推进、reset 与导出快照
@@ -85,6 +85,7 @@
 - `refresh_context_lens` 现在会优先保留紧凑切片而不是整份状态；新增字段应继续遵守“够写当前章即可”的边界
 - 一幕级 `contractAlignment` 复用了章节级契约思想，但阈值更偏向“局部兑现/局部钩子”，不等同于整章判断
 - `story_review.py` 现在还会输出 `storyConstraintSignals`，用于暴露当前章评审实际消费到的情绪契约、世界规则、到窗伏笔和角色状态切片
+- `story_review.py` 对 `storyTemplate.reviewFocus` 和 `emotionalContract.revealPreference` 的消费仍是启发式提示，不应被误读成严格剧情证明器
 - `commercialAlignment` 目前基于 hook、字数目标、章末钩子等启发式信号，不等同于真实市场反馈预测
 - `evaluate_project_story_gate` 的用途是把“先确定市场定位和故事承诺，再拆章节”变成硬门禁，而不是 review 阶段的软建议
 - workflow 的 `currentStage` 口径是“第一个未满足 inferred 条件的 gate”，不是“所有前置 gate 都必须先人工 accept 才算通过”

@@ -785,6 +785,7 @@ def _evaluate_contract_alignment(
     positioning = project.get("positioning", {})
     story_contract = project.get("storyContract", {})
     emotional_contract = project.get("emotionalContract", {})
+    story_template = project.get("storyTemplate", {})
     primary_genre = normalize_primary_genre(positioning.get("primaryGenre", ""))
     pace_contract = story_contract.get("paceContract", "")
     core_promises = [item for item in story_contract.get("corePromises", []) if item]
@@ -801,10 +802,19 @@ def _evaluate_contract_alignment(
     emotional_floor = [item for item in emotional_contract.get("chapterEmotionFloor", []) if item]
     core_emotions = [item for item in emotional_contract.get("coreEmotions", []) if item]
     forbidden_emotions = [item for item in emotional_contract.get("forbiddenEmotions", []) if item]
+    reveal_preference = emotional_contract.get("revealPreference", {})
+    reveal_mode = reveal_preference.get("defaultMode", "")
+    allow_direct_explain_at_climax = bool(reveal_preference.get("allowDirectExplainAtClimax", False))
+    review_focus = [item for item in story_template.get("reviewFocus", []) if item]
     due_foreshadows = story_constraint_signals.get("dueForeshadows", [])
     tracked_entities = story_constraint_signals.get("trackedEntities", [])
     world_rules = story_constraint_signals.get("worldRules", [])
     payoff_hits = _count_keyword_hits(chapter_text, FORESHADOWING_PAYOFF_KEYWORDS)
+    world_rule_labels = _signal_values(world_rules, "label")
+    due_foreshadow_titles = _signal_values(due_foreshadows, "title")
+    due_reader_modes = _signal_values(due_foreshadows, "readerRealizationMode")
+    tracked_names = _signal_values(tracked_entities, "name")
+    tracked_change_example = _tracked_change_example(tracked_entities)
 
     if primary_genre in {"mystery", "thriller"}:
         if conflict_score >= 16:
@@ -907,20 +917,64 @@ def _evaluate_contract_alignment(
         else:
             notes.append("已检查“避免空转讲设定”约束。")
 
+    if reveal_mode in {"partial-inference", "infer-before-confirm"}:
+        if due_foreshadows and (payoff_hits >= 1 or conflict_score >= 15 or scene_score >= 15):
+            matched.append("揭露偏好强调“让读者自行推断”，当前章已经留下可供拼合的回收信号。")
+        elif due_foreshadows:
+            risks.append("揭露偏好强调“让读者自行推断”，但当前章仍缺少足够清晰的拼图信号。")
+        else:
+            notes.append("已记录揭露偏好为“让读者自行推断”。")
+    elif reveal_mode:
+        notes.append(f"已记录揭露偏好：{reveal_mode}。")
+    if allow_direct_explain_at_climax:
+        notes.append("已记录“高潮点允许直接解释”的揭露例外。")
+
     if due_foreshadows:
         if payoff_hits >= 1 or plot_score >= 15 or conflict_score >= 15:
-            matched.append(f"当前章有 {len(due_foreshadows)} 条伏笔进入回收窗口，文本已出现一定兑现信号。")
+            focus_suffix = f"，例如“{due_foreshadow_titles[0]}”" if due_foreshadow_titles else ""
+            matched.append(f"当前章有 {len(due_foreshadows)} 条伏笔进入回收窗口{focus_suffix}，文本已出现一定兑现信号。")
         else:
-            risks.append(f"当前章有 {len(due_foreshadows)} 条伏笔进入回收窗口，但兑现/推进信号仍偏弱。")
+            focus_suffix = f"，例如“{due_foreshadow_titles[0]}”" if due_foreshadow_titles else ""
+            risks.append(f"当前章有 {len(due_foreshadows)} 条伏笔进入回收窗口{focus_suffix}，但兑现/推进信号仍偏弱。")
 
     if tracked_entities:
         if character_score >= 14 or len(tracked_entities) >= 2:
-            matched.append(f"当前章已承接 {len(tracked_entities)} 个受追踪角色的状态或变化压力。")
+            example_suffix = f"，例如 {tracked_change_example}" if tracked_change_example else ""
+            matched.append(f"当前章已承接 {len(tracked_entities)} 个受追踪角色的状态或变化压力{example_suffix}。")
         else:
-            risks.append("项目存在动态角色状态追踪，但本章对这些状态变化的承接还不够明显。")
+            example_suffix = f"，例如 {tracked_change_example}" if tracked_change_example else ""
+            risks.append(f"项目存在动态角色状态追踪，但本章对这些状态变化的承接还不够明显{example_suffix}。")
 
     if world_rules:
-        notes.append(f"项目当前存在 {len(world_rules)} 条世界规则约束，chapter review 已纳入提示。")
+        label_suffix = f"，例如“{world_rule_labels[0]}”" if world_rule_labels else ""
+        notes.append(f"项目当前存在 {len(world_rules)} 条世界规则约束{label_suffix}，chapter review 已纳入提示。")
+
+    if _focus_enabled(review_focus, ("世界规则", "规则兑现")):
+        if world_rules and (scene_score >= 15 or conflict_score >= 15 or plot_score >= 15):
+            matched.append(f"模板关注点要求世界规则兑现，当前章已开始承接“{_join_signal_values(world_rule_labels)}”。")
+        elif world_rules:
+            risks.append("模板关注点要求世界规则兑现，但本章对规则代价/边界的承接仍偏弱。")
+        else:
+            notes.append("模板关注点要求世界规则兑现，但当前项目未提供可消费的 worldRules。")
+
+    if _focus_enabled(review_focus, ("伏笔", "回收", "暗线", "揭晓")):
+        if due_foreshadows and (payoff_hits >= 1 or plot_score >= 15 or conflict_score >= 15):
+            matched.append(f"模板关注点要求伏笔回收，当前章已对“{_join_signal_values(due_foreshadow_titles)}”给出拼图或兑现信号。")
+        elif due_foreshadows:
+            risks.append("模板关注点要求伏笔回收，但当前章对临近窗口伏笔的承接仍偏弱。")
+        else:
+            notes.append("模板关注点包含伏笔/暗线回收，但当前章没有进入窗口的伏笔。")
+
+    if _focus_enabled(review_focus, ("角色状态", "状态演化", "成长余波", "角色变化")):
+        if tracked_entities and (character_score >= 14 or conflict_score >= 14):
+            matched.append(f"模板关注点要求角色状态演化，当前章已承接“{_join_signal_values(tracked_names)}”的变化余波。")
+        elif tracked_entities:
+            risks.append("模板关注点要求角色状态演化，但当前章对角色变化余波的承接仍偏弱。")
+        else:
+            notes.append("模板关注点包含角色状态演化，但当前项目没有可消费的角色状态追踪。")
+
+    if due_reader_modes and any(mode in {"infer-before-confirm", "partial-inference"} for mode in due_reader_modes):
+        notes.append(f"临近窗口伏笔的读者认知模式偏向“先推断后确认”，例如“{due_foreshadow_titles[0]}”。")
 
     if not primary_genre and not pace_contract and not core_promises:
         status = "missing-contract"
@@ -949,6 +1003,7 @@ def _evaluate_scene_contract_alignment(
     positioning = project.get("positioning", {})
     story_contract = project.get("storyContract", {})
     emotional_contract = project.get("emotionalContract", {})
+    story_template = project.get("storyTemplate", {})
     primary_genre = normalize_primary_genre(positioning.get("primaryGenre", ""))
     pace_contract = story_contract.get("paceContract", "")
     core_promises = [item for item in story_contract.get("corePromises", []) if item]
@@ -966,10 +1021,20 @@ def _evaluate_scene_contract_alignment(
     core_emotions = [item for item in emotional_contract.get("coreEmotions", []) if item]
     emotional_floor = [item for item in emotional_contract.get("chapterEmotionFloor", []) if item]
     forbidden_emotions = [item for item in emotional_contract.get("forbiddenEmotions", []) if item]
+    reveal_preference = emotional_contract.get("revealPreference", {})
+    reveal_mode = reveal_preference.get("defaultMode", "")
+    allow_direct_explain_at_climax = bool(reveal_preference.get("allowDirectExplainAtClimax", False))
+    review_focus = [item for item in story_template.get("reviewFocus", []) if item]
     due_foreshadows = story_constraint_signals.get("dueForeshadows", [])
     tracked_entities = story_constraint_signals.get("trackedEntities", [])
+    world_rules = story_constraint_signals.get("worldRules", [])
     payoff_hits = _count_keyword_hits(scene_text, FORESHADOWING_PAYOFF_KEYWORDS)
     pressure_hits = _count_keyword_hits(scene_text, PRESSURE_KEYWORDS)
+    world_rule_labels = _signal_values(world_rules, "label")
+    due_foreshadow_titles = _signal_values(due_foreshadows, "title")
+    due_reader_modes = _signal_values(due_foreshadows, "readerRealizationMode")
+    tracked_names = _signal_values(tracked_entities, "name")
+    tracked_change_example = _tracked_change_example(tracked_entities)
 
     if primary_genre in {"mystery", "thriller"}:
         if foreshadowing >= 15:
@@ -1070,17 +1135,64 @@ def _evaluate_scene_contract_alignment(
         if scene_function < 13 and foreshadowing < 13 and scene_clarity >= 15:
             risks.append("情绪契约禁止“空转讲设定”，但这一幕偏说明性场景。")
 
+    if reveal_mode in {"partial-inference", "infer-before-confirm"}:
+        if due_foreshadows and (payoff_hits >= 1 or foreshadowing >= 14 or logic_score >= 14):
+            matched.append("揭露偏好强调“让读者自行推断”，这一幕已留下可供读者拼合的信号。")
+        elif due_foreshadows:
+            risks.append("揭露偏好强调“让读者自行推断”，但这一幕的拼图信号还不够清楚。")
+        else:
+            notes.append("已记录揭露偏好为“让读者自行推断”。")
+    elif reveal_mode:
+        notes.append(f"已记录揭露偏好：{reveal_mode}。")
+    if allow_direct_explain_at_climax:
+        notes.append("已记录“高潮点允许直接解释”的揭露例外。")
+
     if due_foreshadows:
         if foreshadowing >= 14 or payoff_hits >= 1:
-            matched.append(f"这一幕对应了 {len(due_foreshadows)} 条临近回收的伏笔。")
+            focus_suffix = f"，例如“{due_foreshadow_titles[0]}”" if due_foreshadow_titles else ""
+            matched.append(f"这一幕对应了 {len(due_foreshadows)} 条临近回收的伏笔{focus_suffix}。")
         else:
-            risks.append(f"这一幕所在章节已有 {len(due_foreshadows)} 条伏笔进入窗口，但片段里的回收信号偏弱。")
+            focus_suffix = f"，例如“{due_foreshadow_titles[0]}”" if due_foreshadow_titles else ""
+            risks.append(f"这一幕所在章节已有 {len(due_foreshadows)} 条伏笔进入窗口{focus_suffix}，但片段里的回收信号偏弱。")
 
     if tracked_entities:
         if logic_score >= 14 or continuity >= 14:
-            matched.append("这一幕对受追踪角色状态的承接基本成立。")
+            example_suffix = f"，例如 {tracked_change_example}" if tracked_change_example else ""
+            matched.append(f"这一幕对受追踪角色状态的承接基本成立{example_suffix}。")
         else:
-            risks.append("项目存在角色状态追踪，但这一幕对状态余波的承接还不够清楚。")
+            example_suffix = f"，例如 {tracked_change_example}" if tracked_change_example else ""
+            risks.append(f"项目存在角色状态追踪，但这一幕对状态余波的承接还不够清楚{example_suffix}。")
+
+    if world_rules:
+        label_suffix = f"，例如“{world_rule_labels[0]}”" if world_rule_labels else ""
+        notes.append(f"项目当前存在 {len(world_rules)} 条世界规则约束{label_suffix}，scene review 已纳入提示。")
+
+    if _focus_enabled(review_focus, ("世界规则", "规则兑现")):
+        if world_rules and (scene_clarity >= 15 or logic_score >= 14 or foreshadowing >= 14):
+            matched.append(f"模板关注点要求世界规则兑现，这一幕已开始承接“{_join_signal_values(world_rule_labels)}”。")
+        elif world_rules:
+            risks.append("模板关注点要求世界规则兑现，但这一幕对规则代价/边界的承接仍偏弱。")
+        else:
+            notes.append("模板关注点要求世界规则兑现，但当前项目未提供可消费的 worldRules。")
+
+    if _focus_enabled(review_focus, ("伏笔", "回收", "暗线", "揭晓")):
+        if due_foreshadows and (foreshadowing >= 14 or payoff_hits >= 1):
+            matched.append(f"模板关注点要求伏笔回收，这一幕已对“{_join_signal_values(due_foreshadow_titles)}”给出拼图或兑现信号。")
+        elif due_foreshadows:
+            risks.append("模板关注点要求伏笔回收，但这一幕对临近窗口伏笔的承接仍偏弱。")
+        else:
+            notes.append("模板关注点包含伏笔/暗线回收，但这一幕所在章节没有进入窗口的伏笔。")
+
+    if _focus_enabled(review_focus, ("角色状态", "状态演化", "成长余波", "角色变化")):
+        if tracked_entities and (logic_score >= 14 or continuity >= 14 or scene_function >= 14):
+            matched.append(f"模板关注点要求角色状态演化，这一幕已承接“{_join_signal_values(tracked_names)}”的变化余波。")
+        elif tracked_entities:
+            risks.append("模板关注点要求角色状态演化，但这一幕对角色变化余波的承接仍偏弱。")
+        else:
+            notes.append("模板关注点包含角色状态演化，但当前项目没有可消费的角色状态追踪。")
+
+    if due_reader_modes and any(mode in {"infer-before-confirm", "partial-inference"} for mode in due_reader_modes):
+        notes.append(f"临近窗口伏笔的读者认知模式偏向“先推断后确认”，例如“{due_foreshadow_titles[0]}”。")
 
     if not primary_genre and not pace_contract and not core_promises:
         status = "missing-contract"
@@ -1486,6 +1598,41 @@ def _foreshadow_due_in_chapter(item: Dict[str, Any], chapter_id: str) -> bool:
     if not isinstance(payoff_plan, dict):
         return False
     return _chapter_in_window(chapter_id, payoff_plan.get("window", {}))
+
+
+def _signal_values(items: List[Dict[str, Any]], key: str, limit: int = 2) -> List[str]:
+    values = []
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        value = item.get(key)
+        if isinstance(value, str) and value:
+            values.append(value)
+    return values[:limit]
+
+
+def _join_signal_values(values: List[str]) -> str:
+    if not values:
+        return "相关约束"
+    return "、".join(values[:2])
+
+
+def _tracked_change_example(tracked_entities: List[Dict[str, Any]]) -> str:
+    for entity in tracked_entities:
+        if not isinstance(entity, dict):
+            continue
+        recent_change = entity.get("recentChange")
+        if not isinstance(recent_change, dict):
+            continue
+        reason = recent_change.get("reason")
+        name = entity.get("name")
+        if isinstance(reason, str) and reason and isinstance(name, str) and name:
+            return f"{name}：{reason}"
+    return ""
+
+
+def _focus_enabled(review_focus: List[str], keywords: tuple[str, ...]) -> bool:
+    return any(any(keyword in focus for keyword in keywords) for focus in review_focus)
 
 
 def _scene_break_reason(paragraph: str, current_scene_length: int) -> str:

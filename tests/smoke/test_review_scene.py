@@ -282,6 +282,16 @@ class ReviewSceneSmokeTest(unittest.TestCase):
                 "allowDirectExplainAtClimax": True,
             },
         }
+        project["storyTemplate"] = {
+            "id": "mystery-web-serial",
+            "label": "悬疑连载",
+            "modulePolicy": {
+                "worldRules": "required",
+                "foreshadowLedger": "required",
+                "characterStateTracking": "required",
+            },
+            "reviewFocus": ["世界规则兑现", "伏笔回收", "角色状态演化"],
+        }
         (self.temp_dir / "project.yaml").write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding="utf-8")
         (self.temp_dir / "entities.yaml").write_text(
             json.dumps(
@@ -303,6 +313,29 @@ class ReviewSceneSmokeTest(unittest.TestCase):
                         }
                     ],
                     "enrichmentProposals": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "worldbook.yaml").write_text(
+            json.dumps(
+                {
+                    "premiseFacts": [],
+                    "worldRules": [
+                        {
+                            "id": "rule-001",
+                            "label": "旧案印章会暴露借阅者身份",
+                            "rule": "翻阅卷宗会留下可追溯痕迹",
+                            "scope": "global",
+                            "status": "active",
+                        }
+                    ],
+                    "factions": [],
+                    "locations": [],
+                    "artifacts": [],
+                    "mysteries": [],
                 },
                 ensure_ascii=False,
                 indent=2,
@@ -364,11 +397,21 @@ class ReviewSceneSmokeTest(unittest.TestCase):
 
         self.assertEqual(exit_code, 0)
         self.assertEqual(payload["projectContext"]["emotionalContract"]["coreEmotions"], ["未知感", "原来如此"])
+        self.assertEqual(payload["projectContext"]["storyTemplate"]["id"], "mystery-web-serial")
+        self.assertEqual(payload["storyConstraintSignals"]["worldRules"][0]["id"], "rule-001")
         self.assertEqual(payload["storyConstraintSignals"]["dueForeshadows"][0]["id"], "fs-001")
         self.assertEqual(payload["storyConstraintSignals"]["trackedEntities"][0]["name"], "林舟")
-        self.assertTrue(
-            any("情绪契约" in item for item in payload["contractAlignment"]["matched"] + payload["contractAlignment"]["risks"])
+        self.assertEqual(
+            payload["storyConstraintSignals"]["trackedEntities"][0]["recentChange"]["reason"],
+            "得知账本缺页与旧案吻合",
         )
+        alignment_text = payload["contractAlignment"]["matched"] + payload["contractAlignment"]["risks"] + payload["contractAlignment"]["notes"]
+        self.assertTrue(
+            any("情绪契约" in item for item in alignment_text)
+        )
+        self.assertTrue(any("推断" in item for item in alignment_text))
+        self.assertTrue(any("旧案印章会暴露借阅者身份" in item for item in alignment_text))
+        self.assertTrue(any("账本缺页" in item for item in alignment_text))
 
 
 if __name__ == "__main__":

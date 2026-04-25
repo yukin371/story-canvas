@@ -233,9 +233,14 @@ class ReviewChapterSmokeTest(unittest.TestCase):
         self.assertEqual(payload["storyConstraintSignals"]["worldRules"][0]["id"], "rule-001")
         self.assertEqual(payload["storyConstraintSignals"]["dueForeshadows"][0]["id"], "fs-001")
         self.assertEqual(payload["storyConstraintSignals"]["trackedEntities"][0]["name"], "林舟")
+        alignment_text = payload["contractAlignment"]["matched"] + payload["contractAlignment"]["risks"] + payload["contractAlignment"]["notes"]
         self.assertTrue(
-            any("情绪契约" in item for item in payload["contractAlignment"]["matched"] + payload["contractAlignment"]["risks"])
+            any("情绪契约" in item for item in alignment_text)
         )
+        self.assertTrue(any("推断" in item for item in alignment_text))
+        self.assertTrue(any("守夜代价" in item for item in alignment_text))
+        self.assertTrue(any("账本的缺页" in item for item in alignment_text))
+        self.assertTrue(any("仓库冲突后确认自己被盯上" in item for item in alignment_text))
 
 
 if __name__ == "__main__":
