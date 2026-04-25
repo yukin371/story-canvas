@@ -28,6 +28,6 @@ $env:PYTHONPATH='src'
 python -m py_compile src/story_harness_cli/services/story_review.py
 python -m unittest tests.smoke.test_review_chapter tests.smoke.test_review_scene tests.smoke.test_demo_urban_occult_long_sample -v
 python -m unittest discover -s tests
-python -m story_harness_cli review chapter --root demo-urban-occult-long --chapter-id chapter-001
-python -m story_harness_cli review scene --root demo-urban-occult-long --chapter-id chapter-001 --scene-index 1
+python -m story_harness_cli review chapter --root projects/demo-urban-occult-long --chapter-id chapter-001
+python -m story_harness_cli review scene --root projects/demo-urban-occult-long --chapter-id chapter-001 --scene-index 1
 ```

@@ -1,0 +1,86 @@
+{
+  "chapterId": "chapter-001",
+  "chapterTitle": "归墟",
+  "analyzedAt": "2026-04-25T11:53:06+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 23,
+      "source": "registry"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 17,
+      "source": "registry"
+    },
+    {
+      "id": "char-bai-jiushang",
+      "name": "白九殇",
+      "mentionCount": 3,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-001::char-gu-changyuan::39a63a78ae",
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "proposedState": "信任",
+      "stateTags": [
+        "信任"
+      ],
+      "evidence": "——@{顾长渊}站在他面前，鹤发童颜的脸上带着他看了十年、信任了十年的温和微笑。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-001::char-shen-xuan::fd75d9fe76",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "愤怒；背叛",
+      "stateTags": [
+        "愤怒",
+        "背叛"
+      ],
+      "evidence": "前世的@{沈玄}会慌张、会愤怒、会在师父的背叛面前失去理智。那个@{沈玄}已经在天枢宗的金丹大殿里死去了。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-001::char-gu-changyuan::0307158445",
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "proposedState": "信任",
+      "stateTags": [
+        "信任"
+      ],
+      "evidence": "杀死顾长渊？当然。这是毋庸置疑的。那个畜生养了他十年，教了他十年，然后用十年的信任做诱饵，只为在最后时刻剖开他的身体取走归墟体。",
+      "confidence": 0.78
+    }
+  ],
+  "relationCandidates": [
+    {
+      "candidateId": "relation::chapter-001::char-gu-changyuan::char-bai-jiushang::f162b8e5c1",
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-bai-jiushang",
+      "toName": "白九殇",
+      "label": "合作",
+      "severity": "suggestion",
+      "evidence": "前世在他死后发生了什么，他不知道。但从顾长渊在金丹大殿中提到\"白九殇\"这个名字时的语气来看——那不是第一次提及，而是一个延续了不知多久的合作关系。顾长渊的邪术、对归墟体的了解、那座暗红色的阵法——背后都有白九殇的影子。",
+      "confidence": 0.84
+    }
+  ],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-gu-changyuan",
+      "char-bai-jiushang"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "顾长渊",
+      "白九殇"
+    ]
+  }
+}

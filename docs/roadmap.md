@@ -77,7 +77,7 @@
 - 新增 `demo-xuanhuan-short` 玄幻网文短篇样例，已验证 `fantasy + xuanhuan + web-serial` 的定位层输出
 - 新增 `demo-urban-occult-long` 商业化网站连载长篇样例，已验证长篇项目结构、卷级骨架、章节评审与一幕评审链路
 - `demo-urban-occult-long` 已完成卷一 `chapter-012`，并跑通 analyze / review / context / doctor / export 闭环
-- `demo-urban-occult-long/chapter-001` 到 `chapter-008` 已回补到商业最低字数线，其中 `chapter-002` 到 `chapter-012` 里已有 11 章达到建议字数线，卷一前半短章缺口已清零
+- `projects/demo-urban-occult-long/chapter-001` 到 `chapter-008` 已回补到商业最低字数线，其中 `chapter-002` 到 `chapter-012` 里已有 11 章达到建议字数线，卷一前半短章缺口已清零
 
 ## 6. 下一步
 

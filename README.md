@@ -10,7 +10,9 @@ This repository currently provides:
 
 - a file-based story protocol
 - a Python CLI for state transitions
-- minimal examples and smoke-test fixtures
+- tracked sample projects under `projects/`
+- smoke-test fixtures and validated story baselines
+- optional provider foundation for external SDK / API integrations
 - commercial long-form samples with project-level positioning and serial-writing blueprint
 
 It does not aim to replace a writing UI. Instead, it provides the protocol and workflow core that different skills, editors, and future interfaces can reuse.
@@ -84,34 +86,34 @@ uv run story-harness doctor --root .\demo
 Option B: run the validated short-story baseline
 
 ```powershell
-uv run story-harness doctor --root .\demo-short-story
-uv run story-harness chapter analyze --root .\demo-short-story --chapter-id chapter-001
-uv run story-harness chapter suggest --root .\demo-short-story --chapter-id chapter-001
-uv run story-harness review apply --root .\demo-short-story --chapter-id chapter-001 --all-pending --decision accepted
-uv run story-harness projection apply --root .\demo-short-story --chapter-id chapter-001
-uv run story-harness context refresh --root .\demo-short-story --chapter-id chapter-001
-uv run story-harness review chapter --root .\demo-short-story --chapter-id chapter-001
-uv run story-harness review scene --root .\demo-short-story --chapter-id chapter-001 --scene-index 1
+uv run story-harness doctor --root .\projects\demo-short-story
+uv run story-harness chapter analyze --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-harness chapter suggest --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-harness review apply --root .\projects\demo-short-story --chapter-id chapter-001 --all-pending --decision accepted
+uv run story-harness projection apply --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-harness context refresh --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-harness review chapter --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-harness review scene --root .\projects\demo-short-story --chapter-id chapter-001 --scene-index 1
 ```
 
 Option C: run the validated style-driven baseline
 
 ```powershell
-uv run story-harness doctor --root .\demo-light-novel-short
-uv run story-harness chapter analyze --root .\demo-light-novel-short --chapter-id chapter-001
-uv run story-harness review chapter --root .\demo-light-novel-short --chapter-id chapter-001
-uv run story-harness review scene --root .\demo-light-novel-short --chapter-id chapter-001 --scene-index 1
-uv run story-harness export --root .\demo-light-novel-short --format markdown --output .\demo-light-novel-short\manuscript.md
+uv run story-harness doctor --root .\projects\demo-light-novel-short
+uv run story-harness chapter analyze --root .\projects\demo-light-novel-short --chapter-id chapter-001
+uv run story-harness review chapter --root .\projects\demo-light-novel-short --chapter-id chapter-001
+uv run story-harness review scene --root .\projects\demo-light-novel-short --chapter-id chapter-001 --scene-index 1
+uv run story-harness export --root .\projects\demo-light-novel-short --format markdown --output .\projects\demo-light-novel-short\manuscript.md
 ```
 
 Option D: run the validated xuanhuan web-serial baseline
 
 ```powershell
-uv run story-harness doctor --root .\demo-xuanhuan-short
-uv run story-harness chapter analyze --root .\demo-xuanhuan-short --chapter-id chapter-001
-uv run story-harness review chapter --root .\demo-xuanhuan-short --chapter-id chapter-001
-uv run story-harness review scene --root .\demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1
-uv run story-harness export --root .\demo-xuanhuan-short --format markdown --output .\demo-xuanhuan-short\manuscript.md
+uv run story-harness doctor --root .\projects\demo-xuanhuan-short
+uv run story-harness chapter analyze --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
+uv run story-harness review chapter --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
+uv run story-harness review scene --root .\projects\demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1
+uv run story-harness export --root .\projects\demo-xuanhuan-short --format markdown --output .\projects\demo-xuanhuan-short\manuscript.md
 ```
 
 Repository fallback:
@@ -157,6 +159,7 @@ goal or reasoning
 ## Command Overview
 
 - `story-harness init`
+- `story-harness brainstorm character|world|outline`
 - `story-harness chapter analyze`
 - `story-harness chapter suggest`
 - `story-harness review apply`
@@ -172,13 +175,24 @@ goal or reasoning
 - `story-harness outline scene-detect`
 - `story-harness outline scene-update`
 - `story-harness outline scene-remove`
+- `story-harness outline detail-init`
+- `story-harness outline detail-show`
 - `story-harness projection apply`
-- `story-harness context refresh`
-- `story-harness entity review`
-- `story-harness entity graph`
+- `story-harness context refresh|show`
+- `story-harness entity enrich|review|list|show|graph`
+- `story-harness style check|constraints|report|repair`
+- `story-harness illustration prompt|generate|list|config`
+- `story-harness structure list|apply|show|check|map|scaffold`
+- `story-harness thread plant|resolve|list|check`
+- `story-harness foreshadow plant|resolve|list`
+- `story-harness arc define|milestone|list|check`
+- `story-harness workflow status|run|advance|reset|export`
 - `story-harness timeline add/list/check`
 - `story-harness causality add/list/check`
 - `story-harness search`
+- `story-harness consistency check`
+- `story-harness stats`
+- `story-harness migrate`
 - `story-harness export --format json|markdown|txt`
 - `story-harness doctor`
 
@@ -189,26 +203,35 @@ goal or reasoning
 - `scripts/install_adapter.py` - install a host adapter into Codex or Claude skill directories
 - `scripts/install_adapters.py` - batch-install adapters for multiple hosts
 - `docs/` - protocol and guide docs
-- `examples/` - user-facing sample projects
+- `projects/` - tracked sample projects and regression baselines
 - `tests/` - smoke tests and fixtures
 
-## Current Scope
+## Implemented Features
 
-The current implementation focuses on:
+The current implementation already covers:
 
-- file-based protocol
-- heuristic chapter analysis
-- change request generation
-- explicit review decisions
-- projection updates
-- context lens refresh
-- chapter and scene review scoring
-- explicit scene plan maintenance
-- timeline, search, and causality tooling
-- entity graph export
-- positioning and story contract checks
-- commercial serial blueprint checks (`premise`, hook line, platform, cadence, word targets)
-- commercial review alignment output (`commercialAlignment`) and platform-aware review weighting
+- layered file protocol for prose, proposals, reviews, projections, and context
+- chapter analysis, suggestion generation, and explicit review-then-apply workflow
+- chapter review, scene review, and style review with profile-driven constraints
+- style repair guidance plus illustration prompt, dry-run, real OpenAI text-to-image / image-to-image request flows, multi-asset persistence, and asset-state listing
+- outline-first gating, beat tracking, scene plan maintenance, and detailed outline helpers
+- project positioning, story contract, and commercial serial blueprint validation
+- timeline, causality, suspense thread, foreshadow, structure, and character-arc tracking
+- entity enrichment, review, listing, and relationship graph export
+- workflow stage inference, persisted `workflow.yaml`, gate decisions, reset/export, and `run --resume-from` rewind support
+- project stats, cross-chapter search, consistency check, and layered-layout migration
+- tracked sample projects in `projects/` covering short-form, style-driven, xuanhuan, and commercial long-form baselines
+- optional dependency boundary for provider-backed capabilities, while keeping base install stdlib-only
+
+## Improvement Directions
+
+The next round should stay focused on a small set of practical gaps:
+
+- stabilize the provider layer with one or two real integrations beyond the current foundation
+- externalize more algorithm, dictionary, and prompt resources while keeping builtin fallback paths
+- harden schema and workflow validation for richer long-form state, especially graph, thread, and structure semantics
+- keep expanding `projects/` sample coverage so regression baselines represent more commercial genres and production workflows
+- prepare release and distribution work once command contracts and sample baselines stop moving
 
 ## Development
 
@@ -227,7 +250,7 @@ uv run python -m unittest discover -s tests
 Run structural validation against a story project:
 
 ```powershell
-uv run story-harness doctor --root .\demo-short-story
+uv run story-harness doctor --root .\projects\demo-short-story
 ```
 
 Install a host adapter:
@@ -253,7 +276,8 @@ Contributor and release docs:
 
 ## Roadmap
 
-- Stabilize command contract and fixtures
-- Validate against real Story Harness chapter samples
-- Add deeper schema validation for timeline / branch / graph semantics
-- Evaluate Go rewrite when distribution and binary size become release concerns
+- Stabilize provider-backed extension points and optional dependency packaging
+- Expand sample-project baselines under `projects/` and keep them aligned with smoke coverage
+- Add deeper schema validation for graph, thread, structure, and commercial workflow semantics
+- Validate richer production workflows against real long-form projects
+- Revisit distribution strategy only after the Python CLI contract is stable

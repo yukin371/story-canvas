@@ -1,0 +1,55 @@
+{
+  "title": "归墟",
+  "genre": "仙侠玄幻",
+  "defaultMode": "driving",
+  "activeChapterId": "chapter-021",
+  "positioning": {
+    "primaryGenre": "仙侠玄幻",
+    "subGenre": "重生复仇",
+    "styleTags": [
+      "冷峻",
+      "谋略",
+      "暗线交织"
+    ],
+    "targetAudience": [
+      "仙侠网文读者",
+      "18-35岁男性"
+    ]
+  },
+  "storyContract": {
+    "corePromises": [
+      "重生≠全知，蝴蝶效应让前世记忆不可靠",
+      "复仇线与苍生线并行，主角不纯粹利己",
+      "反派有合理动机，不做无脑恶人",
+      "每卷末改变格局，不停水"
+    ],
+    "avoidances": [
+      "不写降智推动剧情",
+      "不写后宫/种马",
+      "不写无意义打脸循环"
+    ],
+    "endingContract": "复仇完成，封印线阶段性收束（可续可完）",
+    "paceContract": "中快节奏，不超过3章只走单线"
+  },
+  "commercialPositioning": {
+    "premise": "被师父杀死的天才弟子重生归来，发现时间线已经偏移",
+    "hookLine": "重生第一刻，前世不存在的陌生人拦住了他的路",
+    "hookStack": [
+      "重生就发现蝴蝶效应——记忆不可靠了",
+      "师父的阴谋已提前启动",
+      "前世从未出现的剑修改变了所有计划",
+      "归墟域封印崩塌倒计时"
+    ],
+    "benchmarkWorks": [
+      "凡人修仙传",
+      "求魔"
+    ],
+    "targetPlatform": "起点中文网/番茄小说",
+    "serializationModel": "日更双章",
+    "releaseCadence": "日更",
+    "chapterWordFloor": 4000,
+    "chapterWordTarget": 5000
+  },
+  "createdAt": "2026-04-25T01:03:02+08:00",
+  "updatedAt": "2026-04-25T17:48:45+08:00"
+}

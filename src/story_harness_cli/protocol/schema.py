@@ -57,9 +57,30 @@ def default_project_state() -> Dict[str, Dict[str, Any]]:
         },
         "context_lens": {"currentChapterId": None, "lenses": []},
         "projection_log": {"projectionChanges": []},
+        "workflow_progress": {
+            "currentStage": "",
+            "targetChapterId": None,
+            "workflowStatus": "",
+            "gateHistory": [],
+            "stageResults": {},
+            "updatedAt": "",
+            "lastRunMode": "",
+        },
+        "illustrations": {
+            "adapter": {
+                "name": "openai",
+                "model": "gpt-image-2",
+                "defaultSize": "1024x1024",
+                "quality": "standard",
+            },
+            "promptPack": {
+                "name": "default",
+                "version": "builtin",
+            },
+            "generated": [],
+        },
         "threads": {"threads": []},
         "structures": {"activeStructure": None, "mappings": []},
         "foreshadowing": {"foreshadows": []},
         "detailed_outlines": {"entries": []},
     }
-

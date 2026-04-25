@@ -1,0 +1,158 @@
+{
+  "chapterId": "chapter-025",
+  "chapterTitle": "归墟",
+  "analyzedAt": "2026-04-25T17:45:57+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 61,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 31,
+      "source": "registry"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 9,
+      "source": "registry"
+    },
+    {
+      "id": "char-song-huaijin",
+      "name": "宋怀瑾",
+      "mentionCount": 6,
+      "source": "registry"
+    },
+    {
+      "id": "char-bai-jiushang",
+      "name": "白九殇",
+      "mentionCount": 4,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-025::char-shen-xuan::698bd0c180",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "信任",
+      "stateTags": [
+        "信任"
+      ],
+      "evidence": "前世的@{沈玄}——天枢宗首席弟子，才华横溢，前途无量。他信任师父，热爱宗门，相信修真路上的每一步都通向更高的境界。他不知道归墟体的真正含义，不知道自己是一把钥匙，不知道他信任的人在暗处磨刀。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-025::char-shen-xuan::0df45f3b62",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "信任；愤怒；背叛",
+      "stateTags": [
+        "信任",
+        "愤怒",
+        "背叛"
+      ],
+      "evidence": "前世的@{沈玄}在金丹突破时被杀害。他的最后一个念头不是愤怒——是困惑。他不明白为什么。为什么师父要杀他。为什么信任换来的是背叛。为什么——",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [
+    {
+      "candidateId": "relation::chapter-025::char-gu-changyuan::char-ye-qingyi::b4a6b8bc27",
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-ye-qingyi",
+      "toName": "叶清漪",
+      "label": "合作",
+      "severity": "suggestion",
+      "evidence": "封印重铸消耗了归墟体百分之九十九的力量——那些力量化作了封印的一部分，与@{顾长渊}的阵法、@{叶清漪}的守护者血脉一起，构成了新的归墟域封印。新封印比旧封印更加牢固——它不仅有千万年前九域联手编织的结构，还有三个人的意志作为核心。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-025::char-shen-xuan::char-gu-changyuan::8f49988017",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-gu-changyuan",
+      "toName": "顾长渊",
+      "label": "合作",
+      "severity": "suggestion",
+      "evidence": "不是之前的\"重铸完成\"，而是真正的、彻底的、永久性的完成。归墟体作为钥匙嵌入了封印的核心，将所有的缝隙填满，将所有的裂纹修复。新封印比千万年前九域联手编织的旧封印更加坚固——因为它不仅有力量，还有意志。@{顾长渊}赎罪的意志、@{宋怀瑾}弥补的意志、@{叶清漪}守护的意志、以及@{沈玄}放下的意志。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-025::char-shen-xuan::char-ye-qingyi::8f49988017",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-ye-qingyi",
+      "toName": "叶清漪",
+      "label": "合作",
+      "severity": "suggestion",
+      "evidence": "不是之前的\"重铸完成\"，而是真正的、彻底的、永久性的完成。归墟体作为钥匙嵌入了封印的核心，将所有的缝隙填满，将所有的裂纹修复。新封印比千万年前九域联手编织的旧封印更加坚固——因为它不仅有力量，还有意志。@{顾长渊}赎罪的意志、@{宋怀瑾}弥补的意志、@{叶清漪}守护的意志、以及@{沈玄}放下的意志。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-025::char-shen-xuan::char-song-huaijin::8f49988017",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "label": "合作",
+      "severity": "suggestion",
+      "evidence": "不是之前的\"重铸完成\"，而是真正的、彻底的、永久性的完成。归墟体作为钥匙嵌入了封印的核心，将所有的缝隙填满，将所有的裂纹修复。新封印比千万年前九域联手编织的旧封印更加坚固——因为它不仅有力量，还有意志。@{顾长渊}赎罪的意志、@{宋怀瑾}弥补的意志、@{叶清漪}守护的意志、以及@{沈玄}放下的意志。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-025::char-gu-changyuan::char-ye-qingyi::8f49988017",
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-ye-qingyi",
+      "toName": "叶清漪",
+      "label": "合作",
+      "severity": "suggestion",
+      "evidence": "不是之前的\"重铸完成\"，而是真正的、彻底的、永久性的完成。归墟体作为钥匙嵌入了封印的核心，将所有的缝隙填满，将所有的裂纹修复。新封印比千万年前九域联手编织的旧封印更加坚固——因为它不仅有力量，还有意志。@{顾长渊}赎罪的意志、@{宋怀瑾}弥补的意志、@{叶清漪}守护的意志、以及@{沈玄}放下的意志。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-025::char-gu-changyuan::char-song-huaijin::8f49988017",
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "label": "合作",
+      "severity": "suggestion",
+      "evidence": "不是之前的\"重铸完成\"，而是真正的、彻底的、永久性的完成。归墟体作为钥匙嵌入了封印的核心，将所有的缝隙填满，将所有的裂纹修复。新封印比千万年前九域联手编织的旧封印更加坚固——因为它不仅有力量，还有意志。@{顾长渊}赎罪的意志、@{宋怀瑾}弥补的意志、@{叶清漪}守护的意志、以及@{沈玄}放下的意志。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-025::char-ye-qingyi::char-song-huaijin::8f49988017",
+      "fromId": "char-ye-qingyi",
+      "fromName": "叶清漪",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "label": "合作",
+      "severity": "suggestion",
+      "evidence": "不是之前的\"重铸完成\"，而是真正的、彻底的、永久性的完成。归墟体作为钥匙嵌入了封印的核心，将所有的缝隙填满，将所有的裂纹修复。新封印比千万年前九域联手编织的旧封印更加坚固——因为它不仅有力量，还有意志。@{顾长渊}赎罪的意志、@{宋怀瑾}弥补的意志、@{叶清漪}守护的意志、以及@{沈玄}放下的意志。",
+      "confidence": 0.84
+    }
+  ],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-ye-qingyi",
+      "char-gu-changyuan",
+      "char-song-huaijin",
+      "char-bai-jiushang"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "叶清漪",
+      "顾长渊",
+      "宋怀瑾",
+      "白九殇"
+    ]
+  }
+}

@@ -17,16 +17,16 @@
 
 ## 计划改动
 
-1. 更新 `demo-urban-occult-long/README.md`
+1. 更新 `projects/demo-urban-occult-long/README.md`
 2. 更新 `docs/roadmap.md`
 3. 更新 `tests/smoke/test_demo_urban_occult_long_sample.py`
-4. 恢复 `demo-urban-occult-long/project.yaml` 的 `activeChapterId`
+4. 恢复 `projects/demo-urban-occult-long/project.yaml` 的 `activeChapterId`
 5. 运行 `doctor`、`stats`、目标 smoke test、全量测试复核
 
 ## 验证方案
 
-- `PYTHONPATH=src python -m story_harness_cli doctor --root demo-urban-occult-long`
-- `PYTHONPATH=src python -m story_harness_cli stats --root demo-urban-occult-long`
+- `PYTHONPATH=src python -m story_harness_cli doctor --root projects/demo-urban-occult-long`
+- `PYTHONPATH=src python -m story_harness_cli stats --root projects/demo-urban-occult-long`
 - `PYTHONPATH=src python -m unittest tests.smoke.test_demo_urban_occult_long_sample -v`
 - `PYTHONPATH=src python -m unittest discover -s tests`
 

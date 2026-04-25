@@ -1,0 +1,90 @@
+{
+  "chapterId": "chapter-016",
+  "chapterTitle": "镜像",
+  "analyzedAt": "2026-04-25T13:23:02+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 42,
+      "source": "registry"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 25,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 22,
+      "source": "registry"
+    },
+    {
+      "id": "char-bai-jiushang",
+      "name": "白九殇",
+      "mentionCount": 17,
+      "source": "registry"
+    },
+    {
+      "id": "char-song-huaijin",
+      "name": "宋怀瑾",
+      "mentionCount": 5,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-016::char-gu-changyuan::d7e981577a",
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "proposedState": "怀疑",
+      "stateTags": [
+        "怀疑"
+      ],
+      "evidence": "但这一世的@{顾长渊}不在乎暴露了。他公然派遣亲传弟子到苍梧域搜索特殊体质，公然让阵法堂弟子\"外出历练\"后失踪，甚至——如果@{宋怀瑾}的信息准确的话——他的行为已经引起了一些天枢宗弟子的怀疑。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-016::char-song-huaijin::d7e981577a",
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "proposedState": "怀疑",
+      "stateTags": [
+        "怀疑"
+      ],
+      "evidence": "但这一世的@{顾长渊}不在乎暴露了。他公然派遣亲传弟子到苍梧域搜索特殊体质，公然让阵法堂弟子\"外出历练\"后失踪，甚至——如果@{宋怀瑾}的信息准确的话——他的行为已经引起了一些天枢宗弟子的怀疑。",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [
+    {
+      "candidateId": "relation::chapter-016::char-gu-changyuan::char-song-huaijin::d7e981577a",
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "label": "信任下降",
+      "severity": "high-risk",
+      "evidence": "但这一世的@{顾长渊}不在乎暴露了。他公然派遣亲传弟子到苍梧域搜索特殊体质，公然让阵法堂弟子\"外出历练\"后失踪，甚至——如果@{宋怀瑾}的信息准确的话——他的行为已经引起了一些天枢宗弟子的怀疑。",
+      "confidence": 0.84
+    }
+  ],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-gu-changyuan",
+      "char-ye-qingyi",
+      "char-bai-jiushang",
+      "char-song-huaijin"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "顾长渊",
+      "叶清漪",
+      "白九殇",
+      "宋怀瑾"
+    ]
+  }
+}

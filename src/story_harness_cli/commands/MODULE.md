@@ -1,6 +1,6 @@
 # Commands 模块说明
 
-> 最后更新: 2026-04-23
+> 最后更新: 2026-04-25
 > 状态: 当前有效模块文档
 
 ## 1. 模块职责
@@ -21,6 +21,10 @@
   默认门禁口径为 `project.positioning` / `project.storyContract` + chapter `direction` + `beats` + `scenePlans`
 - 项目初始化参数装配（如 `init` 写入 positioning / storyContract / commercialPositioning）
 - doctor 类命令中的项目元数据校验编排
+- doctor 现在还负责校验可选项目配置如 `style-profiles.yaml` 的基本结构
+- `style check` / `style constraints` / `style report` / `style repair` 这组风格治理命令，以及 optional scorer 的 command-side 装配
+- `illustration prompt` / `illustration generate` / `illustration list` / `illustration config` 这组插图命令，负责编排 prompt 构造、文生图/图生图 provider 请求与 `illustrations.yaml` 配置读写
+- `workflow status` / `workflow run` / `workflow advance` / `workflow reset` / `workflow export` 这组 workflow 状态机入口，负责把 protocol + service 的推断结果、gate 决策和快照导出编排到 `workflow.yaml`
 
 ## 3. Must Not Own
 
@@ -58,6 +62,13 @@
 - `outline scene-detect` 默认不会覆盖已有 `scenePlans`，需要显式传入 `--replace`
 - `chapter suggest` 默认要求目标章节先通过 `outline check`，旧项目如需跳过必须显式传 `--allow-without-outline`
 - `outline check` 默认是严格模式；只有显式传入 `--allow-missing-project-gate`、`--allow-missing-beats`、`--allow-missing-scene-plans` 才会放宽
+- `workflow advance` 只能对当前 gate 执行；如果要回到更早 gate，必须先 `workflow run --resume-from <stage>` 或 `workflow reset --from-gate <stage>`
+- `workflow status` 会把持久化的 `workflow.yaml` 与当前推断结果合并展示，因此 `currentStage` 可能早于 `inferredCurrentStage`
+- `illustration generate --dry-run` 不会写 `illustrations.yaml`；只有真实生成成功后才会落记录
+- `illustration generate --mode image-to-image` 至少需要一张 `--input-image`
+- `illustration generate --mode image-to-image --mask <path>` 会把 mask 一并上传给 provider，mask 仅作用于第一张输入图
+- `illustration generate` 真实执行时会把返回图批量写入 `assets/illustrations/`；`filePath` 仍指向主图，额外结果写入 `artifacts[]`
+- `illustration list` 会补充资产存在性、数量和主图标记，便于快速检查落盘状态
 
 ## 8. 测试方式
 

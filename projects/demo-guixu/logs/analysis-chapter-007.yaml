@@ -1,0 +1,71 @@
+{
+  "chapterId": "chapter-007",
+  "chapterTitle": "暗流涌动",
+  "analyzedAt": "2026-04-25T12:31:22+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 21,
+      "source": "registry"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 11,
+      "source": "registry"
+    },
+    {
+      "id": "char-bai-jiushang",
+      "name": "白九殇",
+      "mentionCount": 6,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 1,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-007::char-shen-xuan::2494cc1df4",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "离开",
+      "stateTags": [
+        "离开"
+      ],
+      "evidence": "@{沈玄}的手指在袖中微微收紧。他没有继续追问，买了两颗辟谷丹就离开了。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-007::char-shen-xuan::6f2b18937c",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "恐惧；离开",
+      "stateTags": [
+        "恐惧",
+        "离开"
+      ],
+      "evidence": "@{沈玄}转身离开公告栏，面色平静如水。没有人能从他的表情中读出任何情绪波动。他已经学会了将恐惧和焦虑埋在更深的地方——深到连自己都几乎感觉不到。",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-gu-changyuan",
+      "char-bai-jiushang",
+      "char-ye-qingyi"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "顾长渊",
+      "白九殇",
+      "叶清漪"
+    ]
+  }
+}

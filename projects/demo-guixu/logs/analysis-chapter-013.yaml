@@ -1,0 +1,103 @@
+{
+  "chapterId": "chapter-013",
+  "chapterTitle": "远古传承",
+  "analyzedAt": "2026-04-25T13:12:54+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 54,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 27,
+      "source": "registry"
+    },
+    {
+      "id": "char-bai-jiushang",
+      "name": "白九殇",
+      "mentionCount": 5,
+      "source": "registry"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 1,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-013::char-shen-xuan::70aa86ab74",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "恐惧",
+      "stateTags": [
+        "恐惧"
+      ],
+      "evidence": "@{沈玄}站在一道巨大的石门前，指尖微微发颤。不是因为恐惧，而是因为他认出了这道石门上的纹路。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-013::char-shen-xuan::d4bc8811a1",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "冷静",
+      "stateTags": [
+        "冷静"
+      ],
+      "evidence": "\"沈玄。\"@{叶清漪}蹲在他面前，声音恢复了冷静，但她的手已经握住了玄冰剑的剑柄——不是准备攻击，而是准备防御。她的目光越过@{沈玄}的肩膀，盯着石门的方向。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-013::char-ye-qingyi::d4bc8811a1",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "冷静",
+      "stateTags": [
+        "冷静"
+      ],
+      "evidence": "\"沈玄。\"@{叶清漪}蹲在他面前，声音恢复了冷静，但她的手已经握住了玄冰剑的剑柄——不是准备攻击，而是准备防御。她的目光越过@{沈玄}的肩膀，盯着石门的方向。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-013::char-ye-qingyi::99db8f61c6",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "冷静",
+      "stateTags": [
+        "冷静"
+      ],
+      "evidence": "\"走吧。\"@{叶清漪}的声音在身旁响起，平静而冷静，\"碎片的波动太大，可能会引来不必要的注意。\"",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-013::char-ye-qingyi::43c9b0c875",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "信任",
+      "stateTags": [
+        "信任"
+      ],
+      "evidence": "他选择沉默。不是不信任@{叶清漪}，而是现在还不是揭示真相的时候。他的猜测还需要更多的证据来验证。在他确认@{叶清漪}与归墟域封印的具体关系之前，贸然开口可能反而会造成困扰。",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-ye-qingyi",
+      "char-bai-jiushang",
+      "char-gu-changyuan"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "叶清漪",
+      "白九殇",
+      "顾长渊"
+    ]
+  }
+}

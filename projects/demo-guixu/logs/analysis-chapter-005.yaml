@@ -1,0 +1,31 @@
+{
+  "chapterId": "chapter-005",
+  "chapterTitle": "意外之人",
+  "analyzedAt": "2026-04-25T12:26:56+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 34,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 14,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-ye-qingyi"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "叶清漪"
+    ]
+  }
+}

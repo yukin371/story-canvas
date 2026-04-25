@@ -1,0 +1,1010 @@
+{
+  "snapshotProjections": [
+    {
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "scopeRef": "chapter-001",
+      "currentState": "信任",
+      "sourceChangeIds": [
+        "cr-dc13f55080"
+      ],
+      "updatedAt": "2026-04-25T11:49:54+08:00"
+    },
+    {
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "scopeRef": "chapter-001",
+      "currentState": "愤怒；背叛",
+      "sourceChangeIds": [
+        "cr-263775e498"
+      ],
+      "updatedAt": "2026-04-25T11:49:54+08:00"
+    },
+    {
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "scopeRef": "chapter-002",
+      "currentState": "恐惧",
+      "sourceChangeIds": [
+        "cr-427f9a59c2"
+      ],
+      "updatedAt": "2026-04-25T12:06:27+08:00"
+    },
+    {
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "scopeRef": "chapter-002",
+      "currentState": "信任；恐惧；愤怒",
+      "sourceChangeIds": [
+        "cr-29a2493b48"
+      ],
+      "updatedAt": "2026-04-25T12:06:27+08:00"
+    },
+    {
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "scopeRef": "chapter-004",
+      "currentState": "冷静",
+      "sourceChangeIds": [
+        "cr-dfc0f55a3a"
+      ],
+      "updatedAt": "2026-04-25T12:24:16+08:00"
+    },
+    {
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "scopeRef": "chapter-004",
+      "currentState": "冷静",
+      "sourceChangeIds": [
+        "cr-90f54d795e"
+      ],
+      "updatedAt": "2026-04-25T12:24:16+08:00"
+    },
+    {
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "scopeRef": "chapter-006",
+      "currentState": "离开",
+      "sourceChangeIds": [
+        "cr-4b0d97edc4"
+      ],
+      "updatedAt": "2026-04-25T12:29:41+08:00"
+    },
+    {
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "scopeRef": "chapter-007",
+      "currentState": "恐惧；离开",
+      "sourceChangeIds": [
+        "cr-bc9c6264cc"
+      ],
+      "updatedAt": "2026-04-25T12:31:31+08:00"
+    },
+    {
+      "entityId": "inferred::宋长老",
+      "entityName": "宋长老",
+      "scopeRef": "chapter-008",
+      "currentState": "离开",
+      "sourceChangeIds": [
+        "cr-4d3537e0b9"
+      ],
+      "updatedAt": "2026-04-25T12:33:59+08:00"
+    },
+    {
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "scopeRef": "chapter-013",
+      "currentState": "信任",
+      "sourceChangeIds": [
+        "cr-ee02ccc675"
+      ],
+      "updatedAt": "2026-04-25T13:13:11+08:00"
+    },
+    {
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "scopeRef": "chapter-009",
+      "currentState": "离开",
+      "sourceChangeIds": [
+        "cr-7b9cf9bbb1"
+      ],
+      "updatedAt": "2026-04-25T13:13:30+08:00"
+    },
+    {
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "scopeRef": "chapter-009",
+      "currentState": "震惊",
+      "sourceChangeIds": [
+        "cr-e7db5907ce"
+      ],
+      "updatedAt": "2026-04-25T13:13:30+08:00"
+    },
+    {
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "scopeRef": "chapter-014",
+      "currentState": "背叛",
+      "sourceChangeIds": [
+        "cr-2fed9c3c0a"
+      ],
+      "updatedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "scopeRef": "chapter-014",
+      "currentState": "背叛",
+      "sourceChangeIds": [
+        "cr-ada154867b"
+      ],
+      "updatedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "scopeRef": "chapter-014",
+      "currentState": "背叛",
+      "sourceChangeIds": [
+        "cr-9eac5cf94d"
+      ],
+      "updatedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "scopeRef": "chapter-010",
+      "currentState": "离开",
+      "sourceChangeIds": [
+        "cr-d92369493f"
+      ],
+      "updatedAt": "2026-04-25T13:16:56+08:00"
+    },
+    {
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "scopeRef": "chapter-011",
+      "currentState": "疲惫",
+      "sourceChangeIds": [
+        "cr-55e8261546"
+      ],
+      "updatedAt": "2026-04-25T13:20:15+08:00"
+    },
+    {
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "scopeRef": "chapter-016",
+      "currentState": "怀疑",
+      "sourceChangeIds": [
+        "cr-d03e0bc6c1"
+      ],
+      "updatedAt": "2026-04-25T13:21:45+08:00"
+    },
+    {
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "scopeRef": "chapter-016",
+      "currentState": "怀疑",
+      "sourceChangeIds": [
+        "cr-d8158be844"
+      ],
+      "updatedAt": "2026-04-25T13:21:45+08:00"
+    },
+    {
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "scopeRef": "chapter-012",
+      "currentState": "怀疑",
+      "sourceChangeIds": [
+        "cr-2ab8a23036"
+      ],
+      "updatedAt": "2026-04-25T13:24:00+08:00"
+    },
+    {
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "scopeRef": "chapter-018",
+      "currentState": "恐惧；震惊",
+      "sourceChangeIds": [
+        "cr-30b50dc10f"
+      ],
+      "updatedAt": "2026-04-25T17:36:27+08:00"
+    },
+    {
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "scopeRef": "chapter-018",
+      "currentState": "受伤；恐惧",
+      "sourceChangeIds": [
+        "cr-05b6ec8b90"
+      ],
+      "updatedAt": "2026-04-25T17:36:27+08:00"
+    },
+    {
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "scopeRef": "chapter-022",
+      "currentState": "愤怒",
+      "sourceChangeIds": [
+        "cr-2d6c5a4c57"
+      ],
+      "updatedAt": "2026-04-25T17:37:20+08:00"
+    },
+    {
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "scopeRef": "chapter-022",
+      "currentState": "离开",
+      "sourceChangeIds": [
+        "cr-4bd107afa3"
+      ],
+      "updatedAt": "2026-04-25T17:37:20+08:00"
+    },
+    {
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "scopeRef": "chapter-022",
+      "currentState": "信任；离开",
+      "sourceChangeIds": [
+        "cr-4a4e5d2071"
+      ],
+      "updatedAt": "2026-04-25T17:37:20+08:00"
+    },
+    {
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "scopeRef": "chapter-022",
+      "currentState": "信任；离开",
+      "sourceChangeIds": [
+        "cr-e423ee1999"
+      ],
+      "updatedAt": "2026-04-25T17:37:20+08:00"
+    },
+    {
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "scopeRef": "chapter-023",
+      "currentState": "疲惫",
+      "sourceChangeIds": [
+        "cr-df72f30fcc"
+      ],
+      "updatedAt": "2026-04-25T17:40:18+08:00"
+    },
+    {
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "scopeRef": "chapter-019",
+      "currentState": "离开；背叛",
+      "sourceChangeIds": [
+        "cr-f3879f1da4"
+      ],
+      "updatedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "entityId": "char-bai-jiushang",
+      "entityName": "白九殇",
+      "scopeRef": "chapter-019",
+      "currentState": "背叛",
+      "sourceChangeIds": [
+        "cr-174276ade3"
+      ],
+      "updatedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "scopeRef": "chapter-019",
+      "currentState": "紧张",
+      "sourceChangeIds": [
+        "cr-8c02e209df"
+      ],
+      "updatedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "scopeRef": "chapter-019",
+      "currentState": "离开；背叛",
+      "sourceChangeIds": [
+        "cr-5527592364"
+      ],
+      "updatedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "scopeRef": "chapter-024",
+      "currentState": "流血",
+      "sourceChangeIds": [
+        "cr-b32e340892"
+      ],
+      "updatedAt": "2026-04-25T17:43:04+08:00"
+    },
+    {
+      "entityId": "char-bai-jiushang",
+      "entityName": "白九殇",
+      "scopeRef": "chapter-024",
+      "currentState": "愤怒",
+      "sourceChangeIds": [
+        "cr-6c41159ee7"
+      ],
+      "updatedAt": "2026-04-25T17:43:04+08:00"
+    },
+    {
+      "entityId": "char-bai-jiushang",
+      "entityName": "白九殇",
+      "scopeRef": "chapter-020",
+      "currentState": "恐惧",
+      "sourceChangeIds": [
+        "cr-faac7a310a"
+      ],
+      "updatedAt": "2026-04-25T17:44:56+08:00"
+    },
+    {
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "scopeRef": "chapter-020",
+      "currentState": "恐惧",
+      "sourceChangeIds": [
+        "cr-57bf719b3f"
+      ],
+      "updatedAt": "2026-04-25T17:44:56+08:00"
+    },
+    {
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "scopeRef": "chapter-025",
+      "currentState": "信任；愤怒；背叛",
+      "sourceChangeIds": [
+        "cr-7b09d056a3"
+      ],
+      "updatedAt": "2026-04-25T17:46:10+08:00"
+    },
+    {
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "scopeRef": "chapter-021",
+      "currentState": "愤怒",
+      "sourceChangeIds": [
+        "cr-fc7f54b108"
+      ],
+      "updatedAt": "2026-04-25T17:48:44+08:00"
+    },
+    {
+      "entityId": "char-bai-jiushang",
+      "entityName": "白九殇",
+      "scopeRef": "chapter-021",
+      "currentState": "信任",
+      "sourceChangeIds": [
+        "cr-51e10fbf7f"
+      ],
+      "updatedAt": "2026-04-25T17:48:44+08:00"
+    }
+  ],
+  "relationProjections": [
+    {
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-bai-jiushang",
+      "toName": "白九殇",
+      "scopeRef": "chapter-001",
+      "label": "合作",
+      "sourceChangeIds": [
+        "cr-8841639ff6"
+      ],
+      "updatedAt": "2026-04-25T11:53:28+08:00"
+    },
+    {
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-gu-changyuan",
+      "toName": "顾长渊",
+      "scopeRef": "chapter-002",
+      "label": "冲突",
+      "sourceChangeIds": [
+        "cr-2d2dbcce02"
+      ],
+      "updatedAt": "2026-04-25T12:04:22+08:00"
+    },
+    {
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "scopeRef": "chapter-002",
+      "label": "对立",
+      "sourceChangeIds": [
+        "cr-834fa333bc"
+      ],
+      "updatedAt": "2026-04-25T12:06:27+08:00"
+    },
+    {
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-ye-qingyi",
+      "toName": "叶清漪",
+      "scopeRef": "chapter-014",
+      "label": "裂痕",
+      "sourceChangeIds": [
+        "cr-1fbc054593"
+      ],
+      "updatedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "scopeRef": "chapter-014",
+      "label": "裂痕",
+      "sourceChangeIds": [
+        "cr-6fd6a3188c"
+      ],
+      "updatedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "fromId": "char-ye-qingyi",
+      "fromName": "叶清漪",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "scopeRef": "chapter-014",
+      "label": "裂痕",
+      "sourceChangeIds": [
+        "cr-700bd789a3"
+      ],
+      "updatedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "scopeRef": "chapter-016",
+      "label": "信任下降",
+      "sourceChangeIds": [
+        "cr-6914f9cf23"
+      ],
+      "updatedAt": "2026-04-25T13:21:45+08:00"
+    },
+    {
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-ye-qingyi",
+      "toName": "叶清漪",
+      "scopeRef": "chapter-012",
+      "label": "信任下降",
+      "sourceChangeIds": [
+        "cr-870b38bb4a"
+      ],
+      "updatedAt": "2026-04-25T13:24:00+08:00"
+    },
+    {
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-ye-qingyi",
+      "toName": "叶清漪",
+      "scopeRef": "chapter-017",
+      "label": "信任上升",
+      "sourceChangeIds": [
+        "cr-f2f282635e"
+      ],
+      "updatedAt": "2026-04-25T13:26:40+08:00"
+    },
+    {
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-gu-changyuan",
+      "toName": "顾长渊",
+      "scopeRef": "chapter-017",
+      "label": "合作",
+      "sourceChangeIds": [
+        "cr-228275e347"
+      ],
+      "updatedAt": "2026-04-25T13:26:40+08:00"
+    },
+    {
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-bai-jiushang",
+      "toName": "白九殇",
+      "scopeRef": "chapter-017",
+      "label": "合作",
+      "sourceChangeIds": [
+        "cr-d467cea508"
+      ],
+      "updatedAt": "2026-04-25T13:26:40+08:00"
+    },
+    {
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-bai-jiushang",
+      "toName": "白九殇",
+      "scopeRef": "chapter-017",
+      "label": "亲近",
+      "sourceChangeIds": [
+        "cr-9ba6419073"
+      ],
+      "updatedAt": "2026-04-25T13:26:40+08:00"
+    },
+    {
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-gu-changyuan",
+      "toName": "顾长渊",
+      "scopeRef": "chapter-022",
+      "label": "信任上升",
+      "sourceChangeIds": [
+        "cr-7a00e21454"
+      ],
+      "updatedAt": "2026-04-25T17:37:20+08:00"
+    },
+    {
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "scopeRef": "chapter-019",
+      "label": "裂痕",
+      "sourceChangeIds": [
+        "cr-0994bc8709"
+      ],
+      "updatedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-gu-changyuan",
+      "toName": "顾长渊",
+      "scopeRef": "chapter-019",
+      "label": "裂痕",
+      "sourceChangeIds": [
+        "cr-5f910ad484"
+      ],
+      "updatedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-ye-qingyi",
+      "toName": "叶清漪",
+      "scopeRef": "chapter-024",
+      "label": "合作",
+      "sourceChangeIds": [
+        "cr-e7ecf2b03a"
+      ],
+      "updatedAt": "2026-04-25T17:43:04+08:00"
+    },
+    {
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-ye-qingyi",
+      "toName": "叶清漪",
+      "scopeRef": "chapter-024",
+      "label": "合作",
+      "sourceChangeIds": [
+        "cr-8a63ce7fcc"
+      ],
+      "updatedAt": "2026-04-25T17:43:04+08:00"
+    },
+    {
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "scopeRef": "chapter-025",
+      "label": "合作",
+      "sourceChangeIds": [
+        "cr-fa0a0782f0"
+      ],
+      "updatedAt": "2026-04-25T17:46:10+08:00"
+    },
+    {
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "scopeRef": "chapter-025",
+      "label": "合作",
+      "sourceChangeIds": [
+        "cr-6aa5ba29be"
+      ],
+      "updatedAt": "2026-04-25T17:46:10+08:00"
+    },
+    {
+      "fromId": "char-ye-qingyi",
+      "fromName": "叶清漪",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "scopeRef": "chapter-025",
+      "label": "合作",
+      "sourceChangeIds": [
+        "cr-9639a77d1f"
+      ],
+      "updatedAt": "2026-04-25T17:46:10+08:00"
+    }
+  ],
+  "sceneScopeProjections": [
+    {
+      "chapterId": "chapter-001",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-gu-changyuan",
+        "char-bai-jiushang"
+      ],
+      "sourceChangeIds": [
+        "cr-dc13f55080",
+        "cr-263775e498",
+        "cr-8841639ff6"
+      ],
+      "updatedAt": "2026-04-25T11:53:28+08:00"
+    },
+    {
+      "chapterId": "chapter-002",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-gu-changyuan",
+        "char-song-huaijin",
+        "char-bai-jiushang"
+      ],
+      "sourceChangeIds": [
+        "cr-2d2dbcce02",
+        "cr-427f9a59c2",
+        "cr-29a2493b48",
+        "cr-834fa333bc"
+      ],
+      "updatedAt": "2026-04-25T12:06:27+08:00"
+    },
+    {
+      "chapterId": "chapter-003",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-ye-qingyi"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-25T12:20:50+08:00"
+    },
+    {
+      "chapterId": "chapter-004",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-ye-qingyi",
+        "char-gu-changyuan"
+      ],
+      "sourceChangeIds": [
+        "cr-1a3d5106d7",
+        "cr-dfc0f55a3a",
+        "cr-90f54d795e"
+      ],
+      "updatedAt": "2026-04-25T12:24:16+08:00"
+    },
+    {
+      "chapterId": "chapter-005",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-ye-qingyi"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-25T12:27:04+08:00"
+    },
+    {
+      "chapterId": "chapter-006",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-bai-jiushang",
+        "char-gu-changyuan"
+      ],
+      "sourceChangeIds": [
+        "cr-4b0d97edc4"
+      ],
+      "updatedAt": "2026-04-25T12:29:41+08:00"
+    },
+    {
+      "chapterId": "chapter-007",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-gu-changyuan",
+        "char-bai-jiushang",
+        "char-ye-qingyi"
+      ],
+      "sourceChangeIds": [
+        "cr-bc9c6264cc"
+      ],
+      "updatedAt": "2026-04-25T12:31:31+08:00"
+    },
+    {
+      "chapterId": "chapter-008",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "inferred::宋长老",
+        "char-gu-changyuan",
+        "char-ye-qingyi",
+        "char-song-huaijin",
+        "char-bai-jiushang"
+      ],
+      "sourceChangeIds": [
+        "cr-4d3537e0b9"
+      ],
+      "updatedAt": "2026-04-25T12:33:59+08:00"
+    },
+    {
+      "chapterId": "chapter-013",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-ye-qingyi",
+        "char-bai-jiushang",
+        "char-gu-changyuan"
+      ],
+      "sourceChangeIds": [
+        "cr-ee02ccc675"
+      ],
+      "updatedAt": "2026-04-25T13:13:11+08:00"
+    },
+    {
+      "chapterId": "chapter-009",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-gu-changyuan",
+        "char-song-huaijin",
+        "inferred::宋长老"
+      ],
+      "sourceChangeIds": [
+        "cr-7b9cf9bbb1",
+        "cr-fcc86019b3",
+        "cr-e7db5907ce"
+      ],
+      "updatedAt": "2026-04-25T13:13:30+08:00"
+    },
+    {
+      "chapterId": "chapter-014",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-song-huaijin",
+        "char-ye-qingyi",
+        "char-gu-changyuan"
+      ],
+      "sourceChangeIds": [
+        "cr-5c0b5eaa96",
+        "cr-e05ffca443",
+        "cr-caece76634",
+        "cr-2fed9c3c0a",
+        "cr-9eac5cf94d",
+        "cr-ada154867b",
+        "cr-17e7002055",
+        "cr-e9c4ab3f3a",
+        "cr-f5e1b3882b",
+        "cr-1fbc054593",
+        "cr-6fd6a3188c",
+        "cr-700bd789a3"
+      ],
+      "updatedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "chapterId": "chapter-010",
+      "activeEntityIds": [
+        "char-ye-qingyi",
+        "char-shen-xuan",
+        "char-bai-jiushang",
+        "char-gu-changyuan"
+      ],
+      "sourceChangeIds": [
+        "cr-d92369493f"
+      ],
+      "updatedAt": "2026-04-25T13:16:56+08:00"
+    },
+    {
+      "chapterId": "chapter-015",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-song-huaijin",
+        "char-ye-qingyi",
+        "char-gu-changyuan",
+        "char-bai-jiushang"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-25T13:19:34+08:00"
+    },
+    {
+      "chapterId": "chapter-011",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-ye-qingyi"
+      ],
+      "sourceChangeIds": [
+        "cr-de75f5ea1b",
+        "cr-55e8261546"
+      ],
+      "updatedAt": "2026-04-25T13:20:15+08:00"
+    },
+    {
+      "chapterId": "chapter-016",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-gu-changyuan",
+        "char-ye-qingyi",
+        "char-bai-jiushang",
+        "char-song-huaijin"
+      ],
+      "sourceChangeIds": [
+        "cr-d03e0bc6c1",
+        "cr-d8158be844",
+        "cr-6914f9cf23"
+      ],
+      "updatedAt": "2026-04-25T13:23:12+08:00"
+    },
+    {
+      "chapterId": "chapter-012",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-ye-qingyi"
+      ],
+      "sourceChangeIds": [
+        "cr-2ab8a23036",
+        "cr-870b38bb4a"
+      ],
+      "updatedAt": "2026-04-25T13:24:00+08:00"
+    },
+    {
+      "chapterId": "chapter-017",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-gu-changyuan",
+        "char-bai-jiushang",
+        "char-ye-qingyi",
+        "inferred::探子",
+        "char-song-huaijin"
+      ],
+      "sourceChangeIds": [
+        "cr-f2f282635e",
+        "cr-228275e347",
+        "cr-d467cea508",
+        "cr-9ba6419073"
+      ],
+      "updatedAt": "2026-04-25T13:26:40+08:00"
+    },
+    {
+      "chapterId": "chapter-018",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-gu-changyuan",
+        "char-ye-qingyi",
+        "char-song-huaijin",
+        "char-bai-jiushang"
+      ],
+      "sourceChangeIds": [
+        "cr-33d02c4b1e",
+        "cr-0e41dac4a9",
+        "cr-e3a31174bf",
+        "cr-30b50dc10f",
+        "cr-05b6ec8b90"
+      ],
+      "updatedAt": "2026-04-25T17:36:27+08:00"
+    },
+    {
+      "chapterId": "chapter-022",
+      "activeEntityIds": [
+        "char-song-huaijin",
+        "char-shen-xuan",
+        "char-gu-changyuan",
+        "char-ye-qingyi"
+      ],
+      "sourceChangeIds": [
+        "cr-a22c4048bc",
+        "cr-c7930cae3b",
+        "cr-2d6c5a4c57",
+        "cr-4a4e5d2071",
+        "cr-e423ee1999",
+        "cr-a8b2b1dbeb",
+        "cr-4bd107afa3",
+        "cr-7a00e21454"
+      ],
+      "updatedAt": "2026-04-25T17:37:20+08:00"
+    },
+    {
+      "chapterId": "chapter-023",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-gu-changyuan",
+        "char-bai-jiushang",
+        "char-ye-qingyi",
+        "char-song-huaijin"
+      ],
+      "sourceChangeIds": [
+        "cr-efc225b522",
+        "cr-df72f30fcc"
+      ],
+      "updatedAt": "2026-04-25T17:40:18+08:00"
+    },
+    {
+      "chapterId": "chapter-019",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-gu-changyuan",
+        "char-bai-jiushang",
+        "char-song-huaijin",
+        "char-ye-qingyi"
+      ],
+      "sourceChangeIds": [
+        "cr-b7dc6297ce",
+        "cr-9598ec7386",
+        "cr-55813ff18d",
+        "cr-174276ade3",
+        "cr-9026d6ea5a",
+        "cr-f3879f1da4",
+        "cr-5527592364",
+        "cr-8c02e209df",
+        "cr-0994bc8709",
+        "cr-aa9c616c5e",
+        "cr-5f910ad484"
+      ],
+      "updatedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "chapterId": "chapter-024",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-gu-changyuan",
+        "char-bai-jiushang",
+        "char-song-huaijin",
+        "char-ye-qingyi"
+      ],
+      "sourceChangeIds": [
+        "cr-b32e340892",
+        "cr-6c41159ee7",
+        "cr-e7ecf2b03a",
+        "cr-8a63ce7fcc"
+      ],
+      "updatedAt": "2026-04-25T17:43:04+08:00"
+    },
+    {
+      "chapterId": "chapter-020",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-ye-qingyi",
+        "char-bai-jiushang",
+        "char-gu-changyuan",
+        "inferred::他",
+        "inferred::她"
+      ],
+      "sourceChangeIds": [
+        "cr-faac7a310a",
+        "cr-9c20a7a21a",
+        "cr-57bf719b3f"
+      ],
+      "updatedAt": "2026-04-25T17:44:56+08:00"
+    },
+    {
+      "chapterId": "chapter-025",
+      "activeEntityIds": [
+        "char-shen-xuan",
+        "char-ye-qingyi",
+        "char-gu-changyuan",
+        "char-song-huaijin",
+        "char-bai-jiushang"
+      ],
+      "sourceChangeIds": [
+        "cr-7b09d056a3",
+        "cr-fa0a0782f0",
+        "cr-6aa5ba29be",
+        "cr-9639a77d1f"
+      ],
+      "updatedAt": "2026-04-25T17:46:10+08:00"
+    },
+    {
+      "chapterId": "chapter-021",
+      "activeEntityIds": [
+        "char-bai-jiushang",
+        "char-shen-xuan",
+        "char-ye-qingyi",
+        "char-gu-changyuan"
+      ],
+      "sourceChangeIds": [
+        "cr-fc7f54b108",
+        "cr-1ceffbde99",
+        "cr-51e10fbf7f"
+      ],
+      "updatedAt": "2026-04-25T17:48:44+08:00"
+    }
+  ],
+  "timelineProjections": [],
+  "causalityProjections": []
+}

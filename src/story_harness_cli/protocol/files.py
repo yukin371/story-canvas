@@ -83,6 +83,12 @@ def resolve_state_path(
     if state_key == "project":
         return root / "project.yaml"
 
+    if state_key == "workflow_progress":
+        return root / "workflow.yaml"
+
+    if state_key == "illustrations":
+        return root / "illustrations.yaml"
+
     if state_key == "chapters":
         return root / "chapters"
 
@@ -110,4 +116,3 @@ def resolve_state_path(
 
     # -- fallback -------------------------------------------------------------
     return root / f"{state_key}.yaml"
-

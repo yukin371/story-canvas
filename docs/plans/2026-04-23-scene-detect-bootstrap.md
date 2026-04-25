@@ -8,14 +8,14 @@
 - `src/story_harness_cli/commands/outline.py`
 - `src/story_harness_cli/services/story_review.py`
 - `tests/smoke/test_outline_loop.py`
-- `demo-novel/project.yaml`
-- `demo-novel/outline.yaml`
+- `projects/demo-novel/project.yaml`
+- `projects/demo-novel/outline.yaml`
 
 ## 现有 owner
 
 - scene 候选切分 owner: `services/story_review.py`
 - scenePlans CLI 维护 owner: `commands/outline.py`
-- demo 样例工程状态 owner: `demo-novel/*`
+- demo 样例工程状态 owner: `projects/demo-novel/*`
 
 ## 影响面
 
@@ -28,7 +28,7 @@
 1. 在 `services/story_review.py` 中新增 scenePlans 检测构建函数
 2. 在 `commands/outline.py` 中新增 `scene-detect`，支持安全替换已有 `scenePlans`
 3. 补 smoke tests，覆盖生成、替换保护与显式评审切换
-4. 回填 `demo-novel/project.yaml` 的定位与故事契约
+4. 回填 `projects/demo-novel/project.yaml` 的定位与故事契约
 5. 为 `demo-novel` 生成显式 `scenePlans` 并回跑 `review scene`
 6. 同步 roadmap / module / protocol guide 文档
 
@@ -43,8 +43,8 @@
 - `python -m unittest tests.smoke.test_outline_loop tests.smoke.test_review_scene`
 - `python -m unittest discover -s tests`
 - `$env:PYTHONPATH='src'; python -m story_harness_cli outline scene-detect --help`
-- `$env:PYTHONPATH='src'; python -m story_harness_cli review scene --root demo-novel --chapter-id chapter-008 --list-scenes`
-- `$env:PYTHONPATH='src'; python -m story_harness_cli review scene --root demo-novel --chapter-id chapter-008 --scene-index 1`
+- `$env:PYTHONPATH='src'; python -m story_harness_cli review scene --root projects/demo-novel --chapter-id chapter-008 --list-scenes`
+- `$env:PYTHONPATH='src'; python -m story_harness_cli review scene --root projects/demo-novel --chapter-id chapter-008 --scene-index 1`
 
 ## 需要同步的文档
 

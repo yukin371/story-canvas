@@ -17,11 +17,11 @@
 
 下面这些虽然多数是未跟踪文件，但在当前仓库语义里更接近“样例工程快照”或“新功能基线”，不建议未经确认直接删掉：
 
-- `demo-short-story/`
-- `demo-light-novel-short/`
-- `demo-xuanhuan-short/`
-- `demo-urban-occult-long/`
-- `demo-novel/` 下新增的 `project.yaml` / `outline.yaml` / `chapters/` / `logs/` / `projections/` / `reviews/` / `timeline.yaml`
+- `projects/demo-short-story/`
+- `projects/demo-light-novel-short/`
+- `projects/demo-xuanhuan-short/`
+- `projects/demo-urban-occult-long/`
+- `projects/demo-novel/` 下新增的 `project.yaml` / `outline.yaml` / `chapters/` / `logs/` / `projections/` / `reviews/` / `timeline.yaml`
 - `tests/fixtures/minimal_project/structures.yaml`
 - `tests/fixtures/minimal_project/threads.yaml`
 - `tests/fixtures/minimal_project/reviews/story-reviews.yaml`
@@ -93,10 +93,10 @@
 
 建议包含：
 
-- `demo-short-story/`
-- `demo-light-novel-short/`
-- `demo-xuanhuan-short/`
-- `demo-urban-occult-long/`
+- `projects/demo-short-story/`
+- `projects/demo-light-novel-short/`
+- `projects/demo-xuanhuan-short/`
+- `projects/demo-urban-occult-long/`
 - `tests/smoke/test_demo_short_story_sample.py`
 - `tests/smoke/test_demo_light_novel_short_sample.py`
 - `tests/smoke/test_demo_xuanhuan_short_sample.py`
@@ -335,6 +335,6 @@ git add demo-novel
 ## 明确不建议纳入核心提交的内容
 
 - `.claude/`：更像本地安装副本，不是 source of truth
-- `demo-*/manuscript.md` / `demo-novel/manuscript.json` / `demo-novel/manuscript.txt`：更偏导出产物，可按是否需要保留示例输出单独决定
+- `demo-*/manuscript.md` / `projects/demo-novel/manuscript.json` / `projects/demo-novel/manuscript.txt`：更偏导出产物，可按是否需要保留示例输出单独决定
 
 如果你要的是“干净历史”，优先只提交 `project.yaml` / `outline.yaml` / `chapters/` / `reviews/` / `projections/` / `logs/` / `timeline.yaml` 这些真正被样例和测试依赖的状态文件，导出成品留到第二轮再决定。

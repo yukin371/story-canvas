@@ -56,6 +56,39 @@
 - 结局承诺: {比如"卷一完成 XX 跃迁"}
 - 节奏承诺: {比如"中快节奏"}
 
+### 2.2 AI 协作与风格控制
+
+| 字段 | 内容 |
+|------|------|
+| 生成模式 | 人工主写 / AI 辅助 / AI 起稿后精修 |
+| 默认 style profile | `default` / `web-serial-zh` / `light-novel` / ... |
+| 生成时约束 | {例如“避免连续 3 段相似开头、减少模糊副词、禁用程式化过渡句”} |
+| 发布前风格门槛 | `styleAnalysis.totalDeduction <= {N}` 或 `overallScore >= {N}` |
+| 超阈值修复策略 | `style constraints` → 重写问题段落 → `style check` / `review chapter` 复检 |
+
+- 写前要求:
+  - 起稿 prompt 必须显式消费当前 project 的 style profile / 约束
+  - 若是 AI 起稿，必须保留“本章约束摘要”作为上下文输入
+- 写后要求:
+  - 每章至少执行一次 `style check` 或通过 `review chapter` 读取 `styleAnalysis`
+  - 若超过阈值，不得直接进入发布态，必须先修复再复检
+
+### 2.3 视觉资产与插图策略
+
+| 字段 | 内容 |
+|------|------|
+| 插图目标 | 角色设定图 / 章节高潮插图 / 宣传图 / 封面概念图 |
+| 生成模式 | 文生图（`text-to-image`） / 图生图（`image-to-image`） |
+| 首选 adapter | OpenAI / local / none |
+| 首选 model | {例如环境可用时 `gpt-image-2`} |
+| 参考图来源 | 角色设定稿 / 已生成资产 / 手绘草图 / 外部参考 |
+| 频率与预算 | {例如“每卷 2-4 张关键图，单章只在高潮节点出图”} |
+| 审核规则 | 人物一致性、时代/服饰正确性、平台合规、无剧透越界 |
+
+- 资产要求:
+  - 每张正式采用的插图都应能追溯 prompt、参考图、model 和生成时间
+  - 若项目启用图生图，必须说明哪些图可作为 reference，不得隐式复用来历不明素材
+
 ---
 
 ## 3. 产出物标准
@@ -168,7 +201,9 @@
 | 检查项 | 命令 | 通过条件 |
 |--------|------|---------|
 | 结构完整性 | `doctor` | errors=0, warnings=0 |
+| 写前约束 | `style constraints` | 已生成并确认当前章的 style 约束 |
 | 章节分析 | `chapter analyze` | 实体提取正常 |
+| AI 风格检测 | `style check` 或 `review chapter` 中 `styleAnalysis` | `totalDeduction <= {N}` |
 | 章节评审 | `review chapter` | 加权分 >= {N}/100 |
 | 一幕评审 | `review scene` | 每个 scene >= {N}/100 |
 | 一致性 | `consistency check` | 无冲突 |
@@ -197,8 +232,9 @@
 
 1. `doctor` 通过（errors=0）
 2. `review chapter` 加权分 >= 80
-3. 字数 >= 底线字数
-4. `context refresh` 可正常刷新到下一章
+3. `styleAnalysis.totalDeduction` 不高于 PRD 设定阈值
+4. 字数 >= 底线字数
+5. `context refresh` 可正常刷新到下一章
 
 ### 5.2 单卷交付条件
 
@@ -223,9 +259,9 @@
 ### 6.1 推荐写作闭环
 
 ```
-outline check → chapter write → chapter analyze → review chapter →
-review scene → chapter suggest → review apply → projection apply →
-context refresh → (下一章)
+outline check → style constraints → chapter write / AI draft → style check →
+review chapter → review scene → style repair / chapter suggest → review apply →
+projection apply → context refresh → workflow advance → (下一章)
 ```
 
 ### 6.2 命令矩阵
@@ -236,11 +272,14 @@ context refresh → (下一章)
 | 规划 | `outline propose/promote/check` | 大纲管理 |
 | 场景 | `outline scene-add/scene-list/scene-detect` | 场景边界维护 |
 | 细纲 | `outline beat-add/beat-complete/beat-list` | 细纲追踪 |
+| 风格 | `style check/constraints/report` | 生成约束、风格检测与聚合报告 |
 | 分析 | `chapter analyze` | 章节分析（实体提取） |
 | 评审 | `review chapter/scene` | 章节与一幕评审 |
+| 状态机 | `workflow status/run/advance/reset/export` | 显式推进 gate 和当前阶段 |
 | 建议 | `chapter suggest` | 生成改进建议 |
 | 应用 | `review apply` | 应用/拒绝变更请求 |
 | 投影 | `projection apply` | 更新投影 |
+| 插图（v3 规划） | `illustration prompt/generate/list/config` | 文生图 / 图生图与资产管理 |
 | 上下文 | `context refresh/show` | 刷新写作上下文 |
 | 检查 | `doctor` | 项目结构校验 |
 | 一致性 | `consistency check` | 一致性校验 |

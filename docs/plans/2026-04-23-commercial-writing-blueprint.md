@@ -29,6 +29,6 @@ python -m unittest tests.smoke.test_project_init -v
 python -m unittest tests.smoke.test_doctor -v
 python -m unittest tests.smoke.test_demo_urban_occult_long_sample -v
 python -m unittest discover -s tests
-python -m story_harness_cli doctor --root demo-urban-occult-long
+python -m story_harness_cli doctor --root projects/demo-urban-occult-long
 ```
 

@@ -27,7 +27,7 @@ python -m unittest tests.smoke.test_outline_loop -v
 python -m unittest tests.smoke.test_doctor -v
 python -m unittest tests.smoke.test_full_creative_loop -v
 python -m unittest discover -s tests
-python -m story_harness_cli outline check --root demo-urban-occult-long
+python -m story_harness_cli outline check --root projects/demo-urban-occult-long
 ```
 
 ## 风险

@@ -5,7 +5,7 @@
 
 ## 目标模块
 
-- `demo-light-novel-short/*`
+- `projects/demo-light-novel-short/*`
 
 ## 现有 owner
 
@@ -23,8 +23,8 @@
 
 ## 验证方式
 
-- `PYTHONPATH=src python -m story_harness_cli review chapter --root demo-light-novel-short --chapter-id chapter-001`
-- `PYTHONPATH=src python -m story_harness_cli review scene --root demo-light-novel-short --chapter-id chapter-001 --scene-index 1`
+- `PYTHONPATH=src python -m story_harness_cli review chapter --root projects/demo-light-novel-short --chapter-id chapter-001`
+- `PYTHONPATH=src python -m story_harness_cli review scene --root projects/demo-light-novel-short --chapter-id chapter-001 --scene-index 1`
 - `PYTHONPATH=src python -m unittest tests.smoke.test_demo_light_novel_short_sample -v`
 
 ## 验证结果

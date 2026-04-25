@@ -1,6 +1,6 @@
 # Story Harness CLI 架构护栏
 
-> 最后更新: 2026-04-22
+> 最后更新: 2026-04-25
 > 定位: 仓库级长期边界约束
 > 当前阶段依据: `docs/roadmap.md`
 
@@ -91,6 +91,22 @@
 - 业务逻辑
 - 状态管理
 
+### 2.6 Provider 层
+
+- `src/story_harness_cli/providers/`
+
+职责:
+
+- 封装外部 API、SDK 和 optional dependency
+- 返回标准化 provider 结果，供 commands / services 使用
+- 隔离鉴权、网络调用和 provider 特定错误
+
+不应承担:
+
+- 项目状态持久化
+- CLI 参数解析
+- 核心业务规则判定
+
 ## 3. Canonical Owners
 
 | 关注点 | Canonical owner | 说明 |
@@ -102,15 +118,18 @@
 | 投影管理 | `services/projection_engine.py` | upsert_by_key, apply_projection |
 | 一致性校验 | `services/consistency_engine.py` | hard/soft checks |
 | 文本处理 | `utils/text.py` | strip_entity_tags, extract_tag_mentions 等 |
+| 外部 provider 接入 | `providers/` | API/SDK 封装、optional dependency 包装 |
 | 命令注册 | `commands/__init__.py` + `cli.py` | 所有子命令注册入口 |
 
 ## 4. 允许的依赖方向
 
 1. `commands/` → `protocol/`, `services/`, `utils/`
-2. `services/` → `utils/`（仅文本工具和数据表）
-3. `protocol/` → `utils/`（仅 hashing）
-4. `cli.py` → `commands/__init__.py`
-5. `main.py` → `cli.py`
+2. `commands/` → `providers/`
+3. `services/` → `utils/`（仅文本工具和数据表）
+4. `protocol/` → `utils/`（仅 hashing）
+5. `providers/` → `utils/`, `data/`（仅 provider 辅助工具和 builtin pack）
+6. `cli.py` → `commands/__init__.py`
+7. `main.py` → `cli.py`
 
 ## 5. 明确禁止事项
 
@@ -118,8 +137,18 @@
 - 禁止 `protocol/` 包含业务逻辑
 - 禁止在 `commands/` 之外注册 CLI 子命令
 - 禁止两个模块并行维护相同共享能力
-- 禁止引入第三方依赖（stdlib only）
+- 禁止把第三方依赖设为 base install 的必需项
+- 禁止在 `services/` 和 `protocol/` 中直接调用外部 API 或耦合特定 provider SDK
+- 禁止缺失 optional dependency 时让核心 CLI 闭环直接失败
 - 禁止使用 YAML 特有特性（所有 `.yaml` 必须为合法 JSON）
+
+## 5.1 依赖策略
+
+- 仓库采用 `base + extras + packs` 模式:
+  - `base`: stdlib-only，必须覆盖核心 CLI 与离线测试
+  - `extras`: 可选第三方依赖，只能增强，不能变成硬前置
+  - `packs`: 词表、字典、prompt、review profile 等可替换资源包，缺失时必须回退 builtin 最小集
+- 具体口径见 `docs/adr/ADR-002-optional-dependencies-and-providers.md`
 
 ## 6. 非平凡改动前必须回答的问题
 

@@ -11,7 +11,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SRC_ROOT = REPO_ROOT / "src"
-DEMO_ROOT = REPO_ROOT / "demo-urban-occult-long"
+DEMO_ROOT = REPO_ROOT / "projects" / "demo-urban-occult-long"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
@@ -69,10 +69,10 @@ class DemoUrbanOccultLongSampleSmokeTest(unittest.TestCase):
             "chapter-002": "solid",
             "chapter-003": "strong",
             "chapter-004": "strong",
-            "chapter-005": "strong",
+            "chapter-005": "solid",
             "chapter-006": "solid",
             "chapter-007": "strong",
-            "chapter-008": "strong",
+            "chapter-008": "solid",
         }
 
         for chapter_id, scene_index in scene_targets.items():

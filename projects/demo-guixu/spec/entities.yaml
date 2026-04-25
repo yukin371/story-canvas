@@ -1,0 +1,333 @@
+{
+  "entities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "type": "character",
+      "registeredAt": "",
+      "profile": {
+        "traits": [
+          "冷静隐忍",
+          "谋定后动",
+          "外冷内热"
+        ],
+        "appearance": [
+          {
+            "part": "face",
+            "detail": "面容清俊，眉宇间有不合年龄的沧桑"
+          },
+          {
+            "part": "eyes",
+            "detail": "眸色极深，偶有金芒一闪"
+          },
+          {
+            "part": "build",
+            "detail": "身形修长，气质沉稳内敛"
+          }
+        ],
+        "abilities": [
+          {
+            "name": "归墟体",
+            "detail": "能吸收他人修为精华的特殊体质，既是天赋也是诅咒"
+          },
+          {
+            "name": "前世记忆",
+            "detail": "知晓未来事件但蝴蝶效应使其不可靠"
+          },
+          {
+            "name": "阵法造诣",
+            "detail": "前世精研阵法，重生后成为隐藏底牌"
+          }
+        ],
+        "background": "前世为天枢宗首席弟子，筑基期即展露归墟体质，被长老顾长渊暗中觊觎。金丹期突破时被顾长渊设计夺取归墟体核心而亡。重生回到十六岁筑基之前。",
+        "motivation": "复仇顾长渊，阻止归墟域封印崩塌（前世终极灾难）",
+        "arc": "从单线复仇到承担苍生责任，最终接受归墟体并非诅咒而是使命"
+      },
+      "relations": [
+        {
+          "target": "char-gu-changyuan",
+          "type": "仇敌",
+          "detail": "前世师父，杀死自己的人"
+        },
+        {
+          "target": "char-ye-qingyi",
+          "type": "伙伴/知己",
+          "detail": "本世因蝴蝶效应提前相遇"
+        },
+        {
+          "target": "char-song-huaijin",
+          "type": "挚友/变数",
+          "detail": "前世最终选择师父一方"
+        }
+      ]
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "type": "character",
+      "registeredAt": "",
+      "profile": {
+        "traits": [
+          "仙风道骨",
+          "深谋远虑",
+          "伪善",
+          "偏执"
+        ],
+        "appearance": [
+          {
+            "part": "face",
+            "detail": "鹤发童颜，长须飘逸，目若朗星"
+          },
+          {
+            "part": "demeanor",
+            "detail": "举止温雅，永远带着淡然微笑"
+          },
+          {
+            "part": "aura",
+            "detail": "气息浑厚如渊，令人不自禁生畏"
+          }
+        ],
+        "abilities": [
+          {
+            "name": "修为",
+            "detail": "化神期巅峰，差一步渡劫"
+          },
+          {
+            "name": "吞噬秘术",
+            "detail": "暗中修炼的邪术，需归墟体为引"
+          },
+          {
+            "name": "阵法",
+            "detail": "天枢宗阵法传承者，与沈玄同源"
+          }
+        ],
+        "background": "天枢宗大长老，掌管宗门阵法堂。表面德高望重，实则被归墟域封印中的白九殇诱惑，走上邪修之路。他认为牺牲一个弟子换取自己突破渡劫、守护宗门是合理交易。",
+        "motivation": "突破渡劫期（需要归墟体），维持天枢宗地位，暗中压制归墟域封印异动",
+        "arc": "从令人敬仰的长辈到暴露野心的反派，最终揭示他也是白九殇的棋子"
+      },
+      "relations": [
+        {
+          "target": "char-shen-xuan",
+          "type": "师徒/仇敌",
+          "detail": "前世杀徒夺体"
+        },
+        {
+          "target": "char-bai-jiushang",
+          "type": "棋子/合作",
+          "detail": "被白九殇暗中操纵"
+        }
+      ]
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "type": "character",
+      "registeredAt": "",
+      "profile": {
+        "traits": [
+          "冷面热心",
+          "剑心通明",
+          "独立坚韧"
+        ],
+        "appearance": [
+          {
+            "part": "face",
+            "detail": "面若寒霜，五官精致如冰雕"
+          },
+          {
+            "part": "hair",
+            "detail": "墨发高束，一丝不苟"
+          },
+          {
+            "part": "weapon",
+            "detail": "背负玄冰剑，剑气凛然"
+          }
+        ],
+        "abilities": [
+          {
+            "name": "剑修天赋",
+            "detail": "玄冥域百年一遇的剑道天才"
+          },
+          {
+            "name": "冰系灵根",
+            "detail": "极阴灵根，修炼玄冥剑诀事半功倍"
+          },
+          {
+            "name": "洞察力",
+            "detail": "对恶意和谎言极为敏感，几乎无法欺骗"
+          }
+        ],
+        "background": "玄冥域散修，无门无派自悟剑道。前世与沈玄从未交集。本世因蝴蝶效应在青云试炼中与沈玄相遇，成为他计划外最大的变量。她的存在迫使沈玄不能再用前世的冷酷算计。",
+        "motivation": "追求剑道极致，探寻身世之谜",
+        "arc": "从独行的剑修到愿意为他人拔剑的伙伴，最终成为沈玄人性的锚点"
+      },
+      "relations": [
+        {
+          "target": "char-shen-xuan",
+          "type": "伙伴/知己",
+          "detail": "本世提前相遇，互为变数"
+        },
+        {
+          "target": "char-song-huaijin",
+          "type": "微妙关系",
+          "detail": "对宋怀瑾有本能的警觉"
+        }
+      ]
+    },
+    {
+      "id": "char-song-huaijin",
+      "name": "宋怀瑾",
+      "type": "character",
+      "registeredAt": "",
+      "profile": {
+        "traits": [
+          "温润如玉",
+          "优柔寡断",
+          "重情义",
+          "内心矛盾"
+        ],
+        "appearance": [
+          {
+            "part": "face",
+            "detail": "温文尔雅，笑容和煦"
+          },
+          {
+            "part": "demeanor",
+            "detail": "待人接物极有分寸，让人如沐春风"
+          },
+          {
+            "part": "build",
+            "detail": "身量中等，书卷气浓"
+          }
+        ],
+        "abilities": [
+          {
+            "name": "丹道天赋",
+            "detail": "天枢宗丹药堂首席弟子"
+          },
+          {
+            "name": "人脉",
+            "detail": "善交际，在各宗门都有人脉"
+          },
+          {
+            "name": "情报网",
+            "detail": "善于收集和分析信息"
+          }
+        ],
+        "background": "天枢宗丹药堂首席，沈玄前世挚友。前世在沈玄被陷害时选择了相信师父的说辞，站在了沈玄的对立面。但事后得知真相，余生被愧疚折磨。本世沈玄选择不同宗门，宋怀瑾依然是天枢宗弟子，但 butterfly effect 让他更早接触到顾长渊的秘密。",
+        "motivation": "维护友情与正义，但害怕背叛宗门",
+        "arc": "从两难中挣扎到做出选择——无论选择哪边都要付出代价"
+      },
+      "relations": [
+        {
+          "target": "char-shen-xuan",
+          "type": "挚友",
+          "detail": "前世最后的遗憾，本世最大的道德考验"
+        },
+        {
+          "target": "char-gu-changyuan",
+          "type": "师徒",
+          "detail": "丹药堂弟子，对顾长渊有敬仰也有怀疑"
+        },
+        {
+          "target": "char-ye-qingyi",
+          "type": "微妙",
+          "detail": "叶清漪对他有本能警觉，让他不安"
+        }
+      ]
+    },
+    {
+      "id": "char-bai-jiushang",
+      "name": "白九殇",
+      "type": "character",
+      "registeredAt": "",
+      "profile": {
+        "traits": [
+          "超然物外",
+          "诡谲莫测",
+          "非人思维"
+        ],
+        "appearance": [
+          {
+            "part": "form",
+            "detail": "以意念投影出现，形象随环境变化"
+          },
+          {
+            "part": "true_form",
+            "detail": "归墟域封印中的远古存在，本体不可名状"
+          }
+        ],
+        "abilities": [
+          {
+            "name": "精神操控",
+            "detail": "能潜移默化地影响他人的思想和决策"
+          },
+          {
+            "name": "跨越时间感知",
+            "detail": "模糊感知时间线变动，察觉沈玄的重生"
+          },
+          {
+            "name": "归墟域之力",
+            "detail": "通过封印缝隙渗透力量"
+          }
+        ],
+        "background": "归墟域封印中的远古存在。九域世界原本有第十域——归墟域，白九殇是归墟域最后的守护者/毁灭者（一体两面）。千万年前被九域联手封印。它通过封印缝隙操控顾长渊，目的是打破封印重归世间。",
+        "motivation": "打破封印，重归世间（但其目的并非纯粹毁灭——有更深层的秘密）",
+        "arc": "从幕后操纵到浮出水面，最终揭示其真实目的远比打破封印复杂"
+      },
+      "relations": [
+        {
+          "target": "char-gu-changyuan",
+          "type": "操纵者",
+          "detail": "通过封印缝隙引导顾长渊走上邪路"
+        },
+        {
+          "target": "char-shen-xuan",
+          "type": "感知/兴趣",
+          "detail": "归墟体的持有者，与归墟域有深层联系"
+        }
+      ]
+    },
+    {
+      "id": "inferred::宋长老",
+      "name": "宋长老",
+      "type": "character",
+      "aliases": [],
+      "summary": "",
+      "currentState": "",
+      "source": "inferred",
+      "registeredAt": "2026-04-25T12:33:50+08:00"
+    },
+    {
+      "id": "inferred::探子",
+      "name": "探子",
+      "type": "character",
+      "aliases": [],
+      "summary": "",
+      "currentState": "",
+      "source": "inferred",
+      "registeredAt": "2026-04-25T13:26:27+08:00"
+    },
+    {
+      "id": "inferred::他",
+      "name": "他",
+      "type": "character",
+      "aliases": [],
+      "summary": "",
+      "currentState": "",
+      "source": "inferred",
+      "registeredAt": "2026-04-25T17:44:45+08:00"
+    },
+    {
+      "id": "inferred::她",
+      "name": "她",
+      "type": "character",
+      "aliases": [],
+      "summary": "",
+      "currentState": "",
+      "source": "inferred",
+      "registeredAt": "2026-04-25T17:44:45+08:00"
+    }
+  ],
+  "enrichmentProposals": []
+}

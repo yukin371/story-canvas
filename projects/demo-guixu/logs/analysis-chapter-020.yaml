@@ -1,0 +1,170 @@
+{
+  "chapterId": "chapter-020",
+  "chapterTitle": "归墟体觉醒",
+  "analyzedAt": "2026-04-25T17:44:45+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 67,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 52,
+      "source": "registry"
+    },
+    {
+      "id": "char-bai-jiushang",
+      "name": "白九殇",
+      "mentionCount": 16,
+      "source": "registry"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 2,
+      "source": "registry"
+    },
+    {
+      "id": "inferred::他",
+      "name": "他",
+      "mentionCount": 1,
+      "source": "inferred"
+    },
+    {
+      "id": "inferred::她",
+      "name": "她",
+      "mentionCount": 1,
+      "source": "inferred"
+    },
+    {
+      "id": "char-song-huaijin",
+      "name": "宋怀瑾",
+      "mentionCount": 1,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-020::char-bai-jiushang::fcde6e5e49",
+      "entityId": "char-bai-jiushang",
+      "entityName": "白九殇",
+      "proposedState": "恐惧",
+      "stateTags": [
+        "恐惧"
+      ],
+      "evidence": "第一颗：恐惧。编织封印的修士们恐惧的不是归墟域中的存在。他们恐惧的是归墟域本身。归墟域是灵脉的汇聚之处、万水归处——也是万物的终结之处。归墟域中蕴含的力量不是任何修士能够承受的。@{白九殇}之所以强大，不是因为它本身有多强大，而是因为它与归墟域融为了一体。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-020::char-ye-qingyi::82d8148d81",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "震惊",
+      "stateTags": [
+        "震惊"
+      ],
+      "evidence": "但@{叶清漪}的沉默不是因为震惊。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-020::char-ye-qingyi::ca2421007d",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "恐惧",
+      "stateTags": [
+        "恐惧"
+      ],
+      "evidence": "\"我母亲存活下来了。\"@{叶清漪}纠正道，\"她是叶家的旁支，嫁给了一个普通散修。灭族的时候她不在叶家的领地上，所以逃过了一劫。但她一直活在恐惧中——她知道叶家被灭族的原因不是仇杀，而是有人在系统性地清除叶家的血脉。\"",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-020::char-shen-xuan::f2246f29e0",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "背叛",
+      "stateTags": [
+        "背叛"
+      ],
+      "evidence": "@{沈玄}没有反驳。这是@{叶清漪}第二次对他说这句话——上一次是在第十九章中，他说自己在\"分析\"而不是在\"替@{宋怀瑾}找不背叛的理由\"。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-020::char-ye-qingyi::f2246f29e0",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "背叛",
+      "stateTags": [
+        "背叛"
+      ],
+      "evidence": "@{沈玄}没有反驳。这是@{叶清漪}第二次对他说这句话——上一次是在第十九章中，他说自己在\"分析\"而不是在\"替@{宋怀瑾}找不背叛的理由\"。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-020::char-song-huaijin::f2246f29e0",
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "proposedState": "背叛",
+      "stateTags": [
+        "背叛"
+      ],
+      "evidence": "@{沈玄}没有反驳。这是@{叶清漪}第二次对他说这句话——上一次是在第十九章中，他说自己在\"分析\"而不是在\"替@{宋怀瑾}找不背叛的理由\"。",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [
+    {
+      "candidateId": "relation::chapter-020::char-shen-xuan::char-ye-qingyi::f2246f29e0",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-ye-qingyi",
+      "toName": "叶清漪",
+      "label": "裂痕",
+      "severity": "high-risk",
+      "evidence": "@{沈玄}没有反驳。这是@{叶清漪}第二次对他说这句话——上一次是在第十九章中，他说自己在\"分析\"而不是在\"替@{宋怀瑾}找不背叛的理由\"。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-020::char-shen-xuan::char-song-huaijin::f2246f29e0",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "label": "裂痕",
+      "severity": "high-risk",
+      "evidence": "@{沈玄}没有反驳。这是@{叶清漪}第二次对他说这句话——上一次是在第十九章中，他说自己在\"分析\"而不是在\"替@{宋怀瑾}找不背叛的理由\"。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-020::char-ye-qingyi::char-song-huaijin::f2246f29e0",
+      "fromId": "char-ye-qingyi",
+      "fromName": "叶清漪",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "label": "裂痕",
+      "severity": "high-risk",
+      "evidence": "@{沈玄}没有反驳。这是@{叶清漪}第二次对他说这句话——上一次是在第十九章中，他说自己在\"分析\"而不是在\"替@{宋怀瑾}找不背叛的理由\"。",
+      "confidence": 0.84
+    }
+  ],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-ye-qingyi",
+      "char-bai-jiushang",
+      "char-gu-changyuan",
+      "inferred::他",
+      "inferred::她"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "叶清漪",
+      "白九殇",
+      "顾长渊",
+      "他",
+      "她"
+    ]
+  }
+}

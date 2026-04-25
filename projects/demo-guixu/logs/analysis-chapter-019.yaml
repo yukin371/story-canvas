@@ -1,0 +1,302 @@
+{
+  "chapterId": "chapter-019",
+  "chapterTitle": "天枢旧事",
+  "analyzedAt": "2026-04-25T17:41:20+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 79,
+      "source": "registry"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 74,
+      "source": "registry"
+    },
+    {
+      "id": "char-bai-jiushang",
+      "name": "白九殇",
+      "mentionCount": 61,
+      "source": "registry"
+    },
+    {
+      "id": "char-song-huaijin",
+      "name": "宋怀瑾",
+      "mentionCount": 37,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 27,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-019::char-gu-changyuan::ca3df45726",
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "proposedState": "背叛",
+      "stateTags": [
+        "背叛"
+      ],
+      "evidence": "前世的@{宋怀瑾}也是这样的人——温和、善良、在关键时刻愿意为朋友付出一切。但前世的他最终选择了背叛。不是因为他不善良，而是因为他的善良被@{顾长渊}利用了——用天枢宗弟子的性命威胁他，让他在两难中做出了错误的选择。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-019::char-song-huaijin::ca3df45726",
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "proposedState": "背叛",
+      "stateTags": [
+        "背叛"
+      ],
+      "evidence": "前世的@{宋怀瑾}也是这样的人——温和、善良、在关键时刻愿意为朋友付出一切。但前世的他最终选择了背叛。不是因为他不善良，而是因为他的善良被@{顾长渊}利用了——用天枢宗弟子的性命威胁他，让他在两难中做出了错误的选择。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-019::char-shen-xuan::3f0f53a3b1",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "震惊",
+      "stateTags": [
+        "震惊"
+      ],
+      "evidence": "阵法图纸在@{沈玄}手中展开后，他的表情经历了从专注到凝重再到震惊的变化。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-019::char-shen-xuan::9b4237c52d",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "怀疑",
+      "stateTags": [
+        "怀疑"
+      ],
+      "evidence": "\"不会有人探查你的识海。\"@{沈玄}说，\"除非@{顾长渊}有理由怀疑你。\"",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-019::char-gu-changyuan::9b4237c52d",
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "proposedState": "怀疑",
+      "stateTags": [
+        "怀疑"
+      ],
+      "evidence": "\"不会有人探查你的识海。\"@{沈玄}说，\"除非@{顾长渊}有理由怀疑你。\"",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-019::char-gu-changyuan::6a930a65ef",
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "proposedState": "受伤",
+      "stateTags": [
+        "受伤"
+      ],
+      "evidence": "@{顾长渊}继续说：\"而你在那个时候让我撤退。不是因为担心我受伤——化神巅峰的自愈能力你不是不知道。你让我撤退是因为……如果封印继续排斥我，你的计划会受到影响。\"",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-019::char-bai-jiushang::7d1346aaa0",
+      "entityId": "char-bai-jiushang",
+      "entityName": "白九殇",
+      "proposedState": "离开",
+      "stateTags": [
+        "离开"
+      ],
+      "evidence": "\"我早就意识到了。\"@{白九殇}继续说，\"你知道我为什么在封印中待了这么久吗？不是因为我出不去。封印在千万年前就已经出现了裂缝——那些裂缝足以让我离开。\"",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-019::char-gu-changyuan::81d7c064ba",
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "proposedState": "怀疑",
+      "stateTags": [
+        "怀疑"
+      ],
+      "evidence": "沉默持续了很久——久到@{顾长渊}开始怀疑它是否还在聆听。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-019::char-gu-changyuan::1836be8f9b",
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "proposedState": "离开",
+      "stateTags": [
+        "离开"
+      ],
+      "evidence": "@{顾长渊}转身离开修炼室。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-019::char-ye-qingyi::395bde4c21",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "离开",
+      "stateTags": [
+        "离开"
+      ],
+      "evidence": "@{宋怀瑾}在凌晨时分离开了洞穴。@{叶清漪}目送他消失在夜色中，然后回到洞穴内。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-019::char-song-huaijin::395bde4c21",
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "proposedState": "离开",
+      "stateTags": [
+        "离开"
+      ],
+      "evidence": "@{宋怀瑾}在凌晨时分离开了洞穴。@{叶清漪}目送他消失在夜色中，然后回到洞穴内。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-019::char-song-huaijin::16cfd3d06e",
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "proposedState": "背叛",
+      "stateTags": [
+        "背叛"
+      ],
+      "evidence": "\"@{宋怀瑾}前世的背叛——你不是说有前世的记忆吗？你怎么确定这一世不会重演？\"",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-019::char-bai-jiushang::9524a552e8",
+      "entityId": "char-bai-jiushang",
+      "entityName": "白九殇",
+      "proposedState": "背叛",
+      "stateTags": [
+        "背叛"
+      ],
+      "evidence": "\"因为前世的他是在@{白九殇}的精神渗透和归魂散的双重影响下才背叛的。这一世的归魂散已经被他发现了——他会防备。而且他今天主动拿来图纸，说明他已经做出了选择。\"",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-019::char-shen-xuan::85a209a6ee",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "离开；背叛",
+      "stateTags": [
+        "离开",
+        "背叛"
+      ],
+      "evidence": "\"可以。但改变选择需要理由。\"@{沈玄}说，\"他有什么理由背叛我？@{顾长渊}能给他什么？天枢宗弟子的安全？@{顾长渊}自己都在失踪弟子。修炼资源？@{宋怀瑾}已经是金丹初期，离开天枢宗也能继续修炼。\"",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-019::char-gu-changyuan::85a209a6ee",
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "proposedState": "离开；背叛",
+      "stateTags": [
+        "离开",
+        "背叛"
+      ],
+      "evidence": "\"可以。但改变选择需要理由。\"@{沈玄}说，\"他有什么理由背叛我？@{顾长渊}能给他什么？天枢宗弟子的安全？@{顾长渊}自己都在失踪弟子。修炼资源？@{宋怀瑾}已经是金丹初期，离开天枢宗也能继续修炼。\"",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-019::char-song-huaijin::85a209a6ee",
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "proposedState": "离开；背叛",
+      "stateTags": [
+        "离开",
+        "背叛"
+      ],
+      "evidence": "\"可以。但改变选择需要理由。\"@{沈玄}说，\"他有什么理由背叛我？@{顾长渊}能给他什么？天枢宗弟子的安全？@{顾长渊}自己都在失踪弟子。修炼资源？@{宋怀瑾}已经是金丹初期，离开天枢宗也能继续修炼。\"",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-019::char-shen-xuan::89dfaf5c8f",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "紧张",
+      "stateTags": [
+        "紧张"
+      ],
+      "evidence": "\"我看到了一些东西。\"@{沈玄}说，声音因为紧张而微微发颤，\"关于归墟域——也关于你。\"",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [
+    {
+      "candidateId": "relation::chapter-019::char-gu-changyuan::char-song-huaijin::ca3df45726",
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "label": "裂痕",
+      "severity": "high-risk",
+      "evidence": "前世的@{宋怀瑾}也是这样的人——温和、善良、在关键时刻愿意为朋友付出一切。但前世的他最终选择了背叛。不是因为他不善良，而是因为他的善良被@{顾长渊}利用了——用天枢宗弟子的性命威胁他，让他在两难中做出了错误的选择。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-019::char-shen-xuan::char-gu-changyuan::9b4237c52d",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-gu-changyuan",
+      "toName": "顾长渊",
+      "label": "信任下降",
+      "severity": "high-risk",
+      "evidence": "\"不会有人探查你的识海。\"@{沈玄}说，\"除非@{顾长渊}有理由怀疑你。\"",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-019::char-shen-xuan::char-gu-changyuan::85a209a6ee",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-gu-changyuan",
+      "toName": "顾长渊",
+      "label": "裂痕",
+      "severity": "high-risk",
+      "evidence": "\"可以。但改变选择需要理由。\"@{沈玄}说，\"他有什么理由背叛我？@{顾长渊}能给他什么？天枢宗弟子的安全？@{顾长渊}自己都在失踪弟子。修炼资源？@{宋怀瑾}已经是金丹初期，离开天枢宗也能继续修炼。\"",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-019::char-shen-xuan::char-song-huaijin::85a209a6ee",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "label": "裂痕",
+      "severity": "high-risk",
+      "evidence": "\"可以。但改变选择需要理由。\"@{沈玄}说，\"他有什么理由背叛我？@{顾长渊}能给他什么？天枢宗弟子的安全？@{顾长渊}自己都在失踪弟子。修炼资源？@{宋怀瑾}已经是金丹初期，离开天枢宗也能继续修炼。\"",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-019::char-gu-changyuan::char-song-huaijin::85a209a6ee",
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "label": "裂痕",
+      "severity": "high-risk",
+      "evidence": "\"可以。但改变选择需要理由。\"@{沈玄}说，\"他有什么理由背叛我？@{顾长渊}能给他什么？天枢宗弟子的安全？@{顾长渊}自己都在失踪弟子。修炼资源？@{宋怀瑾}已经是金丹初期，离开天枢宗也能继续修炼。\"",
+      "confidence": 0.84
+    }
+  ],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-gu-changyuan",
+      "char-bai-jiushang",
+      "char-song-huaijin",
+      "char-ye-qingyi"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "顾长渊",
+      "白九殇",
+      "宋怀瑾",
+      "叶清漪"
+    ]
+  }
+}

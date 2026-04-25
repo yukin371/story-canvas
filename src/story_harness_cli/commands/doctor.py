@@ -4,11 +4,12 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List
 
-from story_harness_cli.protocol import chapter_path, root_file
+from story_harness_cli.protocol import chapter_path, choose_style_profile_name, root_file
 from story_harness_cli.protocol.files import resolve_state_path
 from story_harness_cli.protocol.io import load_json_compatible_yaml
 from story_harness_cli.protocol.schema import default_project_state
 from story_harness_cli.protocol.state import merge_defaults
+from story_harness_cli.protocol.style_profiles import get_default_style_profiles, merge_with_defaults
 from story_harness_cli.services.outline_guard import evaluate_chapter_outline_readiness
 from story_harness_cli.services.stats import compute_project_stats
 from story_harness_cli.utils.project_meta import (
@@ -372,6 +373,72 @@ def _check_commercial_positioning(state: Dict, checks: List[Dict[str, str]]) -> 
         )
 
 
+def _check_style_profiles(root: Path, state: Dict[str, Dict[str, Any]], checks: List[Dict[str, str]]) -> None:
+    profile_path = root / "style-profiles.yaml"
+    active_profile = choose_style_profile_name(state.get("project", {}))
+    record_check(checks, "info", "active-style-profile", f"当前自动 style profile: {active_profile}")
+
+    if not profile_path.exists():
+        return
+
+    try:
+        raw_payload = load_json_compatible_yaml(profile_path, {})
+    except SystemExit as exc:
+        record_check(checks, "error", "invalid-style-profiles", str(exc))
+        return
+
+    record_check(checks, "info", "parsed-style-profiles", "文件可解析: style-profiles.yaml")
+
+    profiles = raw_payload.get("profiles")
+    if profiles is None:
+        record_check(checks, "warning", "missing-style-profiles", "style-profiles.yaml 缺少 profiles 字段")
+        return
+    if not isinstance(profiles, dict):
+        record_check(checks, "warning", "invalid-style-profiles-shape", "style-profiles.yaml 的 profiles 必须是对象")
+        return
+
+    merged_profiles = merge_with_defaults(raw_payload)
+    defaults = get_default_style_profiles()
+    if active_profile not in merged_profiles:
+        record_check(checks, "warning", "missing-active-style-profile", f"自动选中的 style profile 不存在: {active_profile}")
+
+    for profile_name, payload in profiles.items():
+        if not isinstance(payload, dict):
+            record_check(checks, "warning", "invalid-style-profile-payload", f"profile '{profile_name}' 必须是对象")
+            continue
+
+        threshold_map = payload.get("patternThresholds", {})
+        if not isinstance(threshold_map, dict):
+            record_check(checks, "warning", "invalid-style-thresholds", f"profile '{profile_name}' 的 patternThresholds 必须是对象")
+        else:
+            for pattern_id, value in threshold_map.items():
+                if not isinstance(value, (int, float)) or value <= 0:
+                    record_check(
+                        checks,
+                        "warning",
+                        "invalid-style-threshold-value",
+                        f"profile '{profile_name}' 的阈值 {pattern_id} 必须是大于 0 的数字",
+                    )
+
+        extra_patterns = payload.get("extraPatterns", {})
+        if not isinstance(extra_patterns, dict):
+            record_check(checks, "warning", "invalid-style-extra-patterns", f"profile '{profile_name}' 的 extraPatterns 必须是对象")
+        else:
+            for pattern_id, pattern_list in extra_patterns.items():
+                if not isinstance(pattern_list, list) or not all(isinstance(item, str) for item in pattern_list):
+                    record_check(
+                        checks,
+                        "warning",
+                        "invalid-style-pattern-list",
+                        f"profile '{profile_name}' 的 extraPatterns.{pattern_id} 必须是字符串列表",
+                    )
+
+        if profile_name in defaults:
+            record_check(checks, "info", "style-profile-override", f"profile '{profile_name}' 覆盖了 builtin style profile")
+        else:
+            record_check(checks, "info", "style-profile-custom", f"profile '{profile_name}' 是项目自定义 style profile")
+
+
 def command_doctor(args) -> int:
     root = Path(args.root).resolve()
     checks: List[Dict[str, str]] = []
@@ -412,6 +479,7 @@ def command_doctor(args) -> int:
     validate_project_links(root, state, checks)
     _check_project_positioning(state, checks)
     _check_commercial_positioning(state, checks)
+    _check_style_profiles(root, state, checks)
     _check_outline_volumes(root, checks)
     _check_outline_readiness(root, state, checks)
     _check_entity_profiles(root, checks)

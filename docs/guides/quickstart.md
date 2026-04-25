@@ -61,28 +61,28 @@ uv run story-harness init `
 如果你想直接跑一个仓库内已验证样例，而不是先自己写正文，优先使用 `demo-short-story`：
 
 ```powershell
-uv run story-harness doctor --root .\demo-short-story
-uv run story-harness chapter analyze --root .\demo-short-story --chapter-id chapter-001
-uv run story-harness review chapter --root .\demo-short-story --chapter-id chapter-001
-uv run story-harness review scene --root .\demo-short-story --chapter-id chapter-001 --scene-index 1
+uv run story-harness doctor --root .\projects\demo-short-story
+uv run story-harness chapter analyze --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-harness review chapter --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-harness review scene --root .\projects\demo-short-story --chapter-id chapter-001 --scene-index 1
 ```
 
 如果你要验证“类型 / 子类型 / 风格标签 / 目标读者”是否进入评审链路，改用 `demo-light-novel-short`：
 
 ```powershell
-uv run story-harness doctor --root .\demo-light-novel-short
-uv run story-harness chapter analyze --root .\demo-light-novel-short --chapter-id chapter-001
-uv run story-harness review chapter --root .\demo-light-novel-short --chapter-id chapter-001
-uv run story-harness review scene --root .\demo-light-novel-short --chapter-id chapter-001 --scene-index 1
+uv run story-harness doctor --root .\projects\demo-light-novel-short
+uv run story-harness chapter analyze --root .\projects\demo-light-novel-short --chapter-id chapter-001
+uv run story-harness review chapter --root .\projects\demo-light-novel-short --chapter-id chapter-001
+uv run story-harness review scene --root .\projects\demo-light-novel-short --chapter-id chapter-001 --scene-index 1
 ```
 
 如果你要验证“玄幻 + 网文节奏”的定位层和中短篇升级驱动，改用 `demo-xuanhuan-short`：
 
 ```powershell
-uv run story-harness doctor --root .\demo-xuanhuan-short
-uv run story-harness chapter analyze --root .\demo-xuanhuan-short --chapter-id chapter-001
-uv run story-harness review chapter --root .\demo-xuanhuan-short --chapter-id chapter-001
-uv run story-harness review scene --root .\demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1
+uv run story-harness doctor --root .\projects\demo-xuanhuan-short
+uv run story-harness chapter analyze --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
+uv run story-harness review chapter --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
+uv run story-harness review scene --root .\projects\demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1
 ```
 
 这三个样例的定位差异与扩展策略，统一以 [样例工程矩阵](./sample-matrix.md) 为准。
@@ -158,31 +158,31 @@ Validated sample fallback:
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli doctor --root .\demo-short-story
-python -m story_harness_cli chapter analyze --root .\demo-short-story --chapter-id chapter-001
-python -m story_harness_cli outline check --root .\demo-short-story --chapter-id chapter-001
-python -m story_harness_cli review chapter --root .\demo-short-story --chapter-id chapter-001
-python -m story_harness_cli review scene --root .\demo-short-story --chapter-id chapter-001 --scene-index 1
+python -m story_harness_cli doctor --root .\projects\demo-short-story
+python -m story_harness_cli chapter analyze --root .\projects\demo-short-story --chapter-id chapter-001
+python -m story_harness_cli outline check --root .\projects\demo-short-story --chapter-id chapter-001
+python -m story_harness_cli review chapter --root .\projects\demo-short-story --chapter-id chapter-001
+python -m story_harness_cli review scene --root .\projects\demo-short-story --chapter-id chapter-001 --scene-index 1
 ```
 
 Style-driven sample fallback:
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli doctor --root .\demo-light-novel-short
-python -m story_harness_cli chapter analyze --root .\demo-light-novel-short --chapter-id chapter-001
-python -m story_harness_cli review chapter --root .\demo-light-novel-short --chapter-id chapter-001
-python -m story_harness_cli review scene --root .\demo-light-novel-short --chapter-id chapter-001 --scene-index 1
+python -m story_harness_cli doctor --root .\projects\demo-light-novel-short
+python -m story_harness_cli chapter analyze --root .\projects\demo-light-novel-short --chapter-id chapter-001
+python -m story_harness_cli review chapter --root .\projects\demo-light-novel-short --chapter-id chapter-001
+python -m story_harness_cli review scene --root .\projects\demo-light-novel-short --chapter-id chapter-001 --scene-index 1
 ```
 
 Xuanhuan sample fallback:
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli doctor --root .\demo-xuanhuan-short
-python -m story_harness_cli chapter analyze --root .\demo-xuanhuan-short --chapter-id chapter-001
-python -m story_harness_cli review chapter --root .\demo-xuanhuan-short --chapter-id chapter-001
-python -m story_harness_cli review scene --root .\demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1
+python -m story_harness_cli doctor --root .\projects\demo-xuanhuan-short
+python -m story_harness_cli chapter analyze --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
+python -m story_harness_cli review chapter --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
+python -m story_harness_cli review scene --root .\projects\demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1
 ```
 
 ## 5. Close The Loop

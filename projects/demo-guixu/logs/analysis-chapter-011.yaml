@@ -1,0 +1,76 @@
+{
+  "chapterId": "chapter-011",
+  "chapterTitle": "玄冥剑修",
+  "analyzedAt": "2026-04-25T13:19:58+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 45,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 36,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-011::char-shen-xuan::0790f0aa95",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "离开",
+      "stateTags": [
+        "离开"
+      ],
+      "evidence": "\"既然叶姑娘有事，我就不打扰了。\"@{沈玄}收好石髓精，转身准备离开。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-011::char-ye-qingyi::c1b6f6f664",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "受伤",
+      "stateTags": [
+        "受伤"
+      ],
+      "evidence": "他不能不出手——如果@{叶清漪}受伤，两个人都会陷入更大的危险。但他也不能暴露归墟体。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-011::char-ye-qingyi::ec682ea3e1",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "疲惫",
+      "stateTags": [
+        "疲惫"
+      ],
+      "evidence": "最后一名散修倒下时，@{叶清漪}的玄冰剑上凝结着一层厚厚的寒霜。她的呼吸微微加快，但面色依然冷若寒冰，看不出任何疲惫。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-011::char-shen-xuan::9a63c5dbe2",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "恐惧",
+      "stateTags": [
+        "恐惧"
+      ],
+      "evidence": "这在@{沈玄}的前世记忆中是不可思议的。前世的修真界中，任何人发现了归墟体的存在，都会要么觊觎，要么恐惧，要么出卖。从来没有人——从来没有——选择了沉默。",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-ye-qingyi"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "叶清漪"
+    ]
+  }
+}

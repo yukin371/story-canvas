@@ -11,9 +11,9 @@
 
 ## 影响范围
 
-- `demo-urban-occult-long/chapters/chapter-008.md`
-- `demo-urban-occult-long/outline.yaml`
-- `demo-urban-occult-long/README.md`
+- `projects/demo-urban-occult-long/chapters/chapter-008.md`
+- `projects/demo-urban-occult-long/outline.yaml`
+- `projects/demo-urban-occult-long/README.md`
 - `docs/roadmap.md`
 - `tests/smoke/test_demo_urban_occult_long_sample.py`
 
@@ -25,10 +25,10 @@
 
 ## 验证
 
-1. `PYTHONPATH=src python -m story_harness_cli chapter analyze --root demo-urban-occult-long --chapter-id chapter-008`
-2. `PYTHONPATH=src python -m story_harness_cli review chapter --root demo-urban-occult-long --chapter-id chapter-008`
-3. `PYTHONPATH=src python -m story_harness_cli review scene --root demo-urban-occult-long --chapter-id chapter-008 --scene-index 2`
-4. `PYTHONPATH=src python -m story_harness_cli review scene --root demo-urban-occult-long --chapter-id chapter-008 --scene-index 3`
-5. `PYTHONPATH=src python -m story_harness_cli doctor --root demo-urban-occult-long`
-6. `PYTHONPATH=src python -m story_harness_cli stats --root demo-urban-occult-long`
-7. `PYTHONPATH=src python -m story_harness_cli export --root demo-urban-occult-long --format markdown --output demo-urban-occult-long/manuscript.md`
+1. `PYTHONPATH=src python -m story_harness_cli chapter analyze --root projects/demo-urban-occult-long --chapter-id chapter-008`
+2. `PYTHONPATH=src python -m story_harness_cli review chapter --root projects/demo-urban-occult-long --chapter-id chapter-008`
+3. `PYTHONPATH=src python -m story_harness_cli review scene --root projects/demo-urban-occult-long --chapter-id chapter-008 --scene-index 2`
+4. `PYTHONPATH=src python -m story_harness_cli review scene --root projects/demo-urban-occult-long --chapter-id chapter-008 --scene-index 3`
+5. `PYTHONPATH=src python -m story_harness_cli doctor --root projects/demo-urban-occult-long`
+6. `PYTHONPATH=src python -m story_harness_cli stats --root projects/demo-urban-occult-long`
+7. `PYTHONPATH=src python -m story_harness_cli export --root projects/demo-urban-occult-long --format markdown --output projects/demo-urban-occult-long/manuscript.md`

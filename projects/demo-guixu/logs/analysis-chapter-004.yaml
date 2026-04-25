@@ -1,0 +1,73 @@
+{
+  "chapterId": "chapter-004",
+  "chapterTitle": "青云试炼",
+  "analyzedAt": "2026-04-25T12:23:54+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 22,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 10,
+      "source": "registry"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 2,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-004::char-shen-xuan::216548cf63",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "怀疑",
+      "stateTags": [
+        "怀疑"
+      ],
+      "evidence": "第二场对阵一个使用短剑的女修。@{沈玄}这次没有拖延太久，三招之内就认了输——他判断这个女修的实力在十三个符文以上，属于内门候选的水平。输给她不会引起任何怀疑，反而能进一步降低自己的存在感。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-004::char-shen-xuan::04d5c60167",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "冷静",
+      "stateTags": [
+        "冷静"
+      ],
+      "evidence": "@{沈玄}强迫自己将视线从@{叶清漪}身上移开。现在不是思考这个的时候。试炼还没有结束，他必须保持冷静。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-004::char-ye-qingyi::04d5c60167",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "冷静",
+      "stateTags": [
+        "冷静"
+      ],
+      "evidence": "@{沈玄}强迫自己将视线从@{叶清漪}身上移开。现在不是思考这个的时候。试炼还没有结束，他必须保持冷静。",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-ye-qingyi",
+      "char-gu-changyuan"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "叶清漪",
+      "顾长渊"
+    ]
+  }
+}

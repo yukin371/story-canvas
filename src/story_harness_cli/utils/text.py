@@ -187,6 +187,35 @@ def ability_tags_for_paragraph(paragraph: str) -> List[str]:
     return [label for keyword, label in kw.items() if keyword in paragraph]
 
 
+def strip_markdown(text: str) -> str:
+    """Remove markdown formatting for plain-text export.
+
+    Strips: *italic*, **bold**, ***bold-italic***, # headings, --- rules,
+    > blockquotes, [link](url), ![alt](img), `inline code`.
+    """
+    # Bold+italic ***...*** → text
+    text = re.sub(r"\*{3}(.+?)\*{3}", r"\1", text)
+    # Bold **...** → text
+    text = re.sub(r"\*{2}(.+?)\*{2}", r"\1", text)
+    # Italic *...* → text
+    text = re.sub(r"\*(.+?)\*", r"\1", text)
+    # Headings: # ... → strip the leading #s
+    text = re.sub(r"^[ \t]{0,3}#{1,6}[ \t]+(.*)$", r"\1", text, flags=re.MULTILINE)
+    # Horizontal rules --- or *** or ___ (3+ chars on own line)
+    text = re.sub(r"^[ \t]{0,3}[-*_]{3,}[ \t]*$", "", text, flags=re.MULTILINE)
+    # Blockquotes > ...
+    text = re.sub(r"^[ \t]{0,3}>[ \t]?", "", text, flags=re.MULTILINE)
+    # Links [text](url) → text
+    text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", text)
+    # Images ![alt](url) → alt
+    text = re.sub(r"!\[([^\]]*)\]\([^)]*\)", r"\1", text)
+    # Inline code `...` → ...
+    text = re.sub(r"`([^`]+)`", r"\1", text)
+    # Collapse 3+ blank lines to 2
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip()
+
+
 def strip_entity_tags(text: str) -> str:
     """Remove all @{实体} and @entity markup tags, keeping the entity name."""
     text = re.sub(r"@\{([^{}\n]+)\}", r"\1", text)

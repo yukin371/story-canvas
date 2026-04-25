@@ -1,6 +1,6 @@
 # Story Harness CLI 项目画像
 
-> 最后更新: 2026-04-23
+> 最后更新: 2026-04-25
 > 事实来源: `README.md`、`pyproject.toml`、入口代码、测试目录
 > 说明: 只记录高置信度事实；未确认项标记为 `TBD`
 
@@ -32,6 +32,9 @@ Agent-native 小说创作工作流 CLI。将长篇小说的创作状态拆分为
 | `projection` | `apply` | 应用投影 |
 | `context` | `refresh` / `show` | 写作上下文 |
 | `entity` | `enrich` / `review` / `list` / `show` | 角色管理 |
+| `style` | `check` / `constraints` / `report` / `repair` | AI 风格模式检测、约束生成、聚合报告与修复建议生成 |
+| `illustration` | `prompt` / `generate` / `list` / `config` | 插图 prompt 构造、文生图/图生图 provider 请求、批量资产落盘与生成记录查看 |
+| `workflow` | `status` / `run` / `advance` / `reset` / `export` | workflow 状态机：推断当前 gate、持久化到 `workflow.yaml`、记录 `accept/modify/reject` 决策，并支持 `run --resume-from` 回卷与快照导出 |
 | `consistency` | `check` | 一致性校验 |
 | `stats` | — | 项目统计 |
 | `export` | — | 导出纯文本 |
@@ -39,9 +42,10 @@ Agent-native 小说创作工作流 CLI。将长篇小说的创作状态拆分为
 
 ## 4. 技术栈
 
-- 运行时: Python 3.10+（stdlib only，零外部依赖）
+- 运行时: Python 3.10+（base install 保持 stdlib-only；增强能力允许通过 optional dependencies 接入，见 `docs/adr/ADR-002-optional-dependencies-and-providers.md`）
 - 框架: argparse（子命令路由）
 - 持久化: JSON-compatible YAML 文件（`.yaml` 后缀，内容为合法 JSON）
+- 可选项目配置: `keywords.yaml`、`style-profiles.yaml`
 - 测试框架: unittest（stdlib）
 - CI 平台: GitHub Actions
 
@@ -57,16 +61,17 @@ Agent-native 小说创作工作流 CLI。将长篇小说的创作状态拆分为
 
 - `src/story_harness_cli/commands/`: CLI 子命令实现（每个命令一个模块）
 - `src/story_harness_cli/services/`: 业务逻辑层（分析、投影、一致性等）
+- `src/story_harness_cli/providers/`: 外部 API、SDK 与 optional dependency wrapper
 - `src/story_harness_cli/protocol/`: 状态加载/保存、文件路径、schema 默认值
 - `src/story_harness_cli/utils/`: 通用工具（哈希、时间、文本处理）
 - `src/story_harness_cli/data/`: 创作数据表（角色原型、世界元素、中文姓名等）
 - `tests/smoke/`: 冒烟测试
 - `tests/fixtures/minimal_project/`: 最小测试 fixture
-- `demo-novel/`: 长篇样例工程
-- `demo-short-story/`: 短篇端到端验证样例工程
-- `demo-light-novel-short/`: 风格驱动短篇样例工程（西幻轻小说）
-- `demo-xuanhuan-short/`: 风格驱动短篇样例工程（玄幻网文）
-- `demo-urban-occult-long/`: 商业化网站连载长篇样例工程（都市玄幻 / 民俗志怪 / 职业线）
+- `projects/demo-novel/`: 长篇样例工程
+- `projects/demo-short-story/`: 短篇端到端验证样例工程
+- `projects/demo-light-novel-short/`: 风格驱动短篇样例工程（西幻轻小说）
+- `projects/demo-xuanhuan-short/`: 风格驱动短篇样例工程（玄幻网文）
+- `projects/demo-urban-occult-long/`: 商业化网站连载长篇样例工程（都市玄幻 / 民俗志怪 / 职业线）
 - `docs/`: 文档与模板
 - `adapters/`: 宿主适配器（Codex、Claude Code 等）
 - `scripts/`: 安装脚本
@@ -75,6 +80,7 @@ Agent-native 小说创作工作流 CLI。将长篇小说的创作状态拆分为
 
 - 当前执行入口: `docs/roadmap.md`
 - 架构护栏: `docs/ARCHITECTURE_GUARDRAILS.md`
+- ADR: `docs/adr/ADR-001-json-compatible-yaml.md`、`docs/adr/ADR-002-optional-dependencies-and-providers.md`
 - 模块文档规范: `src/story_harness_cli/commands/MODULE.md`、`src/story_harness_cli/services/MODULE.md`、`src/story_harness_cli/protocol/MODULE.md`
 - 报告 / issue / archive 入口: `docs/plans/`、`docs/releases/`
 - hooks / commit policy / CI governance: `.github/workflows/ci.yml`、`docs/COMMIT_POLICY.md`、`docs/ENGINEERING_GOVERNANCE.md`

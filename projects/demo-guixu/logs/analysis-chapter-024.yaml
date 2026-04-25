@@ -1,0 +1,134 @@
+{
+  "chapterId": "chapter-024",
+  "chapterTitle": "最终之战",
+  "analyzedAt": "2026-04-25T17:42:52+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 42,
+      "source": "registry"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 36,
+      "source": "registry"
+    },
+    {
+      "id": "char-bai-jiushang",
+      "name": "白九殇",
+      "mentionCount": 32,
+      "source": "registry"
+    },
+    {
+      "id": "char-song-huaijin",
+      "name": "宋怀瑾",
+      "mentionCount": 16,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 12,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-024::char-song-huaijin::3369245fc0",
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "proposedState": "流血",
+      "stateTags": [
+        "流血"
+      ],
+      "evidence": "@{宋怀瑾}倒在地上，一动不动。他的面色苍白如纸，七窍流血，气息微弱到几乎无法感知。但他的胸口还在微微起伏——他还活着。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-024::char-bai-jiushang::fefa84a5c3",
+      "entityId": "char-bai-jiushang",
+      "entityName": "白九殇",
+      "proposedState": "愤怒",
+      "stateTags": [
+        "愤怒"
+      ],
+      "evidence": "\"不——\"@{白九殇}的声音从裂缝中传出，第一次带上了愤怒的情绪，\"我的归墟——我的——\"",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-024::char-shen-xuan::61ce015da4",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "恐惧",
+      "stateTags": [
+        "恐惧"
+      ],
+      "evidence": "\"但你……\"@{顾长渊}的目光落在@{沈玄}身上，\"你不怕……你从来不怕……前世的你……在被我杀死的时候……眼睛里没有恐惧……只有……遗憾……\"",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-024::char-gu-changyuan::61ce015da4",
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "proposedState": "恐惧",
+      "stateTags": [
+        "恐惧"
+      ],
+      "evidence": "\"但你……\"@{顾长渊}的目光落在@{沈玄}身上，\"你不怕……你从来不怕……前世的你……在被我杀死的时候……眼睛里没有恐惧……只有……遗憾……\"",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [
+    {
+      "candidateId": "relation::chapter-024::char-shen-xuan::char-gu-changyuan::5c0c68967d",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-gu-changyuan",
+      "toName": "顾长渊",
+      "label": "合作",
+      "severity": "suggestion",
+      "evidence": "这是一场前所未有的合作。@{沈玄}提供材料和结构，@{顾长渊}提供编织技术，@{叶清漪}提供守护。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-024::char-shen-xuan::char-ye-qingyi::5c0c68967d",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-ye-qingyi",
+      "toName": "叶清漪",
+      "label": "合作",
+      "severity": "suggestion",
+      "evidence": "这是一场前所未有的合作。@{沈玄}提供材料和结构，@{顾长渊}提供编织技术，@{叶清漪}提供守护。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-024::char-gu-changyuan::char-ye-qingyi::5c0c68967d",
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-ye-qingyi",
+      "toName": "叶清漪",
+      "label": "合作",
+      "severity": "suggestion",
+      "evidence": "这是一场前所未有的合作。@{沈玄}提供材料和结构，@{顾长渊}提供编织技术，@{叶清漪}提供守护。",
+      "confidence": 0.84
+    }
+  ],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-gu-changyuan",
+      "char-bai-jiushang",
+      "char-song-huaijin",
+      "char-ye-qingyi"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "顾长渊",
+      "白九殇",
+      "宋怀瑾",
+      "叶清漪"
+    ]
+  }
+}

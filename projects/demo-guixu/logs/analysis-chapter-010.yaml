@@ -1,0 +1,92 @@
+{
+  "chapterId": "chapter-010",
+  "chapterTitle": "锋芒",
+  "analyzedAt": "2026-04-25T13:16:21+08:00",
+  "activeEntities": [
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 35,
+      "source": "registry"
+    },
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 32,
+      "source": "registry"
+    },
+    {
+      "id": "char-bai-jiushang",
+      "name": "白九殇",
+      "mentionCount": 4,
+      "source": "registry"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 2,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-010::char-shen-xuan::ff63ac6cd4",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "离开",
+      "stateTags": [
+        "离开"
+      ],
+      "evidence": "@{沈玄}在人群中找了一个不起眼的位置站定，目光始终没有离开@{叶清漪}的身影。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-010::char-ye-qingyi::ff63ac6cd4",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "离开",
+      "stateTags": [
+        "离开"
+      ],
+      "evidence": "@{沈玄}在人群中找了一个不起眼的位置站定，目光始终没有离开@{叶清漪}的身影。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-010::char-ye-qingyi::2ac1f2e603",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "离开",
+      "stateTags": [
+        "离开"
+      ],
+      "evidence": "挑战结束后，@{叶清漪}没有立即离开青云宗。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-010::char-ye-qingyi::94d87f907b",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "离开",
+      "stateTags": [
+        "离开"
+      ],
+      "evidence": "@{叶清漪}转身离开时，目光不经意地扫过人群。",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-ye-qingyi",
+      "char-shen-xuan",
+      "char-bai-jiushang",
+      "char-gu-changyuan"
+    ],
+    "activeEntityNames": [
+      "叶清漪",
+      "沈玄",
+      "白九殇",
+      "顾长渊"
+    ]
+  }
+}

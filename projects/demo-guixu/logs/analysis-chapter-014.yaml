@@ -1,0 +1,226 @@
+{
+  "chapterId": "chapter-014",
+  "chapterTitle": "故人",
+  "analyzedAt": "2026-04-25T13:16:03+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 69,
+      "source": "registry"
+    },
+    {
+      "id": "char-song-huaijin",
+      "name": "宋怀瑾",
+      "mentionCount": 53,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 15,
+      "source": "registry"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 11,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-014::char-shen-xuan::beffe699dd",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "离开",
+      "stateTags": [
+        "离开"
+      ],
+      "evidence": "他来交换会的目的有两个。第一，补充一些阵法材料——碎片赋予他的阵法操控能力需要大量的实践来巩固，而实践需要材料。第二，观察苍梧域最近的人员流动情况。@{顾长渊}的探子虽然离开了，但@{沈玄}不认为苍梧域已经安全了。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-014::char-gu-changyuan::beffe699dd",
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "proposedState": "离开",
+      "stateTags": [
+        "离开"
+      ],
+      "evidence": "他来交换会的目的有两个。第一，补充一些阵法材料——碎片赋予他的阵法操控能力需要大量的实践来巩固，而实践需要材料。第二，观察苍梧域最近的人员流动情况。@{顾长渊}的探子虽然离开了，但@{沈玄}不认为苍梧域已经安全了。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-014::char-shen-xuan::f1930d3b14",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "恐惧；愤怒",
+      "stateTags": [
+        "恐惧",
+        "愤怒"
+      ],
+      "evidence": "@{沈玄}在零点五秒之内完成了所有情绪的处理。恐惧、愤怒、失望、不甘——所有的情感都被他打包、压缩、锁进了意识的最深处。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-014::char-song-huaijin::c5096b2424",
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "proposedState": "紧张",
+      "stateTags": [
+        "紧张"
+      ],
+      "evidence": "@{宋怀瑾}摇了摇头：\"具体我也不清楚。大长老的事，我们这些丹药堂的弟子接触不到核心。只是最近阵法堂的气氛有些紧张，几个师弟被派出去'历练'了，但谁也不知道去了哪里。\"",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-014::char-shen-xuan::a2139c0b99",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "信任",
+      "stateTags": [
+        "信任"
+      ],
+      "evidence": "\"他是我前世的挚友。\"@{沈玄}说。他没有隐瞒——在归墟域相关的信息上他有所保留，但关于@{宋怀瑾}，他没有必要对@{叶清漪}隐瞒。况且，@{叶清漪}的洞察力太强了，隐瞒反而会破坏他们之间的信任。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-014::char-ye-qingyi::a2139c0b99",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "信任",
+      "stateTags": [
+        "信任"
+      ],
+      "evidence": "\"他是我前世的挚友。\"@{沈玄}说。他没有隐瞒——在归墟域相关的信息上他有所保留，但关于@{宋怀瑾}，他没有必要对@{叶清漪}隐瞒。况且，@{叶清漪}的洞察力太强了，隐瞒反而会破坏他们之间的信任。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-014::char-song-huaijin::a2139c0b99",
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "proposedState": "信任",
+      "stateTags": [
+        "信任"
+      ],
+      "evidence": "\"他是我前世的挚友。\"@{沈玄}说。他没有隐瞒——在归墟域相关的信息上他有所保留，但关于@{宋怀瑾}，他没有必要对@{叶清漪}隐瞒。况且，@{叶清漪}的洞察力太强了，隐瞒反而会破坏他们之间的信任。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-014::char-shen-xuan::eaa7b80f4d",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "背叛",
+      "stateTags": [
+        "背叛"
+      ],
+      "evidence": "@{叶清漪}说的没错。@{宋怀瑾}确实是一面镜子。通过这面镜子，@{沈玄}看到的不是@{宋怀瑾}，而是前世的自己——那个还不知道什么叫背叛的自己，那个还会因为朋友的微笑而感到温暖的自己。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-014::char-ye-qingyi::eaa7b80f4d",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "背叛",
+      "stateTags": [
+        "背叛"
+      ],
+      "evidence": "@{叶清漪}说的没错。@{宋怀瑾}确实是一面镜子。通过这面镜子，@{沈玄}看到的不是@{宋怀瑾}，而是前世的自己——那个还不知道什么叫背叛的自己，那个还会因为朋友的微笑而感到温暖的自己。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-014::char-song-huaijin::eaa7b80f4d",
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "proposedState": "背叛",
+      "stateTags": [
+        "背叛"
+      ],
+      "evidence": "@{叶清漪}说的没错。@{宋怀瑾}确实是一面镜子。通过这面镜子，@{沈玄}看到的不是@{宋怀瑾}，而是前世的自己——那个还不知道什么叫背叛的自己，那个还会因为朋友的微笑而感到温暖的自己。",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [
+    {
+      "candidateId": "relation::chapter-014::char-shen-xuan::char-ye-qingyi::a2139c0b99",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-ye-qingyi",
+      "toName": "叶清漪",
+      "label": "信任上升",
+      "severity": "suggestion",
+      "evidence": "\"他是我前世的挚友。\"@{沈玄}说。他没有隐瞒——在归墟域相关的信息上他有所保留，但关于@{宋怀瑾}，他没有必要对@{叶清漪}隐瞒。况且，@{叶清漪}的洞察力太强了，隐瞒反而会破坏他们之间的信任。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-014::char-shen-xuan::char-song-huaijin::a2139c0b99",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "label": "信任上升",
+      "severity": "suggestion",
+      "evidence": "\"他是我前世的挚友。\"@{沈玄}说。他没有隐瞒——在归墟域相关的信息上他有所保留，但关于@{宋怀瑾}，他没有必要对@{叶清漪}隐瞒。况且，@{叶清漪}的洞察力太强了，隐瞒反而会破坏他们之间的信任。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-014::char-ye-qingyi::char-song-huaijin::a2139c0b99",
+      "fromId": "char-ye-qingyi",
+      "fromName": "叶清漪",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "label": "信任上升",
+      "severity": "suggestion",
+      "evidence": "\"他是我前世的挚友。\"@{沈玄}说。他没有隐瞒——在归墟域相关的信息上他有所保留，但关于@{宋怀瑾}，他没有必要对@{叶清漪}隐瞒。况且，@{叶清漪}的洞察力太强了，隐瞒反而会破坏他们之间的信任。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-014::char-shen-xuan::char-ye-qingyi::eaa7b80f4d",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-ye-qingyi",
+      "toName": "叶清漪",
+      "label": "裂痕",
+      "severity": "high-risk",
+      "evidence": "@{叶清漪}说的没错。@{宋怀瑾}确实是一面镜子。通过这面镜子，@{沈玄}看到的不是@{宋怀瑾}，而是前世的自己——那个还不知道什么叫背叛的自己，那个还会因为朋友的微笑而感到温暖的自己。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-014::char-shen-xuan::char-song-huaijin::eaa7b80f4d",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "label": "裂痕",
+      "severity": "high-risk",
+      "evidence": "@{叶清漪}说的没错。@{宋怀瑾}确实是一面镜子。通过这面镜子，@{沈玄}看到的不是@{宋怀瑾}，而是前世的自己——那个还不知道什么叫背叛的自己，那个还会因为朋友的微笑而感到温暖的自己。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-014::char-ye-qingyi::char-song-huaijin::eaa7b80f4d",
+      "fromId": "char-ye-qingyi",
+      "fromName": "叶清漪",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "label": "裂痕",
+      "severity": "high-risk",
+      "evidence": "@{叶清漪}说的没错。@{宋怀瑾}确实是一面镜子。通过这面镜子，@{沈玄}看到的不是@{宋怀瑾}，而是前世的自己——那个还不知道什么叫背叛的自己，那个还会因为朋友的微笑而感到温暖的自己。",
+      "confidence": 0.84
+    }
+  ],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-song-huaijin",
+      "char-ye-qingyi",
+      "char-gu-changyuan"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "宋怀瑾",
+      "叶清漪",
+      "顾长渊"
+    ]
+  }
+}

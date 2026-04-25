@@ -212,6 +212,66 @@ class DoctorSmokeTest(unittest.TestCase):
         self.assertTrue(payload["ok"])
         self.assertEqual(payload["summary"]["errors"], 0)
 
+    def test_doctor_reports_style_profile_override(self) -> None:
+        (self.temp_dir / "style-profiles.yaml").write_text(
+            json.dumps(
+                {
+                    "profiles": {
+                        "web-serial-zh": {
+                            "patternThresholds": {"formulaicTransition": 4.0}
+                        }
+                    }
+                },
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+        project = json.loads((self.temp_dir / "project.yaml").read_text(encoding="utf-8"))
+        project["positioning"] = {
+            "primaryGenre": "fantasy",
+            "subGenre": "urban-occult",
+            "styleTags": ["web-serial"],
+            "targetAudience": ["qidian-reader"],
+        }
+        (self.temp_dir / "project.yaml").write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding="utf-8")
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["doctor", "--root", str(self.temp_dir)])
+        payload = json.loads(buffer.getvalue())
+        codes = {item.get("code") for item in payload["checks"]}
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("active-style-profile", codes)
+        self.assertIn("parsed-style-profiles", codes)
+        self.assertIn("style-profile-override", codes)
+
+    def test_doctor_warns_for_invalid_style_profile_shape(self) -> None:
+        (self.temp_dir / "style-profiles.yaml").write_text(
+            json.dumps(
+                {
+                    "profiles": {
+                        "web-serial-zh": {
+                            "patternThresholds": {"formulaicTransition": 0},
+                            "extraPatterns": {"hedgeAdverbs": "蓦地"},
+                        }
+                    }
+                },
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["doctor", "--root", str(self.temp_dir)])
+        payload = json.loads(buffer.getvalue())
+        codes = {item.get("code") for item in payload["checks"] if item.get("level") == "warning"}
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("invalid-style-threshold-value", codes)
+        self.assertIn("invalid-style-pattern-list", codes)
+
 
 if __name__ == "__main__":
     unittest.main()

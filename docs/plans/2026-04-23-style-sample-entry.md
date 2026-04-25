@@ -13,7 +13,7 @@
 
 - 首页入口 owner: `README.md`
 - 指南 owner: `docs/guides/*`
-- 风格样例 owner: `demo-light-novel-short/*`
+- 风格样例 owner: `projects/demo-light-novel-short/*`
 
 ## 影响面
 
@@ -30,7 +30,7 @@
 ## 验证方式
 
 - 读取 `README.md`、`docs/guides/quickstart.md`、`docs/guides/creative-workflow.md`
-- 对照 `demo-light-novel-short/README.md` 检查样例定位
+- 对照 `projects/demo-light-novel-short/README.md` 检查样例定位
 - 运行 `git diff --check -- README.md docs/guides/quickstart.md docs/guides/creative-workflow.md docs/plans/2026-04-23-style-sample-entry.md`
 
 ## 验证结果

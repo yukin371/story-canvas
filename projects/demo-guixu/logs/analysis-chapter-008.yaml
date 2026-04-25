@@ -1,0 +1,75 @@
+{
+  "chapterId": "chapter-008",
+  "chapterTitle": "棋盘初现",
+  "analyzedAt": "2026-04-25T12:33:50+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 33,
+      "source": "registry"
+    },
+    {
+      "id": "inferred::宋长老",
+      "name": "宋长老",
+      "mentionCount": 14,
+      "source": "inferred"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 11,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 3,
+      "source": "registry"
+    },
+    {
+      "id": "char-song-huaijin",
+      "name": "宋怀瑾",
+      "mentionCount": 3,
+      "source": "registry"
+    },
+    {
+      "id": "char-bai-jiushang",
+      "name": "白九殇",
+      "mentionCount": 2,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-008::inferred::宋长老::7f843cab49",
+      "entityId": "inferred::宋长老",
+      "entityName": "宋长老",
+      "proposedState": "离开",
+      "stateTags": [
+        "离开"
+      ],
+      "evidence": "三天后，@{宋长老}离开了青云宗。",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "inferred::宋长老",
+      "char-gu-changyuan",
+      "char-ye-qingyi",
+      "char-song-huaijin",
+      "char-bai-jiushang"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "宋长老",
+      "顾长渊",
+      "叶清漪",
+      "宋怀瑾",
+      "白九殇"
+    ]
+  }
+}

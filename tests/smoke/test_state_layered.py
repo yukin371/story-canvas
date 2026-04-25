@@ -14,6 +14,7 @@ if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from story_harness_cli.protocol.files import resolve_state_path
+from story_harness_cli.protocol.schema import default_project_state
 from story_harness_cli.protocol.state import STATE_KEY_MAP, load_project_state, save_state
 
 
@@ -28,23 +29,9 @@ def _write_json_yaml(path: Path, data: dict):
 
 def _build_state_files(root: Path) -> None:
     """Write minimal valid state files for every key in STATE_KEY_MAP."""
-    sample_data = {
-        "project": {"title": "layered-test"},
-        "outline": {"chapters": []},
-        "entities": {"characters": []},
-        "timeline": {"events": []},
-        "branches": {"branches": []},
-        "proposals": {"proposals": []},
-        "reviews": {"reviews": []},
-        "story_reviews": {"reviews": []},
-        "projection": {"projection": {}},
-        "context_lens": {"lens": {}},
-        "projection_log": {"entries": []},
-        "threads": {"threads": []},
-        "structures": {"structures": []},
-        "foreshadowing": {"foreshadows": []},
-        "detailed_outlines": {"entries": []},
-    }
+    sample_data = default_project_state()
+    sample_data["project"].update({"title": "layered-test"})
+    sample_data["outline"] = {"chapters": [], "chapterDirections": [], "volumes": []}
     for state_key, internal_key in STATE_KEY_MAP.items():
         fpath = resolve_state_path(root, state_key)
         _write_json_yaml(fpath, sample_data[internal_key])
@@ -71,7 +58,7 @@ class LoadLayeredProjectTest(unittest.TestCase):
         state = load_project_state(self.root)
         self.assertEqual(state["project"]["title"], "layered-test")
         self.assertEqual(state["outline"]["chapters"], [])
-        self.assertEqual(state["entities"]["characters"], [])
+        self.assertEqual(state["entities"]["entities"], [])
         self.assertIn("_stateMeta", state)
         # Verify spec-eligible keys were read from spec/ paths
         outline_path = resolve_state_path(self.root, "outline")

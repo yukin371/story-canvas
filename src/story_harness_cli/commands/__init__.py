@@ -8,6 +8,7 @@ from .doctor import register_doctor_commands
 from .entity import register_entity_commands
 from .export import register_export_commands
 from .foreshadow import register_foreshadow_commands
+from .illustration import register_illustration_commands
 from .outline import register_outline_commands
 from .projection import register_projection_commands
 from .project import register_project_commands
@@ -16,7 +17,9 @@ from .stats import register_stats_commands
 from .structure import register_structure_commands
 from .timeline import register_timeline_commands
 from .search import register_search_commands
+from .style import register_style_commands
 from .thread import register_thread_commands
+from .workflow import register_workflow_commands
 from .migrate import register_migrate_commands
 
 __all__ = [
@@ -30,6 +33,7 @@ __all__ = [
     "register_entity_commands",
     "register_export_commands",
     "register_foreshadow_commands",
+    "register_illustration_commands",
     "register_outline_commands",
     "register_projection_commands",
     "register_project_commands",
@@ -38,6 +42,8 @@ __all__ = [
     "register_structure_commands",
     "register_timeline_commands",
     "register_search_commands",
+    "register_style_commands",
     "register_thread_commands",
+    "register_workflow_commands",
     "register_migrate_commands",
 ]

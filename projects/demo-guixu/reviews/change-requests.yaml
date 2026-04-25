@@ -1,0 +1,2101 @@
+{
+  "changeRequests": [
+    {
+      "id": "cr-dc13f55080",
+      "chapterId": "chapter-001",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 顾长渊 当前状态",
+      "summary": "检测到 顾长渊 可能进入状态：信任",
+      "evidence": "——@{顾长渊}站在他面前，鹤发童颜的脸上带着他看了十年、信任了十年的温和微笑。",
+      "targetIds": [
+        "char-gu-changyuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-gu-changyuan",
+        "entityName": "顾长渊",
+        "state": "信任"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-gu-changyuan::信任",
+      "createdAt": "2026-04-25T11:49:25+08:00",
+      "updatedAt": "2026-04-25T11:49:54+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T11:49:54+08:00"
+    },
+    {
+      "id": "cr-263775e498",
+      "chapterId": "chapter-001",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈玄 当前状态",
+      "summary": "检测到 沈玄 可能进入状态：愤怒；背叛",
+      "evidence": "前世的@{沈玄}会慌张、会愤怒、会在师父的背叛面前失去理智。那个@{沈玄}已经在天枢宗的金丹大殿里死去了。",
+      "targetIds": [
+        "char-shen-xuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-xuan",
+        "entityName": "沈玄",
+        "state": "愤怒；背叛"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-xuan::愤怒；背叛",
+      "createdAt": "2026-04-25T11:49:25+08:00",
+      "updatedAt": "2026-04-25T11:49:54+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T11:49:54+08:00"
+    },
+    {
+      "id": "cr-8841639ff6",
+      "chapterId": "chapter-001",
+      "kind": "relation",
+      "severity": "suggestion",
+      "title": "更新 顾长渊 与 白九殇 的关系",
+      "summary": "检测到两者关系可能变化为：合作",
+      "evidence": "前世在他死后发生了什么，他不知道。但从顾长渊在金丹大殿中提到\"白九殇\"这个名字时的语气来看——那不是第一次提及，而是一个延续了不知多久的合作关系。顾长渊的邪术、对归墟体的了解、那座暗红色的阵法——背后都有白九殇的影子。",
+      "targetIds": [
+        "char-gu-changyuan",
+        "char-bai-jiushang"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-gu-changyuan",
+        "fromName": "顾长渊",
+        "toId": "char-bai-jiushang",
+        "toName": "白九殇",
+        "label": "合作"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-gu-changyuan::char-bai-jiushang::合作",
+      "createdAt": "2026-04-25T11:53:12+08:00",
+      "updatedAt": "2026-04-25T11:53:28+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T11:53:28+08:00"
+    },
+    {
+      "id": "cr-2d2dbcce02",
+      "chapterId": "chapter-002",
+      "kind": "relation",
+      "severity": "suggestion",
+      "title": "更新 沈玄 与 顾长渊 的关系",
+      "summary": "检测到两者关系可能变化为：冲突",
+      "evidence": "**前世二十三岁**：天枢宗与苍梧域青云宗发生冲突，青云宗被灭。@{沈玄}没有参与那场战争，但他记得顾长渊战后颇为满意地说了一句话：\"少了一个可能碍事的势力。\"",
+      "targetIds": [
+        "char-shen-xuan",
+        "char-gu-changyuan"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-shen-xuan",
+        "fromName": "沈玄",
+        "toId": "char-gu-changyuan",
+        "toName": "顾长渊",
+        "label": "冲突"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-shen-xuan::char-gu-changyuan::冲突",
+      "createdAt": "2026-04-25T12:03:45+08:00",
+      "updatedAt": "2026-04-25T12:04:22+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T12:04:22+08:00"
+    },
+    {
+      "id": "cr-427f9a59c2",
+      "chapterId": "chapter-002",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈玄 当前状态",
+      "summary": "检测到 沈玄 可能进入状态：恐惧",
+      "evidence": "攀到半途时，@{沈玄}的手指在石缝间滑了一下。身体晃荡在崖壁上，只有一只手勉强勾住了岩棱。心脏猛地跳了一拍——不是恐惧，是本能。",
+      "targetIds": [
+        "char-shen-xuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-xuan",
+        "entityName": "沈玄",
+        "state": "恐惧"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-xuan::恐惧",
+      "createdAt": "2026-04-25T12:06:26+08:00",
+      "updatedAt": "2026-04-25T12:06:27+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T12:06:27+08:00"
+    },
+    {
+      "id": "cr-29a2493b48",
+      "chapterId": "chapter-002",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 顾长渊 当前状态",
+      "summary": "检测到 顾长渊 可能进入状态：信任；恐惧；愤怒",
+      "evidence": "不是因为恐惧——他已经死过一次了，恐惧是最不需要的情绪。而是因为愤怒。二十八年的信任。从十六岁到二十八岁，他把顾长渊当作师父、当作父亲、当作修行路上最可靠的引路人。而顾长渊用了十二年的时间来编织一个骗局，只为了在最后时刻剖开他的身体取走归墟体。",
+      "targetIds": [
+        "char-gu-changyuan"
+      ],
+      "confidence": 0.78,
+      "suggestedPayload": {
+        "entityId": "char-gu-changyuan",
+        "entityName": "顾长渊",
+        "state": "信任；恐惧；愤怒"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-gu-changyuan::信任；恐惧；愤怒",
+      "createdAt": "2026-04-25T12:06:26+08:00",
+      "updatedAt": "2026-04-25T12:06:27+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T12:06:27+08:00"
+    },
+    {
+      "id": "cr-834fa333bc",
+      "chapterId": "chapter-002",
+      "kind": "relation",
+      "severity": "high-risk",
+      "title": "更新 沈玄 与 宋怀瑾 的关系",
+      "summary": "检测到两者关系可能变化为：对立",
+      "evidence": "前世他在天枢宗最好的朋友。丹药堂首席弟子，温润如玉，善解人意。前世@{沈玄}被陷害时，宋怀瑾选择了相信师父的说辞——站在了对立面。",
+      "targetIds": [
+        "char-shen-xuan",
+        "char-song-huaijin"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-shen-xuan",
+        "fromName": "沈玄",
+        "toId": "char-song-huaijin",
+        "toName": "宋怀瑾",
+        "label": "对立"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-shen-xuan::char-song-huaijin::对立",
+      "createdAt": "2026-04-25T12:06:26+08:00",
+      "updatedAt": "2026-04-25T12:06:27+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T12:06:27+08:00"
+    },
+    {
+      "id": "cr-1a3d5106d7",
+      "chapterId": "chapter-004",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈玄 当前状态",
+      "summary": "检测到 沈玄 可能进入状态：怀疑",
+      "evidence": "第二场对阵一个使用短剑的女修。@{沈玄}这次没有拖延太久，三招之内就认了输——他判断这个女修的实力在十三个符文以上，属于内门候选的水平。输给她不会引起任何怀疑，反而能进一步降低自己的存在感。",
+      "targetIds": [
+        "char-shen-xuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-xuan",
+        "entityName": "沈玄",
+        "state": "怀疑"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-xuan::怀疑",
+      "createdAt": "2026-04-25T12:24:00+08:00",
+      "updatedAt": "2026-04-25T12:24:16+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T12:24:16+08:00"
+    },
+    {
+      "id": "cr-dfc0f55a3a",
+      "chapterId": "chapter-004",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈玄 当前状态",
+      "summary": "检测到 沈玄 可能进入状态：冷静",
+      "evidence": "@{沈玄}强迫自己将视线从@{叶清漪}身上移开。现在不是思考这个的时候。试炼还没有结束，他必须保持冷静。",
+      "targetIds": [
+        "char-shen-xuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-xuan",
+        "entityName": "沈玄",
+        "state": "冷静"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-xuan::冷静",
+      "createdAt": "2026-04-25T12:24:00+08:00",
+      "updatedAt": "2026-04-25T12:24:16+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T12:24:16+08:00"
+    },
+    {
+      "id": "cr-90f54d795e",
+      "chapterId": "chapter-004",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 叶清漪 当前状态",
+      "summary": "检测到 叶清漪 可能进入状态：冷静",
+      "evidence": "@{沈玄}强迫自己将视线从@{叶清漪}身上移开。现在不是思考这个的时候。试炼还没有结束，他必须保持冷静。",
+      "targetIds": [
+        "char-ye-qingyi"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-ye-qingyi",
+        "entityName": "叶清漪",
+        "state": "冷静"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-ye-qingyi::冷静",
+      "createdAt": "2026-04-25T12:24:00+08:00",
+      "updatedAt": "2026-04-25T12:24:16+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T12:24:16+08:00"
+    },
+    {
+      "id": "cr-4b0d97edc4",
+      "chapterId": "chapter-006",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈玄 当前状态",
+      "summary": "检测到 沈玄 可能进入状态：离开",
+      "evidence": "他是在夜间行动的。赵峰等人在溶洞深处的临时营地休息，周铁山负责守夜。@{沈玄}借口去方便，沿着一条几乎不可见的支路悄然离开。",
+      "targetIds": [
+        "char-shen-xuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-xuan",
+        "entityName": "沈玄",
+        "state": "离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-xuan::离开",
+      "createdAt": "2026-04-25T12:29:40+08:00",
+      "updatedAt": "2026-04-25T12:29:41+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T12:29:41+08:00"
+    },
+    {
+      "id": "cr-bc9c6264cc",
+      "chapterId": "chapter-007",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈玄 当前状态",
+      "summary": "检测到 沈玄 可能进入状态：恐惧；离开",
+      "evidence": "@{沈玄}转身离开公告栏，面色平静如水。没有人能从他的表情中读出任何情绪波动。他已经学会了将恐惧和焦虑埋在更深的地方——深到连自己都几乎感觉不到。",
+      "targetIds": [
+        "char-shen-xuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-xuan",
+        "entityName": "沈玄",
+        "state": "恐惧；离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-xuan::恐惧；离开",
+      "createdAt": "2026-04-25T12:31:31+08:00",
+      "updatedAt": "2026-04-25T12:31:31+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T12:31:31+08:00"
+    },
+    {
+      "id": "cr-4d3537e0b9",
+      "chapterId": "chapter-008",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 宋长老 当前状态",
+      "summary": "检测到 宋长老 可能进入状态：离开",
+      "evidence": "三天后，@{宋长老}离开了青云宗。",
+      "targetIds": [
+        "inferred::宋长老"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "inferred::宋长老",
+        "entityName": "宋长老",
+        "state": "离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::inferred::宋长老::离开",
+      "createdAt": "2026-04-25T12:33:59+08:00",
+      "updatedAt": "2026-04-25T12:33:59+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T12:33:59+08:00"
+    },
+    {
+      "id": "cr-ee02ccc675",
+      "chapterId": "chapter-013",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 叶清漪 当前状态",
+      "summary": "检测到 叶清漪 可能进入状态：信任",
+      "evidence": "他选择沉默。不是不信任@{叶清漪}，而是现在还不是揭示真相的时候。他的猜测还需要更多的证据来验证。在他确认@{叶清漪}与归墟域封印的具体关系之前，贸然开口可能反而会造成困扰。",
+      "targetIds": [
+        "char-ye-qingyi"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-ye-qingyi",
+        "entityName": "叶清漪",
+        "state": "信任"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-ye-qingyi::信任",
+      "createdAt": "2026-04-25T13:13:00+08:00",
+      "updatedAt": "2026-04-25T13:13:11+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:13:11+08:00"
+    },
+    {
+      "id": "cr-7b9cf9bbb1",
+      "chapterId": "chapter-009",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 顾长渊 当前状态",
+      "summary": "检测到 顾长渊 可能进入状态：离开",
+      "evidence": "外部威胁：@{顾长渊}的搜索已经到达苍梧域，@{宋长老}虽然离开了青云宗，但并没有放弃搜索。引魂草的药效还有大约四个月。",
+      "targetIds": [
+        "char-gu-changyuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-gu-changyuan",
+        "entityName": "顾长渊",
+        "state": "离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-gu-changyuan::离开",
+      "createdAt": "2026-04-25T13:13:20+08:00",
+      "updatedAt": "2026-04-25T13:13:30+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:13:30+08:00"
+    },
+    {
+      "id": "cr-fcc86019b3",
+      "chapterId": "chapter-009",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈玄 当前状态",
+      "summary": "检测到 沈玄 可能进入状态：信任",
+      "evidence": "@{沈玄}放下筷子，心中默默地给自己加了一条规则：与赵峰保持距离。不是因为赵峰不值得信任，而是因为太亲近的人最容易成为软肋——前世的教训太过惨痛。",
+      "targetIds": [
+        "char-shen-xuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-xuan",
+        "entityName": "沈玄",
+        "state": "信任"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-xuan::信任",
+      "createdAt": "2026-04-25T13:13:20+08:00",
+      "updatedAt": "2026-04-25T13:13:30+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:13:30+08:00"
+    },
+    {
+      "id": "cr-e7db5907ce",
+      "chapterId": "chapter-009",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈玄 当前状态",
+      "summary": "检测到 沈玄 可能进入状态：震惊",
+      "evidence": "结果正如@{沈玄}预料的那样——林正阳在检查第七节点的灵力回路时发现了偏移，顺藤摸瓜地找到了第七节点和第三节点之间的隐藏缺陷。他大为震惊，立即向宗主汇报了这一发现。",
+      "targetIds": [
+        "char-shen-xuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-xuan",
+        "entityName": "沈玄",
+        "state": "震惊"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-xuan::震惊",
+      "createdAt": "2026-04-25T13:13:20+08:00",
+      "updatedAt": "2026-04-25T13:13:30+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:13:30+08:00"
+    },
+    {
+      "id": "cr-5c0b5eaa96",
+      "chapterId": "chapter-014",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈玄 当前状态",
+      "summary": "检测到 沈玄 可能进入状态：恐惧；愤怒",
+      "evidence": "@{沈玄}在零点五秒之内完成了所有情绪的处理。恐惧、愤怒、失望、不甘——所有的情感都被他打包、压缩、锁进了意识的最深处。",
+      "targetIds": [
+        "char-shen-xuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-xuan",
+        "entityName": "沈玄",
+        "state": "恐惧；愤怒"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-xuan::恐惧；愤怒",
+      "createdAt": "2026-04-25T13:16:13+08:00",
+      "updatedAt": "2026-04-25T13:16:42+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "id": "cr-e05ffca443",
+      "chapterId": "chapter-014",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 宋怀瑾 当前状态",
+      "summary": "检测到 宋怀瑾 可能进入状态：紧张",
+      "evidence": "@{宋怀瑾}摇了摇头：\"具体我也不清楚。大长老的事，我们这些丹药堂的弟子接触不到核心。只是最近阵法堂的气氛有些紧张，几个师弟被派出去'历练'了，但谁也不知道去了哪里。\"",
+      "targetIds": [
+        "char-song-huaijin"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-song-huaijin",
+        "entityName": "宋怀瑾",
+        "state": "紧张"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-song-huaijin::紧张",
+      "createdAt": "2026-04-25T13:16:13+08:00",
+      "updatedAt": "2026-04-25T13:16:42+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "id": "cr-caece76634",
+      "chapterId": "chapter-014",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 宋怀瑾 当前状态",
+      "summary": "检测到 宋怀瑾 可能进入状态：信任",
+      "evidence": "\"他是我前世的挚友。\"@{沈玄}说。他没有隐瞒——在归墟域相关的信息上他有所保留，但关于@{宋怀瑾}，他没有必要对@{叶清漪}隐瞒。况且，@{叶清漪}的洞察力太强了，隐瞒反而会破坏他们之间的信任。",
+      "targetIds": [
+        "char-song-huaijin"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-song-huaijin",
+        "entityName": "宋怀瑾",
+        "state": "信任"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-song-huaijin::信任",
+      "createdAt": "2026-04-25T13:16:13+08:00",
+      "updatedAt": "2026-04-25T13:16:42+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "id": "cr-2fed9c3c0a",
+      "chapterId": "chapter-014",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈玄 当前状态",
+      "summary": "检测到 沈玄 可能进入状态：背叛",
+      "evidence": "@{叶清漪}说的没错。@{宋怀瑾}确实是一面镜子。通过这面镜子，@{沈玄}看到的不是@{宋怀瑾}，而是前世的自己——那个还不知道什么叫背叛的自己，那个还会因为朋友的微笑而感到温暖的自己。",
+      "targetIds": [
+        "char-shen-xuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-xuan",
+        "entityName": "沈玄",
+        "state": "背叛"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-xuan::背叛",
+      "createdAt": "2026-04-25T13:16:13+08:00",
+      "updatedAt": "2026-04-25T13:16:42+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "id": "cr-9eac5cf94d",
+      "chapterId": "chapter-014",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 叶清漪 当前状态",
+      "summary": "检测到 叶清漪 可能进入状态：背叛",
+      "evidence": "@{叶清漪}说的没错。@{宋怀瑾}确实是一面镜子。通过这面镜子，@{沈玄}看到的不是@{宋怀瑾}，而是前世的自己——那个还不知道什么叫背叛的自己，那个还会因为朋友的微笑而感到温暖的自己。",
+      "targetIds": [
+        "char-ye-qingyi"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-ye-qingyi",
+        "entityName": "叶清漪",
+        "state": "背叛"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-ye-qingyi::背叛",
+      "createdAt": "2026-04-25T13:16:13+08:00",
+      "updatedAt": "2026-04-25T13:16:42+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "id": "cr-ada154867b",
+      "chapterId": "chapter-014",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 宋怀瑾 当前状态",
+      "summary": "检测到 宋怀瑾 可能进入状态：背叛",
+      "evidence": "@{叶清漪}说的没错。@{宋怀瑾}确实是一面镜子。通过这面镜子，@{沈玄}看到的不是@{宋怀瑾}，而是前世的自己——那个还不知道什么叫背叛的自己，那个还会因为朋友的微笑而感到温暖的自己。",
+      "targetIds": [
+        "char-song-huaijin"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-song-huaijin",
+        "entityName": "宋怀瑾",
+        "state": "背叛"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-song-huaijin::背叛",
+      "createdAt": "2026-04-25T13:16:13+08:00",
+      "updatedAt": "2026-04-25T13:16:42+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "id": "cr-17e7002055",
+      "chapterId": "chapter-014",
+      "kind": "relation",
+      "severity": "suggestion",
+      "title": "更新 沈玄 与 叶清漪 的关系",
+      "summary": "检测到两者关系可能变化为：信任上升",
+      "evidence": "\"他是我前世的挚友。\"@{沈玄}说。他没有隐瞒——在归墟域相关的信息上他有所保留，但关于@{宋怀瑾}，他没有必要对@{叶清漪}隐瞒。况且，@{叶清漪}的洞察力太强了，隐瞒反而会破坏他们之间的信任。",
+      "targetIds": [
+        "char-shen-xuan",
+        "char-ye-qingyi"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-shen-xuan",
+        "fromName": "沈玄",
+        "toId": "char-ye-qingyi",
+        "toName": "叶清漪",
+        "label": "信任上升"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-shen-xuan::char-ye-qingyi::信任上升",
+      "createdAt": "2026-04-25T13:16:13+08:00",
+      "updatedAt": "2026-04-25T13:16:42+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "id": "cr-e9c4ab3f3a",
+      "chapterId": "chapter-014",
+      "kind": "relation",
+      "severity": "suggestion",
+      "title": "更新 沈玄 与 宋怀瑾 的关系",
+      "summary": "检测到两者关系可能变化为：信任上升",
+      "evidence": "\"他是我前世的挚友。\"@{沈玄}说。他没有隐瞒——在归墟域相关的信息上他有所保留，但关于@{宋怀瑾}，他没有必要对@{叶清漪}隐瞒。况且，@{叶清漪}的洞察力太强了，隐瞒反而会破坏他们之间的信任。",
+      "targetIds": [
+        "char-shen-xuan",
+        "char-song-huaijin"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-shen-xuan",
+        "fromName": "沈玄",
+        "toId": "char-song-huaijin",
+        "toName": "宋怀瑾",
+        "label": "信任上升"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-shen-xuan::char-song-huaijin::信任上升",
+      "createdAt": "2026-04-25T13:16:13+08:00",
+      "updatedAt": "2026-04-25T13:16:42+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "id": "cr-f5e1b3882b",
+      "chapterId": "chapter-014",
+      "kind": "relation",
+      "severity": "suggestion",
+      "title": "更新 叶清漪 与 宋怀瑾 的关系",
+      "summary": "检测到两者关系可能变化为：信任上升",
+      "evidence": "\"他是我前世的挚友。\"@{沈玄}说。他没有隐瞒——在归墟域相关的信息上他有所保留，但关于@{宋怀瑾}，他没有必要对@{叶清漪}隐瞒。况且，@{叶清漪}的洞察力太强了，隐瞒反而会破坏他们之间的信任。",
+      "targetIds": [
+        "char-ye-qingyi",
+        "char-song-huaijin"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-ye-qingyi",
+        "fromName": "叶清漪",
+        "toId": "char-song-huaijin",
+        "toName": "宋怀瑾",
+        "label": "信任上升"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-ye-qingyi::char-song-huaijin::信任上升",
+      "createdAt": "2026-04-25T13:16:13+08:00",
+      "updatedAt": "2026-04-25T13:16:42+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "id": "cr-1fbc054593",
+      "chapterId": "chapter-014",
+      "kind": "relation",
+      "severity": "high-risk",
+      "title": "更新 沈玄 与 叶清漪 的关系",
+      "summary": "检测到两者关系可能变化为：裂痕",
+      "evidence": "@{叶清漪}说的没错。@{宋怀瑾}确实是一面镜子。通过这面镜子，@{沈玄}看到的不是@{宋怀瑾}，而是前世的自己——那个还不知道什么叫背叛的自己，那个还会因为朋友的微笑而感到温暖的自己。",
+      "targetIds": [
+        "char-shen-xuan",
+        "char-ye-qingyi"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-shen-xuan",
+        "fromName": "沈玄",
+        "toId": "char-ye-qingyi",
+        "toName": "叶清漪",
+        "label": "裂痕"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-shen-xuan::char-ye-qingyi::裂痕",
+      "createdAt": "2026-04-25T13:16:13+08:00",
+      "updatedAt": "2026-04-25T13:16:42+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "id": "cr-6fd6a3188c",
+      "chapterId": "chapter-014",
+      "kind": "relation",
+      "severity": "high-risk",
+      "title": "更新 沈玄 与 宋怀瑾 的关系",
+      "summary": "检测到两者关系可能变化为：裂痕",
+      "evidence": "@{叶清漪}说的没错。@{宋怀瑾}确实是一面镜子。通过这面镜子，@{沈玄}看到的不是@{宋怀瑾}，而是前世的自己——那个还不知道什么叫背叛的自己，那个还会因为朋友的微笑而感到温暖的自己。",
+      "targetIds": [
+        "char-shen-xuan",
+        "char-song-huaijin"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-shen-xuan",
+        "fromName": "沈玄",
+        "toId": "char-song-huaijin",
+        "toName": "宋怀瑾",
+        "label": "裂痕"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-shen-xuan::char-song-huaijin::裂痕",
+      "createdAt": "2026-04-25T13:16:13+08:00",
+      "updatedAt": "2026-04-25T13:16:42+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "id": "cr-700bd789a3",
+      "chapterId": "chapter-014",
+      "kind": "relation",
+      "severity": "high-risk",
+      "title": "更新 叶清漪 与 宋怀瑾 的关系",
+      "summary": "检测到两者关系可能变化为：裂痕",
+      "evidence": "@{叶清漪}说的没错。@{宋怀瑾}确实是一面镜子。通过这面镜子，@{沈玄}看到的不是@{宋怀瑾}，而是前世的自己——那个还不知道什么叫背叛的自己，那个还会因为朋友的微笑而感到温暖的自己。",
+      "targetIds": [
+        "char-ye-qingyi",
+        "char-song-huaijin"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-ye-qingyi",
+        "fromName": "叶清漪",
+        "toId": "char-song-huaijin",
+        "toName": "宋怀瑾",
+        "label": "裂痕"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-ye-qingyi::char-song-huaijin::裂痕",
+      "createdAt": "2026-04-25T13:16:13+08:00",
+      "updatedAt": "2026-04-25T13:16:42+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:16:42+08:00"
+    },
+    {
+      "id": "cr-d92369493f",
+      "chapterId": "chapter-010",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 叶清漪 当前状态",
+      "summary": "检测到 叶清漪 可能进入状态：离开",
+      "evidence": "@{沈玄}在人群中找了一个不起眼的位置站定，目光始终没有离开@{叶清漪}的身影。",
+      "targetIds": [
+        "char-ye-qingyi"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-ye-qingyi",
+        "entityName": "叶清漪",
+        "state": "离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-ye-qingyi::离开",
+      "createdAt": "2026-04-25T13:16:34+08:00",
+      "updatedAt": "2026-04-25T13:16:56+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:16:56+08:00"
+    },
+    {
+      "id": "cr-de75f5ea1b",
+      "chapterId": "chapter-011",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 叶清漪 当前状态",
+      "summary": "检测到 叶清漪 可能进入状态：受伤",
+      "evidence": "他不能不出手——如果@{叶清漪}受伤，两个人都会陷入更大的危险。但他也不能暴露归墟体。",
+      "targetIds": [
+        "char-ye-qingyi"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-ye-qingyi",
+        "entityName": "叶清漪",
+        "state": "受伤"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-ye-qingyi::受伤",
+      "createdAt": "2026-04-25T13:20:03+08:00",
+      "updatedAt": "2026-04-25T13:20:15+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:20:15+08:00"
+    },
+    {
+      "id": "cr-55e8261546",
+      "chapterId": "chapter-011",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 叶清漪 当前状态",
+      "summary": "检测到 叶清漪 可能进入状态：疲惫",
+      "evidence": "最后一名散修倒下时，@{叶清漪}的玄冰剑上凝结着一层厚厚的寒霜。她的呼吸微微加快，但面色依然冷若寒冰，看不出任何疲惫。",
+      "targetIds": [
+        "char-ye-qingyi"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-ye-qingyi",
+        "entityName": "叶清漪",
+        "state": "疲惫"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-ye-qingyi::疲惫",
+      "createdAt": "2026-04-25T13:20:03+08:00",
+      "updatedAt": "2026-04-25T13:20:15+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:20:15+08:00"
+    },
+    {
+      "id": "cr-d03e0bc6c1",
+      "chapterId": "chapter-016",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 顾长渊 当前状态",
+      "summary": "检测到 顾长渊 可能进入状态：怀疑",
+      "evidence": "但这一世的@{顾长渊}不在乎暴露了。他公然派遣亲传弟子到苍梧域搜索特殊体质，公然让阵法堂弟子\"外出历练\"后失踪，甚至——如果@{宋怀瑾}的信息准确的话——他的行为已经引起了一些天枢宗弟子的怀疑。",
+      "targetIds": [
+        "char-gu-changyuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-gu-changyuan",
+        "entityName": "顾长渊",
+        "state": "怀疑"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-gu-changyuan::怀疑",
+      "createdAt": "2026-04-25T13:21:37+08:00",
+      "updatedAt": "2026-04-25T13:21:45+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:21:45+08:00"
+    },
+    {
+      "id": "cr-d8158be844",
+      "chapterId": "chapter-016",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 宋怀瑾 当前状态",
+      "summary": "检测到 宋怀瑾 可能进入状态：怀疑",
+      "evidence": "但这一世的@{顾长渊}不在乎暴露了。他公然派遣亲传弟子到苍梧域搜索特殊体质，公然让阵法堂弟子\"外出历练\"后失踪，甚至——如果@{宋怀瑾}的信息准确的话——他的行为已经引起了一些天枢宗弟子的怀疑。",
+      "targetIds": [
+        "char-song-huaijin"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-song-huaijin",
+        "entityName": "宋怀瑾",
+        "state": "怀疑"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-song-huaijin::怀疑",
+      "createdAt": "2026-04-25T13:21:37+08:00",
+      "updatedAt": "2026-04-25T13:21:45+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:21:45+08:00"
+    },
+    {
+      "id": "cr-6914f9cf23",
+      "chapterId": "chapter-016",
+      "kind": "relation",
+      "severity": "high-risk",
+      "title": "更新 顾长渊 与 宋怀瑾 的关系",
+      "summary": "检测到两者关系可能变化为：信任下降",
+      "evidence": "但这一世的@{顾长渊}不在乎暴露了。他公然派遣亲传弟子到苍梧域搜索特殊体质，公然让阵法堂弟子\"外出历练\"后失踪，甚至——如果@{宋怀瑾}的信息准确的话——他的行为已经引起了一些天枢宗弟子的怀疑。",
+      "targetIds": [
+        "char-gu-changyuan",
+        "char-song-huaijin"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-gu-changyuan",
+        "fromName": "顾长渊",
+        "toId": "char-song-huaijin",
+        "toName": "宋怀瑾",
+        "label": "信任下降"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-gu-changyuan::char-song-huaijin::信任下降",
+      "createdAt": "2026-04-25T13:21:37+08:00",
+      "updatedAt": "2026-04-25T13:21:45+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:21:45+08:00"
+    },
+    {
+      "id": "cr-2ab8a23036",
+      "chapterId": "chapter-012",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 叶清漪 当前状态",
+      "summary": "检测到 叶清漪 可能进入状态：怀疑",
+      "evidence": "@{沈玄}在心中暗叹。他不能再继续这样下去了——如果每一次都精准避开危险，整个队伍都会对他产生不合理的依赖，而@{叶清漪}也会越来越怀疑他的真实身份。",
+      "targetIds": [
+        "char-ye-qingyi"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-ye-qingyi",
+        "entityName": "叶清漪",
+        "state": "怀疑"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-ye-qingyi::怀疑",
+      "createdAt": "2026-04-25T13:23:42+08:00",
+      "updatedAt": "2026-04-25T13:24:00+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:24:00+08:00"
+    },
+    {
+      "id": "cr-870b38bb4a",
+      "chapterId": "chapter-012",
+      "kind": "relation",
+      "severity": "high-risk",
+      "title": "更新 沈玄 与 叶清漪 的关系",
+      "summary": "检测到两者关系可能变化为：信任下降",
+      "evidence": "@{沈玄}在心中暗叹。他不能再继续这样下去了——如果每一次都精准避开危险，整个队伍都会对他产生不合理的依赖，而@{叶清漪}也会越来越怀疑他的真实身份。",
+      "targetIds": [
+        "char-shen-xuan",
+        "char-ye-qingyi"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-shen-xuan",
+        "fromName": "沈玄",
+        "toId": "char-ye-qingyi",
+        "toName": "叶清漪",
+        "label": "信任下降"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-shen-xuan::char-ye-qingyi::信任下降",
+      "createdAt": "2026-04-25T13:23:42+08:00",
+      "updatedAt": "2026-04-25T13:24:00+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:24:00+08:00"
+    },
+    {
+      "id": "cr-f2f282635e",
+      "chapterId": "chapter-017",
+      "kind": "relation",
+      "severity": "suggestion",
+      "title": "更新 顾长渊 与 叶清漪 的关系",
+      "summary": "检测到两者关系可能变化为：信任上升",
+      "evidence": "他没有通知任何人——包括@{叶清漪}。这不是因为不信任她，而是因为他需要先确认自己的判断。如果那个金丹期修士真的是@{顾长渊}的探子，那么正面接触就意味着暴露。他需要用一种不会被追踪的方式来接近目标。",
+      "targetIds": [
+        "char-gu-changyuan",
+        "char-ye-qingyi"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-gu-changyuan",
+        "fromName": "顾长渊",
+        "toId": "char-ye-qingyi",
+        "toName": "叶清漪",
+        "label": "信任上升"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-gu-changyuan::char-ye-qingyi::信任上升",
+      "createdAt": "2026-04-25T13:26:33+08:00",
+      "updatedAt": "2026-04-25T13:26:40+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:26:40+08:00"
+    },
+    {
+      "id": "cr-228275e347",
+      "chapterId": "chapter-017",
+      "kind": "relation",
+      "severity": "suggestion",
+      "title": "更新 沈玄 与 顾长渊 的关系",
+      "summary": "检测到两者关系可能变化为：合作",
+      "evidence": "千万年前的\"那个\"——@{沈玄}不知道@{白九殇}在说什么。但@{顾长渊}知道。@{白九殇}曾经告诉过他，归墟体不是自然产生的特殊体质，而是远古封印的一部分——是千万年前九域联手编织封印时，用某种代价创造出来的\"钥匙\"。",
+      "targetIds": [
+        "char-shen-xuan",
+        "char-gu-changyuan"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-shen-xuan",
+        "fromName": "沈玄",
+        "toId": "char-gu-changyuan",
+        "toName": "顾长渊",
+        "label": "合作"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-shen-xuan::char-gu-changyuan::合作",
+      "createdAt": "2026-04-25T13:26:33+08:00",
+      "updatedAt": "2026-04-25T13:26:40+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:26:40+08:00"
+    },
+    {
+      "id": "cr-d467cea508",
+      "chapterId": "chapter-017",
+      "kind": "relation",
+      "severity": "suggestion",
+      "title": "更新 沈玄 与 白九殇 的关系",
+      "summary": "检测到两者关系可能变化为：合作",
+      "evidence": "千万年前的\"那个\"——@{沈玄}不知道@{白九殇}在说什么。但@{顾长渊}知道。@{白九殇}曾经告诉过他，归墟体不是自然产生的特殊体质，而是远古封印的一部分——是千万年前九域联手编织封印时，用某种代价创造出来的\"钥匙\"。",
+      "targetIds": [
+        "char-shen-xuan",
+        "char-bai-jiushang"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-shen-xuan",
+        "fromName": "沈玄",
+        "toId": "char-bai-jiushang",
+        "toName": "白九殇",
+        "label": "合作"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-shen-xuan::char-bai-jiushang::合作",
+      "createdAt": "2026-04-25T13:26:33+08:00",
+      "updatedAt": "2026-04-25T13:26:40+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:26:40+08:00"
+    },
+    {
+      "id": "cr-9ba6419073",
+      "chapterId": "chapter-017",
+      "kind": "relation",
+      "severity": "suggestion",
+      "title": "更新 顾长渊 与 白九殇 的关系",
+      "summary": "检测到两者关系可能变化为：亲近",
+      "evidence": "@{顾长渊}微微皱眉。他不喜欢等待。但他更不敢违逆@{白九殇}。",
+      "targetIds": [
+        "char-gu-changyuan",
+        "char-bai-jiushang"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-gu-changyuan",
+        "fromName": "顾长渊",
+        "toId": "char-bai-jiushang",
+        "toName": "白九殇",
+        "label": "亲近"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-gu-changyuan::char-bai-jiushang::亲近",
+      "createdAt": "2026-04-25T13:26:33+08:00",
+      "updatedAt": "2026-04-25T13:26:40+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T13:26:40+08:00"
+    },
+    {
+      "id": "cr-33d02c4b1e",
+      "chapterId": "chapter-018",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 顾长渊 当前状态",
+      "summary": "检测到 顾长渊 可能进入状态：恐惧",
+      "evidence": "两人的目光在混乱中相遇。@{宋怀瑾}的眼中有恐惧，有愧疚，也有一种说不清的决然。他认出了@{顾长渊}——那是他的大长老，他的天枢宗的上司。而现在这个人在他面前撕裂了苍梧域的天空，来猎杀他在苍梧域认识的第一个人。",
+      "targetIds": [
+        "char-gu-changyuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-gu-changyuan",
+        "entityName": "顾长渊",
+        "state": "恐惧"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-gu-changyuan::恐惧",
+      "createdAt": "2026-04-25T17:36:14+08:00",
+      "updatedAt": "2026-04-25T17:36:27+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:36:27+08:00"
+    },
+    {
+      "id": "cr-0e41dac4a9",
+      "chapterId": "chapter-018",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 宋怀瑾 当前状态",
+      "summary": "检测到 宋怀瑾 可能进入状态：恐惧",
+      "evidence": "两人的目光在混乱中相遇。@{宋怀瑾}的眼中有恐惧，有愧疚，也有一种说不清的决然。他认出了@{顾长渊}——那是他的大长老，他的天枢宗的上司。而现在这个人在他面前撕裂了苍梧域的天空，来猎杀他在苍梧域认识的第一个人。",
+      "targetIds": [
+        "char-song-huaijin"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-song-huaijin",
+        "entityName": "宋怀瑾",
+        "state": "恐惧"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-song-huaijin::恐惧",
+      "createdAt": "2026-04-25T17:36:14+08:00",
+      "updatedAt": "2026-04-25T17:36:27+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:36:27+08:00"
+    },
+    {
+      "id": "cr-e3a31174bf",
+      "chapterId": "chapter-018",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 顾长渊 当前状态",
+      "summary": "检测到 顾长渊 可能进入状态：震惊",
+      "evidence": "\"你——\"@{顾长渊}的声音中终于出现了震惊，\"你竟然能引导封印的意志？\"",
+      "targetIds": [
+        "char-gu-changyuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-gu-changyuan",
+        "entityName": "顾长渊",
+        "state": "震惊"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-gu-changyuan::震惊",
+      "createdAt": "2026-04-25T17:36:14+08:00",
+      "updatedAt": "2026-04-25T17:36:27+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:36:27+08:00"
+    },
+    {
+      "id": "cr-30b50dc10f",
+      "chapterId": "chapter-018",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 顾长渊 当前状态",
+      "summary": "检测到 顾长渊 可能进入状态：恐惧；震惊",
+      "evidence": "@{顾长渊}闭上了眼睛，像是在聆听某种只有他能听到的声音。他的表情从冷漠变成了震惊，又从震惊变成了……恐惧？",
+      "targetIds": [
+        "char-gu-changyuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-gu-changyuan",
+        "entityName": "顾长渊",
+        "state": "恐惧；震惊"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-gu-changyuan::恐惧；震惊",
+      "createdAt": "2026-04-25T17:36:14+08:00",
+      "updatedAt": "2026-04-25T17:36:27+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:36:27+08:00"
+    },
+    {
+      "id": "cr-05b6ec8b90",
+      "chapterId": "chapter-018",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 宋怀瑾 当前状态",
+      "summary": "检测到 宋怀瑾 可能进入状态：受伤；恐惧",
+      "evidence": "@{宋怀瑾}站在药园的灵药架后面，目光穿过废墟与他对视。他的脸色苍白如纸，双手在微微颤抖——那不是受伤的颤抖，而是恐惧与决然交织的颤抖。",
+      "targetIds": [
+        "char-song-huaijin"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-song-huaijin",
+        "entityName": "宋怀瑾",
+        "state": "受伤；恐惧"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-song-huaijin::受伤；恐惧",
+      "createdAt": "2026-04-25T17:36:14+08:00",
+      "updatedAt": "2026-04-25T17:36:27+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:36:27+08:00"
+    },
+    {
+      "id": "cr-a22c4048bc",
+      "chapterId": "chapter-022",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 顾长渊 当前状态",
+      "summary": "检测到 顾长渊 可能进入状态：怀疑；震惊",
+      "evidence": "@{宋怀瑾}抬起头，目光中闪过一丝恰到好处的\"震惊\"。这不是演技——他确实在震惊，只是震惊的内容与@{顾长渊}以为的不同。他早已怀疑归魂散与@{顾长渊}有关，但亲耳听到对方承认，仍然让他脊背发凉。",
+      "targetIds": [
+        "char-gu-changyuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-gu-changyuan",
+        "entityName": "顾长渊",
+        "state": "怀疑；震惊"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-gu-changyuan::怀疑；震惊",
+      "createdAt": "2026-04-25T17:37:08+08:00",
+      "updatedAt": "2026-04-25T17:37:20+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:37:20+08:00"
+    },
+    {
+      "id": "cr-c7930cae3b",
+      "chapterId": "chapter-022",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 宋怀瑾 当前状态",
+      "summary": "检测到 宋怀瑾 可能进入状态：怀疑；震惊",
+      "evidence": "@{宋怀瑾}抬起头，目光中闪过一丝恰到好处的\"震惊\"。这不是演技——他确实在震惊，只是震惊的内容与@{顾长渊}以为的不同。他早已怀疑归魂散与@{顾长渊}有关，但亲耳听到对方承认，仍然让他脊背发凉。",
+      "targetIds": [
+        "char-song-huaijin"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-song-huaijin",
+        "entityName": "宋怀瑾",
+        "state": "怀疑；震惊"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-song-huaijin::怀疑；震惊",
+      "createdAt": "2026-04-25T17:37:08+08:00",
+      "updatedAt": "2026-04-25T17:37:20+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:37:20+08:00"
+    },
+    {
+      "id": "cr-2d6c5a4c57",
+      "chapterId": "chapter-022",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 顾长渊 当前状态",
+      "summary": "检测到 顾长渊 可能进入状态：愤怒",
+      "evidence": "他看到@{顾长渊}的眼神微微一动——不是愤怒，是兴趣。像是一个棋手发现对手走出了一步意料之外的棋。",
+      "targetIds": [
+        "char-gu-changyuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-gu-changyuan",
+        "entityName": "顾长渊",
+        "state": "愤怒"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-gu-changyuan::愤怒",
+      "createdAt": "2026-04-25T17:37:08+08:00",
+      "updatedAt": "2026-04-25T17:37:20+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:37:20+08:00"
+    },
+    {
+      "id": "cr-4a4e5d2071",
+      "chapterId": "chapter-022",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈玄 当前状态",
+      "summary": "检测到 沈玄 可能进入状态：信任；离开",
+      "evidence": "\"你不能信任他。\"@{叶清漪}在@{宋怀瑾}离开后对@{沈玄}说。她的声音不带感情色彩，像是在陈述一个客观事实。",
+      "targetIds": [
+        "char-shen-xuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-xuan",
+        "entityName": "沈玄",
+        "state": "信任；离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-xuan::信任；离开",
+      "createdAt": "2026-04-25T17:37:08+08:00",
+      "updatedAt": "2026-04-25T17:37:20+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:37:20+08:00"
+    },
+    {
+      "id": "cr-e423ee1999",
+      "chapterId": "chapter-022",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 叶清漪 当前状态",
+      "summary": "检测到 叶清漪 可能进入状态：信任；离开",
+      "evidence": "\"你不能信任他。\"@{叶清漪}在@{宋怀瑾}离开后对@{沈玄}说。她的声音不带感情色彩，像是在陈述一个客观事实。",
+      "targetIds": [
+        "char-ye-qingyi"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-ye-qingyi",
+        "entityName": "叶清漪",
+        "state": "信任；离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-ye-qingyi::信任；离开",
+      "createdAt": "2026-04-25T17:37:08+08:00",
+      "updatedAt": "2026-04-25T17:37:20+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:37:20+08:00"
+    },
+    {
+      "id": "cr-a8b2b1dbeb",
+      "chapterId": "chapter-022",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 宋怀瑾 当前状态",
+      "summary": "检测到 宋怀瑾 可能进入状态：信任；离开",
+      "evidence": "\"你不能信任他。\"@{叶清漪}在@{宋怀瑾}离开后对@{沈玄}说。她的声音不带感情色彩，像是在陈述一个客观事实。",
+      "targetIds": [
+        "char-song-huaijin"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-song-huaijin",
+        "entityName": "宋怀瑾",
+        "state": "信任；离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-song-huaijin::信任；离开",
+      "createdAt": "2026-04-25T17:37:08+08:00",
+      "updatedAt": "2026-04-25T17:37:20+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:37:20+08:00"
+    },
+    {
+      "id": "cr-4bd107afa3",
+      "chapterId": "chapter-022",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 宋怀瑾 当前状态",
+      "summary": "检测到 宋怀瑾 可能进入状态：离开",
+      "evidence": "@{宋怀瑾}离开苍梧域后，踏上了返回天枢宗的路。",
+      "targetIds": [
+        "char-song-huaijin"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-song-huaijin",
+        "entityName": "宋怀瑾",
+        "state": "离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-song-huaijin::离开",
+      "createdAt": "2026-04-25T17:37:08+08:00",
+      "updatedAt": "2026-04-25T17:37:20+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:37:20+08:00"
+    },
+    {
+      "id": "cr-7a00e21454",
+      "chapterId": "chapter-022",
+      "kind": "relation",
+      "severity": "suggestion",
+      "title": "更新 沈玄 与 顾长渊 的关系",
+      "summary": "检测到两者关系可能变化为：信任上升",
+      "evidence": "钢丝的一边是@{顾长渊}的信任——一旦失去，等待他的是宗门的怒火和师弟们的灾难。钢丝的另一边是@{沈玄}的生命——如果他的情报不够及时、不够准确，@{沈玄}可能在封印崩塌中被吞噬。",
+      "targetIds": [
+        "char-shen-xuan",
+        "char-gu-changyuan"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-shen-xuan",
+        "fromName": "沈玄",
+        "toId": "char-gu-changyuan",
+        "toName": "顾长渊",
+        "label": "信任上升"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-shen-xuan::char-gu-changyuan::信任上升",
+      "createdAt": "2026-04-25T17:37:08+08:00",
+      "updatedAt": "2026-04-25T17:37:20+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:37:20+08:00"
+    },
+    {
+      "id": "cr-efc225b522",
+      "chapterId": "chapter-023",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈玄 当前状态",
+      "summary": "检测到 沈玄 可能进入状态：信任；背叛",
+      "evidence": "前世的@{沈玄}。被他杀死的弟子。被他背叛的信任。",
+      "targetIds": [
+        "char-shen-xuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-xuan",
+        "entityName": "沈玄",
+        "state": "信任；背叛"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-xuan::信任；背叛",
+      "createdAt": "2026-04-25T17:40:09+08:00",
+      "updatedAt": "2026-04-25T17:40:18+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:40:18+08:00"
+    },
+    {
+      "id": "cr-df72f30fcc",
+      "chapterId": "chapter-023",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈玄 当前状态",
+      "summary": "检测到 沈玄 可能进入状态：疲惫",
+      "evidence": "\"封印的崩塌是系统性的。\"@{沈玄}说，声音疲惫但清醒，\"临时封堵没有用——必须重铸整个封印。\"",
+      "targetIds": [
+        "char-shen-xuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-xuan",
+        "entityName": "沈玄",
+        "state": "疲惫"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-xuan::疲惫",
+      "createdAt": "2026-04-25T17:40:09+08:00",
+      "updatedAt": "2026-04-25T17:40:18+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:40:18+08:00"
+    },
+    {
+      "id": "cr-b7dc6297ce",
+      "chapterId": "chapter-019",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 顾长渊 当前状态",
+      "summary": "检测到 顾长渊 可能进入状态：背叛",
+      "evidence": "前世的@{宋怀瑾}也是这样的人——温和、善良、在关键时刻愿意为朋友付出一切。但前世的他最终选择了背叛。不是因为他不善良，而是因为他的善良被@{顾长渊}利用了——用天枢宗弟子的性命威胁他，让他在两难中做出了错误的选择。",
+      "targetIds": [
+        "char-gu-changyuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-gu-changyuan",
+        "entityName": "顾长渊",
+        "state": "背叛"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-gu-changyuan::背叛",
+      "createdAt": "2026-04-25T17:41:26+08:00",
+      "updatedAt": "2026-04-25T17:41:40+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "id": "cr-9598ec7386",
+      "chapterId": "chapter-019",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 顾长渊 当前状态",
+      "summary": "检测到 顾长渊 可能进入状态：受伤",
+      "evidence": "@{顾长渊}继续说：\"而你在那个时候让我撤退。不是因为担心我受伤——化神巅峰的自愈能力你不是不知道。你让我撤退是因为……如果封印继续排斥我，你的计划会受到影响。\"",
+      "targetIds": [
+        "char-gu-changyuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-gu-changyuan",
+        "entityName": "顾长渊",
+        "state": "受伤"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-gu-changyuan::受伤",
+      "createdAt": "2026-04-25T17:41:26+08:00",
+      "updatedAt": "2026-04-25T17:41:40+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "id": "cr-55813ff18d",
+      "chapterId": "chapter-019",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 白九殇 当前状态",
+      "summary": "检测到 白九殇 可能进入状态：离开",
+      "evidence": "\"我早就意识到了。\"@{白九殇}继续说，\"你知道我为什么在封印中待了这么久吗？不是因为我出不去。封印在千万年前就已经出现了裂缝——那些裂缝足以让我离开。\"",
+      "targetIds": [
+        "char-bai-jiushang"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-bai-jiushang",
+        "entityName": "白九殇",
+        "state": "离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-bai-jiushang::离开",
+      "createdAt": "2026-04-25T17:41:26+08:00",
+      "updatedAt": "2026-04-25T17:41:40+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "id": "cr-174276ade3",
+      "chapterId": "chapter-019",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 白九殇 当前状态",
+      "summary": "检测到 白九殇 可能进入状态：背叛",
+      "evidence": "\"因为前世的他是在@{白九殇}的精神渗透和归魂散的双重影响下才背叛的。这一世的归魂散已经被他发现了——他会防备。而且他今天主动拿来图纸，说明他已经做出了选择。\"",
+      "targetIds": [
+        "char-bai-jiushang"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-bai-jiushang",
+        "entityName": "白九殇",
+        "state": "背叛"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-bai-jiushang::背叛",
+      "createdAt": "2026-04-25T17:41:26+08:00",
+      "updatedAt": "2026-04-25T17:41:40+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "id": "cr-9026d6ea5a",
+      "chapterId": "chapter-019",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈玄 当前状态",
+      "summary": "检测到 沈玄 可能进入状态：离开；背叛",
+      "evidence": "\"可以。但改变选择需要理由。\"@{沈玄}说，\"他有什么理由背叛我？@{顾长渊}能给他什么？天枢宗弟子的安全？@{顾长渊}自己都在失踪弟子。修炼资源？@{宋怀瑾}已经是金丹初期，离开天枢宗也能继续修炼。\"",
+      "targetIds": [
+        "char-shen-xuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-xuan",
+        "entityName": "沈玄",
+        "state": "离开；背叛"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-xuan::离开；背叛",
+      "createdAt": "2026-04-25T17:41:26+08:00",
+      "updatedAt": "2026-04-25T17:41:40+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "id": "cr-f3879f1da4",
+      "chapterId": "chapter-019",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 顾长渊 当前状态",
+      "summary": "检测到 顾长渊 可能进入状态：离开；背叛",
+      "evidence": "\"可以。但改变选择需要理由。\"@{沈玄}说，\"他有什么理由背叛我？@{顾长渊}能给他什么？天枢宗弟子的安全？@{顾长渊}自己都在失踪弟子。修炼资源？@{宋怀瑾}已经是金丹初期，离开天枢宗也能继续修炼。\"",
+      "targetIds": [
+        "char-gu-changyuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-gu-changyuan",
+        "entityName": "顾长渊",
+        "state": "离开；背叛"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-gu-changyuan::离开；背叛",
+      "createdAt": "2026-04-25T17:41:26+08:00",
+      "updatedAt": "2026-04-25T17:41:40+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "id": "cr-5527592364",
+      "chapterId": "chapter-019",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 宋怀瑾 当前状态",
+      "summary": "检测到 宋怀瑾 可能进入状态：离开；背叛",
+      "evidence": "\"可以。但改变选择需要理由。\"@{沈玄}说，\"他有什么理由背叛我？@{顾长渊}能给他什么？天枢宗弟子的安全？@{顾长渊}自己都在失踪弟子。修炼资源？@{宋怀瑾}已经是金丹初期，离开天枢宗也能继续修炼。\"",
+      "targetIds": [
+        "char-song-huaijin"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-song-huaijin",
+        "entityName": "宋怀瑾",
+        "state": "离开；背叛"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-song-huaijin::离开；背叛",
+      "createdAt": "2026-04-25T17:41:26+08:00",
+      "updatedAt": "2026-04-25T17:41:40+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "id": "cr-8c02e209df",
+      "chapterId": "chapter-019",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈玄 当前状态",
+      "summary": "检测到 沈玄 可能进入状态：紧张",
+      "evidence": "\"我看到了一些东西。\"@{沈玄}说，声音因为紧张而微微发颤，\"关于归墟域——也关于你。\"",
+      "targetIds": [
+        "char-shen-xuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-xuan",
+        "entityName": "沈玄",
+        "state": "紧张"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-xuan::紧张",
+      "createdAt": "2026-04-25T17:41:26+08:00",
+      "updatedAt": "2026-04-25T17:41:40+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "id": "cr-0994bc8709",
+      "chapterId": "chapter-019",
+      "kind": "relation",
+      "severity": "high-risk",
+      "title": "更新 顾长渊 与 宋怀瑾 的关系",
+      "summary": "检测到两者关系可能变化为：裂痕",
+      "evidence": "前世的@{宋怀瑾}也是这样的人——温和、善良、在关键时刻愿意为朋友付出一切。但前世的他最终选择了背叛。不是因为他不善良，而是因为他的善良被@{顾长渊}利用了——用天枢宗弟子的性命威胁他，让他在两难中做出了错误的选择。",
+      "targetIds": [
+        "char-gu-changyuan",
+        "char-song-huaijin"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-gu-changyuan",
+        "fromName": "顾长渊",
+        "toId": "char-song-huaijin",
+        "toName": "宋怀瑾",
+        "label": "裂痕"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-gu-changyuan::char-song-huaijin::裂痕",
+      "createdAt": "2026-04-25T17:41:26+08:00",
+      "updatedAt": "2026-04-25T17:41:40+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "id": "cr-aa9c616c5e",
+      "chapterId": "chapter-019",
+      "kind": "relation",
+      "severity": "high-risk",
+      "title": "更新 沈玄 与 顾长渊 的关系",
+      "summary": "检测到两者关系可能变化为：信任下降",
+      "evidence": "\"不会有人探查你的识海。\"@{沈玄}说，\"除非@{顾长渊}有理由怀疑你。\"",
+      "targetIds": [
+        "char-shen-xuan",
+        "char-gu-changyuan"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-shen-xuan",
+        "fromName": "沈玄",
+        "toId": "char-gu-changyuan",
+        "toName": "顾长渊",
+        "label": "信任下降"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-shen-xuan::char-gu-changyuan::信任下降",
+      "createdAt": "2026-04-25T17:41:26+08:00",
+      "updatedAt": "2026-04-25T17:41:40+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "id": "cr-5f910ad484",
+      "chapterId": "chapter-019",
+      "kind": "relation",
+      "severity": "high-risk",
+      "title": "更新 沈玄 与 顾长渊 的关系",
+      "summary": "检测到两者关系可能变化为：裂痕",
+      "evidence": "\"可以。但改变选择需要理由。\"@{沈玄}说，\"他有什么理由背叛我？@{顾长渊}能给他什么？天枢宗弟子的安全？@{顾长渊}自己都在失踪弟子。修炼资源？@{宋怀瑾}已经是金丹初期，离开天枢宗也能继续修炼。\"",
+      "targetIds": [
+        "char-shen-xuan",
+        "char-gu-changyuan"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-shen-xuan",
+        "fromName": "沈玄",
+        "toId": "char-gu-changyuan",
+        "toName": "顾长渊",
+        "label": "裂痕"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-shen-xuan::char-gu-changyuan::裂痕",
+      "createdAt": "2026-04-25T17:41:26+08:00",
+      "updatedAt": "2026-04-25T17:41:40+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:41:40+08:00"
+    },
+    {
+      "id": "cr-b32e340892",
+      "chapterId": "chapter-024",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 宋怀瑾 当前状态",
+      "summary": "检测到 宋怀瑾 可能进入状态：流血",
+      "evidence": "@{宋怀瑾}倒在地上，一动不动。他的面色苍白如纸，七窍流血，气息微弱到几乎无法感知。但他的胸口还在微微起伏——他还活着。",
+      "targetIds": [
+        "char-song-huaijin"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-song-huaijin",
+        "entityName": "宋怀瑾",
+        "state": "流血"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-song-huaijin::流血",
+      "createdAt": "2026-04-25T17:42:56+08:00",
+      "updatedAt": "2026-04-25T17:43:04+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:43:04+08:00"
+    },
+    {
+      "id": "cr-6c41159ee7",
+      "chapterId": "chapter-024",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 白九殇 当前状态",
+      "summary": "检测到 白九殇 可能进入状态：愤怒",
+      "evidence": "\"不——\"@{白九殇}的声音从裂缝中传出，第一次带上了愤怒的情绪，\"我的归墟——我的——\"",
+      "targetIds": [
+        "char-bai-jiushang"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-bai-jiushang",
+        "entityName": "白九殇",
+        "state": "愤怒"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-bai-jiushang::愤怒",
+      "createdAt": "2026-04-25T17:42:56+08:00",
+      "updatedAt": "2026-04-25T17:43:04+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:43:04+08:00"
+    },
+    {
+      "id": "cr-e7ecf2b03a",
+      "chapterId": "chapter-024",
+      "kind": "relation",
+      "severity": "suggestion",
+      "title": "更新 沈玄 与 叶清漪 的关系",
+      "summary": "检测到两者关系可能变化为：合作",
+      "evidence": "这是一场前所未有的合作。@{沈玄}提供材料和结构，@{顾长渊}提供编织技术，@{叶清漪}提供守护。",
+      "targetIds": [
+        "char-shen-xuan",
+        "char-ye-qingyi"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-shen-xuan",
+        "fromName": "沈玄",
+        "toId": "char-ye-qingyi",
+        "toName": "叶清漪",
+        "label": "合作"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-shen-xuan::char-ye-qingyi::合作",
+      "createdAt": "2026-04-25T17:42:56+08:00",
+      "updatedAt": "2026-04-25T17:43:04+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:43:04+08:00"
+    },
+    {
+      "id": "cr-8a63ce7fcc",
+      "chapterId": "chapter-024",
+      "kind": "relation",
+      "severity": "suggestion",
+      "title": "更新 顾长渊 与 叶清漪 的关系",
+      "summary": "检测到两者关系可能变化为：合作",
+      "evidence": "这是一场前所未有的合作。@{沈玄}提供材料和结构，@{顾长渊}提供编织技术，@{叶清漪}提供守护。",
+      "targetIds": [
+        "char-gu-changyuan",
+        "char-ye-qingyi"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-gu-changyuan",
+        "fromName": "顾长渊",
+        "toId": "char-ye-qingyi",
+        "toName": "叶清漪",
+        "label": "合作"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-gu-changyuan::char-ye-qingyi::合作",
+      "createdAt": "2026-04-25T17:42:56+08:00",
+      "updatedAt": "2026-04-25T17:43:04+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:43:04+08:00"
+    },
+    {
+      "id": "cr-faac7a310a",
+      "chapterId": "chapter-020",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 白九殇 当前状态",
+      "summary": "检测到 白九殇 可能进入状态：恐惧",
+      "evidence": "第一颗：恐惧。编织封印的修士们恐惧的不是归墟域中的存在。他们恐惧的是归墟域本身。归墟域是灵脉的汇聚之处、万水归处——也是万物的终结之处。归墟域中蕴含的力量不是任何修士能够承受的。@{白九殇}之所以强大，不是因为它本身有多强大，而是因为它与归墟域融为了一体。",
+      "targetIds": [
+        "char-bai-jiushang"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-bai-jiushang",
+        "entityName": "白九殇",
+        "state": "恐惧"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-bai-jiushang::恐惧",
+      "createdAt": "2026-04-25T17:44:50+08:00",
+      "updatedAt": "2026-04-25T17:44:56+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:44:56+08:00"
+    },
+    {
+      "id": "cr-9c20a7a21a",
+      "chapterId": "chapter-020",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 叶清漪 当前状态",
+      "summary": "检测到 叶清漪 可能进入状态：震惊",
+      "evidence": "但@{叶清漪}的沉默不是因为震惊。",
+      "targetIds": [
+        "char-ye-qingyi"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-ye-qingyi",
+        "entityName": "叶清漪",
+        "state": "震惊"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-ye-qingyi::震惊",
+      "createdAt": "2026-04-25T17:44:50+08:00",
+      "updatedAt": "2026-04-25T17:44:56+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:44:56+08:00"
+    },
+    {
+      "id": "cr-57bf719b3f",
+      "chapterId": "chapter-020",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 叶清漪 当前状态",
+      "summary": "检测到 叶清漪 可能进入状态：恐惧",
+      "evidence": "\"我母亲存活下来了。\"@{叶清漪}纠正道，\"她是叶家的旁支，嫁给了一个普通散修。灭族的时候她不在叶家的领地上，所以逃过了一劫。但她一直活在恐惧中——她知道叶家被灭族的原因不是仇杀，而是有人在系统性地清除叶家的血脉。\"",
+      "targetIds": [
+        "char-ye-qingyi"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-ye-qingyi",
+        "entityName": "叶清漪",
+        "state": "恐惧"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-ye-qingyi::恐惧",
+      "createdAt": "2026-04-25T17:44:50+08:00",
+      "updatedAt": "2026-04-25T17:44:56+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:44:56+08:00"
+    },
+    {
+      "id": "cr-7b09d056a3",
+      "chapterId": "chapter-025",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈玄 当前状态",
+      "summary": "检测到 沈玄 可能进入状态：信任；愤怒；背叛",
+      "evidence": "前世的@{沈玄}在金丹突破时被杀害。他的最后一个念头不是愤怒——是困惑。他不明白为什么。为什么师父要杀他。为什么信任换来的是背叛。为什么——",
+      "targetIds": [
+        "char-shen-xuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-xuan",
+        "entityName": "沈玄",
+        "state": "信任；愤怒；背叛"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-xuan::信任；愤怒；背叛",
+      "createdAt": "2026-04-25T17:46:03+08:00",
+      "updatedAt": "2026-04-25T17:46:10+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:46:10+08:00"
+    },
+    {
+      "id": "cr-fa0a0782f0",
+      "chapterId": "chapter-025",
+      "kind": "relation",
+      "severity": "suggestion",
+      "title": "更新 沈玄 与 宋怀瑾 的关系",
+      "summary": "检测到两者关系可能变化为：合作",
+      "evidence": "不是之前的\"重铸完成\"，而是真正的、彻底的、永久性的完成。归墟体作为钥匙嵌入了封印的核心，将所有的缝隙填满，将所有的裂纹修复。新封印比千万年前九域联手编织的旧封印更加坚固——因为它不仅有力量，还有意志。@{顾长渊}赎罪的意志、@{宋怀瑾}弥补的意志、@{叶清漪}守护的意志、以及@{沈玄}放下的意志。",
+      "targetIds": [
+        "char-shen-xuan",
+        "char-song-huaijin"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-shen-xuan",
+        "fromName": "沈玄",
+        "toId": "char-song-huaijin",
+        "toName": "宋怀瑾",
+        "label": "合作"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-shen-xuan::char-song-huaijin::合作",
+      "createdAt": "2026-04-25T17:46:03+08:00",
+      "updatedAt": "2026-04-25T17:46:10+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:46:10+08:00"
+    },
+    {
+      "id": "cr-6aa5ba29be",
+      "chapterId": "chapter-025",
+      "kind": "relation",
+      "severity": "suggestion",
+      "title": "更新 顾长渊 与 宋怀瑾 的关系",
+      "summary": "检测到两者关系可能变化为：合作",
+      "evidence": "不是之前的\"重铸完成\"，而是真正的、彻底的、永久性的完成。归墟体作为钥匙嵌入了封印的核心，将所有的缝隙填满，将所有的裂纹修复。新封印比千万年前九域联手编织的旧封印更加坚固——因为它不仅有力量，还有意志。@{顾长渊}赎罪的意志、@{宋怀瑾}弥补的意志、@{叶清漪}守护的意志、以及@{沈玄}放下的意志。",
+      "targetIds": [
+        "char-gu-changyuan",
+        "char-song-huaijin"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-gu-changyuan",
+        "fromName": "顾长渊",
+        "toId": "char-song-huaijin",
+        "toName": "宋怀瑾",
+        "label": "合作"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-gu-changyuan::char-song-huaijin::合作",
+      "createdAt": "2026-04-25T17:46:03+08:00",
+      "updatedAt": "2026-04-25T17:46:10+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:46:10+08:00"
+    },
+    {
+      "id": "cr-9639a77d1f",
+      "chapterId": "chapter-025",
+      "kind": "relation",
+      "severity": "suggestion",
+      "title": "更新 叶清漪 与 宋怀瑾 的关系",
+      "summary": "检测到两者关系可能变化为：合作",
+      "evidence": "不是之前的\"重铸完成\"，而是真正的、彻底的、永久性的完成。归墟体作为钥匙嵌入了封印的核心，将所有的缝隙填满，将所有的裂纹修复。新封印比千万年前九域联手编织的旧封印更加坚固——因为它不仅有力量，还有意志。@{顾长渊}赎罪的意志、@{宋怀瑾}弥补的意志、@{叶清漪}守护的意志、以及@{沈玄}放下的意志。",
+      "targetIds": [
+        "char-ye-qingyi",
+        "char-song-huaijin"
+      ],
+      "confidence": 0.84,
+      "suggestedPayload": {
+        "fromId": "char-ye-qingyi",
+        "fromName": "叶清漪",
+        "toId": "char-song-huaijin",
+        "toName": "宋怀瑾",
+        "label": "合作"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "relation::char-ye-qingyi::char-song-huaijin::合作",
+      "createdAt": "2026-04-25T17:46:03+08:00",
+      "updatedAt": "2026-04-25T17:46:10+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:46:10+08:00"
+    },
+    {
+      "id": "cr-fc7f54b108",
+      "chapterId": "chapter-021",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈玄 当前状态",
+      "summary": "检测到 沈玄 可能进入状态：愤怒",
+      "evidence": "在静止中，@{沈玄}感受到了一种来自@{白九殇}的——不是愤怒，不是失望——而是一种审视。像是一个棋手在看另一个棋手走出了一步出乎意料的棋，然后重新评估整个棋局。",
+      "targetIds": [
+        "char-shen-xuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-xuan",
+        "entityName": "沈玄",
+        "state": "愤怒"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-xuan::愤怒",
+      "createdAt": "2026-04-25T17:48:35+08:00",
+      "updatedAt": "2026-04-25T17:48:44+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:48:44+08:00"
+    },
+    {
+      "id": "cr-1ceffbde99",
+      "chapterId": "chapter-021",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 白九殇 当前状态",
+      "summary": "检测到 白九殇 可能进入状态：恐惧；虚弱",
+      "evidence": "确实在抖。那种颤抖不是因为恐惧——而是因为归墟体在与@{白九殇}的意念投影接触后产生了一种持续的不稳定状态。归墟体在\"辨认\"@{白九殇}的过程中消耗了大量的能量，现在正处于一种恢复中的虚弱状态。",
+      "targetIds": [
+        "char-bai-jiushang"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-bai-jiushang",
+        "entityName": "白九殇",
+        "state": "恐惧；虚弱"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-bai-jiushang::恐惧；虚弱",
+      "createdAt": "2026-04-25T17:48:35+08:00",
+      "updatedAt": "2026-04-25T17:48:44+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:48:44+08:00"
+    },
+    {
+      "id": "cr-51e10fbf7f",
+      "chapterId": "chapter-021",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 白九殇 当前状态",
+      "summary": "检测到 白九殇 可能进入状态：信任",
+      "evidence": "\"因为到了那个时候——他将面对的不是'是否信任@{白九殇}'的问题。而是'是否让整个九域陪葬'的问题。\"",
+      "targetIds": [
+        "char-bai-jiushang"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-bai-jiushang",
+        "entityName": "白九殇",
+        "state": "信任"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-bai-jiushang::信任",
+      "createdAt": "2026-04-25T17:48:35+08:00",
+      "updatedAt": "2026-04-25T17:48:44+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-25T17:48:44+08:00"
+    }
+  ]
+}

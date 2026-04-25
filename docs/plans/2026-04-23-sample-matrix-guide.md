@@ -13,7 +13,7 @@
 
 - 指南 owner: `docs/guides/*`
 - 首页入口 owner: `README.md`
-- 样例项目 owner: `demo-short-story/*`、`demo-light-novel-short/*`
+- 样例项目 owner: `projects/demo-short-story/*`、`projects/demo-light-novel-short/*`
 
 ## 影响面
 
@@ -30,7 +30,7 @@
 ## 验证方式
 
 - 读取 `docs/guides/sample-matrix.md`
-- 对照 `demo-short-story/README.md`、`demo-light-novel-short/README.md`、`docs/roadmap.md`
+- 对照 `projects/demo-short-story/README.md`、`projects/demo-light-novel-short/README.md`、`docs/roadmap.md`
 - 运行 `git diff --check -- README.md docs/guides/quickstart.md docs/guides/creative-workflow.md docs/guides/sample-matrix.md docs/plans/2026-04-23-sample-matrix-guide.md`
 
 ## 验证结果

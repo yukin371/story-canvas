@@ -14,6 +14,7 @@ from story_harness_cli.commands import (
     register_entity_commands,
     register_export_commands,
     register_foreshadow_commands,
+    register_illustration_commands,
     register_outline_commands,
     register_projection_commands,
     register_project_commands,
@@ -22,7 +23,9 @@ from story_harness_cli.commands import (
     register_structure_commands,
     register_timeline_commands,
     register_search_commands,
+    register_style_commands,
     register_thread_commands,
+    register_workflow_commands,
     register_migrate_commands,
 )
 
@@ -44,10 +47,13 @@ def build_parser() -> argparse.ArgumentParser:
     register_entity_commands(subparsers)
     register_export_commands(subparsers)
     register_foreshadow_commands(subparsers)
+    register_illustration_commands(subparsers)
     register_stats_commands(subparsers)
     register_timeline_commands(subparsers)
     register_search_commands(subparsers)
+    register_style_commands(subparsers)
     register_thread_commands(subparsers)
+    register_workflow_commands(subparsers)
     register_structure_commands(subparsers)
     register_migrate_commands(subparsers)
     return parser

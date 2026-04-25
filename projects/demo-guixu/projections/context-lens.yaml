@@ -1,0 +1,915 @@
+{
+  "currentChapterId": "chapter-021",
+  "lenses": [
+    {
+      "chapterId": "chapter-001",
+      "chapterTitle": "归墟",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": "愤怒；背叛"
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": "信任"
+        },
+        {
+          "id": "char-bai-jiushang",
+          "name": "白九殇",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [
+        {
+          "fromId": "char-gu-changyuan",
+          "fromName": "顾长渊",
+          "toId": "char-bai-jiushang",
+          "toName": "白九殇",
+          "label": "合作"
+        }
+      ],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T11:53:28+08:00"
+    },
+    {
+      "chapterId": "chapter-002",
+      "chapterTitle": "前世碎片",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": "恐惧"
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": "信任；恐惧；愤怒"
+        },
+        {
+          "id": "char-song-huaijin",
+          "name": "宋怀瑾",
+          "currentState": ""
+        },
+        {
+          "id": "char-bai-jiushang",
+          "name": "白九殇",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [
+        {
+          "fromId": "char-shen-xuan",
+          "fromName": "沈玄",
+          "toId": "char-gu-changyuan",
+          "toName": "顾长渊",
+          "label": "冲突"
+        },
+        {
+          "fromId": "char-shen-xuan",
+          "fromName": "沈玄",
+          "toId": "char-song-huaijin",
+          "toName": "宋怀瑾",
+          "label": "对立"
+        }
+      ],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T12:06:27+08:00"
+    },
+    {
+      "chapterId": "chapter-003",
+      "chapterTitle": "旧路新走",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": ""
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T12:20:50+08:00"
+    },
+    {
+      "chapterId": "chapter-004",
+      "chapterTitle": "青云试炼",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": "冷静"
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": "冷静"
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T12:24:22+08:00"
+    },
+    {
+      "chapterId": "chapter-005",
+      "chapterTitle": "意外之人",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": ""
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T12:27:04+08:00"
+    },
+    {
+      "chapterId": "chapter-006",
+      "chapterTitle": "秘境先机",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": "离开"
+        },
+        {
+          "id": "char-bai-jiushang",
+          "name": "白九殇",
+          "currentState": ""
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T12:29:41+08:00"
+    },
+    {
+      "chapterId": "chapter-007",
+      "chapterTitle": "暗流涌动",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": "恐惧；离开"
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": ""
+        },
+        {
+          "id": "char-bai-jiushang",
+          "name": "白九殇",
+          "currentState": ""
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T12:31:32+08:00"
+    },
+    {
+      "chapterId": "chapter-008",
+      "chapterTitle": "棋盘初现",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": ""
+        },
+        {
+          "id": "inferred::宋长老",
+          "name": "宋长老",
+          "currentState": "离开"
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": ""
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": ""
+        },
+        {
+          "id": "char-song-huaijin",
+          "name": "宋怀瑾",
+          "currentState": ""
+        },
+        {
+          "id": "char-bai-jiushang",
+          "name": "白九殇",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T12:33:59+08:00"
+    },
+    {
+      "chapterId": "chapter-013",
+      "chapterTitle": "远古传承",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": ""
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": "信任"
+        },
+        {
+          "id": "char-bai-jiushang",
+          "name": "白九殇",
+          "currentState": ""
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T13:13:16+08:00"
+    },
+    {
+      "chapterId": "chapter-009",
+      "chapterTitle": "新宗新貌",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": "震惊"
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": "离开"
+        },
+        {
+          "id": "char-song-huaijin",
+          "name": "宋怀瑾",
+          "currentState": ""
+        },
+        {
+          "id": "inferred::宋长老",
+          "name": "宋长老",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T13:13:35+08:00"
+    },
+    {
+      "chapterId": "chapter-014",
+      "chapterTitle": "故人",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": "背叛"
+        },
+        {
+          "id": "char-song-huaijin",
+          "name": "宋怀瑾",
+          "currentState": "背叛"
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": "背叛"
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [
+        {
+          "fromId": "char-shen-xuan",
+          "fromName": "沈玄",
+          "toId": "char-ye-qingyi",
+          "toName": "叶清漪",
+          "label": "裂痕"
+        },
+        {
+          "fromId": "char-shen-xuan",
+          "fromName": "沈玄",
+          "toId": "char-song-huaijin",
+          "toName": "宋怀瑾",
+          "label": "裂痕"
+        },
+        {
+          "fromId": "char-ye-qingyi",
+          "fromName": "叶清漪",
+          "toId": "char-song-huaijin",
+          "toName": "宋怀瑾",
+          "label": "裂痕"
+        }
+      ],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T13:16:52+08:00"
+    },
+    {
+      "chapterId": "chapter-010",
+      "chapterTitle": "锋芒",
+      "activeCharacters": [
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": "离开"
+        },
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": ""
+        },
+        {
+          "id": "char-bai-jiushang",
+          "name": "白九殇",
+          "currentState": ""
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T13:17:03+08:00"
+    },
+    {
+      "chapterId": "chapter-015",
+      "chapterTitle": "信任与试探",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": ""
+        },
+        {
+          "id": "char-song-huaijin",
+          "name": "宋怀瑾",
+          "currentState": ""
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": ""
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": ""
+        },
+        {
+          "id": "char-bai-jiushang",
+          "name": "白九殇",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T13:19:34+08:00"
+    },
+    {
+      "chapterId": "chapter-011",
+      "chapterTitle": "玄冥剑修",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": ""
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": "疲惫"
+        }
+      ],
+      "activeRelations": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T13:20:20+08:00"
+    },
+    {
+      "chapterId": "chapter-016",
+      "chapterTitle": "镜像",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": ""
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": "怀疑"
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": ""
+        },
+        {
+          "id": "char-bai-jiushang",
+          "name": "白九殇",
+          "currentState": ""
+        },
+        {
+          "id": "char-song-huaijin",
+          "name": "宋怀瑾",
+          "currentState": "怀疑"
+        }
+      ],
+      "activeRelations": [
+        {
+          "fromId": "char-gu-changyuan",
+          "fromName": "顾长渊",
+          "toId": "char-song-huaijin",
+          "toName": "宋怀瑾",
+          "label": "信任下降"
+        }
+      ],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T13:23:13+08:00"
+    },
+    {
+      "chapterId": "chapter-012",
+      "chapterTitle": "苍梧秘境",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": ""
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": "怀疑"
+        }
+      ],
+      "activeRelations": [
+        {
+          "fromId": "char-shen-xuan",
+          "fromName": "沈玄",
+          "toId": "char-ye-qingyi",
+          "toName": "叶清漪",
+          "label": "信任下降"
+        }
+      ],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T13:24:09+08:00"
+    },
+    {
+      "chapterId": "chapter-017",
+      "chapterTitle": "猎手现身",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": ""
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": ""
+        },
+        {
+          "id": "char-bai-jiushang",
+          "name": "白九殇",
+          "currentState": ""
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": ""
+        },
+        {
+          "id": "inferred::探子",
+          "name": "探子",
+          "currentState": ""
+        },
+        {
+          "id": "char-song-huaijin",
+          "name": "宋怀瑾",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [
+        {
+          "fromId": "char-gu-changyuan",
+          "fromName": "顾长渊",
+          "toId": "char-ye-qingyi",
+          "toName": "叶清漪",
+          "label": "信任上升"
+        },
+        {
+          "fromId": "char-shen-xuan",
+          "fromName": "沈玄",
+          "toId": "char-gu-changyuan",
+          "toName": "顾长渊",
+          "label": "合作"
+        },
+        {
+          "fromId": "char-shen-xuan",
+          "fromName": "沈玄",
+          "toId": "char-bai-jiushang",
+          "toName": "白九殇",
+          "label": "合作"
+        },
+        {
+          "fromId": "char-gu-changyuan",
+          "fromName": "顾长渊",
+          "toId": "char-bai-jiushang",
+          "toName": "白九殇",
+          "label": "亲近"
+        }
+      ],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T13:26:40+08:00"
+    },
+    {
+      "chapterId": "chapter-018",
+      "chapterTitle": "摊牌",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": ""
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": "恐惧；震惊"
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": ""
+        },
+        {
+          "id": "char-song-huaijin",
+          "name": "宋怀瑾",
+          "currentState": "受伤；恐惧"
+        },
+        {
+          "id": "char-bai-jiushang",
+          "name": "白九殇",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T17:36:34+08:00"
+    },
+    {
+      "chapterId": "chapter-022",
+      "chapterTitle": "宋怀瑾的选择",
+      "activeCharacters": [
+        {
+          "id": "char-song-huaijin",
+          "name": "宋怀瑾",
+          "currentState": "离开"
+        },
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": "信任；离开"
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": "愤怒"
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": "信任；离开"
+        }
+      ],
+      "activeRelations": [
+        {
+          "fromId": "char-shen-xuan",
+          "fromName": "沈玄",
+          "toId": "char-gu-changyuan",
+          "toName": "顾长渊",
+          "label": "信任上升"
+        }
+      ],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T17:37:27+08:00"
+    },
+    {
+      "chapterId": "chapter-023",
+      "chapterTitle": "封印崩塌",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": "疲惫"
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": ""
+        },
+        {
+          "id": "char-bai-jiushang",
+          "name": "白九殇",
+          "currentState": ""
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": ""
+        },
+        {
+          "id": "char-song-huaijin",
+          "name": "宋怀瑾",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T17:40:25+08:00"
+    },
+    {
+      "chapterId": "chapter-019",
+      "chapterTitle": "天枢旧事",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": "紧张"
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": "离开；背叛"
+        },
+        {
+          "id": "char-bai-jiushang",
+          "name": "白九殇",
+          "currentState": "背叛"
+        },
+        {
+          "id": "char-song-huaijin",
+          "name": "宋怀瑾",
+          "currentState": "离开；背叛"
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [
+        {
+          "fromId": "char-gu-changyuan",
+          "fromName": "顾长渊",
+          "toId": "char-song-huaijin",
+          "toName": "宋怀瑾",
+          "label": "裂痕"
+        },
+        {
+          "fromId": "char-shen-xuan",
+          "fromName": "沈玄",
+          "toId": "char-gu-changyuan",
+          "toName": "顾长渊",
+          "label": "裂痕"
+        }
+      ],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T17:41:46+08:00"
+    },
+    {
+      "chapterId": "chapter-024",
+      "chapterTitle": "最终之战",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": ""
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": ""
+        },
+        {
+          "id": "char-bai-jiushang",
+          "name": "白九殇",
+          "currentState": "愤怒"
+        },
+        {
+          "id": "char-song-huaijin",
+          "name": "宋怀瑾",
+          "currentState": "流血"
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [
+        {
+          "fromId": "char-shen-xuan",
+          "fromName": "沈玄",
+          "toId": "char-ye-qingyi",
+          "toName": "叶清漪",
+          "label": "合作"
+        },
+        {
+          "fromId": "char-gu-changyuan",
+          "fromName": "顾长渊",
+          "toId": "char-ye-qingyi",
+          "toName": "叶清漪",
+          "label": "合作"
+        }
+      ],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T17:43:05+08:00"
+    },
+    {
+      "chapterId": "chapter-020",
+      "chapterTitle": "归墟体觉醒",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": ""
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": "恐惧"
+        },
+        {
+          "id": "char-bai-jiushang",
+          "name": "白九殇",
+          "currentState": "恐惧"
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": ""
+        },
+        {
+          "id": "inferred::他",
+          "name": "他",
+          "currentState": ""
+        },
+        {
+          "id": "inferred::她",
+          "name": "她",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T17:44:56+08:00"
+    },
+    {
+      "chapterId": "chapter-025",
+      "chapterTitle": "归墟",
+      "activeCharacters": [
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": "信任；愤怒；背叛"
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": ""
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": ""
+        },
+        {
+          "id": "char-song-huaijin",
+          "name": "宋怀瑾",
+          "currentState": ""
+        },
+        {
+          "id": "char-bai-jiushang",
+          "name": "白九殇",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [
+        {
+          "fromId": "char-shen-xuan",
+          "fromName": "沈玄",
+          "toId": "char-song-huaijin",
+          "toName": "宋怀瑾",
+          "label": "合作"
+        },
+        {
+          "fromId": "char-gu-changyuan",
+          "fromName": "顾长渊",
+          "toId": "char-song-huaijin",
+          "toName": "宋怀瑾",
+          "label": "合作"
+        },
+        {
+          "fromId": "char-ye-qingyi",
+          "fromName": "叶清漪",
+          "toId": "char-song-huaijin",
+          "toName": "宋怀瑾",
+          "label": "合作"
+        }
+      ],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T17:46:11+08:00"
+    },
+    {
+      "chapterId": "chapter-021",
+      "chapterTitle": "白九殇",
+      "activeCharacters": [
+        {
+          "id": "char-bai-jiushang",
+          "name": "白九殇",
+          "currentState": "信任"
+        },
+        {
+          "id": "char-shen-xuan",
+          "name": "沈玄",
+          "currentState": "愤怒"
+        },
+        {
+          "id": "char-ye-qingyi",
+          "name": "叶清漪",
+          "currentState": ""
+        },
+        {
+          "id": "char-gu-changyuan",
+          "name": "顾长渊",
+          "currentState": ""
+        }
+      ],
+      "activeRelations": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-25T17:48:45+08:00"
+    }
+  ]
+}

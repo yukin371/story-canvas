@@ -5,7 +5,7 @@
 
 ## 目标模块
 
-- `demo-xuanhuan-short/*`
+- `projects/demo-xuanhuan-short/*`
 - `tests/smoke/*`
 - `docs/guides/*`
 - `docs/roadmap.md`
@@ -14,8 +14,8 @@
 ## 现有 owner
 
 - 样例矩阵 owner: `docs/guides/sample-matrix.md`
-- 风格样例 owner: `demo-light-novel-short/*`
-- 通用短篇基线 owner: `demo-short-story/*`
+- 风格样例 owner: `projects/demo-light-novel-short/*`
+- 通用短篇基线 owner: `projects/demo-short-story/*`
 - smoke 样例验证 owner: `tests/smoke/*`
 
 ## 影响面
@@ -34,10 +34,10 @@
 
 ## 验证方式
 
-- `python -m story_harness_cli doctor --root demo-xuanhuan-short`
-- `python -m story_harness_cli chapter analyze --root demo-xuanhuan-short --chapter-id chapter-001`
-- `python -m story_harness_cli review chapter --root demo-xuanhuan-short --chapter-id chapter-001`
-- `python -m story_harness_cli review scene --root demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1`
+- `python -m story_harness_cli doctor --root projects/demo-xuanhuan-short`
+- `python -m story_harness_cli chapter analyze --root projects/demo-xuanhuan-short --chapter-id chapter-001`
+- `python -m story_harness_cli review chapter --root projects/demo-xuanhuan-short --chapter-id chapter-001`
+- `python -m story_harness_cli review scene --root projects/demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1`
 - `python -m unittest tests.smoke.test_demo_xuanhuan_short_sample -v`
 
 ## 当前风险
@@ -47,9 +47,9 @@
 
 ## 验证结果
 
-- `python -m story_harness_cli doctor --root demo-xuanhuan-short` 通过，`errors=0`、`warnings=0`
-- `python -m story_harness_cli review chapter --root demo-xuanhuan-short --chapter-id chapter-001` 已输出 `primaryGenre=fantasy`、`subGenre=xuanhuan`、`styleTags=["web-serial"]`
-- `python -m story_harness_cli review scene --root demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1` 通过，显式读取 `scenePlans`
+- `python -m story_harness_cli doctor --root projects/demo-xuanhuan-short` 通过，`errors=0`、`warnings=0`
+- `python -m story_harness_cli review chapter --root projects/demo-xuanhuan-short --chapter-id chapter-001` 已输出 `primaryGenre=fantasy`、`subGenre=xuanhuan`、`styleTags=["web-serial"]`
+- `python -m story_harness_cli review scene --root projects/demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1` 通过，显式读取 `scenePlans`
 - `python -m unittest tests.smoke.test_demo_xuanhuan_short_sample -v` 通过
 - 优化后 `chapter-001` 从 `58/100` 提升到 `76/100`，加权分从 `48.85` 提升到 `76.15`
 - 优化后 `chapter-002` 从 `67/100` 提升到 `87/100`，加权分从 `61.75` 提升到 `87`

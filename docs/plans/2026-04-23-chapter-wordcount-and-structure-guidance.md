@@ -23,8 +23,8 @@
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli stats --root demo-urban-occult-long
-python -m story_harness_cli stats --root demo-urban-occult-long --min-chapter-words 2000 --target-chapter-words 3000
+python -m story_harness_cli stats --root projects/demo-urban-occult-long
+python -m story_harness_cli stats --root projects/demo-urban-occult-long --min-chapter-words 2000 --target-chapter-words 3000
 python -m unittest tests.smoke.test_stats -v
 ```
 

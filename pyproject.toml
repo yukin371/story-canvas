@@ -17,6 +17,14 @@ dependencies = []
 [project.scripts]
 story-harness = "story_harness_cli.main:main"
 
+[project.optional-dependencies]
+style-local = [
+  "rapidfuzz>=3.0,<4.0",
+]
+image-openai = [
+  "openai>=1.0,<2.0",
+]
+
 [dependency-groups]
 dev = []
 

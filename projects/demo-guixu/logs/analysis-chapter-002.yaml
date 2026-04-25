@@ -1,0 +1,106 @@
+{
+  "chapterId": "chapter-002",
+  "chapterTitle": "前世碎片",
+  "analyzedAt": "2026-04-25T12:06:17+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 28,
+      "source": "registry"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 16,
+      "source": "registry"
+    },
+    {
+      "id": "char-song-huaijin",
+      "name": "宋怀瑾",
+      "mentionCount": 5,
+      "source": "registry"
+    },
+    {
+      "id": "char-bai-jiushang",
+      "name": "白九殇",
+      "mentionCount": 3,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-002::char-shen-xuan::2d12494dec",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "恐惧",
+      "stateTags": [
+        "恐惧"
+      ],
+      "evidence": "攀到半途时，@{沈玄}的手指在石缝间滑了一下。身体晃荡在崖壁上，只有一只手勉强勾住了岩棱。心脏猛地跳了一拍——不是恐惧，是本能。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-002::char-gu-changyuan::c05428b1bc",
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "proposedState": "信任；恐惧；愤怒",
+      "stateTags": [
+        "信任",
+        "恐惧",
+        "愤怒"
+      ],
+      "evidence": "不是因为恐惧——他已经死过一次了，恐惧是最不需要的情绪。而是因为愤怒。二十八年的信任。从十六岁到二十八岁，他把顾长渊当作师父、当作父亲、当作修行路上最可靠的引路人。而顾长渊用了十二年的时间来编织一个骗局，只为了在最后时刻剖开他的身体取走归墟体。",
+      "confidence": 0.78
+    }
+  ],
+  "relationCandidates": [
+    {
+      "candidateId": "relation::chapter-002::char-shen-xuan::char-gu-changyuan::92aecedd19",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-gu-changyuan",
+      "toName": "顾长渊",
+      "label": "冲突",
+      "severity": "suggestion",
+      "evidence": "**前世二十三岁**：天枢宗与苍梧域青云宗发生冲突，青云宗被灭。@{沈玄}没有参与那场战争，但他记得顾长渊战后颇为满意地说了一句话：\"少了一个可能碍事的势力。\"",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-002::char-shen-xuan::char-song-huaijin::227bdcede7",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "label": "对立",
+      "severity": "high-risk",
+      "evidence": "前世他在天枢宗最好的朋友。丹药堂首席弟子，温润如玉，善解人意。前世@{沈玄}被陷害时，宋怀瑾选择了相信师父的说辞——站在了对立面。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-002::char-gu-changyuan::char-bai-jiushang::05cb63ba0f",
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-bai-jiushang",
+      "toName": "白九殇",
+      "label": "合作",
+      "severity": "suggestion",
+      "evidence": "前世封印异动始于他二十五岁那年，也就是九年后。但那只是\"公开异动\"的时间——顾长渊在更早的时候就与白九殇有了接触。从金丹大殿中顾长渊说出的\"白九殇没有骗我\"这句话来看，这段合作关系至少持续了十年以上。",
+      "confidence": 0.84
+    }
+  ],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-gu-changyuan",
+      "char-song-huaijin",
+      "char-bai-jiushang"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "顾长渊",
+      "宋怀瑾",
+      "白九殇"
+    ]
+  }
+}

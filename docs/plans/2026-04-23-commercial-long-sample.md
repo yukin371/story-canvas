@@ -44,9 +44,9 @@
 
 ## 交付物
 
-1. `demo-urban-occult-long/`
-2. `demo-urban-occult-long/MODULE.md`
-3. `demo-urban-occult-long/README.md`
+1. `projects/demo-urban-occult-long/`
+2. `projects/demo-urban-occult-long/MODULE.md`
+3. `projects/demo-urban-occult-long/README.md`
 4. 长篇样例对应 smoke test
 5. `docs/guides/sample-matrix.md` 更新
 6. `docs/roadmap.md` 更新
@@ -56,12 +56,12 @@
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli doctor --root demo-urban-occult-long
-python -m story_harness_cli chapter analyze --root demo-urban-occult-long --chapter-id chapter-001
-python -m story_harness_cli review chapter --root demo-urban-occult-long --chapter-id chapter-001
-python -m story_harness_cli review scene --root demo-urban-occult-long --chapter-id chapter-001 --scene-index 1
-python -m story_harness_cli context refresh --root demo-urban-occult-long --chapter-id chapter-001
-python -m story_harness_cli export --root demo-urban-occult-long --format markdown --output demo-urban-occult-long/manuscript.md
+python -m story_harness_cli doctor --root projects/demo-urban-occult-long
+python -m story_harness_cli chapter analyze --root projects/demo-urban-occult-long --chapter-id chapter-001
+python -m story_harness_cli review chapter --root projects/demo-urban-occult-long --chapter-id chapter-001
+python -m story_harness_cli review scene --root projects/demo-urban-occult-long --chapter-id chapter-001 --scene-index 1
+python -m story_harness_cli context refresh --root projects/demo-urban-occult-long --chapter-id chapter-001
+python -m story_harness_cli export --root projects/demo-urban-occult-long --format markdown --output projects/demo-urban-occult-long/manuscript.md
 python -m unittest tests.smoke.test_demo_urban_occult_long_sample -v
 ```
 

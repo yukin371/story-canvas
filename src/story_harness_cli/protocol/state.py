@@ -24,6 +24,8 @@ STATE_FILE_NAMES = (
     "projections/projection.yaml",
     "projections/context-lens.yaml",
     "logs/projection-log.yaml",
+    "workflow.yaml",
+    "illustrations.yaml",
     "threads.yaml",
     "structures.yaml",
     "foreshadowing.yaml",
@@ -44,6 +46,8 @@ STATE_KEY_MAP = {
     "projection": "projection",
     "context_lens": "context_lens",
     "projection_log": "projection_log",
+    "workflow_progress": "workflow_progress",
+    "illustrations": "illustrations",
     "threads": "threads",
     "structures": "structures",
     "foreshadowing": "foreshadowing",
@@ -61,7 +65,7 @@ def load_project_state(root: Path) -> Dict[str, Any]:
     for state_key, internal_key in STATE_KEY_MAP.items():
         fpath = resolve_state_path(root, state_key)
         raw = load_json_compatible_yaml(fpath, defaults[internal_key])
-        if state_key in ("project", "story_reviews"):
+        if state_key in ("project", "story_reviews", "workflow_progress", "illustrations"):
             state[internal_key] = merge_defaults(raw, defaults[internal_key])
         else:
             state[internal_key] = raw
@@ -401,4 +405,3 @@ def _release_file_lock(handle) -> None:
     import fcntl
 
     fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
-

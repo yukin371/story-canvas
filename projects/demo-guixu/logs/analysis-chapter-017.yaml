@@ -1,0 +1,186 @@
+{
+  "chapterId": "chapter-017",
+  "chapterTitle": "猎手现身",
+  "analyzedAt": "2026-04-25T13:26:27+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 62,
+      "source": "registry"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 29,
+      "source": "registry"
+    },
+    {
+      "id": "char-bai-jiushang",
+      "name": "白九殇",
+      "mentionCount": 13,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 10,
+      "source": "registry"
+    },
+    {
+      "id": "inferred::探子",
+      "name": "探子",
+      "mentionCount": 4,
+      "source": "inferred"
+    },
+    {
+      "id": "char-song-huaijin",
+      "name": "宋怀瑾",
+      "mentionCount": 1,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-017::char-shen-xuan::c20342ebfb",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "离开",
+      "stateTags": [
+        "离开"
+      ],
+      "evidence": "@{沈玄}在深夜独自离开了宗门。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-017::char-gu-changyuan::83879938b2",
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "proposedState": "信任",
+      "stateTags": [
+        "信任"
+      ],
+      "evidence": "他没有通知任何人——包括@{叶清漪}。这不是因为不信任她，而是因为他需要先确认自己的判断。如果那个金丹期修士真的是@{顾长渊}的探子，那么正面接触就意味着暴露。他需要用一种不会被追踪的方式来接近目标。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-017::char-ye-qingyi::83879938b2",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "信任",
+      "stateTags": [
+        "信任"
+      ],
+      "evidence": "他没有通知任何人——包括@{叶清漪}。这不是因为不信任她，而是因为他需要先确认自己的判断。如果那个金丹期修士真的是@{顾长渊}的探子，那么正面接触就意味着暴露。他需要用一种不会被追踪的方式来接近目标。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-017::char-shen-xuan::be6c8e585e",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "恐惧",
+      "stateTags": [
+        "恐惧"
+      ],
+      "evidence": "@{沈玄}的手从探子的丹田上移开。探子的身体瘫倒在地，修为尽失，生机迅速消散。他的眼中最后残留的不是恐惧，而是一种诡异的满足——像是在临死前完成了某个重要的任务。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-017::char-shen-xuan::11e8420729",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "离开",
+      "stateTags": [
+        "离开"
+      ],
+      "evidence": "@{沈玄}在混乱中离开了修炼场。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-017::char-shen-xuan::5947ab7ecc",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "离开",
+      "stateTags": [
+        "离开"
+      ],
+      "evidence": "长老们正在赶来。@{沈玄}知道自己需要尽快离开——他现在的状态不适合面对宗门长老的询问。",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [
+    {
+      "candidateId": "relation::chapter-017::char-gu-changyuan::char-ye-qingyi::83879938b2",
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-ye-qingyi",
+      "toName": "叶清漪",
+      "label": "信任上升",
+      "severity": "suggestion",
+      "evidence": "他没有通知任何人——包括@{叶清漪}。这不是因为不信任她，而是因为他需要先确认自己的判断。如果那个金丹期修士真的是@{顾长渊}的探子，那么正面接触就意味着暴露。他需要用一种不会被追踪的方式来接近目标。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-017::char-shen-xuan::char-gu-changyuan::4de1661346",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-gu-changyuan",
+      "toName": "顾长渊",
+      "label": "合作",
+      "severity": "suggestion",
+      "evidence": "千万年前的\"那个\"——@{沈玄}不知道@{白九殇}在说什么。但@{顾长渊}知道。@{白九殇}曾经告诉过他，归墟体不是自然产生的特殊体质，而是远古封印的一部分——是千万年前九域联手编织封印时，用某种代价创造出来的\"钥匙\"。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-017::char-shen-xuan::char-bai-jiushang::4de1661346",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-bai-jiushang",
+      "toName": "白九殇",
+      "label": "合作",
+      "severity": "suggestion",
+      "evidence": "千万年前的\"那个\"——@{沈玄}不知道@{白九殇}在说什么。但@{顾长渊}知道。@{白九殇}曾经告诉过他，归墟体不是自然产生的特殊体质，而是远古封印的一部分——是千万年前九域联手编织封印时，用某种代价创造出来的\"钥匙\"。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-017::char-gu-changyuan::char-bai-jiushang::4de1661346",
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-bai-jiushang",
+      "toName": "白九殇",
+      "label": "合作",
+      "severity": "suggestion",
+      "evidence": "千万年前的\"那个\"——@{沈玄}不知道@{白九殇}在说什么。但@{顾长渊}知道。@{白九殇}曾经告诉过他，归墟体不是自然产生的特殊体质，而是远古封印的一部分——是千万年前九域联手编织封印时，用某种代价创造出来的\"钥匙\"。",
+      "confidence": 0.84
+    },
+    {
+      "candidateId": "relation::chapter-017::char-gu-changyuan::char-bai-jiushang::8c6706593f",
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-bai-jiushang",
+      "toName": "白九殇",
+      "label": "亲近",
+      "severity": "suggestion",
+      "evidence": "@{顾长渊}微微皱眉。他不喜欢等待。但他更不敢违逆@{白九殇}。",
+      "confidence": 0.84
+    }
+  ],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-gu-changyuan",
+      "char-bai-jiushang",
+      "char-ye-qingyi",
+      "inferred::探子",
+      "char-song-huaijin"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "顾长渊",
+      "白九殇",
+      "叶清漪",
+      "探子",
+      "宋怀瑾"
+    ]
+  }
+}

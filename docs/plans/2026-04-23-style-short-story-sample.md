@@ -5,7 +5,7 @@
 
 ## 目标模块
 
-- `demo-light-novel-short/*`
+- `projects/demo-light-novel-short/*`
 - `tests/smoke/test_demo_light_novel_short_sample.py`
 
 ## 现有 owner
@@ -29,15 +29,15 @@
 
 ## 验证方式
 
-- `PYTHONPATH=src python -m story_harness_cli doctor --root demo-light-novel-short`
-- `PYTHONPATH=src python -m story_harness_cli review chapter --root demo-light-novel-short --chapter-id chapter-001`
-- `PYTHONPATH=src python -m story_harness_cli review scene --root demo-light-novel-short --chapter-id chapter-001 --scene-index 1`
-- `PYTHONPATH=src python -m story_harness_cli export --root demo-light-novel-short --format markdown`
+- `PYTHONPATH=src python -m story_harness_cli doctor --root projects/demo-light-novel-short`
+- `PYTHONPATH=src python -m story_harness_cli review chapter --root projects/demo-light-novel-short --chapter-id chapter-001`
+- `PYTHONPATH=src python -m story_harness_cli review scene --root projects/demo-light-novel-short --chapter-id chapter-001 --scene-index 1`
+- `PYTHONPATH=src python -m story_harness_cli export --root projects/demo-light-novel-short --format markdown`
 - `PYTHONPATH=src python -m unittest tests.smoke.test_demo_light_novel_short_sample -v`
 
 ## 需要同步的文档
 
-- `demo-light-novel-short/README.md`
+- `projects/demo-light-novel-short/README.md`
 - `docs/roadmap.md`
 - `docs/PROJECT_PROFILE.md`
 
@@ -59,9 +59,9 @@
 
 ## 验证结果
 
-- `doctor --root demo-light-novel-short` 通过，结构检查 `errors=0`、`warnings=0`
+- `doctor --root projects/demo-light-novel-short` 通过，结构检查 `errors=0`、`warnings=0`
 - `chapter analyze --chapter-id chapter-001` 通过，可识别 `艾琳 / 伦恩 / 诺瓦 / 米拉院长`
 - `review chapter --chapter-id chapter-001` 通过，`weightedScores.profile` 已输出 `fantasy + western-fantasy + light-novel`
 - `review scene --chapter-id chapter-001 --scene-index 1` 通过，成功读取显式 `scenePlans`
-- `export --format markdown --output demo-light-novel-short/manuscript.md` 通过
+- `export --format markdown --output projects/demo-light-novel-short/manuscript.md` 通过
 - `python -m unittest tests.smoke.test_demo_light_novel_short_sample -v` 通过，样例已接入自动化 smoke test

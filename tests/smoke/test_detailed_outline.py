@@ -15,6 +15,7 @@ if str(SRC_ROOT) not in sys.path:
 
 from story_harness_cli.cli import main
 from story_harness_cli.protocol.files import resolve_state_path
+from story_harness_cli.protocol.schema import default_project_state
 from story_harness_cli.protocol.state import STATE_KEY_MAP, load_project_state, save_state
 
 
@@ -32,23 +33,9 @@ def _build_project(root: Path, *, layered: bool = False, outline: dict | None = 
     (root / "projections").mkdir(parents=True, exist_ok=True)
     (root / "logs").mkdir(parents=True, exist_ok=True)
 
-    sample_data = {
-        "project": {"title": "detail-test", "genre": "fantasy"},
-        "outline": outline or {"chapters": [], "chapterDirections": [], "volumes": []},
-        "entities": {"entities": []},
-        "timeline": {"events": []},
-        "branches": {"branches": []},
-        "proposals": {"draftProposals": []},
-        "reviews": {"changeRequests": []},
-        "story_reviews": {"chapterReviews": [], "sceneReviews": []},
-        "projection": {"snapshotProjections": []},
-        "context_lens": {"currentChapterId": None, "lenses": []},
-        "projection_log": {"projectionChanges": []},
-        "threads": {"threads": []},
-        "structures": {"activeStructure": None, "mappings": []},
-        "foreshadowing": {"foreshadows": []},
-        "detailed_outlines": {"entries": []},
-    }
+    sample_data = default_project_state()
+    sample_data["project"].update({"title": "detail-test", "genre": "fantasy"})
+    sample_data["outline"] = outline or {"chapters": [], "chapterDirections": [], "volumes": []}
     for state_key, internal_key in STATE_KEY_MAP.items():
         fpath = resolve_state_path(root, state_key)
         _write_json_yaml(fpath, sample_data[internal_key])

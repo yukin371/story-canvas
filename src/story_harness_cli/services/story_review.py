@@ -8,6 +8,7 @@ from story_harness_cli.utils.project_meta import normalize_machine_label, normal
 from story_harness_cli.utils.text import count_words, extract_tag_mentions, paragraphs_from_text, strip_entity_tags
 
 from .analyzer import chapter_title
+from .style_detector import analyze_style_text
 
 
 RUBRIC_VERSION = "chapter-review-v1"
@@ -195,10 +196,12 @@ def build_chapter_review(
     chapter_id: str,
     chapter_text: str,
     analysis: Dict[str, Any] | None = None,
+    style_report: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
     analysis = analysis or {}
     clean_text = strip_entity_tags(chapter_text)
     paragraphs = paragraphs_from_text(clean_text)
+    style_report = style_report or analyze_style_text(chapter_text)
     word_count = count_words(clean_text)
     mention_names = sorted({name for name in extract_tag_mentions(chapter_text) if name})
     active_entities = list(analysis.get("activeEntities", []))
@@ -226,7 +229,7 @@ def build_chapter_review(
         _score_character_pressure(active_entities, mention_names, snapshot_candidates, clean_text),
         _score_conflict_tension(relation_candidates, clean_text),
         _score_scene_clarity(paragraphs, scene_entities, clean_text),
-        _score_prose_control(paragraphs, clean_text),
+        _score_prose_control(paragraphs, clean_text, style_report),
     ]
     dimension_map = {item["id"]: item for item in dimensions}
     total_score = sum(item["score"] for item in dimensions)
@@ -268,6 +271,7 @@ def build_chapter_review(
         "priorityActions": priority_actions,
         "textMetrics": text_metrics,
         "analysisSignals": analysis_signals,
+        "styleAnalysis": style_report,
         "projectContext": {
             "genre": state.get("project", {}).get("genre", ""),
             "positioning": state.get("project", {}).get("positioning", {}),
@@ -679,12 +683,14 @@ def _score_scene_clarity(paragraphs: List[str], scene_entities: List[str], clean
     return _dimension_result("sceneClarity", "场景清晰度", score, comment, signals, suggestions)
 
 
-def _score_prose_control(paragraphs: List[str], clean_text: str) -> Dict[str, Any]:
+def _score_prose_control(paragraphs: List[str], clean_text: str, style_report: Dict[str, Any]) -> Dict[str, Any]:
     average_length = _average_length(paragraphs)
     long_paragraphs = sum(1 for item in paragraphs if len(item) > 180)
     short_paragraphs = sum(1 for item in paragraphs if len(item) < 20)
     dialogue_paragraphs = _dialogue_paragraphs(paragraphs)
     repeated_punctuation = len(re.findall(r"([!！?？。])\1{2,}", clean_text))
+    style_analysis = style_report.get("styleAnalysis", {})
+    style_deduction = min(6, int(style_analysis.get("totalDeduction", 0)))
     score = 11
 
     if 35 <= average_length <= 150:
@@ -708,6 +714,7 @@ def _score_prose_control(paragraphs: List[str], clean_text: str) -> Dict[str, An
         score += 1
     if short_paragraphs <= max(1, len(paragraphs) // 3):
         score += 1
+    score -= style_deduction
 
     suggestions: List[str] = []
     if long_paragraphs >= 2:
@@ -716,12 +723,19 @@ def _score_prose_control(paragraphs: List[str], clean_text: str) -> Dict[str, An
         suggestions.append("减少连续感叹或问号，尽量用动作和细节替代强调符号。")
     if average_length < 20:
         suggestions.append("段落普遍太短，建议增加承接句，避免阅读节奏过碎。")
+    for suggestion in style_report.get("constraints", [])[:2]:
+        if suggestion not in suggestions:
+            suggestions.append(suggestion)
 
-    comment = "段落和强调基本受控。" if repeated_punctuation == 0 and long_paragraphs <= 1 else "表达有亮点，但节奏和强调还可以再收。"
+    if style_deduction > 0:
+        comment = f"基础节奏可读，但 AI 风格信号额外扣了 {style_deduction} 分。"
+    else:
+        comment = "段落和强调基本受控。" if repeated_punctuation == 0 and long_paragraphs <= 1 else "表达有亮点，但节奏和强调还可以再收。"
     signals = [
         f"平均段长 {average_length}",
         f"长段落 {long_paragraphs} 段",
         f"对话段 {dialogue_paragraphs} 段",
+        f"风格额外扣分 {style_deduction}",
     ]
     return _dimension_result("proseControl", "表达控制", score, comment, signals, suggestions)
 

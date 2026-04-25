@@ -1,0 +1,74 @@
+{
+  "foreshadows": [
+    {
+      "id": "fs-001",
+      "description": "沈玄重生本身触发了时间线的涟漪，白九殇通过归墟域封印感知到异常",
+      "plantedChapter": "chapter-001",
+      "plantedScene": null,
+      "plannedPayoffChapter": "chapter-021",
+      "actualPayoffChapter": null,
+      "status": "planted",
+      "notes": ""
+    },
+    {
+      "id": "fs-002",
+      "description": "叶清漪的身世之谜，她是玄冥域某位失踪大能的后人",
+      "plantedChapter": "chapter-005",
+      "plantedScene": null,
+      "plannedPayoffChapter": "chapter-020",
+      "actualPayoffChapter": null,
+      "status": "planted",
+      "notes": ""
+    },
+    {
+      "id": "fs-003",
+      "description": "宋怀瑾前世'背叛'的真正原因——他也被白九殇的精神操控影响",
+      "plantedChapter": "chapter-014",
+      "plantedScene": null,
+      "plannedPayoffChapter": "chapter-022",
+      "actualPayoffChapter": null,
+      "status": "planted",
+      "notes": ""
+    },
+    {
+      "id": "fs-004",
+      "description": "归墟体不仅是体质，更是归墟域封印的一部分——沈玄是封印的活钥匙",
+      "plantedChapter": "chapter-003",
+      "plantedScene": null,
+      "plannedPayoffChapter": "chapter-024",
+      "actualPayoffChapter": null,
+      "status": "planted",
+      "notes": ""
+    },
+    {
+      "id": "fs-005",
+      "description": "顾长渊修炼的邪术源自归墟域封印的裂缝，他以为自己在利用白九殇，实际是被利用",
+      "plantedChapter": "chapter-007",
+      "plantedScene": null,
+      "plannedPayoffChapter": "chapter-019",
+      "actualPayoffChapter": null,
+      "status": "planted",
+      "notes": ""
+    },
+    {
+      "id": "fs-006",
+      "description": "叶清漪剑意中的冰并非普通冰系灵根，而是封印守护者血脉的外在表现——每次她全力出剑时都会引发微弱的空间震荡",
+      "plantedChapter": "chapter-011",
+      "plantedScene": null,
+      "plannedPayoffChapter": "chapter-020",
+      "actualPayoffChapter": null,
+      "status": "planted",
+      "notes": "在遭遇战中被沈玄观察到，作为叶清漪身世的第二条线索链"
+    },
+    {
+      "id": "fs-007",
+      "description": "天枢宗丹药堂存放着一味不该存在的禁药——归魂散，能模糊人的意志边界使其更易被暗示。这是白九殇通过封印缝隙影响天枢宗弟子的间接证据",
+      "plantedChapter": "chapter-015",
+      "plantedScene": null,
+      "plannedPayoffChapter": "chapter-022",
+      "actualPayoffChapter": null,
+      "status": "planted",
+      "notes": "由宋怀瑾无意间透露，作为fs-003的强化链——前世宋怀瑾的背叛不仅是软弱，也有药物影响"
+    }
+  ]
+}

@@ -13,6 +13,7 @@ if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from story_harness_cli.protocol.files import resolve_state_path
+from story_harness_cli.protocol.schema import default_project_state
 from story_harness_cli.protocol.state import STATE_KEY_MAP, load_outline_for_chapter
 
 
@@ -27,34 +28,9 @@ def _write_json_yaml(path: Path, data: dict):
 
 def _build_minimal_state_files(root: Path) -> None:
     """Write minimal valid state files for every key in STATE_KEY_MAP."""
-    sample_data = {
-        "project": {"title": "volume-aware-test"},
-        "outline": {"chapters": [], "chapterDirections": [], "volumes": []},
-        "entities": {"entities": [], "enrichmentProposals": []},
-        "timeline": {"events": []},
-        "branches": {"branches": []},
-        "proposals": {"draftProposals": []},
-        "reviews": {"changeRequests": []},
-        "story_reviews": {
-            "rubricVersion": "chapter-review-v1",
-            "sceneRubricVersion": "scene-review-v1",
-            "chapterReviews": [],
-            "sceneReviews": [],
-        },
-        "projection": {
-            "snapshotProjections": [],
-            "relationProjections": [],
-            "sceneScopeProjections": [],
-            "timelineProjections": [],
-            "causalityProjections": [],
-        },
-        "context_lens": {"currentChapterId": None, "lenses": []},
-        "projection_log": {"projectionChanges": []},
-        "threads": {"threads": []},
-        "structures": {"activeStructure": None, "mappings": []},
-        "foreshadowing": {"foreshadows": []},
-        "detailed_outlines": {"entries": []},
-    }
+    sample_data = default_project_state()
+    sample_data["project"].update({"title": "volume-aware-test"})
+    sample_data["outline"] = {"chapters": [], "chapterDirections": [], "volumes": []}
     for state_key, internal_key in STATE_KEY_MAP.items():
         fpath = resolve_state_path(root, state_key)
         _write_json_yaml(fpath, sample_data[internal_key])

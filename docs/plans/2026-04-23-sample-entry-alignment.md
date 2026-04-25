@@ -30,7 +30,7 @@
 ## 验证方式
 
 - 读取 `README.md` 与 `docs/guides/quickstart.md`
-- 对照 `demo-short-story/README.md` 与 `docs/roadmap.md` 确认样例定位
+- 对照 `projects/demo-short-story/README.md` 与 `docs/roadmap.md` 确认样例定位
 - 运行 `git diff --check -- README.md docs/guides/quickstart.md docs/plans/2026-04-23-sample-entry-alignment.md`
 
 ## 验证结果

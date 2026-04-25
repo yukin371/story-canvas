@@ -3,9 +3,18 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from story_harness_cli.protocol import chapter_path, ensure_project_root, load_project_state, save_state
+from story_harness_cli.protocol import (
+    chapter_path,
+    choose_style_profile_name,
+    ensure_project_root,
+    load_project_state,
+    resolve_style_profile,
+    save_state,
+)
 from story_harness_cli.protocol.io import load_json_compatible_yaml
+from story_harness_cli.providers import load_style_similarity_scorer
 from story_harness_cli.services import (
+    analyze_style_text,
     build_chapter_review,
     build_scene_review,
     resolve_scene_candidates,
@@ -48,12 +57,24 @@ def command_review_chapter(args) -> int:
     if analysis.get("chapterId") not in {None, chapter_id}:
         analysis = {}
 
+    chapter_text = chapter_file.read_text(encoding="utf-8")
+    scorer, source = load_style_similarity_scorer()
+    profile_name = choose_style_profile_name(state.get("project", {}))
+    profile_config, profile_source = resolve_style_profile(root, profile_name)
     review = build_chapter_review(
         state,
         chapter_id=chapter_id,
-        chapter_text=chapter_file.read_text(encoding="utf-8"),
+        chapter_text=chapter_text,
         analysis=analysis,
+        style_report=analyze_style_text(
+            chapter_text,
+            opener_similarity_scorer=scorer,
+            repetition_source=source,
+            profile_name=profile_name,
+            profile_config=profile_config,
+        ),
     )
+    review["styleAnalysis"]["profileSource"] = profile_source
 
     story_reviews = state["story_reviews"].setdefault("chapterReviews", [])
     state["story_reviews"]["rubricVersion"] = review["rubricVersion"]

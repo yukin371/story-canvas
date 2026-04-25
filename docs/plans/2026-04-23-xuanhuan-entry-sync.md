@@ -13,7 +13,7 @@
 
 - 首页入口 owner: `README.md`
 - 指南 owner: `docs/guides/*`
-- 玄幻样例 owner: `demo-xuanhuan-short/*`
+- 玄幻样例 owner: `projects/demo-xuanhuan-short/*`
 
 ## 影响面
 
@@ -30,7 +30,7 @@
 ## 验证方式
 
 - 读取 `README.md` 与 `docs/guides/quickstart.md`
-- 对照 `demo-xuanhuan-short/README.md` 与 `docs/guides/sample-matrix.md`
+- 对照 `projects/demo-xuanhuan-short/README.md` 与 `docs/guides/sample-matrix.md`
 - 运行 `git diff --check -- README.md docs/guides/quickstart.md docs/plans/2026-04-23-xuanhuan-entry-sync.md`
 
 ## 验证结果

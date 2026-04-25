@@ -16,3 +16,12 @@ build/
 .idea/
 Thumbs.db
 .DS_Store
+
+# Sample project transient outputs
+projects/**/.story-harness.lock
+projects/**/exports/
+projects/**/manuscript.md
+projects/**/manuscript.txt
+projects/**/manuscript.json
+projects/**/logs/latest-analysis.yaml
+projects/**/logs/projection-log.yaml

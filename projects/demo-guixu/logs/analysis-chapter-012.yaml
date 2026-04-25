@@ -1,0 +1,88 @@
+{
+  "chapterId": "chapter-012",
+  "chapterTitle": "苍梧秘境",
+  "analyzedAt": "2026-04-25T13:23:32+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 58,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 14,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-012::char-shen-xuan::2164794724",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "怀疑",
+      "stateTags": [
+        "怀疑"
+      ],
+      "evidence": "@{沈玄}沉默了一瞬。组队意味着更多的眼睛，更大的暴露风险。但不组队意味着独自面对秘境中的未知危险——而且以他\"炼气七层\"的伪装修为，单人进入秘境太不合理，会引起怀疑。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-012::char-shen-xuan::2e48829d4b",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "怀疑",
+      "stateTags": [
+        "怀疑"
+      ],
+      "evidence": "@{沈玄}在心中暗叹。他不能再继续这样下去了——如果每一次都精准避开危险，整个队伍都会对他产生不合理的依赖，而@{叶清漪}也会越来越怀疑他的真实身份。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-012::char-ye-qingyi::2e48829d4b",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "怀疑",
+      "stateTags": [
+        "怀疑"
+      ],
+      "evidence": "@{沈玄}在心中暗叹。他不能再继续这样下去了——如果每一次都精准避开危险，整个队伍都会对他产生不合理的依赖，而@{叶清漪}也会越来越怀疑他的真实身份。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-012::char-shen-xuan::8fd445f263",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "怀疑",
+      "stateTags": [
+        "怀疑"
+      ],
+      "evidence": "她在战斗结束后看了@{沈玄}一眼，目光中带着一种@{沈玄}无法读懂的意味。那不是怀疑——至少不只是怀疑。还有别的什么。",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [
+    {
+      "candidateId": "relation::chapter-012::char-shen-xuan::char-ye-qingyi::2e48829d4b",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-ye-qingyi",
+      "toName": "叶清漪",
+      "label": "信任下降",
+      "severity": "high-risk",
+      "evidence": "@{沈玄}在心中暗叹。他不能再继续这样下去了——如果每一次都精准避开危险，整个队伍都会对他产生不合理的依赖，而@{叶清漪}也会越来越怀疑他的真实身份。",
+      "confidence": 0.84
+    }
+  ],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-ye-qingyi"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "叶清漪"
+    ]
+  }
+}

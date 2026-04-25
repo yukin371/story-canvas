@@ -1,0 +1,508 @@
+{
+  "entries": [
+    {
+      "chapterId": "chapter-001",
+      "beats": [
+        {
+          "id": "beat-c001-01",
+          "summary": "女尸异常入库并喊出周敬庵的名字"
+        },
+        {
+          "id": "beat-c001-02",
+          "summary": "冷柜敲门把父亲旧事重新拖回眼前"
+        },
+        {
+          "id": "beat-c001-03",
+          "summary": "沈观澜逼周祈安接下第一趟夜巡"
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-c001-01",
+          "title": "夜班来尸",
+          "summary": "周祈安在殡仪馆夜班接到带旧规矩的女尸。",
+          "startParagraph": 1,
+          "endParagraph": 4
+        },
+        {
+          "id": "scene-c001-02",
+          "title": "冷柜敲门",
+          "summary": "冷柜异响和父亲旧警告同时逼近。",
+          "startParagraph": 5,
+          "endParagraph": 8
+        },
+        {
+          "id": "scene-c001-03",
+          "title": "被迫上岗",
+          "summary": "女尸吐出残页，沈观澜把周祈安拉上夜巡线。",
+          "startParagraph": 9,
+          "endParagraph": 13
+        }
+      ],
+      "updatedAt": "2026-04-25T12:06:51.045973+00:00",
+      "direction": "通过女尸、冷柜敲门和沈观澜上门，把周祈安从殡仪馆夜班拉进城隍夜巡。"
+    },
+    {
+      "chapterId": "chapter-002",
+      "beats": [
+        {
+          "id": "beat-c002-01",
+          "summary": "空棺沿旧巷挨门点债"
+        },
+        {
+          "id": "beat-c002-02",
+          "summary": "三人在旧香烛铺和棺材铺里翻出夜债补录"
+        },
+        {
+          "id": "beat-c002-03",
+          "summary": "残印和父亲编号一起把下一站抛出来"
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-c002-01",
+          "title": "空棺点门",
+          "summary": "旧城隍巷的空棺敲门把整条巷子的夜债翻了出来。",
+          "startParagraph": 1,
+          "endParagraph": 4
+        },
+        {
+          "id": "scene-c002-02",
+          "title": "棺材铺账册",
+          "summary": "三人沿着棺钉和香灰翻进棺材铺，找到补录名单。",
+          "startParagraph": 5,
+          "endParagraph": 16
+        },
+        {
+          "id": "scene-c002-03",
+          "title": "残印再现",
+          "summary": "纸人抢账失败，残印和周敬庵编号指向下一案。",
+          "startParagraph": 17,
+          "endParagraph": 22
+        }
+      ],
+      "updatedAt": "2026-04-25T12:06:51.045973+00:00",
+      "direction": "借空棺敲门案追出杜魁与旧城隍巷夜债名单，让主角确认父亲留下的线索正被人利用。"
+    },
+    {
+      "chapterId": "chapter-003",
+      "beats": [
+        {
+          "id": "beat-c003-01",
+          "summary": "废庙布控等待杜魁借火"
+        },
+        {
+          "id": "beat-c003-02",
+          "summary": "周祈安在纸人与残印之间硬顶上去"
+        },
+        {
+          "id": "beat-c003-03",
+          "summary": "杜魁逃走但残印到手，临牌正式下发"
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-c003-01",
+          "title": "废庙布控",
+          "summary": "沈观澜带队在废庙外布控，等杜魁借旧城隍余火。",
+          "startParagraph": 1,
+          "endParagraph": 6
+        },
+        {
+          "id": "scene-c003-02",
+          "title": "抢火夺印",
+          "summary": "纸人列阵、杜魁借火，周祈安硬抢残印。",
+          "startParagraph": 7,
+          "endParagraph": 17
+        },
+        {
+          "id": "scene-c003-03",
+          "title": "临牌上岗",
+          "summary": "杜魁逃离后，周祈安拿到临时夜巡牌并被派往下一案。",
+          "startParagraph": 18,
+          "endParagraph": 24
+        }
+      ],
+      "updatedAt": "2026-04-25T12:06:51.045973+00:00",
+      "direction": "在废庙借火的夜里截住杜魁和残印，让周祈安第一次正式拿到临时夜巡牌。"
+    },
+    {
+      "chapterId": "chapter-004",
+      "beats": [
+        {
+          "id": "beat-c004-01",
+          "summary": "医院外环路出现借道雨轿"
+        },
+        {
+          "id": "beat-c004-02",
+          "summary": "三人顺着红伞和旧井线索追出送亲局"
+        },
+        {
+          "id": "beat-c004-03",
+          "summary": "失踪护士和巡夜录把父亲旧路重新摆到眼前"
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-c004-01",
+          "title": "雨轿借道",
+          "summary": "医院外环路的红轿借道而过，把护士带离人群。",
+          "startParagraph": 1,
+          "endParagraph": 7
+        },
+        {
+          "id": "scene-c004-02",
+          "title": "旧井追线",
+          "summary": "三人顺着红伞、纸钱和旧井继续追查送亲局。",
+          "startParagraph": 8,
+          "endParagraph": 14
+        },
+        {
+          "id": "scene-c004-03",
+          "title": "巡夜录现身",
+          "summary": "失踪护士和周家旧巡夜录同时在轿中出现。",
+          "startParagraph": 15,
+          "endParagraph": 21
+        }
+      ],
+      "updatedAt": "2026-04-25T12:06:51.045973+00:00",
+      "direction": "让雨轿案把第二单元案和父亲旧物并线，逼周祈安从临牌新人转向主动追查。"
+    },
+    {
+      "chapterId": "chapter-005",
+      "beats": [
+        {
+          "id": "beat-c005-01",
+          "summary": "运河夜市的河灯异常反季点起"
+        },
+        {
+          "id": "beat-c005-02",
+          "summary": "旧仓里翻出旧井名册和税号对应"
+        },
+        {
+          "id": "beat-c005-03",
+          "summary": "灯底四名只剩一个空位，周祈安被点上名单"
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-c005-01",
+          "title": "河灯起案",
+          "summary": "运河夜市的河灯把婚煞补债案重新点亮。",
+          "startParagraph": 1,
+          "endParagraph": 7
+        },
+        {
+          "id": "scene-c005-02",
+          "title": "旧仓对号",
+          "summary": "三人在旧仓里对上婚契、税号和旧井名册。",
+          "startParagraph": 8,
+          "endParagraph": 14
+        },
+        {
+          "id": "scene-c005-03",
+          "title": "第四抬手",
+          "summary": "最后一盏河灯把第四个位置直接留给周祈安。",
+          "startParagraph": 15,
+          "endParagraph": 21
+        }
+      ],
+      "updatedAt": "2026-04-25T12:06:51.045973+00:00",
+      "direction": "通过河灯和婚契名册确认第二单元案的补债规则，把周祈安推到第四抬手的位置上。"
+    },
+    {
+      "chapterId": "chapter-006",
+      "beats": [
+        {
+          "id": "beat-c006-01",
+          "summary": "周祈安补位做第四抬手下井"
+        },
+        {
+          "id": "beat-c006-02",
+          "summary": "三人确认婚煞规则被人为改写用来转债"
+        },
+        {
+          "id": "beat-c006-03",
+          "summary": "失踪护士被救回，税契残页落入手中"
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-c006-01",
+          "title": "下井补位",
+          "summary": "周祈安顶上第四个抬手的位置，跟轿下井。",
+          "startParagraph": 1,
+          "endParagraph": 7
+        },
+        {
+          "id": "scene-c006-02",
+          "title": "婚契改写",
+          "summary": "井下送亲路暴露了婚煞规则被改写的真相。",
+          "startParagraph": 8,
+          "endParagraph": 14
+        },
+        {
+          "id": "scene-c006-03",
+          "title": "截轿救人",
+          "summary": "周祈安截断送亲流程，救回护士并抢下税契残页。",
+          "startParagraph": 15,
+          "endParagraph": 22
+        }
+      ],
+      "updatedAt": "2026-04-25T12:06:51.045973+00:00",
+      "direction": "下井补位并截断送亲流程，完成第二单元案，同时把旧城隍税契的主线价值抬出来。"
+    },
+    {
+      "chapterId": "chapter-007",
+      "beats": [
+        {
+          "id": "beat-c007-01",
+          "summary": "纸马车深夜封街过路"
+        },
+        {
+          "id": "beat-c007-02",
+          "summary": "名帖与税号把线索指向借寿戏班"
+        },
+        {
+          "id": "beat-c007-03",
+          "summary": "纸马回头递出下一站，第三单元案立起"
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-c007-01",
+          "title": "纸马封街",
+          "summary": "无人牵引的纸马车把夜巡路线改成押解线。",
+          "startParagraph": 1,
+          "endParagraph": 7
+        },
+        {
+          "id": "scene-c007-02",
+          "title": "名帖连线",
+          "summary": "周祈安顺着名帖和税号把线索接到戏班。",
+          "startParagraph": 8,
+          "endParagraph": 14
+        },
+        {
+          "id": "scene-c007-03",
+          "title": "递出下一站",
+          "summary": "纸马回头丢出名帖，把老戏台推成下一案现场。",
+          "startParagraph": 15,
+          "endParagraph": 21
+        }
+      ],
+      "updatedAt": "2026-04-25T12:06:51.045973+00:00",
+      "direction": "让纸马押解线把前三单元案的碎线压向老戏台，正式立起借寿戏班这条新案。"
+    },
+    {
+      "chapterId": "chapter-008",
+      "beats": [
+        {
+          "id": "beat-c008-01",
+          "summary": "戏班开演当晚有人被借寿"
+        },
+        {
+          "id": "beat-c008-02",
+          "summary": "后台押签名录暴露系统化回收结构"
+        },
+        {
+          "id": "beat-c008-03",
+          "summary": "帘后中间人发声，第三单元案逼近收口"
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-c008-01",
+          "title": "戏台借寿",
+          "summary": "老戏台开演即出事，借寿钱和昏厥观众同时出现。",
+          "startParagraph": 1,
+          "endParagraph": 7
+        },
+        {
+          "id": "scene-c008-02",
+          "title": "后台押签",
+          "summary": "周祈安和白小刀在后台翻出押签名录和父亲旧线。",
+          "startParagraph": 8,
+          "endParagraph": 15
+        },
+        {
+          "id": "scene-c008-03",
+          "title": "帘后发声",
+          "summary": "中间人隔帘放话，把对抗抬到制度层。",
+          "startParagraph": 16,
+          "endParagraph": 23
+        }
+      ],
+      "updatedAt": "2026-04-25T12:06:51.045973+00:00",
+      "direction": "借老戏台的借寿戏局暴露押签系统，让对手从灰线执行层抬到制度层。"
+    },
+    {
+      "chapterId": "chapter-009",
+      "beats": [
+        {
+          "id": "beat-c009-01",
+          "summary": "找到藏在旧批发市场的收债仓库"
+        },
+        {
+          "id": "beat-c009-02",
+          "summary": "确认旧城隍印被拆成系统化生意组件，体制内有人接应"
+        },
+        {
+          "id": "beat-c009-03",
+          "summary": "杜魁试图换命却被灭口，债主和内鬼同时上浮"
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-c009-01",
+          "title": "市场仓门",
+          "summary": "沈观澜带队撬开旧批发市场仓门，确认这里不是普通香烛仓。",
+          "startParagraph": 1,
+          "endParagraph": 4
+        },
+        {
+          "id": "scene-c009-02",
+          "title": "归档总账",
+          "summary": "三人在仓内核对前案碎线和总账，确认旧城隍印被拆件流转。",
+          "startParagraph": 5,
+          "endParagraph": 10
+        },
+        {
+          "id": "scene-c009-03",
+          "title": "杜魁灭口",
+          "summary": "杜魁带着小账本现身求活，却在吐口前被灭口，留下内鬼与债主钩子。",
+          "startParagraph": 11,
+          "endParagraph": 20
+        }
+      ],
+      "updatedAt": "2026-04-25T12:06:51.045973+00:00",
+      "direction": "顺着戏班票簿和押签名录摸到旧批发市场收债据点，确认旧城隍印被系统拆件流转，并用杜魁灭口把卷一冲突推到正面对抗。"
+    },
+    {
+      "chapterId": "chapter-010",
+      "beats": [
+        {
+          "id": "beat-c010-01",
+          "summary": "前案残件和异象一夜回流封街"
+        },
+        {
+          "id": "beat-c010-02",
+          "summary": "沈观澜被调离后，周祈安独立接管夜巡流程"
+        },
+        {
+          "id": "beat-c010-03",
+          "summary": "旧庙开印的时间与共同汇点被锁定"
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-c010-01",
+          "title": "前案回流",
+          "summary": "空棺、雨轿和戏票残线同时回到封街夜。",
+          "startParagraph": 1,
+          "endParagraph": 5
+        },
+        {
+          "id": "scene-c010-02",
+          "title": "独立顶岗",
+          "summary": "周祈安第一次独自重排街区流程和点位。",
+          "startParagraph": 6,
+          "endParagraph": 14
+        },
+        {
+          "id": "scene-c010-03",
+          "title": "锁定汇点",
+          "summary": "封街图最终把旧庙开印时间钉死。",
+          "startParagraph": 15,
+          "endParagraph": 21
+        }
+      ],
+      "updatedAt": "2026-04-25T12:06:51.045973+00:00",
+      "direction": "让所有前案回流到同一条封街夜线上，逼周祈安第一次独立顶岗并锁定旧庙开印时刻。"
+    },
+    {
+      "chapterId": "chapter-011",
+      "beats": [
+        {
+          "id": "beat-c011-01",
+          "summary": "三人挖出周敬庵留下的半部巡夜录"
+        },
+        {
+          "id": "beat-c011-02",
+          "summary": "确认旧城隍开印事故和父亲失踪的真相"
+        },
+        {
+          "id": "beat-c011-03",
+          "summary": "体制内内鬼发动，旧庙大门被提前拉开"
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-c011-01",
+          "title": "巡夜录出土",
+          "summary": "旧庙地下夹层吐出周敬庵留下的巡夜录。",
+          "startParagraph": 1,
+          "endParagraph": 7
+        },
+        {
+          "id": "scene-c011-02",
+          "title": "断印真相",
+          "summary": "巡夜录把上一代没结掉的夜巡债解释清楚。",
+          "startParagraph": 8,
+          "endParagraph": 15
+        },
+        {
+          "id": "scene-c011-03",
+          "title": "内鬼发动",
+          "summary": "旧庙大门被提前拉开，卷一高潮提前压来。",
+          "startParagraph": 16,
+          "endParagraph": 22
+        }
+      ],
+      "updatedAt": "2026-04-25T12:06:51.045973+00:00",
+      "direction": "在旧庙地下夹层挖出周敬庵留下的巡夜录，确认上一代断印真相，并让内鬼线正式发动。"
+    },
+    {
+      "chapterId": "chapter-012",
+      "beats": [
+        {
+          "id": "beat-c012-01",
+          "summary": "周祈安把残印和证据链拼成完整收煞流程"
+        },
+        {
+          "id": "beat-c012-02",
+          "summary": "沈观澜与白小刀在地面同时压住规则崩塌"
+        },
+        {
+          "id": "beat-c012-03",
+          "summary": "卷一结算，正式夜巡牌和下一卷地址一并落下"
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-c012-01",
+          "title": "拼链收煞",
+          "summary": "周祈安把一路追回的残件拼成完整证据链。",
+          "startParagraph": 1,
+          "endParagraph": 8
+        },
+        {
+          "id": "scene-c012-02",
+          "title": "顶岗封印",
+          "summary": "地上地下同时收口，临牌夜巡硬顶旧庙开印夜。",
+          "startParagraph": 9,
+          "endParagraph": 20
+        },
+        {
+          "id": "scene-c012-03",
+          "title": "正式上任",
+          "summary": "卷一结算，正式夜巡牌和新地址一起递到手中。",
+          "startParagraph": 21,
+          "endParagraph": 27
+        }
+      ],
+      "updatedAt": "2026-04-25T12:06:51.045973+00:00",
+      "direction": "让周祈安以临牌完成卷一收煞，拿到正式夜巡牌，并把父亲线推进到下一卷。"
+    }
+  ]
+}

@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 from story_harness_cli.protocol import ensure_project_root, load_project_state
-from story_harness_cli.utils.text import count_words, strip_entity_tags
+from story_harness_cli.utils.text import count_words, strip_entity_tags, strip_markdown
 
 
 def command_export(args) -> int:
@@ -80,6 +80,8 @@ def _export_chapter_prose(state: dict, root: Path, fmt: str, chapter_id: str | N
             continue
         raw = cp.read_text(encoding="utf-8")
         clean = strip_entity_tags(raw)
+        if fmt == "txt":
+            clean = strip_markdown(clean)
         title = _chapter_title(state, cid)
         chapters_data.append({"chapterId": cid, "title": title, "content": clean, "wordCount": count_words(clean)})
 
@@ -166,17 +168,36 @@ def _generate_spec_characters(state: dict) -> str:
         parts.append("暂无角色数据。")
         return "\n".join(parts)
 
+    # Build name lookup for resolving relation targets
+    id_to_name = {}
+    for ent in entities:
+        eid = ent.get("id", "")
+        ename = ent.get("name", "")
+        if eid and ename:
+            id_to_name[eid] = ename
+
     for ent in entities:
         name = ent.get("name", "未命名")
         etype = ent.get("type", "unknown")
+        profile = ent.get("profile", {})
+        is_inferred = ent.get("source") == "inferred" and not profile
+
         parts.append("")
         parts.append(f"## {name} ({etype})")
+
+        if is_inferred:
+            registered = ent.get("registeredAt", "")
+            if registered:
+                parts.append(f"> 推断实体，首次出现于 {registered}")
+            parts.append("> 待补全角色信息")
+            parts.append("")
+            parts.append("---")
+            continue
 
         registered = ent.get("registeredAt", "")
         if registered:
             parts.append(f"> 首次出场: {registered}")
 
-        profile = ent.get("profile", {})
         if isinstance(profile, dict):
             # Traits
             traits = profile.get("traits", [])
@@ -205,6 +226,37 @@ def _generate_spec_characters(state: dict) -> str:
                         ab_strs.append(str(item))
                 parts.append(f"**能力:** {', '.join(ab_strs)}")
 
+            # Background
+            background = profile.get("background", "")
+            if background:
+                parts.append(f"**背景:** {background}")
+
+            # Motivation
+            motivation = profile.get("motivation", "")
+            if motivation:
+                parts.append(f"**动机:** {motivation}")
+
+            # Arc
+            arc = profile.get("arc", "")
+            if arc:
+                parts.append(f"**弧线:** {arc}")
+
+        # Relations
+        relations = ent.get("relations", [])
+        if relations:
+            parts.append("")
+            parts.append("**关系:**")
+            for rel in relations:
+                target_id = rel.get("target", "")
+                target_name = id_to_name.get(target_id, target_id)
+                rel_type = rel.get("type", "")
+                rel_detail = rel.get("detail", "")
+                label = f"{rel_type}" if rel_type else "未知"
+                if rel_detail:
+                    parts.append(f"- {target_name}: {label} — {rel_detail}")
+                else:
+                    parts.append(f"- {target_name}: {label}")
+
         parts.append("")
         parts.append("---")
 
@@ -218,7 +270,8 @@ def _export_hierarchical_split(state: dict, args) -> int:
     if args.output:
         out_dir = Path(args.output)
     else:
-        out_dir = Path(".")
+        # Default to <project-root>/exports/
+        out_dir = Path(args.root).resolve() / "exports"
 
     if out_dir.is_file():
         out_dir = out_dir.parent
@@ -254,6 +307,15 @@ def _generate_spec_global_outline(state: dict) -> str:
     title = state["project"].get("title", "未命名")
     parts = [f"# 全局大纲: {title}", ""]
 
+    # Load direction from detailed_outlines if available
+    direction_map = {}
+    detailed = state.get("detailed_outlines", {})
+    for entry in detailed.get("entries", []):
+        cid = entry.get("chapterId", "")
+        d = entry.get("direction", "")
+        if cid and d:
+            direction_map[cid] = d
+
     outline = state.get("outline", {})
     volumes = outline.get("volumes", [])
 
@@ -270,7 +332,15 @@ def _generate_spec_global_outline(state: dict) -> str:
                 ch_title = ch.get("title", "未命名")
                 status = ch.get("status", "")
                 status_label = f" [{status}]" if status else ""
-                parts.append(f"- {ch_id}: {ch_title}{status_label}")
+                direction = direction_map.get(ch_id) or ch.get("direction", "")
+                if direction:
+                    # Truncate to first sentence or 80 chars for overview
+                    short = direction.split("。")[0]
+                    if len(short) > 80:
+                        short = short[:77] + "..."
+                    parts.append(f"- {ch_title}{status_label}: {short}")
+                else:
+                    parts.append(f"- {ch_title}{status_label}")
             parts.append("")
     else:
         for ch in outline.get("chapters", []):
@@ -278,7 +348,14 @@ def _generate_spec_global_outline(state: dict) -> str:
             ch_title = ch.get("title", "未命名")
             status = ch.get("status", "")
             status_label = f" [{status}]" if status else ""
-            parts.append(f"- {ch_id}: {ch_title}{status_label}")
+            direction = direction_map.get(ch_id) or ch.get("direction", "")
+            if direction:
+                short = direction.split("。")[0]
+                if len(short) > 80:
+                    short = short[:77] + "..."
+                parts.append(f"- {ch_title}{status_label}: {short}")
+            else:
+                parts.append(f"- {ch_title}{status_label}")
         parts.append("")
 
     return "\n".join(parts)

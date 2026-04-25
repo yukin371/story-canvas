@@ -1,0 +1,135 @@
+{
+  "chapterId": "chapter-018",
+  "chapterTitle": "摊牌",
+  "analyzedAt": "2026-04-25T17:36:09+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 87,
+      "source": "registry"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 77,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 15,
+      "source": "registry"
+    },
+    {
+      "id": "char-song-huaijin",
+      "name": "宋怀瑾",
+      "mentionCount": 5,
+      "source": "registry"
+    },
+    {
+      "id": "char-bai-jiushang",
+      "name": "白九殇",
+      "mentionCount": 5,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-018::char-gu-changyuan::48a7cfa5e4",
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "proposedState": "恐惧",
+      "stateTags": [
+        "恐惧"
+      ],
+      "evidence": "两人的目光在混乱中相遇。@{宋怀瑾}的眼中有恐惧，有愧疚，也有一种说不清的决然。他认出了@{顾长渊}——那是他的大长老，他的天枢宗的上司。而现在这个人在他面前撕裂了苍梧域的天空，来猎杀他在苍梧域认识的第一个人。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-018::char-song-huaijin::48a7cfa5e4",
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "proposedState": "恐惧",
+      "stateTags": [
+        "恐惧"
+      ],
+      "evidence": "两人的目光在混乱中相遇。@{宋怀瑾}的眼中有恐惧，有愧疚，也有一种说不清的决然。他认出了@{顾长渊}——那是他的大长老，他的天枢宗的上司。而现在这个人在他面前撕裂了苍梧域的天空，来猎杀他在苍梧域认识的第一个人。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-018::char-gu-changyuan::d4b3b00d9e",
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "proposedState": "震惊",
+      "stateTags": [
+        "震惊"
+      ],
+      "evidence": "\"你——\"@{顾长渊}的声音中终于出现了震惊，\"你竟然能引导封印的意志？\"",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-018::char-gu-changyuan::36a5c18d2d",
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "proposedState": "恐惧；震惊",
+      "stateTags": [
+        "恐惧",
+        "震惊"
+      ],
+      "evidence": "@{顾长渊}闭上了眼睛，像是在聆听某种只有他能听到的声音。他的表情从冷漠变成了震惊，又从震惊变成了……恐惧？",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-018::char-song-huaijin::b63305a368",
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "proposedState": "受伤；恐惧",
+      "stateTags": [
+        "受伤",
+        "恐惧"
+      ],
+      "evidence": "@{宋怀瑾}站在药园的灵药架后面，目光穿过废墟与他对视。他的脸色苍白如纸，双手在微微颤抖——那不是受伤的颤抖，而是恐惧与决然交织的颤抖。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-018::char-shen-xuan::f9b648603c",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "恐惧",
+      "stateTags": [
+        "恐惧"
+      ],
+      "evidence": "@{沈玄}在@{宋怀瑾}的目光中读到了一个信息——不是恐惧，不是愧疚，而是一种无声的承诺。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-018::char-song-huaijin::f9b648603c",
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "proposedState": "恐惧",
+      "stateTags": [
+        "恐惧"
+      ],
+      "evidence": "@{沈玄}在@{宋怀瑾}的目光中读到了一个信息——不是恐惧，不是愧疚，而是一种无声的承诺。",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-gu-changyuan",
+      "char-ye-qingyi",
+      "char-song-huaijin",
+      "char-bai-jiushang"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "顾长渊",
+      "叶清漪",
+      "宋怀瑾",
+      "白九殇"
+    ]
+  }
+}

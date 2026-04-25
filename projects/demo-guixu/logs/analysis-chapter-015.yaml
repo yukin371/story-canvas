@@ -1,0 +1,101 @@
+{
+  "chapterId": "chapter-015",
+  "chapterTitle": "信任与试探",
+  "analyzedAt": "2026-04-25T13:19:19+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 58,
+      "source": "registry"
+    },
+    {
+      "id": "char-song-huaijin",
+      "name": "宋怀瑾",
+      "mentionCount": 40,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 13,
+      "source": "registry"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 9,
+      "source": "registry"
+    },
+    {
+      "id": "char-bai-jiushang",
+      "name": "白九殇",
+      "mentionCount": 3,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-015::char-song-huaijin::8036f4e7da",
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "proposedState": "背叛",
+      "stateTags": [
+        "背叛"
+      ],
+      "evidence": "甚至——可能前世@{宋怀瑾}的\"背叛\"也和这种药物有关。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-015::char-shen-xuan::8019fb255b",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "背叛",
+      "stateTags": [
+        "背叛"
+      ],
+      "evidence": "这一世的@{宋怀瑾}什么都不知道。他不知道面前的沈玄就是前世的挚友，不知道前世自己选择了师父，不知道@{沈玄}对他的\"背叛\"怀有多么复杂的情感。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-015::char-song-huaijin::8019fb255b",
+      "entityId": "char-song-huaijin",
+      "entityName": "宋怀瑾",
+      "proposedState": "背叛",
+      "stateTags": [
+        "背叛"
+      ],
+      "evidence": "这一世的@{宋怀瑾}什么都不知道。他不知道面前的沈玄就是前世的挚友，不知道前世自己选择了师父，不知道@{沈玄}对他的\"背叛\"怀有多么复杂的情感。",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [
+    {
+      "candidateId": "relation::chapter-015::char-shen-xuan::char-song-huaijin::8019fb255b",
+      "fromId": "char-shen-xuan",
+      "fromName": "沈玄",
+      "toId": "char-song-huaijin",
+      "toName": "宋怀瑾",
+      "label": "裂痕",
+      "severity": "high-risk",
+      "evidence": "这一世的@{宋怀瑾}什么都不知道。他不知道面前的沈玄就是前世的挚友，不知道前世自己选择了师父，不知道@{沈玄}对他的\"背叛\"怀有多么复杂的情感。",
+      "confidence": 0.84
+    }
+  ],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-song-huaijin",
+      "char-ye-qingyi",
+      "char-gu-changyuan",
+      "char-bai-jiushang"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "宋怀瑾",
+      "叶清漪",
+      "顾长渊",
+      "白九殇"
+    ]
+  }
+}

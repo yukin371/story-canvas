@@ -1,6 +1,6 @@
 # Services 模块说明
 
-> 最后更新: 2026-04-23
+> 最后更新: 2026-04-25
 > 状态: 当前有效模块文档
 
 ## 1. 模块职责
@@ -19,6 +19,9 @@
 - `context_lens.py`: 写作上下文构建
 - `outline_guard.py`: 章节大纲前置检查，判断是否具备项目定位 / 故事契约 + direction / beats / scenePlans 进入写作或细化
 - `story_review.py`: 章节回顾评分、一幕评审、类型/平台加权评分、评论、改稿建议、契约对齐与商业连载对齐检查
+- `style_detector.py`: AI 风格启发式检测与约束生成；允许通过外部注入 scorer 增强句式近似判断，但默认保持 builtin fallback
+- `illustration_prompting.py`: chapter / entity 插图 prompt 构造、目标元数据整理与 dry-run request 组装
+- `workflow_engine.py`: workflow 状态机纯函数，负责阶段推断、状态 hydration/build、gate 决策推进、reset 与导出快照
 - `inspiration.py`: 随机灵感生成（姓名、角色、世界、大纲骨架）
 - `stats.py`: 项目统计（进度、字数、实体、投影）
 
@@ -46,6 +49,16 @@
 - `resolve_scene_candidates(chapter_entry, chapter_text)`: 优先读取显式 `scenePlans`，否则回退到启发式候选 scene
 - `detect_scene_plans(chapter_id, chapter_text)`: 把启发式候选 scene 转成可持久化的显式 `scenePlans`
 - `compute_project_stats(state, root)`: 项目统计
+- `infer_workflow_status(state, chapter_id=None, chapter_files=None)`: 推断 workflow 当前阶段、阶段完成度与 next actions
+- `hydrate_workflow_progress(workflow_progress, inferred)`: 合并持久化 workflow 元数据与当前推断阶段结果
+- `build_workflow_progress(inferred, existing=None, now_iso, run_mode, resume_from=None)`: 构造或刷新 `workflow.yaml` 快照，并支持从指定 gate 回卷
+- `advance_workflow_progress(workflow_progress, inferred, gate_id, decision, feedback, now_iso)`: 记录当前 gate 的 `accept/modify/reject` 决策并推进状态机
+- `reset_workflow_progress(workflow_progress, inferred, from_gate, now_iso)`: 清除指定 gate 及之后的决策元数据并回到该 gate
+- `export_workflow_payload(workflow_progress, inferred)`: 输出面向 CLI 的 workflow 快照载荷
+- `build_style_repair_prompt(chapter_text, style_report, chapter_id)`: 基于 styleAnalysis 生成可直接喂给模型的精修 prompt
+- `build_style_change_request_drafts(chapter_id, style_report)`: 把风格问题转成 change-request 风格草案
+- `build_chapter_illustration_payload(state, chapter_id, chapter_title, chapter_text, mode, input_images=None, mask_path=\"\", prompt_pack_name=\"default\")`: 生成章节插图 payload
+- `build_entity_illustration_payload(state, entity, mode, input_images=None, mask_path=\"\", prompt_pack_name=\"default\")`: 生成人物设定图 payload
 
 ## 5. 关键依赖
 
@@ -72,6 +85,8 @@
 - 一幕级 `contractAlignment` 复用了章节级契约思想，但阈值更偏向“局部兑现/局部钩子”，不等同于整章判断
 - `commercialAlignment` 目前基于 hook、字数目标、章末钩子等启发式信号，不等同于真实市场反馈预测
 - `evaluate_project_story_gate` 的用途是把“先确定市场定位和故事承诺，再拆章节”变成硬门禁，而不是 review 阶段的软建议
+- workflow 的 `currentStage` 口径是“第一个未满足 inferred 条件的 gate”，不是“所有前置 gate 都必须先人工 accept 才算通过”
+- `advance_workflow_progress` 只允许对当前 gate 执行 `accept`；若 inferred 条件未满足，会直接拒绝推进
 
 ## 8. 测试方式
 

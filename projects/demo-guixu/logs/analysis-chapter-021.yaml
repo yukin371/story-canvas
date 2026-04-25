@@ -1,0 +1,104 @@
+{
+  "chapterId": "chapter-021",
+  "chapterTitle": "白九殇",
+  "analyzedAt": "2026-04-25T17:48:31+08:00",
+  "activeEntities": [
+    {
+      "id": "char-bai-jiushang",
+      "name": "白九殇",
+      "mentionCount": 87,
+      "source": "registry"
+    },
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 67,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 31,
+      "source": "registry"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 14,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-021::char-shen-xuan::d7400b93ef",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "冷静",
+      "stateTags": [
+        "冷静"
+      ],
+      "evidence": "@{沈玄}的冷静没有动摇。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-021::char-shen-xuan::a5bbb58db3",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "愤怒",
+      "stateTags": [
+        "愤怒"
+      ],
+      "evidence": "在静止中，@{沈玄}感受到了一种来自@{白九殇}的——不是愤怒，不是失望——而是一种审视。像是一个棋手在看另一个棋手走出了一步出乎意料的棋，然后重新评估整个棋局。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-021::char-bai-jiushang::a5bbb58db3",
+      "entityId": "char-bai-jiushang",
+      "entityName": "白九殇",
+      "proposedState": "愤怒",
+      "stateTags": [
+        "愤怒"
+      ],
+      "evidence": "在静止中，@{沈玄}感受到了一种来自@{白九殇}的——不是愤怒，不是失望——而是一种审视。像是一个棋手在看另一个棋手走出了一步出乎意料的棋，然后重新评估整个棋局。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-021::char-bai-jiushang::ce856288db",
+      "entityId": "char-bai-jiushang",
+      "entityName": "白九殇",
+      "proposedState": "恐惧；虚弱",
+      "stateTags": [
+        "恐惧",
+        "虚弱"
+      ],
+      "evidence": "确实在抖。那种颤抖不是因为恐惧——而是因为归墟体在与@{白九殇}的意念投影接触后产生了一种持续的不稳定状态。归墟体在\"辨认\"@{白九殇}的过程中消耗了大量的能量，现在正处于一种恢复中的虚弱状态。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-021::char-bai-jiushang::bb6a13ac49",
+      "entityId": "char-bai-jiushang",
+      "entityName": "白九殇",
+      "proposedState": "信任",
+      "stateTags": [
+        "信任"
+      ],
+      "evidence": "\"因为到了那个时候——他将面对的不是'是否信任@{白九殇}'的问题。而是'是否让整个九域陪葬'的问题。\"",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-bai-jiushang",
+      "char-shen-xuan",
+      "char-ye-qingyi",
+      "char-gu-changyuan"
+    ],
+    "activeEntityNames": [
+      "白九殇",
+      "沈玄",
+      "叶清漪",
+      "顾长渊"
+    ]
+  }
+}

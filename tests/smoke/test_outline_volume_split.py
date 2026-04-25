@@ -20,6 +20,7 @@ if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from story_harness_cli.protocol.files import resolve_state_path
+from story_harness_cli.protocol.schema import default_project_state
 from story_harness_cli.protocol.state import STATE_KEY_MAP, load_project_state, save_state
 
 
@@ -49,23 +50,9 @@ def _setup_layered_with_volumes(root: Path, volumes: list[dict]) -> None:
     (root / "projections").mkdir(parents=True, exist_ok=True)
     (root / "logs").mkdir(parents=True, exist_ok=True)
 
-    sample_data = {
-        "project": {"title": "vol-split-test"},
-        "outline": {"chapters": [], "chapterDirections": [], "volumes": volumes},
-        "entities": {"entities": []},
-        "timeline": {"events": []},
-        "branches": {"branches": []},
-        "proposals": {"draftProposals": []},
-        "reviews": {"changeRequests": []},
-        "story_reviews": {"reviews": []},
-        "projection": {"snapshotProjections": []},
-        "context_lens": {"lens": {}},
-        "projection_log": {"projectionChanges": []},
-        "threads": {"threads": []},
-        "structures": {"activeStructure": None, "mappings": []},
-        "foreshadowing": {"foreshadows": []},
-        "detailed_outlines": {"entries": []},
-    }
+    sample_data = default_project_state()
+    sample_data["project"].update({"title": "vol-split-test"})
+    sample_data["outline"] = {"chapters": [], "chapterDirections": [], "volumes": volumes}
 
     for state_key, internal_key in STATE_KEY_MAP.items():
         fpath = resolve_state_path(root, state_key)
@@ -181,23 +168,9 @@ class FlatLayoutNoVolumeFilesTest(unittest.TestCase):
             _make_volume("vol-001", 2),
             _make_volume("vol-002", 1),
         ]
-        sample_data = {
-            "project": {"title": "flat-volsplit-test"},
-            "outline": {"chapters": [], "chapterDirections": [], "volumes": volumes},
-            "entities": {"entities": []},
-            "timeline": {"events": []},
-            "branches": {"branches": []},
-            "proposals": {"draftProposals": []},
-            "reviews": {"changeRequests": []},
-            "story_reviews": {"reviews": []},
-            "projection": {"snapshotProjections": []},
-            "context_lens": {"lens": {}},
-            "projection_log": {"projectionChanges": []},
-            "threads": {"threads": []},
-            "structures": {"activeStructure": None, "mappings": []},
-            "foreshadowing": {"foreshadows": []},
-            "detailed_outlines": {"entries": []},
-        }
+        sample_data = default_project_state()
+        sample_data["project"].update({"title": "flat-volsplit-test"})
+        sample_data["outline"] = {"chapters": [], "chapterDirections": [], "volumes": volumes}
         for state_key, internal_key in STATE_KEY_MAP.items():
             fpath = resolve_state_path(self.root, state_key)
             _write_json_yaml(fpath, sample_data[internal_key])

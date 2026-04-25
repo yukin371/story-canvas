@@ -1,0 +1,124 @@
+{
+  "chapterId": "chapter-023",
+  "chapterTitle": "封印崩塌",
+  "analyzedAt": "2026-04-25T17:40:04+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-xuan",
+      "name": "沈玄",
+      "mentionCount": 31,
+      "source": "registry"
+    },
+    {
+      "id": "char-gu-changyuan",
+      "name": "顾长渊",
+      "mentionCount": 23,
+      "source": "registry"
+    },
+    {
+      "id": "char-bai-jiushang",
+      "name": "白九殇",
+      "mentionCount": 17,
+      "source": "registry"
+    },
+    {
+      "id": "char-ye-qingyi",
+      "name": "叶清漪",
+      "mentionCount": 15,
+      "source": "registry"
+    },
+    {
+      "id": "char-song-huaijin",
+      "name": "宋怀瑾",
+      "mentionCount": 6,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-023::char-shen-xuan::e0b9ea4799",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "冷静",
+      "stateTags": [
+        "冷静"
+      ],
+      "evidence": "\"空间裂缝……\"@{叶清漪}出现在@{沈玄}身旁，玄冰剑已经出鞘。她的面容一如既往地冷静，但@{沈玄}注意到她握剑的手比平时更紧。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-023::char-ye-qingyi::e0b9ea4799",
+      "entityId": "char-ye-qingyi",
+      "entityName": "叶清漪",
+      "proposedState": "冷静",
+      "stateTags": [
+        "冷静"
+      ],
+      "evidence": "\"空间裂缝……\"@{叶清漪}出现在@{沈玄}身旁，玄冰剑已经出鞘。她的面容一如既往地冷静，但@{沈玄}注意到她握剑的手比平时更紧。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-023::char-gu-changyuan::3e3e714eac",
+      "entityId": "char-gu-changyuan",
+      "entityName": "顾长渊",
+      "proposedState": "恐惧",
+      "stateTags": [
+        "恐惧"
+      ],
+      "evidence": "@{顾长渊}听着那个声音，心中升起了一种前所未有的恐惧。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-023::char-shen-xuan::6a48013f5b",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "信任；背叛",
+      "stateTags": [
+        "信任",
+        "背叛"
+      ],
+      "evidence": "前世的@{沈玄}。被他杀死的弟子。被他背叛的信任。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-023::char-shen-xuan::9df623dc01",
+      "entityId": "char-shen-xuan",
+      "entityName": "沈玄",
+      "proposedState": "疲惫",
+      "stateTags": [
+        "疲惫"
+      ],
+      "evidence": "\"封印的崩塌是系统性的。\"@{沈玄}说，声音疲惫但清醒，\"临时封堵没有用——必须重铸整个封印。\"",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [
+    {
+      "candidateId": "relation::chapter-023::char-gu-changyuan::char-bai-jiushang::f93ee54115",
+      "fromId": "char-gu-changyuan",
+      "fromName": "顾长渊",
+      "toId": "char-bai-jiushang",
+      "toName": "白九殇",
+      "label": "合作",
+      "severity": "suggestion",
+      "evidence": "他，@{顾长渊}，天枢宗大长老，化神期巅峰的修士——自以为在与@{白九殇}合作，实际上从头到尾都只是一个棋子。",
+      "confidence": 0.84
+    }
+  ],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-xuan",
+      "char-gu-changyuan",
+      "char-bai-jiushang",
+      "char-ye-qingyi",
+      "char-song-huaijin"
+    ],
+    "activeEntityNames": [
+      "沈玄",
+      "顾长渊",
+      "白九殇",
+      "叶清漪",
+      "宋怀瑾"
+    ]
+  }
+}

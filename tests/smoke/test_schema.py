@@ -50,6 +50,17 @@ class SchemaTest(unittest.TestCase):
         self.assertIn("premise", project["commercialPositioning"])
         self.assertIn("chapterWordTarget", project["commercialPositioning"])
 
+    def test_workflow_progress_has_minimal_fields(self):
+        state = default_project_state()
+        workflow_progress = state["workflow_progress"]
+        self.assertIn("currentStage", workflow_progress)
+        self.assertIn("targetChapterId", workflow_progress)
+        self.assertIn("workflowStatus", workflow_progress)
+        self.assertIn("gateHistory", workflow_progress)
+        self.assertIn("stageResults", workflow_progress)
+        self.assertIn("updatedAt", workflow_progress)
+        self.assertIn("lastRunMode", workflow_progress)
+
     def test_load_project_state_backfills_new_project_defaults(self):
         with tempfile.TemporaryDirectory(prefix="story-harness-project-schema-") as temp_dir:
             root = Path(temp_dir)
@@ -85,6 +96,8 @@ class SchemaTest(unittest.TestCase):
             self.assertEqual(state["project"]["commercialPositioning"]["chapterWordTarget"], 0)
             self.assertEqual(state["story_reviews"]["sceneRubricVersion"], "scene-review-v1")
             self.assertEqual(state["story_reviews"]["sceneReviews"], [])
+            self.assertEqual(state["workflow_progress"]["currentStage"], "")
+            self.assertEqual(state["workflow_progress"]["gateHistory"], [])
 
 
 
