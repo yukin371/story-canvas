@@ -21,6 +21,7 @@ from story_harness_cli.services import (
     resolve_scene_candidates,
     review_change_requests,
 )
+from story_harness_cli.utils.text import paragraphs_from_text
 
 
 def command_review_apply(args) -> int:
@@ -132,6 +133,15 @@ def command_review_scene(args) -> int:
     if start_paragraph is None:
         raise SystemExit("缺少段落范围，请提供 --scene-index 或 --start-paragraph")
 
+    scene_paragraphs = paragraphs_from_text(chapter_text)
+    if start_paragraph < 1 or (end_paragraph or start_paragraph) < start_paragraph or (end_paragraph or start_paragraph) > len(scene_paragraphs):
+        raise SystemExit(f"段落范围无效，可用范围为 1..{len(scene_paragraphs)}")
+
+    selected_scene_text = "\n\n".join(scene_paragraphs[start_paragraph - 1 : (end_paragraph or start_paragraph)])
+    scorer, source = load_style_similarity_scorer()
+    profile_name = choose_style_profile_name(state.get("project", {}))
+    profile_config, profile_source = resolve_style_profile(root, profile_name)
+
     try:
         review = build_scene_review(
             state,
@@ -140,9 +150,18 @@ def command_review_scene(args) -> int:
             start_paragraph=start_paragraph,
             end_paragraph=end_paragraph or start_paragraph,
             analysis=analysis,
+            style_report=analyze_style_text(
+                selected_scene_text,
+                opener_similarity_scorer=scorer,
+                repetition_source=source,
+                profile_name=profile_name,
+                profile_config=profile_config,
+            ),
+            consistency_result=check_consistency(state, selected_scene_text, chapter_id),
         )
     except ValueError as exc:
         raise SystemExit(str(exc)) from exc
+    review["styleAnalysis"]["profileSource"] = profile_source
     if selected_scene_index is not None:
         review["sceneRange"]["sceneIndex"] = selected_scene_index
         review["sceneRange"]["source"] = scene_candidates[selected_scene_index - 1].get("source", "heuristic")

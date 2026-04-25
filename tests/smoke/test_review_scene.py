@@ -413,6 +413,68 @@ class ReviewSceneSmokeTest(unittest.TestCase):
         self.assertTrue(any("旧案印章会暴露借阅者身份" in item for item in alignment_text))
         self.assertTrue(any("账本缺页" in item for item in alignment_text))
 
+    def test_review_scene_exposes_term_repetition_and_setting_conflict(self) -> None:
+        (self.temp_dir / "worldbook.yaml").write_text(
+            json.dumps(
+                {
+                    "premiseFacts": [],
+                    "worldRules": [
+                        {
+                            "id": "rule-001",
+                            "label": "守夜代价",
+                            "rule": "每次借力都会留下追踪痕迹",
+                            "scope": "global",
+                            "status": "active",
+                        }
+                    ],
+                    "factions": [],
+                    "locations": [],
+                    "artifacts": [],
+                    "mysteries": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(
+            "# 第一章\n\n"
+            "@{林舟}第一次听见蝴蝶效应这个词时，还以为那只是沈昭故作高深的比喻。\n\n"
+            "可沈昭再次提起蝴蝶效应，说每一个选择都会沿着暗线反噬回来，让林舟根本无法把这个词从脑子里赶走。\n\n"
+            "所谓守夜代价，就是每次借力都不会留下痕迹。可就在这句解释之后，蝴蝶效应又一次被挂在嘴边，像一枚被反复敲响的铃。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(
+                [
+                    "review",
+                    "scene",
+                    "--root",
+                    str(self.temp_dir),
+                    "--chapter-id",
+                    "chapter-001",
+                    "--start-paragraph",
+                    "1",
+                    "--end-paragraph",
+                    "3",
+                ]
+            )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["styleAnalysis"]["profileSource"], "builtin")
+        self.assertTrue(payload["consistencySignals"]["specialTermRepetition"]["detected"])
+        self.assertTrue(payload["consistencySignals"]["settingConflicts"])
+        self.assertIn("守夜代价", payload["consistencySignals"]["settingConflicts"][0]["issue"])
+        self.assertGreaterEqual(payload["analysisSignals"]["settingConflictCount"], 1)
+        alignment_text = payload["contractAlignment"]["matched"] + payload["contractAlignment"]["risks"] + payload["contractAlignment"]["notes"]
+        self.assertTrue(any("高频特殊术语复用" in item for item in alignment_text))
+        self.assertTrue(any("设定冲突" in item or "守夜代价" in item for item in alignment_text))
+        self.assertTrue(any("蝴蝶效应" in item for item in payload["consistencySignals"]["specialTermRepetition"]["evidence"]))
+
 
 if __name__ == "__main__":
     unittest.main()

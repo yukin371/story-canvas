@@ -320,6 +320,8 @@ def build_scene_review(
     start_paragraph: int,
     end_paragraph: int,
     analysis: Dict[str, Any] | None = None,
+    style_report: Dict[str, Any] | None = None,
+    consistency_result: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
     analysis = analysis or {}
     raw_paragraphs = paragraphs_from_text(chapter_text)
@@ -341,6 +343,7 @@ def build_scene_review(
 
     scene_text = "\n\n".join(selected_clean)
     raw_scene_text = "\n\n".join(selected_raw)
+    style_report = style_report or analyze_style_text(raw_scene_text)
     mention_names = sorted({name for name in extract_tag_mentions(raw_scene_text) if name})
     scene_analysis = _filter_analysis_for_scene(analysis, selected_clean, mention_names)
     story_constraint_signals = _build_story_constraint_signals(
@@ -348,6 +351,8 @@ def build_scene_review(
         chapter_id,
         [item.get("name") for item in scene_analysis["activeEntities"] if item.get("name")] or mention_names,
     )
+    consistency_result = consistency_result or {}
+    consistency_signals = _build_consistency_signals(style_report, consistency_result)
 
     text_metrics = {
         "wordCount": count_words(scene_text),
@@ -361,6 +366,8 @@ def build_scene_review(
         "activeEntityCount": len(scene_analysis["activeEntities"]) if scene_analysis["activeEntities"] else len(mention_names),
         "snapshotCandidateCount": len(scene_analysis["snapshotCandidates"]),
         "relationCandidateCount": len(scene_analysis["relationCandidates"]),
+        "settingCandidateCount": len(consistency_signals["settingCandidates"]),
+        "settingConflictCount": len(consistency_signals["settingConflicts"]),
     }
 
     dimensions = [
@@ -388,10 +395,23 @@ def build_scene_review(
                 break
         if len(priority_actions) >= 4:
             break
+    for suggestion in _consistency_priority_actions(consistency_signals):
+        if suggestion not in priority_actions:
+            priority_actions.insert(0, suggestion)
+        if len(priority_actions) > 4:
+            priority_actions = priority_actions[:4]
 
     fingerprint = (
         f"{SCENE_RUBRIC_VERSION}:{chapter_id}:{start_paragraph}:{end_paragraph}:{stable_hash(scene_text, size=16)}"
     )
+    contract_alignment = _evaluate_scene_contract_alignment(
+        state.get("project", {}),
+        dimension_map,
+        text_metrics,
+        scene_text,
+        story_constraint_signals,
+    )
+    _apply_consistency_signals_to_alignment(contract_alignment, consistency_signals)
     return {
         "reviewId": f"scene-review-{stable_hash(fingerprint)}",
         "fingerprint": fingerprint,
@@ -416,6 +436,7 @@ def build_scene_review(
         "priorityActions": priority_actions,
         "textMetrics": text_metrics,
         "analysisSignals": analysis_signals,
+        "styleAnalysis": style_report,
         "projectContext": {
             "genre": state.get("project", {}).get("genre", ""),
             "positioning": state.get("project", {}).get("positioning", {}),
@@ -425,13 +446,8 @@ def build_scene_review(
             "commercialPositioning": state.get("project", {}).get("commercialPositioning", {}),
         },
         "storyConstraintSignals": story_constraint_signals,
-        "contractAlignment": _evaluate_scene_contract_alignment(
-            state.get("project", {}),
-            dimension_map,
-            text_metrics,
-            scene_text,
-            story_constraint_signals,
-        ),
+        "consistencySignals": consistency_signals,
+        "contractAlignment": contract_alignment,
         "commercialAlignment": _evaluate_commercial_scene_alignment(
             state.get("project", {}),
             dimension_map,
