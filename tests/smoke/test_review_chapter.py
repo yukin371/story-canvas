@@ -108,6 +108,135 @@ class ReviewChapterSmokeTest(unittest.TestCase):
         self.assertIn("weightedScores", payload)
         self.assertEqual(payload["projectContext"]["commercialPositioning"]["targetPlatform"], "")
 
+    def test_review_chapter_consumes_story_constraints(self) -> None:
+        project = json.loads((self.temp_dir / "project.yaml").read_text(encoding="utf-8"))
+        project["emotionalContract"] = {
+            "coreEmotions": ["压迫下反制", "真相落地时的原来如此"],
+            "chapterEmotionFloor": ["每章至少有一个明确情绪推进点"],
+            "forbiddenEmotions": ["空转讲设定"],
+            "revealPreference": {
+                "defaultMode": "partial-inference",
+                "allowDirectExplainAtClimax": True,
+            },
+        }
+        project["storyTemplate"] = {
+            "id": "xianxia-revenge-serial",
+            "label": "仙侠复仇长篇",
+            "modulePolicy": {
+                "worldRules": "required",
+                "foreshadowLedger": "required",
+                "characterStateTracking": "required",
+            },
+            "reviewFocus": ["世界规则兑现", "伏笔长回收"],
+        }
+        (self.temp_dir / "project.yaml").write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding="utf-8")
+
+        (self.temp_dir / "entities.yaml").write_text(
+            json.dumps(
+                {
+                    "entities": [
+                        {
+                            "id": "char-linzhou",
+                            "name": "林舟",
+                            "type": "character",
+                            "state": {
+                                "statusTags": ["受伤", "暴露风险上升"],
+                                "powerLevel": {"publicLevel": "凡人", "trueLevel": "半觉醒"},
+                            },
+                            "changeLog": [
+                                {
+                                    "id": "chg-001",
+                                    "chapterId": "chapter-001",
+                                    "field": "state.statusTags",
+                                    "reason": "仓库冲突后确认自己被盯上",
+                                }
+                            ],
+                        }
+                    ],
+                    "enrichmentProposals": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "worldbook.yaml").write_text(
+            json.dumps(
+                {
+                    "premiseFacts": [],
+                    "worldRules": [
+                        {
+                            "id": "rule-001",
+                            "label": "守夜代价",
+                            "rule": "每次借力都会留下追踪痕迹",
+                            "scope": "global",
+                            "status": "active",
+                        }
+                    ],
+                    "factions": [],
+                    "locations": [],
+                    "artifacts": [],
+                    "mysteries": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "foreshadowing.yaml").write_text(
+            json.dumps(
+                {
+                    "foreshadows": [
+                        {
+                            "id": "fs-001",
+                            "title": "账本的缺页",
+                            "payoffPlan": {
+                                "window": {
+                                    "type": "short",
+                                    "targetChapterStart": "chapter-001",
+                                    "targetChapterEnd": "chapter-001",
+                                },
+                                "style": "partial-reveal",
+                                "readerRealizationMode": "infer-before-confirm",
+                            },
+                            "payoffPoints": [],
+                            "status": "planted",
+                        }
+                    ]
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(
+            "# 第一章\n\n"
+            "@{林舟}拖着受伤的手臂冲进仓库，他知道自己一旦继续追查就会暴露，却还是决定反查账本缺页的来源。\n\n"
+            "账本里的缺页果然对应三年前那起旧案，林舟这才意识到真正的幕后人还没有现身。\n",
+            encoding="utf-8",
+        )
+
+        with redirect_stdout(StringIO()):
+            analyze_exit = main(["chapter", "analyze", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+        self.assertEqual(analyze_exit, 0)
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["projectContext"]["emotionalContract"]["coreEmotions"], ["压迫下反制", "真相落地时的原来如此"])
+        self.assertEqual(payload["projectContext"]["storyTemplate"]["id"], "xianxia-revenge-serial")
+        self.assertEqual(payload["storyConstraintSignals"]["worldRules"][0]["id"], "rule-001")
+        self.assertEqual(payload["storyConstraintSignals"]["dueForeshadows"][0]["id"], "fs-001")
+        self.assertEqual(payload["storyConstraintSignals"]["trackedEntities"][0]["name"], "林舟")
+        self.assertTrue(
+            any("情绪契约" in item for item in payload["contractAlignment"]["matched"] + payload["contractAlignment"]["risks"])
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

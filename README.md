@@ -1,51 +1,72 @@
 # Story Harness CLI
 
-Story Harness CLI is an agent-native fiction workflow tool for long-form narrative writing.
+[English](./README.en.md) | [简体中文](./README.md)
 
-It helps AI agents and authors work with structured story state instead of relying on a single giant prompt. The workflow separates prose, proposals, reviews, projection, and local context refresh, so long-form writing can evolve with clearer constraints and less state drift.
+Story Harness CLI 是一个面向 Agent 的长篇小说创作工作流工具。
 
-If you want the canonical end-to-end writing loop first, read [docs/guides/creative-workflow.md](./docs/guides/creative-workflow.md).
+它的目标不是用一个超大 Prompt 一次性写完小说，而是把创作过程拆成结构化状态：正文、提案、审查、投影、上下文刷新。这样作者和 AI 可以在更明确的约束下协作，减少设定漂移、状态丢失和长篇写作中的“越写越散”。
 
-This repository currently provides:
+如果你想先看标准闭环流程，建议先读 [docs/guides/creative-workflow.md](./docs/guides/creative-workflow.md)。
 
-- a file-based story protocol
-- a Python CLI for state transitions
-- tracked sample projects under `projects/`
-- smoke-test fixtures and validated story baselines
-- optional provider foundation for external SDK / API integrations
-- commercial long-form samples with project-level positioning and serial-writing blueprint
+当前仓库提供：
 
-It does not aim to replace a writing UI. Instead, it provides the protocol and workflow core that different skills, editors, and future interfaces can reuse.
+- 基于文件协议的故事工程状态层
+- 用于状态推进的 Python CLI
+- 存放在 `projects/` 下的样例工程
+- smoke tests 与可回归的故事基线
+- 面向外部 API / SDK 的可选 provider 基础层
+- 带有商业化定位与连载蓝图的长篇样例
 
-## What It Solves
+它并不试图替代写作 UI。它更像是写作协议和工作流内核，后续可以被技能、编辑器和 Web UI 复用。
 
-- Keep proposals separate from canon
-- Turn chapter analysis into explicit review steps
-- Update machine-readable projection only after a decision step
-- Refresh a local writing context for the next loop
-- Review both chapter-level and scene-level quality before stopping
-- Manage fiction as an iterative engineering workflow instead of a single drafting pass
+## 它解决什么问题
 
-## Core Model
+- 把“提案”和“正史”分开管理
+- 把章节分析变成显式审查步骤，而不是隐式脑补
+- 只有在明确决策后，才更新机器可读状态
+- 为下一轮写作刷新本地上下文，而不是反复重塞整个项目
+- 在停止前同时检查章节级和场景级质量
+- 把小说写作管理成一个可迭代、可追溯的工程流程
 
-The current workflow uses these layers:
+## 写作能力矩阵
 
-1. `chapters/*.md` for prose
-2. `proposals/draft-proposals.yaml` for write-before-canon proposals
-3. `reviews/change-requests.yaml` for write-after-analysis suggestions
-4. `projections/projection.yaml` for current machine-facing truth
-5. `projections/context-lens.yaml` for local chapter context
+这个仓库已经不再只是“角色卡 + 章节正文”。它已经具备约束式写作闭环，但不同能力的完成度并不完全相同。
 
-## Quickstart
+| 能力域 | 当前状态 | 已实现内容 | 当前缺口 |
+|------|------|------|------|
+| 项目初始化与仓库骨架 | 已完成 | `init` 会创建固定项目结构、章节文件、协议文件、projections、reviews，以及 flat / layered 布局 | 仍然是 CLI 优先，没有可视化项目初始化界面 |
+| 项目级写作约束 | 已完成 | `project.yaml` 已支持 positioning、storyContract、emotionalContract、storyTemplate、commercialPositioning | 更像协议层，不是独立的 PRD 工作台 |
+| 世界观 / 角色 / 伏笔 / 线索 / 时间线 | 已完成 | 已有 worldbook、entities、foreshadowing、threads、timeline、causality 等状态文件和命令 | 编辑体验仍偏原始，没有 UI 辅助 |
+| 大纲与细纲 | 已完成 | 已支持 chapter direction、beats、scenePlans、detailed outline init/show、structure scaffold | 仍依赖 CLI 和人工审查 |
+| 写前门禁与结构审查 | 已完成 | `outline check`、`doctor`、`consistency check`、workflow gate 已可检查写作准备度 | 仍是启发式检查，不是形式化证明 |
+| 落稿支持 | 部分完成 | 正文保存在 `chapters/*.md`，`context refresh` 会给出当前章所需的角色、世界规则、线索、伏笔上下文 | 还没有专门的正文编辑器或桌面写作 UI |
+| 写后审查与迭代 | 已完成 | `chapter analyze -> chapter suggest -> review apply -> projection apply -> context refresh -> review chapter/scene` 已能形成闭环 | 没有 Web UI 时，人类审查不够顺手 |
+| 成稿导出 | 已完成 | `export` 已支持多种纯文本导出格式 | 发布包装和对外分发还不是这一层负责 |
+| 人工审查界面 | 部分完成 | 所有结构化产物都已落盘，可供人查阅 | 缺少更顺手的阅读、筛选、修改界面，计划在 `v1.1` 补上 |
+| 模板丰富度与工作流自由编排 | 部分完成 | 已有 structure templates、style profiles、storyTemplate 字段、workflow 状态机 | 更丰富的题材模板和自由编排能力计划在 `v1.2` 增强 |
 
-Option A: initialize a new project
+一句话总结：这个仓库已经具备一个可用的“小说工程内核”，可以做约束、写作、审查、投影和导出；当前主要缺的是界面层、人工审查体验，以及更丰富的模板资源。
+
+## 核心模型
+
+当前工作流以这些层次组织：
+
+1. `chapters/*.md`：正文
+2. `proposals/draft-proposals.yaml`：进入正史前的提案
+3. `reviews/change-requests.yaml`：分析之后生成的修改建议
+4. `projections/projection.yaml`：当前机器可读真相层
+5. `projections/context-lens.yaml`：当前章节的局部写作上下文
+
+## 快速开始
+
+方案 A：初始化一个新项目
 
 ```powershell
 uv sync
 uv run story-harness init --root .\demo --title "Fog Harbor" --genre "Mystery"
 ```
 
-For a real web-serial project, initialize the commercial blueprint at the same time instead of leaving it as afterthought metadata:
+如果你在做真实的商业化连载项目，建议初始化时就把商业定位写进去，而不是事后补元数据：
 
 ```powershell
 uv run story-harness init `
@@ -69,7 +90,42 @@ uv run story-harness init `
   --chapter-word-target 3000
 ```
 
-Then edit `demo/chapters/chapter-001.md` and run:
+如果你在做重约束长篇，建议初始化时就把情绪契约和模板策略写进去，让后续审查与上下文刷新有明确消费对象：
+
+```powershell
+uv run story-harness init `
+  --root .\demo `
+  --title "归墟" `
+  --genre "奇幻" `
+  --primary-genre fantasy `
+  --sub-genre xuanhuan `
+  --core-promise "暗线逐步拼合并持续兑现世界真相" `
+  --pace-contract "中快节奏，卷末集中爆发" `
+  --core-emotion "压迫下反制" `
+  --core-emotion "真相落地时的原来如此" `
+  --chapter-emotion-floor "每章至少有一个明确情绪推进点" `
+  --forbidden-emotion "空转讲设定" `
+  --default-reveal-mode partial-inference `
+  --allow-direct-explain-at-climax `
+  --story-template-id xianxia-revenge-serial `
+  --story-template-label "仙侠复仇长篇" `
+  --module-policy worldbook=required `
+  --module-policy worldRules=required `
+  --module-policy factions=required `
+  --module-policy foreshadowLedger=required `
+  --module-policy characterStateTracking=required `
+  --review-focus "世界规则兑现" `
+  --review-focus "伏笔长回收"
+```
+
+这会在普通项目骨架之外，同时初始化：
+
+- `project.emotionalContract`
+- `project.storyTemplate`
+- `worldbook.yaml`
+- `foreshadowing.yaml`
+
+然后编辑 `demo/chapters/chapter-001.md`，再执行：
 
 ```powershell
 uv run story-harness chapter analyze --root .\demo --chapter-id chapter-001
@@ -83,7 +139,7 @@ uv run story-harness review scene --root .\demo --chapter-id chapter-001 --scene
 uv run story-harness doctor --root .\demo
 ```
 
-Option B: run the validated short-story baseline
+方案 B：直接跑已验证的短篇基线
 
 ```powershell
 uv run story-harness doctor --root .\projects\demo-short-story
@@ -96,7 +152,7 @@ uv run story-harness review chapter --root .\projects\demo-short-story --chapter
 uv run story-harness review scene --root .\projects\demo-short-story --chapter-id chapter-001 --scene-index 1
 ```
 
-Option C: run the validated style-driven baseline
+方案 C：运行已验证的风格驱动短篇基线
 
 ```powershell
 uv run story-harness doctor --root .\projects\demo-light-novel-short
@@ -106,7 +162,7 @@ uv run story-harness review scene --root .\projects\demo-light-novel-short --cha
 uv run story-harness export --root .\projects\demo-light-novel-short --format markdown --output .\projects\demo-light-novel-short\manuscript.md
 ```
 
-Option D: run the validated xuanhuan web-serial baseline
+方案 D：运行已验证的玄幻网文短篇基线
 
 ```powershell
 uv run story-harness doctor --root .\projects\demo-xuanhuan-short
@@ -116,22 +172,25 @@ uv run story-harness review scene --root .\projects\demo-xuanhuan-short --chapte
 uv run story-harness export --root .\projects\demo-xuanhuan-short --format markdown --output .\projects\demo-xuanhuan-short\manuscript.md
 ```
 
-Repository fallback:
+仓库直跑回退方式：
 
 ```powershell
 $env:PYTHONPATH='src'
 python -m story_harness_cli chapter analyze --root .\demo --chapter-id chapter-001
 ```
 
-Use `demo-short-story` when you want a genre-neutral regression baseline. Use `demo-light-novel-short` when you want to verify that `subGenre`, `styleTags`, and `targetAudience` survive the review loop. Use `demo-xuanhuan-short` when you want to verify `xuanhuan + web-serial` weighting and short-form progression pacing. For the current sample catalog, see [docs/guides/sample-matrix.md](./docs/guides/sample-matrix.md).
+如果你想看当前样例矩阵，请读 [docs/guides/sample-matrix.md](./docs/guides/sample-matrix.md)。
 
-Use `demo-urban-occult-long` when you want a more realistic commercial-serial baseline with explicit `commercialPositioning`, volume skeleton, and chapter word targets.
+如果你想跑更接近真实商业连载的长篇基线，可以使用 `demo-urban-occult-long`。它包含显式 `commercialPositioning`、卷结构骨架和章节字数目标。
 
-For the full close-the-loop sequence and stop conditions, see [docs/guides/creative-workflow.md](./docs/guides/creative-workflow.md) and [docs/guides/quickstart.md](./docs/guides/quickstart.md).
+完整闭环和停止条件见：
 
-## Example Workflow
+- [docs/guides/creative-workflow.md](./docs/guides/creative-workflow.md)
+- [docs/guides/quickstart.md](./docs/guides/quickstart.md)
 
-Single chapter loop:
+## 工作流示例
+
+单章循环：
 
 ```text
 chapter.md
@@ -141,22 +200,22 @@ chapter.md
   -> projection apply
   -> context refresh
   -> review chapter
-  -> scene detect / maintain scenePlans
+  -> scene detect / 维护 scenePlans
   -> review scene
-  -> revise prose or scene plan if score is weak
-  -> repeat until acceptable
+  -> 如果评分不够好，改正文或改 scene plan
+  -> 继续迭代直到可接受
 ```
 
-Outline loop:
+大纲循环：
 
 ```text
-goal or reasoning
+目标或想法
   -> outline propose
   -> outline promote
   -> projection apply
 ```
 
-## Command Overview
+## 命令概览
 
 - `story-harness init`
 - `story-harness brainstorm character|world|outline`
@@ -196,77 +255,80 @@ goal or reasoning
 - `story-harness export --format json|markdown|txt`
 - `story-harness doctor`
 
-## Project Layout
+## 仓库结构
 
-- `src/story_harness_cli/` - CLI implementation
-- `adapters/` - host-specific adapter sources for Codex, Claude Code, and future hosts
-- `scripts/install_adapter.py` - install a host adapter into Codex or Claude skill directories
-- `scripts/install_adapters.py` - batch-install adapters for multiple hosts
-- `docs/` - protocol and guide docs
-- `projects/` - tracked sample projects and regression baselines
-- `tests/` - smoke tests and fixtures
+- `src/story_harness_cli/`：CLI 实现
+- `adapters/`：Codex、Claude Code 等宿主的 adapter 源码
+- `scripts/install_adapter.py`：把单个宿主 adapter 安装到对应目录
+- `scripts/install_adapters.py`：批量安装多个宿主 adapter
+- `docs/`：协议与指南文档
+- `projects/`：样例项目与回归基线
+- `tests/`：smoke tests 与 fixtures
 
-## Implemented Features
+## 已实现功能
 
-The current implementation already covers:
+当前实现已经覆盖：
 
-- layered file protocol for prose, proposals, reviews, projections, and context
-- chapter analysis, suggestion generation, and explicit review-then-apply workflow
-- chapter review, scene review, and style review with profile-driven constraints
-- style repair guidance plus illustration prompt, dry-run, real OpenAI text-to-image / image-to-image request flows, multi-asset persistence, and asset-state listing
-- outline-first gating, beat tracking, scene plan maintenance, and detailed outline helpers
-- project positioning, story contract, and commercial serial blueprint validation
-- timeline, causality, suspense thread, foreshadow, structure, and character-arc tracking
-- entity enrichment, review, listing, and relationship graph export
-- workflow stage inference, persisted `workflow.yaml`, gate decisions, reset/export, and `run --resume-from` rewind support
-- project stats, cross-chapter search, consistency check, and layered-layout migration
-- tracked sample projects in `projects/` covering short-form, style-driven, xuanhuan, and commercial long-form baselines
-- optional dependency boundary for provider-backed capabilities, while keeping base install stdlib-only
+- 分层文件协议：正文、提案、审查、投影、上下文
+- 章节分析、建议生成，以及“先审再应用”的显式流程
+- 章节评审、场景评审、风格评审，以及 profile 驱动约束
+- 风格修复指导、插图 prompt、dry-run、真实 OpenAI 文生图 / 图生图请求、多资产落盘与资产状态查看
+- outline-first gate、beat 跟踪、scene plan 维护、detailed outline 辅助
+- project positioning、story contract、emotional contract、story template、commercial serial blueprint 校验
+- worldbook / foreshadowing / threads / timeline / causality / structure / character arc 跟踪
+- entity enrich、review、list、show、relationship graph 导出
+- workflow 阶段推断、`workflow.yaml` 持久化、gate decision、reset/export、`run --resume-from` 回卷
+- project stats、跨章节搜索、一致性检查、layered layout 迁移
+- `projects/` 下已跟踪的短篇、风格驱动短篇、玄幻短篇、商业长篇样例基线
+- provider 能力的可选依赖边界，同时保持 base install 为 stdlib-only
 
-## Improvement Directions
+## 后续改进方向
 
-The next round should stay focused on a small set of practical gaps:
+下一轮应继续聚焦几个现实短板：
 
-- stabilize the provider layer with one or two real integrations beyond the current foundation
-- externalize more algorithm, dictionary, and prompt resources while keeping builtin fallback paths
-- harden schema and workflow validation for richer long-form state, especially graph, thread, and structure semantics
-- keep expanding `projects/` sample coverage so regression baselines represent more commercial genres and production workflows
-- prepare release and distribution work once command contracts and sample baselines stop moving
+- 在 Web UI 落地前，先提升结构化故事状态的人类审查体验
+- 继续加深 `review` 和 `workflow` 对故事约束的消费，尤其是 worldbook、伏笔回收窗口、动态角色状态
+- 扩充题材模板与工作流模板，避免所有小说都套同一套骨架
+- 稳定 provider 层，至少补一到两个真实可用集成
+- 继续把算法、词典、prompt 资源外部化，同时保留 builtin fallback
+- 加强长篇状态下的 schema / workflow 校验，尤其是 graph、thread、structure 语义
+- 继续扩充 `projects/` 样例，覆盖更多商业题材和生产流程
+- 在命令契约与样例稳定后，再推进 release / distribution
 
-## Development
+## 开发
 
-Sync the environment:
+同步环境：
 
 ```powershell
 uv sync
 ```
 
-Run smoke tests:
+运行 smoke tests：
 
 ```powershell
 uv run python -m unittest discover -s tests
 ```
 
-Run structural validation against a story project:
+对一个故事项目执行结构校验：
 
 ```powershell
 uv run story-harness doctor --root .\projects\demo-short-story
 ```
 
-Install a host adapter:
+安装一个宿主 adapter：
 
 ```powershell
 uv run python scripts/install_adapter.py --host codex --force
 uv run python scripts/install_adapter.py --host claude --workspace <workspace-root> --force
 ```
 
-Install multiple adapters in one shot:
+一次安装多个 adapter：
 
 ```powershell
 uv run python scripts/install_adapters.py --workspace <workspace-root> --force
 ```
 
-Contributor and release docs:
+贡献与发布相关文档：
 
 - `CONTRIBUTING.md`
 - `docs/guides/creative-workflow.md`
@@ -274,10 +336,10 @@ Contributor and release docs:
 - `docs/guides/sample-matrix.md`
 - `docs/guides/releasing.md`
 
-## Roadmap
+## 路线图
 
-- Stabilize provider-backed extension points and optional dependency packaging
-- Expand sample-project baselines under `projects/` and keep them aligned with smoke coverage
-- Add deeper schema validation for graph, thread, structure, and commercial workflow semantics
-- Validate richer production workflows against real long-form projects
-- Revisit distribution strategy only after the Python CLI contract is stable
+- 稳定 provider-backed 扩展点与 optional dependency 打包边界
+- 扩展 `projects/` 下的样例基线，并持续与 smoke coverage 对齐
+- 加强 graph、thread、structure、commercial workflow 等 richer schema 的校验
+- 用真实长篇项目验证更复杂的生产流程
+- 在 Python CLI 契约稳定后，再回头评估发行策略

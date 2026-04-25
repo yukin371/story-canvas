@@ -271,6 +271,105 @@ class ReviewSceneSmokeTest(unittest.TestCase):
                 ]
             )
 
+    def test_review_scene_consumes_story_constraints(self) -> None:
+        project = json.loads((self.temp_dir / "project.yaml").read_text(encoding="utf-8"))
+        project["emotionalContract"] = {
+            "coreEmotions": ["未知感", "原来如此"],
+            "chapterEmotionFloor": ["每章至少有一个明确情绪推进点"],
+            "forbiddenEmotions": ["空转讲设定"],
+            "revealPreference": {
+                "defaultMode": "partial-inference",
+                "allowDirectExplainAtClimax": True,
+            },
+        }
+        (self.temp_dir / "project.yaml").write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding="utf-8")
+        (self.temp_dir / "entities.yaml").write_text(
+            json.dumps(
+                {
+                    "entities": [
+                        {
+                            "id": "char-linzhou",
+                            "name": "林舟",
+                            "type": "character",
+                            "state": {"statusTags": ["受伤", "怀疑同伴"]},
+                            "changeLog": [
+                                {
+                                    "id": "chg-001",
+                                    "chapterId": "chapter-001",
+                                    "field": "state.statusTags",
+                                    "reason": "得知账本缺页与旧案吻合",
+                                }
+                            ],
+                        }
+                    ],
+                    "enrichmentProposals": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "foreshadowing.yaml").write_text(
+            json.dumps(
+                {
+                    "foreshadows": [
+                        {
+                            "id": "fs-001",
+                            "title": "账本缺页",
+                            "payoffPlan": {
+                                "window": {
+                                    "type": "short",
+                                    "targetChapterStart": "chapter-001",
+                                    "targetChapterEnd": "chapter-001",
+                                },
+                                "style": "partial-reveal",
+                                "readerRealizationMode": "infer-before-confirm",
+                            },
+                            "payoffPoints": [],
+                            "status": "planted",
+                        }
+                    ]
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(
+            "# 第一章\n\n"
+            "@{林舟}追问账本缺页的来源，明知道继续查下去会让自己暴露，还是决定把这条线索追到底。\n\n"
+            "他忽然想起三年前卷宗上的印章，原来账本缺页真的对应那起旧案？\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(
+                [
+                    "review",
+                    "scene",
+                    "--root",
+                    str(self.temp_dir),
+                    "--chapter-id",
+                    "chapter-001",
+                    "--start-paragraph",
+                    "1",
+                    "--end-paragraph",
+                    "2",
+                ]
+            )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["projectContext"]["emotionalContract"]["coreEmotions"], ["未知感", "原来如此"])
+        self.assertEqual(payload["storyConstraintSignals"]["dueForeshadows"][0]["id"], "fs-001")
+        self.assertEqual(payload["storyConstraintSignals"]["trackedEntities"][0]["name"], "林舟")
+        self.assertTrue(
+            any("情绪契约" in item for item in payload["contractAlignment"]["matched"] + payload["contractAlignment"]["risks"])
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

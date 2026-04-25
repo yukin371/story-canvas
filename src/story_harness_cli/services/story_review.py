@@ -208,6 +208,7 @@ def build_chapter_review(
     snapshot_candidates = list(analysis.get("snapshotCandidates", []))
     relation_candidates = list(analysis.get("relationCandidates", []))
     scene_entities = analysis.get("sceneScope", {}).get("activeEntityNames", []) or mention_names[:6]
+    story_constraint_signals = _build_story_constraint_signals(state, chapter_id, scene_entities or mention_names)
 
     text_metrics = {
         "wordCount": word_count,
@@ -276,12 +277,17 @@ def build_chapter_review(
             "genre": state.get("project", {}).get("genre", ""),
             "positioning": state.get("project", {}).get("positioning", {}),
             "storyContract": state.get("project", {}).get("storyContract", {}),
+            "emotionalContract": state.get("project", {}).get("emotionalContract", {}),
+            "storyTemplate": state.get("project", {}).get("storyTemplate", {}),
             "commercialPositioning": state.get("project", {}).get("commercialPositioning", {}),
         },
+        "storyConstraintSignals": story_constraint_signals,
         "contractAlignment": _evaluate_contract_alignment(
             state.get("project", {}),
             dimension_map,
             text_metrics,
+            clean_text,
+            story_constraint_signals,
         ),
         "commercialAlignment": _evaluate_commercial_chapter_alignment(
             state.get("project", {}),
@@ -324,6 +330,11 @@ def build_scene_review(
     raw_scene_text = "\n\n".join(selected_raw)
     mention_names = sorted({name for name in extract_tag_mentions(raw_scene_text) if name})
     scene_analysis = _filter_analysis_for_scene(analysis, selected_clean, mention_names)
+    story_constraint_signals = _build_story_constraint_signals(
+        state,
+        chapter_id,
+        [item.get("name") for item in scene_analysis["activeEntities"] if item.get("name")] or mention_names,
+    )
 
     text_metrics = {
         "wordCount": count_words(scene_text),
@@ -396,12 +407,17 @@ def build_scene_review(
             "genre": state.get("project", {}).get("genre", ""),
             "positioning": state.get("project", {}).get("positioning", {}),
             "storyContract": state.get("project", {}).get("storyContract", {}),
+            "emotionalContract": state.get("project", {}).get("emotionalContract", {}),
+            "storyTemplate": state.get("project", {}).get("storyTemplate", {}),
             "commercialPositioning": state.get("project", {}).get("commercialPositioning", {}),
         },
+        "storyConstraintSignals": story_constraint_signals,
         "contractAlignment": _evaluate_scene_contract_alignment(
             state.get("project", {}),
             dimension_map,
             text_metrics,
+            scene_text,
+            story_constraint_signals,
         ),
         "commercialAlignment": _evaluate_commercial_scene_alignment(
             state.get("project", {}),
@@ -763,12 +779,16 @@ def _evaluate_contract_alignment(
     project: Dict[str, Any],
     dimension_map: Dict[str, Dict[str, Any]],
     text_metrics: Dict[str, Any],
+    chapter_text: str = "",
+    story_constraint_signals: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
     positioning = project.get("positioning", {})
     story_contract = project.get("storyContract", {})
+    emotional_contract = project.get("emotionalContract", {})
     primary_genre = normalize_primary_genre(positioning.get("primaryGenre", ""))
     pace_contract = story_contract.get("paceContract", "")
     core_promises = [item for item in story_contract.get("corePromises", []) if item]
+    story_constraint_signals = story_constraint_signals or {}
 
     matched: List[str] = []
     risks: List[str] = []
@@ -778,6 +798,13 @@ def _evaluate_contract_alignment(
     character_score = dimension_map["characterPressure"]["score"]
     conflict_score = dimension_map["conflictTension"]["score"]
     scene_score = dimension_map["sceneClarity"]["score"]
+    emotional_floor = [item for item in emotional_contract.get("chapterEmotionFloor", []) if item]
+    core_emotions = [item for item in emotional_contract.get("coreEmotions", []) if item]
+    forbidden_emotions = [item for item in emotional_contract.get("forbiddenEmotions", []) if item]
+    due_foreshadows = story_constraint_signals.get("dueForeshadows", [])
+    tracked_entities = story_constraint_signals.get("trackedEntities", [])
+    world_rules = story_constraint_signals.get("worldRules", [])
+    payoff_hits = _count_keyword_hits(chapter_text, FORESHADOWING_PAYOFF_KEYWORDS)
 
     if primary_genre in {"mystery", "thriller"}:
         if conflict_score >= 16:
@@ -862,6 +889,39 @@ def _evaluate_contract_alignment(
         else:
             notes.append(f"核心承诺“{promise}”目前仅记录，尚未接入自动判定。")
 
+    if core_emotions:
+        if character_score >= 15 or conflict_score >= 15 or plot_score >= 15:
+            matched.append(f"情绪契约已被章节压力/推进承接，核心目标包括：{', '.join(core_emotions[:2])}。")
+        else:
+            risks.append("项目已声明情绪契约的核心情绪体验，但本章的压力、冲突或推进还不足以稳定承接。")
+
+    if emotional_floor:
+        if max(plot_score, character_score, conflict_score) >= 14:
+            matched.append("情绪契约中的章节情绪底线基本成立，本章不只是信息搬运。")
+        else:
+            risks.append("已声明情绪契约的章节情绪底线，但本章仍偏信息说明，情绪推进不足。")
+
+    if any("空转" in item or "设定" in item for item in forbidden_emotions):
+        if plot_score < 14 and character_score < 14 and conflict_score < 14 and scene_score >= 15:
+            risks.append("情绪契约禁止“空转讲设定”，但本章更像说明而不是情绪/情节推进。")
+        else:
+            notes.append("已检查“避免空转讲设定”约束。")
+
+    if due_foreshadows:
+        if payoff_hits >= 1 or plot_score >= 15 or conflict_score >= 15:
+            matched.append(f"当前章有 {len(due_foreshadows)} 条伏笔进入回收窗口，文本已出现一定兑现信号。")
+        else:
+            risks.append(f"当前章有 {len(due_foreshadows)} 条伏笔进入回收窗口，但兑现/推进信号仍偏弱。")
+
+    if tracked_entities:
+        if character_score >= 14 or len(tracked_entities) >= 2:
+            matched.append(f"当前章已承接 {len(tracked_entities)} 个受追踪角色的状态或变化压力。")
+        else:
+            risks.append("项目存在动态角色状态追踪，但本章对这些状态变化的承接还不够明显。")
+
+    if world_rules:
+        notes.append(f"项目当前存在 {len(world_rules)} 条世界规则约束，chapter review 已纳入提示。")
+
     if not primary_genre and not pace_contract and not core_promises:
         status = "missing-contract"
     elif risks and matched:
@@ -883,12 +943,16 @@ def _evaluate_scene_contract_alignment(
     project: Dict[str, Any],
     dimension_map: Dict[str, Dict[str, Any]],
     text_metrics: Dict[str, Any],
+    scene_text: str = "",
+    story_constraint_signals: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
     positioning = project.get("positioning", {})
     story_contract = project.get("storyContract", {})
+    emotional_contract = project.get("emotionalContract", {})
     primary_genre = normalize_primary_genre(positioning.get("primaryGenre", ""))
     pace_contract = story_contract.get("paceContract", "")
     core_promises = [item for item in story_contract.get("corePromises", []) if item]
+    story_constraint_signals = story_constraint_signals or {}
 
     matched: List[str] = []
     risks: List[str] = []
@@ -899,6 +963,13 @@ def _evaluate_scene_contract_alignment(
     logic_score = dimension_map["logic"]["score"]
     foreshadowing = dimension_map["foreshadowing"]["score"]
     scene_clarity = dimension_map["sceneClarity"]["score"]
+    core_emotions = [item for item in emotional_contract.get("coreEmotions", []) if item]
+    emotional_floor = [item for item in emotional_contract.get("chapterEmotionFloor", []) if item]
+    forbidden_emotions = [item for item in emotional_contract.get("forbiddenEmotions", []) if item]
+    due_foreshadows = story_constraint_signals.get("dueForeshadows", [])
+    tracked_entities = story_constraint_signals.get("trackedEntities", [])
+    payoff_hits = _count_keyword_hits(scene_text, FORESHADOWING_PAYOFF_KEYWORDS)
+    pressure_hits = _count_keyword_hits(scene_text, PRESSURE_KEYWORDS)
 
     if primary_genre in {"mystery", "thriller"}:
         if foreshadowing >= 15:
@@ -982,6 +1053,34 @@ def _evaluate_scene_contract_alignment(
             )
         else:
             notes.append(f"核心承诺“{promise}”目前仅记录，尚未接入一幕级自动判定。")
+
+    if core_emotions:
+        if pressure_hits >= 1 or scene_function >= 14 or foreshadowing >= 14:
+            matched.append(f"这一幕已承接情绪契约的核心情绪方向：{', '.join(core_emotions[:2])}。")
+        else:
+            risks.append("项目已声明情绪契约的核心情绪体验，但这一幕的情绪推进仍不够明确。")
+
+    if emotional_floor:
+        if max(scene_function, foreshadowing, logic_score) >= 14:
+            matched.append("这一幕满足情绪契约的章节情绪底线，没有完全滑向纯说明。")
+        else:
+            risks.append("已声明情绪契约的章节情绪底线，但这一幕更像信息补丁，情绪推进偏弱。")
+
+    if any("空转" in item or "设定" in item for item in forbidden_emotions):
+        if scene_function < 13 and foreshadowing < 13 and scene_clarity >= 15:
+            risks.append("情绪契约禁止“空转讲设定”，但这一幕偏说明性场景。")
+
+    if due_foreshadows:
+        if foreshadowing >= 14 or payoff_hits >= 1:
+            matched.append(f"这一幕对应了 {len(due_foreshadows)} 条临近回收的伏笔。")
+        else:
+            risks.append(f"这一幕所在章节已有 {len(due_foreshadows)} 条伏笔进入窗口，但片段里的回收信号偏弱。")
+
+    if tracked_entities:
+        if logic_score >= 14 or continuity >= 14:
+            matched.append("这一幕对受追踪角色状态的承接基本成立。")
+        else:
+            risks.append("项目存在角色状态追踪，但这一幕对状态余波的承接还不够清楚。")
 
     if not primary_genre and not pace_contract and not core_promises:
         status = "missing-contract"
@@ -1261,6 +1360,132 @@ def _filter_analysis_for_scene(
         "snapshotCandidates": snapshot_candidates,
         "relationCandidates": relation_candidates,
     }
+
+
+def _build_story_constraint_signals(
+    state: Dict[str, Dict[str, Any]],
+    chapter_id: str,
+    entity_names: List[str],
+) -> Dict[str, Any]:
+    project = state.get("project", {})
+    worldbook = state.get("worldbook", {})
+    entities = state.get("entities", {}).get("entities", [])
+    foreshadowing = state.get("foreshadowing", {}).get("foreshadows", [])
+    tracked_name_set = {name for name in entity_names if name}
+
+    world_rules = [
+        {
+            "id": item.get("id"),
+            "label": item.get("label"),
+            "scope": item.get("scope", ""),
+        }
+        for item in worldbook.get("worldRules", [])
+        if isinstance(item, dict) and item.get("status") != "inactive"
+    ][:5]
+
+    due_foreshadows = [
+        {
+            "id": item.get("id"),
+            "title": item.get("title"),
+            "payoffStyle": (item.get("payoffPlan", {}) or {}).get("style", ""),
+            "readerRealizationMode": (item.get("payoffPlan", {}) or {}).get("readerRealizationMode", ""),
+        }
+        for item in foreshadowing
+        if isinstance(item, dict) and _foreshadow_due_in_chapter(item, chapter_id)
+    ][:5]
+
+    tracked_entities = []
+    for entity in entities:
+        if not isinstance(entity, dict):
+            continue
+        if tracked_name_set and entity.get("name") not in tracked_name_set:
+            continue
+        entity_state = entity.get("state", {}) if isinstance(entity.get("state"), dict) else {}
+        change_log = entity.get("changeLog", []) if isinstance(entity.get("changeLog"), list) else []
+        if not entity_state and not change_log:
+            continue
+        recent_change = None
+        for change in reversed(change_log):
+            if change.get("chapterId") == chapter_id:
+                recent_change = change
+                break
+        if recent_change is None and change_log:
+            recent_change = change_log[-1]
+        tracked_entities.append(
+            {
+                "id": entity.get("id"),
+                "name": entity.get("name"),
+                "currentState": entity.get("currentState", ""),
+                "stateTags": entity_state.get("statusTags", [])[:4] if isinstance(entity_state.get("statusTags", []), list) else [],
+                "recentChange": (
+                    {
+                        "chapterId": recent_change.get("chapterId"),
+                        "field": recent_change.get("field"),
+                        "reason": recent_change.get("reason"),
+                    }
+                    if isinstance(recent_change, dict)
+                    else None
+                ),
+            }
+        )
+
+    return {
+        "emotionalContract": {
+            "coreEmotions": [item for item in project.get("emotionalContract", {}).get("coreEmotions", []) if item][:4],
+            "chapterEmotionFloor": [item for item in project.get("emotionalContract", {}).get("chapterEmotionFloor", []) if item][:3],
+            "forbiddenEmotions": [item for item in project.get("emotionalContract", {}).get("forbiddenEmotions", []) if item][:3],
+        },
+        "worldRules": world_rules,
+        "dueForeshadows": due_foreshadows,
+        "trackedEntities": tracked_entities[:5],
+    }
+
+
+def _chapter_number(chapter_ref: str) -> int | None:
+    match = re.search(r"(\d+)(?!.*\d)", chapter_ref or "")
+    if not match:
+        return None
+    return int(match.group(1))
+
+
+def _chapter_in_window(chapter_id: str, window: Dict[str, Any]) -> bool:
+    if not isinstance(window, dict):
+        return False
+    target_chapter = window.get("targetChapter")
+    if target_chapter:
+        return target_chapter == chapter_id
+    start = window.get("targetChapterStart")
+    end = window.get("targetChapterEnd")
+    if not start and not end:
+        return False
+
+    current_num = _chapter_number(chapter_id)
+    start_num = _chapter_number(start) if start else None
+    end_num = _chapter_number(end) if end else None
+    if current_num is not None and (start_num is not None or end_num is not None):
+        if start_num is not None and current_num < start_num:
+            return False
+        if end_num is not None and current_num > end_num:
+            return False
+        return True
+
+    if start and chapter_id < start:
+        return False
+    if end and chapter_id > end:
+        return False
+    return True
+
+
+def _foreshadow_due_in_chapter(item: Dict[str, Any], chapter_id: str) -> bool:
+    if item.get("plannedPayoffChapter") == chapter_id:
+        return True
+    for payoff_point in item.get("payoffPoints", []):
+        if isinstance(payoff_point, dict) and payoff_point.get("chapterId") == chapter_id:
+            return True
+    payoff_plan = item.get("payoffPlan", {})
+    if not isinstance(payoff_plan, dict):
+        return False
+    return _chapter_in_window(chapter_id, payoff_plan.get("window", {}))
 
 
 def _scene_break_reason(paragraph: str, current_scene_length: int) -> str:
