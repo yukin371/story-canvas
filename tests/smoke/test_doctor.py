@@ -82,8 +82,97 @@ class DoctorSmokeTest(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertIn("missing-target-audience", codes)
         self.assertIn("missing-core-promises", codes)
+        self.assertIn("missing-core-emotions", codes)
         self.assertGreaterEqual(payload["summary"]["warnings"], len(warning_items))
         self.assertGreater(payload["summary"]["warnings"], 0)
+
+    def test_doctor_warns_when_story_template_requires_worldbook(self) -> None:
+        project = json.loads((self.temp_dir / "project.yaml").read_text(encoding="utf-8"))
+        project["storyTemplate"] = {
+            "id": "xianxia-rebirth-revenge-longform",
+            "label": "仙侠重生复仇长篇",
+            "modulePolicy": {
+                "worldbook": "required",
+                "worldRules": "required",
+                "factions": "required",
+            },
+            "reviewFocus": [],
+        }
+        (self.temp_dir / "project.yaml").write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding="utf-8")
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["doctor", "--root", str(self.temp_dir)])
+        payload = json.loads(buffer.getvalue())
+        codes = {item.get("code") for item in payload["checks"] if item.get("level") == "warning"}
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("missing-required-worldbook", codes)
+        self.assertIn("missing-required-world-rules", codes)
+        self.assertIn("missing-required-factions", codes)
+
+    def test_doctor_warns_when_story_template_requires_foreshadow_and_character_state(self) -> None:
+        project = json.loads((self.temp_dir / "project.yaml").read_text(encoding="utf-8"))
+        project["storyTemplate"] = {
+            "id": "mystery-longform",
+            "label": "悬疑长篇",
+            "modulePolicy": {
+                "foreshadowLedger": "required",
+                "characterStateTracking": "required",
+            },
+            "reviewFocus": [],
+        }
+        (self.temp_dir / "project.yaml").write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding="utf-8")
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["doctor", "--root", str(self.temp_dir)])
+        payload = json.loads(buffer.getvalue())
+        codes = {item.get("code") for item in payload["checks"] if item.get("level") == "warning"}
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("missing-required-foreshadow-ledger", codes)
+        self.assertIn("missing-character-state-tracking", codes)
+
+    def test_doctor_reads_worldbook_when_present(self) -> None:
+        (self.temp_dir / "worldbook.yaml").write_text(
+            json.dumps(
+                {
+                    "premiseFacts": [{"id": "wf-001", "label": "时间线偏移", "fact": "世界线改变"}],
+                    "worldRules": [{"id": "rule-001", "label": "代价", "rule": "力量有代价"}],
+                    "factions": [{"id": "faction-001", "name": "青云宗"}],
+                    "locations": [],
+                    "artifacts": [],
+                    "mysteries": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        project = json.loads((self.temp_dir / "project.yaml").read_text(encoding="utf-8"))
+        project["storyTemplate"] = {
+            "id": "xianxia-rebirth-revenge-longform",
+            "label": "仙侠重生复仇长篇",
+            "modulePolicy": {
+                "worldbook": "required",
+                "worldRules": "required",
+                "factions": "required",
+            },
+            "reviewFocus": [],
+        }
+        (self.temp_dir / "project.yaml").write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding="utf-8")
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["doctor", "--root", str(self.temp_dir)])
+        payload = json.loads(buffer.getvalue())
+        codes = {item.get("code") for item in payload["checks"] if item.get("level") == "warning"}
+
+        self.assertEqual(exit_code, 0)
+        self.assertNotIn("missing-required-worldbook", codes)
+        self.assertNotIn("missing-required-world-rules", codes)
+        self.assertNotIn("missing-required-factions", codes)
 
     def test_doctor_warns_for_missing_commercial_blueprint_on_serial_project(self) -> None:
         project = json.loads((self.temp_dir / "project.yaml").read_text(encoding="utf-8"))
@@ -341,6 +430,54 @@ class DoctorSmokeTest(unittest.TestCase):
         self.assertIn("orphan-illustration-asset", codes)
         self.assertEqual(len(orphan_items), 1)
         self.assertIn("assets", orphan_items[0]["message"])
+
+    def test_doctor_warns_for_missing_illustration_target_and_inputs(self) -> None:
+        missing_reference = self.temp_dir / "missing-reference.png"
+        missing_mask = self.temp_dir / "missing-mask.png"
+        (self.temp_dir / "illustrations.yaml").write_text(
+            json.dumps(
+                {
+                    "adapter": {
+                        "name": "openai",
+                        "model": "gpt-image-2",
+                        "defaultSize": "1024x1024",
+                        "quality": "standard",
+                    },
+                    "promptPack": {"name": "default", "version": "builtin"},
+                    "generated": [
+                        {
+                            "id": "ill-broken",
+                            "type": "chapter",
+                            "mode": "image-to-image",
+                            "chapterId": "chapter-999",
+                            "entityId": None,
+                            "promptText": "test",
+                            "revisedPrompt": "test",
+                            "inputImages": [str(missing_reference)],
+                            "maskPath": str(missing_mask),
+                            "filePath": "",
+                            "artifacts": [],
+                            "metadata": {"assetCount": 0},
+                            "generatedAt": "2026-04-25T00:00:00+08:00",
+                        }
+                    ],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["doctor", "--root", str(self.temp_dir)])
+        payload = json.loads(buffer.getvalue())
+        codes = {item.get("code") for item in payload["checks"] if item.get("level") == "warning"}
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("illustration-target-not-found", codes)
+        self.assertIn("illustration-input-not-found", codes)
+        self.assertIn("illustration-mask-not-found", codes)
 
 
 if __name__ == "__main__":

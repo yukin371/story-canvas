@@ -357,6 +357,12 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
         self.assertEqual(generated_entry["assetCount"], 2)
         self.assertEqual(generated_entry["existingAssetCount"], 2)
         self.assertTrue(generated_entry["allAssetsPresent"])
+        self.assertEqual(generated_entry["targetRef"]["type"], "chapter")
+        self.assertEqual(generated_entry["targetRef"]["targetId"], "chapter-001")
+        self.assertTrue(generated_entry["targetRef"]["declaredInState"])
+        self.assertTrue(generated_entry["targetRef"]["contentFileExists"])
+        self.assertTrue(generated_entry["allInputsPresent"])
+        self.assertTrue(generated_entry["maskPresent"])
         self.assertEqual(len(generated_entry["artifacts"]), 2)
         self.assertTrue(all(item["exists"] for item in generated_entry["artifacts"]))
 

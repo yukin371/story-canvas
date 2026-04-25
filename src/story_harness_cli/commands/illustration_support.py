@@ -55,11 +55,85 @@ def asset_records_from_entry(root: Path, entry: dict[str, Any]) -> list[dict[str
     ]
 
 
-def decorate_generated_entry(root: Path, entry: dict[str, Any]) -> dict[str, Any]:
+def _chapter_ids(state: dict[str, Any]) -> set[str]:
+    return {
+        item.get("id", "")
+        for item in state.get("outline", {}).get("chapters", [])
+        if item.get("id")
+    }
+
+
+def _entity_ids(state: dict[str, Any]) -> set[str]:
+    return {
+        item.get("id", "")
+        for item in state.get("entities", {}).get("entities", [])
+        if item.get("id")
+    }
+
+
+def target_record_from_entry(root: Path, state: dict[str, Any], entry: dict[str, Any]) -> dict[str, Any]:
+    chapter_id = entry.get("chapterId")
+    entity_id = entry.get("entityId")
+    if chapter_id:
+        return {
+            "type": "chapter",
+            "targetId": chapter_id,
+            "declaredInState": chapter_id in _chapter_ids(state),
+            "contentFileExists": (root / "chapters" / f"{chapter_id}.md").exists(),
+        }
+    if entity_id:
+        return {
+            "type": "entity",
+            "targetId": entity_id,
+            "declaredInState": entity_id in _entity_ids(state),
+            "contentFileExists": False,
+        }
+    return {
+        "type": entry.get("type", ""),
+        "targetId": "",
+        "declaredInState": False,
+        "contentFileExists": False,
+    }
+
+
+def input_records_from_entry(entry: dict[str, Any]) -> list[dict[str, Any]]:
+    records = []
+    for index, file_path in enumerate(entry.get("inputImages", [])):
+        path = Path(file_path) if file_path else Path()
+        records.append(
+            {
+                "index": index,
+                "filePath": str(path) if file_path else "",
+                "exists": bool(file_path) and path.exists(),
+            }
+        )
+    return records
+
+
+def mask_record_from_entry(entry: dict[str, Any]) -> dict[str, Any]:
+    file_path = entry.get("maskPath", "")
+    if not file_path:
+        return {"filePath": "", "exists": False}
+    path = Path(file_path)
+    return {
+        "filePath": str(path),
+        "exists": path.exists(),
+    }
+
+
+def decorate_generated_entry(root: Path, state: dict[str, Any], entry: dict[str, Any]) -> dict[str, Any]:
     decorated = dict(entry)
     assets = asset_records_from_entry(root, entry)
+    target = target_record_from_entry(root, state, entry)
+    inputs = input_records_from_entry(entry)
+    mask = mask_record_from_entry(entry)
     decorated["artifacts"] = assets
+    decorated["targetRef"] = target
+    decorated["inputImageRefs"] = inputs
+    decorated["maskRef"] = mask
     decorated["assetCount"] = len(assets)
     decorated["existingAssetCount"] = sum(1 for asset in assets if asset["exists"])
     decorated["allAssetsPresent"] = bool(assets) and decorated["assetCount"] == decorated["existingAssetCount"]
+    decorated["allInputsPresent"] = all(item["exists"] for item in inputs) if inputs else True
+    decorated["maskPresent"] = mask["exists"] if mask["filePath"] else True
     return decorated

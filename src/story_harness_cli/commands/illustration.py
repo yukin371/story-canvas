@@ -212,7 +212,7 @@ def command_illustration_list(args) -> int:
         "adapter": state.get("illustrations", {}).get("adapter", {}),
         "promptPack": state.get("illustrations", {}).get("promptPack", {}),
         "generated": [
-            decorate_generated_entry(root, entry)
+            decorate_generated_entry(root, state, entry)
             for entry in state.get("illustrations", {}).get("generated", [])
         ],
     }

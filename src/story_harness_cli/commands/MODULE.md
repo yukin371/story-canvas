@@ -69,8 +69,8 @@
 - `illustration generate --mode image-to-image` 至少需要一张 `--input-image`
 - `illustration generate --mode image-to-image --mask <path>` 会把 mask 一并上传给 provider，mask 仅作用于第一张输入图
 - `illustration generate` 真实执行时会把返回图批量写入 `assets/illustrations/`；`filePath` 仍指向主图，额外结果写入 `artifacts[]`
-- `illustration list` 会补充资产存在性、数量和主图标记，便于快速检查落盘状态
-- `doctor` 会基于 `illustrations.yaml` 检查缺失资产、主图路径不一致和 `assets/illustrations/` 下的孤儿文件
+- `illustration list` 会补充资产存在性、数量、主图标记，以及 chapter/entity/input-image/mask 的引用状态
+- `doctor` 会基于 `illustrations.yaml` 检查缺失资产、主图路径不一致、失效 target/input/mask 引用和 `assets/illustrations/` 下的孤儿文件
 
 ## 8. 测试方式
 

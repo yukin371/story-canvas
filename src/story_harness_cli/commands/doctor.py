@@ -38,6 +38,8 @@ WORKFLOW_DIRS = [
     "logs",
 ]
 
+_TEMPLATE_OPTION_VALUES = {"required", "optional", "off"}
+
 
 def record_check(checks: List[Dict[str, str]], level: str, code: str, message: str) -> None:
     checks.append({"level": level, "code": code, "message": message})
@@ -87,6 +89,25 @@ def validate_layout_aware_file(
     return payload
 
 
+def validate_optional_layout_aware_file(
+    root: Path,
+    state_key: str,
+    default_payload: Dict[str, Any],
+    checks: List[Dict[str, str]],
+) -> Dict[str, Any]:
+    path = resolve_state_path(root, state_key)
+    display = path.relative_to(root) if path.is_relative_to(root) else str(path)
+    if not path.exists():
+        return json.loads(json.dumps(default_payload))
+    try:
+        payload = load_json_compatible_yaml(path, default_payload)
+    except SystemExit as exc:
+        record_check(checks, "error", "invalid-json-compatible-yaml", str(exc))
+        return json.loads(json.dumps(default_payload))
+    record_check(checks, "info", "parsed-file", f"文件可解析: {display}")
+    return payload
+
+
 def validate_project_shape(root: Path, checks: List[Dict[str, str]]) -> Dict[str, Dict[str, Any]]:
     defaults = default_project_state()
     project_payload = validate_json_compatible_file(root, "project.yaml", defaults["project"], checks)
@@ -109,6 +130,11 @@ def validate_project_shape(root: Path, checks: List[Dict[str, str]]) -> Dict[str
         "branches": validate_json_compatible_file(root, "branches.yaml", defaults["branches"], checks),
         "threads": validate_layout_aware_file(root, "threads", defaults["threads"], checks),
         "structures": validate_layout_aware_file(root, "structures", defaults["structures"], checks),
+        "worldbook": merge_defaults(
+            validate_optional_layout_aware_file(root, "worldbook", defaults["worldbook"], checks),
+            defaults["worldbook"],
+        ),
+        "foreshadowing": validate_optional_layout_aware_file(root, "foreshadowing", defaults["foreshadowing"], checks),
         "illustrations": merge_defaults(illustrations_payload, defaults["illustrations"]),
     }
     for key, relative_path in WORKFLOW_FILES.items():
@@ -322,12 +348,18 @@ def _check_project_positioning(state: Dict, checks: List[Dict[str, str]]) -> Non
     project = state.get("project", {})
     positioning = project.get("positioning", {})
     story_contract = project.get("storyContract", {})
+    emotional_contract = project.get("emotionalContract", {})
+    story_template = project.get("storyTemplate", {})
 
     primary_genre = positioning.get("primaryGenre", "")
     target_audience = positioning.get("targetAudience", [])
     core_promises = story_contract.get("corePromises", [])
     pace_contract = story_contract.get("paceContract", "")
+    core_emotions = emotional_contract.get("coreEmotions", [])
+    chapter_emotion_floor = emotional_contract.get("chapterEmotionFloor", [])
     genre = project.get("genre", "")
+    template_id = story_template.get("id", "")
+    module_policy = story_template.get("modulePolicy", {})
 
     if not primary_genre:
         record_check(checks, "warning", "missing-primary-genre", "project.positioning.primaryGenre 为空，后续类型化 review 无法稳定切换权重")
@@ -345,6 +377,60 @@ def _check_project_positioning(state: Dict, checks: List[Dict[str, str]]) -> Non
         record_check(checks, "warning", "missing-core-promises", "project.storyContract.corePromises 为空，作品卖点承诺尚未声明")
     if not pace_contract:
         record_check(checks, "info", "missing-pace-contract", "project.storyContract.paceContract 为空，节奏承诺尚未声明")
+    if not core_emotions:
+        record_check(checks, "info", "missing-core-emotions", "project.emotionalContract.coreEmotions 为空，读者情绪体验尚未显式声明")
+    if not chapter_emotion_floor:
+        record_check(checks, "info", "missing-chapter-emotion-floor", "project.emotionalContract.chapterEmotionFloor 为空，章节情绪底线尚未显式声明")
+    if template_id and not is_machine_label(template_id):
+        record_check(checks, "warning", "non-normalized-story-template-id", f"storyTemplate.id 建议使用稳定 slug，当前值为: {template_id}")
+    if module_policy and not isinstance(module_policy, dict):
+        record_check(checks, "warning", "invalid-story-template-module-policy", "project.storyTemplate.modulePolicy 必须是对象")
+    elif isinstance(module_policy, dict):
+        for module_name, mode in module_policy.items():
+            if mode not in _TEMPLATE_OPTION_VALUES:
+                record_check(
+                    checks,
+                    "warning",
+                    "invalid-story-template-module-mode",
+                    f"storyTemplate.modulePolicy.{module_name} 取值无效: {mode}",
+                )
+
+
+def _check_story_constraint_modules(root: Path, state: Dict, checks: List[Dict[str, str]]) -> None:
+    project = state.get("project", {})
+    story_template = project.get("storyTemplate", {})
+    module_policy = story_template.get("modulePolicy", {})
+    if not isinstance(module_policy, dict) or not module_policy:
+        return
+
+    worldbook = state.get("worldbook", {})
+    foreshadowing = state.get("foreshadowing", {})
+    entities = state.get("entities", {}).get("entities", [])
+    worldbook_path = resolve_state_path(root, "worldbook")
+    foreshadow_path = resolve_state_path(root, "foreshadowing")
+
+    def _is_required(module_name: str) -> bool:
+        return module_policy.get(module_name) == "required"
+
+    if _is_required("worldbook") and not worldbook_path.exists():
+        record_check(checks, "warning", "missing-required-worldbook", "storyTemplate 要求 worldbook，但项目中尚未创建 worldbook.yaml")
+    if _is_required("worldRules") and not worldbook.get("worldRules", []):
+        record_check(checks, "warning", "missing-required-world-rules", "storyTemplate 要求 worldRules，但 worldbook.worldRules 为空")
+    if _is_required("factions") and not worldbook.get("factions", []):
+        record_check(checks, "warning", "missing-required-factions", "storyTemplate 要求 factions，但 worldbook.factions 为空")
+    if _is_required("foreshadowLedger"):
+        foreshadows = foreshadowing.get("foreshadows", [])
+        if not foreshadow_path.exists():
+            record_check(checks, "warning", "missing-required-foreshadow-ledger", "storyTemplate 要求 foreshadow ledger，但项目中尚未创建 foreshadowing.yaml")
+        elif not foreshadows:
+            record_check(checks, "warning", "empty-required-foreshadow-ledger", "storyTemplate 要求 foreshadow ledger，但 foreshadowing.foreshadows 为空")
+    if _is_required("characterStateTracking"):
+        tracked_entities = [
+            entity for entity in entities
+            if isinstance(entity, dict) and (entity.get("state") or entity.get("changeLog"))
+        ]
+        if not tracked_entities:
+            record_check(checks, "warning", "missing-character-state-tracking", "storyTemplate 要求 character state tracking，但 entities 中尚无 state/changeLog 数据")
 
 
 def _check_commercial_positioning(state: Dict, checks: List[Dict[str, str]]) -> None:
@@ -458,7 +544,7 @@ def _check_illustration_assets(root: Path, state: Dict[str, Dict[str, Any]], che
     asset_root = root / "assets" / "illustrations"
     referenced_paths: set[Path] = set()
     for entry in generated:
-        decorated = decorate_generated_entry(root, entry)
+        decorated = decorate_generated_entry(root, state, entry)
         illustration_id = (
             decorated.get("id")
             or decorated.get("chapterId")
@@ -467,6 +553,55 @@ def _check_illustration_assets(root: Path, state: Dict[str, Dict[str, Any]], che
             or "unknown-illustration"
         )
         assets = decorated.get("artifacts", [])
+        target_ref = decorated.get("targetRef", {})
+        input_refs = decorated.get("inputImageRefs", [])
+        mask_ref = decorated.get("maskRef", {})
+
+        if not target_ref.get("targetId"):
+            record_check(
+                checks,
+                "warning",
+                "illustration-target-missing",
+                f"插图记录 {illustration_id} 缺少 chapterId/entityId，无法确认引用目标",
+            )
+        elif not target_ref.get("declaredInState"):
+            record_check(
+                checks,
+                "warning",
+                "illustration-target-not-found",
+                f"插图记录 {illustration_id} 引用了不存在的 {target_ref.get('type')} 目标: {target_ref.get('targetId')}",
+            )
+        elif target_ref.get("type") == "chapter" and not target_ref.get("contentFileExists"):
+            record_check(
+                checks,
+                "warning",
+                "illustration-target-chapter-file-missing",
+                f"插图记录 {illustration_id} 引用的章节正文不存在: {target_ref.get('targetId')}",
+            )
+
+        if decorated.get("mode") == "image-to-image" and not input_refs:
+            record_check(
+                checks,
+                "warning",
+                "illustration-input-missing",
+                f"图生图记录 {illustration_id} 缺少 inputImages 引用",
+            )
+        for input_ref in input_refs:
+            if not input_ref.get("exists"):
+                record_check(
+                    checks,
+                    "warning",
+                    "illustration-input-not-found",
+                    f"插图记录 {illustration_id} 缺少输入参考图: {input_ref.get('filePath')}",
+                )
+        if mask_ref.get("filePath") and not mask_ref.get("exists"):
+            record_check(
+                checks,
+                "warning",
+                "illustration-mask-not-found",
+                f"插图记录 {illustration_id} 的 mask 文件不存在: {mask_ref.get('filePath')}",
+            )
+
         if not assets:
             record_check(
                 checks,
@@ -599,6 +734,7 @@ def command_doctor(args) -> int:
     validate_project_links(root, state, checks)
     _check_project_positioning(state, checks)
     _check_commercial_positioning(state, checks)
+    _check_story_constraint_modules(root, state, checks)
     _check_style_profiles(root, state, checks)
     _check_illustration_assets(root, state, checks)
     _check_outline_volumes(root, checks)
