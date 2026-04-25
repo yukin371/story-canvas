@@ -4,8 +4,9 @@ import json
 from pathlib import Path
 
 from story_harness_cli.protocol import ensure_project_root, load_project_state, save_state
+from story_harness_cli.protocol.files import chapter_path
 from story_harness_cli.protocol.io import load_json_compatible_yaml
-from story_harness_cli.services import apply_projection
+from story_harness_cli.services import apply_projection, check_consistency
 
 
 def command_projection_apply(args) -> int:
@@ -16,7 +17,16 @@ def command_projection_apply(args) -> int:
     analysis = load_json_compatible_yaml(root / "logs" / (f"analysis-{chapter_id}.yaml" if chapter_id else "latest-analysis.yaml"), {})
     if not analysis:
         analysis = load_json_compatible_yaml(root / "logs" / "latest-analysis.yaml", {})
-    result = apply_projection(state, analysis, chapter_id)
+    consistency_result = None
+    if chapter_id:
+        chapter_file = chapter_path(root, chapter_id)
+        if chapter_file.exists():
+            consistency_result = check_consistency(
+                state,
+                chapter_file.read_text(encoding="utf-8"),
+                chapter_id,
+            )
+    result = apply_projection(state, analysis, chapter_id, consistency_result=consistency_result)
     save_state(root, state)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
@@ -30,4 +40,3 @@ def register_projection_commands(subparsers) -> None:
     apply_parser.add_argument("--root", required=True)
     apply_parser.add_argument("--chapter-id")
     apply_parser.set_defaults(func=command_projection_apply)
-

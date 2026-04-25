@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Any, Dict, List
 
 from story_harness_cli.utils.text import paragraphs_from_text
@@ -20,6 +21,35 @@ INTIMATE_KEYWORDS = [
 NEGATION_PREFIXES = ("不", "没", "无", "未", "非")
 
 INTIMATE_WORDS_NEED_NEGATION_CHECK = {"信任", "爱", "喜欢"}
+CJK_RANGE = f"{chr(0x4E00)}-{chr(0x9FFF)}"
+SETTING_CUE_PATTERNS = (
+    r"被称为",
+    r"叫做",
+    r"称作",
+    r"意味着",
+    r"所谓",
+    r"规则是",
+    r"代价是",
+    r"每次.{0,20}都会",
+    r"一旦.{0,20}就",
+    r"只有.{0,20}才",
+    r"无法",
+    r"不能",
+    r"必须",
+)
+SETTING_LABEL_PATTERNS = (
+    r"[“「『《]([^”」』》]{2,12})[”」』》]",
+    f"([{CJK_RANGE}]{{2,10}}(?:效应|法则|定律|理论|模型|体系|术式|仪式|回路|协议|计划|印记|烙印|命格|命途|体质|灵根|血脉|规则))",
+)
+SETTING_NEGATIONS = ("不", "没", "无", "未", "非", "无法", "不能", "不会", "不得")
+SETTING_OPPOSITE_PAIRS = (
+    ("可以", "不能"),
+    ("必须", "无需"),
+    ("会", "不会"),
+    ("留下", "不会留下"),
+    ("暴露", "不会暴露"),
+    ("失去", "不会失去"),
+)
 
 
 def check_consistency(
@@ -48,12 +78,16 @@ def check_consistency(
     _check_outline_deviations(state, chapter_id, soft["outlineDeviations"])
     _check_thread_status(state, chapter_id, soft["outlineDeviations"])
     _check_arc_alignment(state, chapter_text, chapter_id, soft["outlineDeviations"])
+    setting_candidates = _extract_setting_candidates(chapter_text, chapter_id)
+    setting_conflicts = _check_setting_conflicts(state, setting_candidates)
 
     context_for_ai = _build_ai_context(state, chapter_text, chapter_id)
 
     return {
         "hardChecks": hard,
         "softChecks": soft,
+        "settingCandidates": setting_candidates,
+        "settingConflicts": setting_conflicts,
         "contextForAI": context_for_ai,
     }
 
@@ -250,3 +284,126 @@ def _check_arc_alignment(
                 "note": "角色出现但弧线未发展，可能遗漏弧线推进机会",
                 "severity": "advisory",
             })
+
+
+def _extract_setting_candidates(chapter_text: str, chapter_id: str) -> List[Dict[str, Any]]:
+    candidates: List[Dict[str, Any]] = []
+    seen = set()
+    for paragraph_index, paragraph in enumerate(paragraphs_from_text(chapter_text), start=1):
+        text = paragraph.strip()
+        if len(text) < 10:
+            continue
+        if not any(re.search(pattern, text) for pattern in SETTING_CUE_PATTERNS):
+            continue
+        label = _extract_setting_label(text)
+        if not label:
+            continue
+        normalized_fact = _normalize_setting_text(text)
+        dedupe_key = (label, normalized_fact)
+        if dedupe_key in seen:
+            continue
+        seen.add(dedupe_key)
+        confidence = 0.72
+        if "所谓" in text or re.search(r"[“「『《][^”」』》]{2,12}[”」』》]", text):
+            confidence += 0.08
+        if re.search(r"每次.{0,20}都会|一旦.{0,20}就|只有.{0,20}才", text):
+            confidence += 0.08
+        candidates.append(
+            {
+                "label": label,
+                "fact": text,
+                "chapterId": chapter_id,
+                "paragraphIndex": paragraph_index,
+                "confidence": round(min(confidence, 0.92), 2),
+                "kind": "premise-fact",
+            }
+        )
+    return candidates
+
+
+def _check_setting_conflicts(
+    state: Dict[str, Dict[str, Any]],
+    setting_candidates: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    worldbook = state.get("worldbook", {})
+    existing_by_label: Dict[str, List[Dict[str, str]]] = {}
+    for item in worldbook.get("premiseFacts", []):
+        if not isinstance(item, dict):
+            continue
+        label = item.get("label")
+        fact = item.get("fact")
+        if isinstance(label, str) and label and isinstance(fact, str) and fact:
+            existing_by_label.setdefault(label, []).append({"source": "premiseFacts", "text": fact})
+    for item in worldbook.get("worldRules", []):
+        if not isinstance(item, dict):
+            continue
+        label = item.get("label")
+        rule = item.get("rule")
+        if isinstance(label, str) and label and isinstance(rule, str) and rule:
+            existing_by_label.setdefault(label, []).append({"source": "worldRules", "text": rule})
+
+    conflicts: List[Dict[str, Any]] = []
+    for candidate in setting_candidates:
+        label = candidate.get("label", "")
+        fact = candidate.get("fact", "")
+        if not label or not fact:
+            continue
+        for existing in existing_by_label.get(label, []):
+            if _normalize_setting_text(existing["text"]) == _normalize_setting_text(fact):
+                continue
+            if not _setting_texts_conflict(existing["text"], fact):
+                continue
+            conflicts.append(
+                {
+                    "label": label,
+                    "issue": f"新设定“{label}”与既有设定可能冲突",
+                    "existingSource": existing["source"],
+                    "existingText": existing["text"],
+                    "candidateText": fact,
+                    "chapterId": candidate.get("chapterId", ""),
+                    "severity": "warning",
+                }
+            )
+            break
+    return conflicts
+
+
+def _extract_setting_label(text: str) -> str:
+    for pattern in SETTING_LABEL_PATTERNS:
+        match = re.search(pattern, text)
+        if match:
+            label = match.group(1).strip()
+            if 2 <= len(label) <= 12:
+                return label
+    if text.startswith("所谓"):
+        trimmed = text[2:14]
+        match = re.match(f"([{CJK_RANGE}]{{2,10}})", trimmed)
+        if match:
+            return match.group(1)
+    return ""
+
+
+def _normalize_setting_text(text: str) -> str:
+    return re.sub(r"[，。？！、“”‘’：；\s]", "", text)
+
+
+def _setting_texts_conflict(left: str, right: str) -> bool:
+    left_norm = _normalize_setting_text(left)
+    right_norm = _normalize_setting_text(right)
+    if left_norm == right_norm:
+        return False
+
+    left_has_negation = any(token in left for token in SETTING_NEGATIONS)
+    right_has_negation = any(token in right for token in SETTING_NEGATIONS)
+    if left_has_negation != right_has_negation:
+        return True
+
+    left_numbers = re.findall(r"\d+", left)
+    right_numbers = re.findall(r"\d+", right)
+    if left_numbers and right_numbers and left_numbers != right_numbers:
+        return True
+
+    for positive, negative in SETTING_OPPOSITE_PAIRS:
+        if (positive in left and negative in right) or (positive in right and negative in left):
+            return True
+    return False

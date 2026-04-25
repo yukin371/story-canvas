@@ -16,14 +16,17 @@
 - JSON 输出格式化（`print(json.dumps(...))`）
 - 文件 I/O 时机控制（何时 save_state）
 - workflow 命令编排（如 `review apply`、`review chapter`、`review scene` 的不同评审路径，以及 `review scene --list-scenes` 的场景枚举）
+- `projection apply` 的 command-side 编排：加载 analysis、读取章节正文并补跑设定一致性抽取，把非冲突高置信新设定交给 service 入账
 - `outline scene-add` / `outline scene-list` / `outline scene-detect` / `outline scene-update` / `outline scene-remove` 这类轻量结构维护命令
 - `outline check` 这类“写作前门禁”命令，以及 `chapter suggest` 的 outline-first workflow gate
   默认门禁口径为 `project.positioning` / `project.storyContract` + chapter `direction` + `beats` + `scenePlans`
-- 项目初始化参数装配（如 `init` 写入 positioning / storyContract / commercialPositioning）
+- 项目初始化参数装配（如 `init` 写入 positioning / storyContract / emotionalContract / storyTemplate / commercialPositioning，并落盘 `worldbook` / `foreshadowing` 默认文件）
+- `context refresh` 的 command-side 编排：加载 analysis 日志，刷新并持久化包含情绪契约、题材模板、世界约束、线索和伏笔切片的写作上下文
 - doctor 类命令中的项目元数据校验编排
-- doctor 现在还负责校验可选项目配置如 `style-profiles.yaml` 的基本结构
+- doctor 现在还负责校验可选项目配置如 `style-profiles.yaml` 的基本结构，以及 `storyTemplate` 驱动的 `worldbook` / 伏笔账本 / 角色状态追踪基础约束
 - doctor 现在还会校验 `illustrations.yaml` 中的主图/多图资产引用、缺失文件和孤儿资产
 - `style check` / `style constraints` / `style report` / `style repair` 这组风格治理命令，以及 optional scorer 的 command-side 装配
+- `style check` / `style constraints` / `style report` / `style repair` 这组风格治理命令，以及 `style-profiles.yaml` 中 pattern / 术语词典 / 白名单的 command-side 装配
 - `illustration prompt` / `illustration generate` / `illustration list` / `illustration config` 这组插图命令，负责编排 prompt 构造、文生图/图生图 provider 请求与 `illustrations.yaml` 配置读写
 - `workflow status` / `workflow run` / `workflow advance` / `workflow reset` / `workflow export` 这组 workflow 状态机入口，负责把 protocol + service 的推断结果、gate 决策和快照导出编排到 `workflow.yaml`
 

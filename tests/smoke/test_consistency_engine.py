@@ -61,6 +61,7 @@ class ConsistencyEngineTest(unittest.TestCase):
         state = {
             "entities": {"entities": [], "enrichmentProposals": []},
             "projection": {"snapshotProjections": [], "relationProjections": [], "sceneScopeProjections": [], "timelineProjections": [], "causalityProjections": []},
+            "worldbook": {"premiseFacts": [], "worldRules": [], "factions": [], "locations": [], "artifacts": [], "mysteries": []},
             "outline": {
                 "volumes": [
                     {"id": "vol-1", "title": "第一卷", "theme": "", "chapters": [
@@ -82,11 +83,52 @@ class ConsistencyEngineTest(unittest.TestCase):
         state = {
             "entities": {"entities": [], "enrichmentProposals": []},
             "projection": {"snapshotProjections": [], "relationProjections": [], "sceneScopeProjections": [], "timelineProjections": [], "causalityProjections": []},
+            "worldbook": {"premiseFacts": [], "worldRules": [], "factions": [], "locations": [], "artifacts": [], "mysteries": []},
             "outline": {"volumes": [], "chapters": [], "chapterDirections": []},
         }
         result = check_consistency(state, "天空飘着小雨", "chapter-001")
         self.assertEqual(len(result["hardChecks"]["stateContradictions"]), 0)
         self.assertEqual(len(result["hardChecks"]["relationContradictions"]), 0)
+
+    def test_extracts_setting_candidates(self):
+        state = {
+            "entities": {"entities": [], "enrichmentProposals": []},
+            "projection": {"snapshotProjections": [], "relationProjections": [], "sceneScopeProjections": [], "timelineProjections": [], "causalityProjections": []},
+            "worldbook": {"premiseFacts": [], "worldRules": [], "factions": [], "locations": [], "artifacts": [], "mysteries": []},
+            "outline": {"volumes": [], "chapters": [], "chapterDirections": []},
+        }
+        result = check_consistency(
+            state,
+            "所谓“守夜回响”，就是夜巡人借力后残留在现场的追踪痕迹。",
+            "chapter-001",
+        )
+        self.assertTrue(result["settingCandidates"])
+        self.assertEqual(result["settingCandidates"][0]["label"], "守夜回响")
+        self.assertEqual(result["settingConflicts"], [])
+
+    def test_flags_conflicting_setting_candidate(self):
+        state = {
+            "entities": {"entities": [], "enrichmentProposals": []},
+            "projection": {"snapshotProjections": [], "relationProjections": [], "sceneScopeProjections": [], "timelineProjections": [], "causalityProjections": []},
+            "worldbook": {
+                "premiseFacts": [],
+                "worldRules": [
+                    {"id": "rule-001", "label": "守夜代价", "rule": "每次借力都会留下追踪痕迹"}
+                ],
+                "factions": [],
+                "locations": [],
+                "artifacts": [],
+                "mysteries": [],
+            },
+            "outline": {"volumes": [], "chapters": [], "chapterDirections": []},
+        }
+        result = check_consistency(
+            state,
+            "所谓守夜代价，就是每次借力都不会留下痕迹。",
+            "chapter-002",
+        )
+        self.assertTrue(result["settingConflicts"])
+        self.assertIn("守夜代价", result["settingConflicts"][0]["issue"])
 
 
 if __name__ == "__main__":

@@ -13,13 +13,13 @@
 
 - `analyzer.py`: 章节分析（实体识别、状态检测、关系检测、场景范围）
 - `change_requests.py`: 变更请求生成与审核
-- `projection_engine.py`: 投影状态管理（upsert_by_key 去重）
-- `consistency_engine.py`: 一致性校验（hard checks: 状态/关系矛盾; soft checks: 大纲偏离）
+- `projection_engine.py`: 投影状态管理（upsert_by_key 去重），并在 `projection apply` 时吸纳高置信、无冲突的新设定候选到 `worldbook.premiseFacts`
+- `consistency_engine.py`: 一致性校验（hard checks: 状态/关系矛盾; soft checks: 大纲偏离），并输出正文中新设定候选与和既有世界设定的冲突预警
 - `entity_enricher.py`: 角色外貌/能力提取与丰富化提案
 - `context_lens.py`: 写作上下文构建（活跃角色/关系 + 情绪契约 + 题材模板 + 世界约束 + 线索/伏笔切片）
 - `outline_guard.py`: 章节大纲前置检查，判断是否具备项目定位 / 故事契约 + direction / beats / scenePlans 进入写作或细化
 - `story_review.py`: 章节回顾评分、一幕评审、类型/平台加权评分、评论、改稿建议、契约对齐与商业连载对齐检查，并开始消费情绪契约、揭露偏好、模板关注点、伏笔窗口、世界规则与角色动态状态
-- `style_detector.py`: AI 风格启发式检测与约束生成；允许通过外部注入 scorer 增强句式近似判断，但默认保持 builtin fallback
+- `style_detector.py`: AI 风格启发式检测与约束生成；允许通过外部注入 scorer 增强句式近似判断，但默认保持 builtin fallback，并支持基于 profile 的术语观察词、重复白名单和词级阈值
 - `illustration_prompting.py`: chapter / entity 插图 prompt 构造、目标元数据整理与 dry-run request 组装
 - `workflow_engine.py`: workflow 状态机纯函数，负责阶段推断、状态 hydration/build、gate 决策推进、reset 与导出快照
 - `inspiration.py`: 随机灵感生成（姓名、角色、世界、大纲骨架）
@@ -37,7 +37,7 @@
 - `analyze_chapter(root, state, chapter_id)`: 完整章节分析
 - `generate_change_requests(state, analysis)`: 分析 → 变更请求
 - `apply_projection(state, analysis, chapter_id)`: 投影应用
-- `check_consistency(state, chapter_text, chapter_id)`: 一致性校验
+- `check_consistency(state, chapter_text, chapter_id)`: 一致性校验，返回 hard/soft checks、设定候选与设定冲突上下文
 - `enrich_entities(state, chapter_id, root)`: 实体丰富化
 - `refresh_context_lens(state, chapter_id, analysis)`: 上下文刷新，返回适合当前章节写作的最小约束切片
 - `evaluate_project_story_gate(state)`: 检查项目是否已具备 `primaryGenre`、`targetAudience`、`corePromises`、`paceContract`
@@ -77,6 +77,7 @@
 - `entity_enricher.py` 跨段落实体归属问题：当多个实体出现在同一段落时，提取的属性可能错配给后出现的实体
 - `consistency_engine.py` 的 negation 检查仅适用于 `INTIMATE_WORDS_NEED_NEGATION_CHECK` 集合中的词
 - `projection_engine.py` 的 `upsert_by_key` 使用 `|` 合并 dict，确保 payload 完整覆盖
+- `projection_engine.py` 对新设定的自动入账当前只写 `worldbook.premiseFacts`，不会自动升级成 `worldRules`
 - `story_review.py` 里 `primaryGenre` 与 `subGenre`/`styleTags` 的归一化口径不同：前者归主类，后者保留细分类 slug
 - `story_review.py` 的 `weightedScores.profile` 现在还会保留 `commercialPositioning.targetPlatform`，用于解释平台修正来源
 - `build_scene_review` 当前按段落范围近似 scene，不是结构化 scene graph；结果应视为启发式提示
@@ -86,6 +87,7 @@
 - 一幕级 `contractAlignment` 复用了章节级契约思想，但阈值更偏向“局部兑现/局部钩子”，不等同于整章判断
 - `story_review.py` 现在还会输出 `storyConstraintSignals`，用于暴露当前章评审实际消费到的情绪契约、世界规则、到窗伏笔和角色状态切片
 - `story_review.py` 对 `storyTemplate.reviewFocus` 和 `emotionalContract.revealPreference` 的消费仍是启发式提示，不应被误读成严格剧情证明器
+- `style_detector.py` 的特殊术语复用检测默认是启发式；若项目存在刻意反复强化的母题，应该放进 `style-profiles.yaml -> termPolicy.allowRepeated`
 - `commercialAlignment` 目前基于 hook、字数目标、章末钩子等启发式信号，不等同于真实市场反馈预测
 - `evaluate_project_story_gate` 的用途是把“先确定市场定位和故事承诺，再拆章节”变成硬门禁，而不是 review 阶段的软建议
 - workflow 的 `currentStage` 口径是“第一个未满足 inferred 条件的 gate”，不是“所有前置 gate 都必须先人工 accept 才算通过”

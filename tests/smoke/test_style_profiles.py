@@ -38,6 +38,11 @@ class StyleProfilesTest(unittest.TestCase):
                 "web-serial-zh": {
                     "patternThresholds": {"formulaicTransition": 4.0},
                     "extraPatterns": {"hedgeAdverbs": [r"蓦地"]},
+                    "termPolicy": {
+                        "watchTerms": ["归墟潮"],
+                        "allowRepeated": ["蝴蝶效应"],
+                        "perTermThresholds": {"归墟潮": 4},
+                    },
                 }
             }
         }
@@ -48,6 +53,9 @@ class StyleProfilesTest(unittest.TestCase):
         self.assertEqual(source, "project")
         self.assertEqual(profile["patternThresholds"]["formulaicTransition"], 4.0)
         self.assertIn(r"蓦地", profile["extraPatterns"]["hedgeAdverbs"])
+        self.assertIn("归墟潮", profile["termPolicy"]["watchTerms"])
+        self.assertIn("蝴蝶效应", profile["termPolicy"]["allowRepeated"])
+        self.assertEqual(profile["termPolicy"]["perTermThresholds"]["归墟潮"], 4)
 
     def test_choose_profile_name_from_project_positioning(self) -> None:
         project = {"positioning": {"primaryGenre": "fantasy", "styleTags": ["web-serial"]}}

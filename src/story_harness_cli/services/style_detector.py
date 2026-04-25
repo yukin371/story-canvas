@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import math
 import re
+from collections import Counter
 from typing import Any, Callable, Dict, List, Tuple
 
 from story_harness_cli.utils import now_iso, stable_hash
@@ -15,6 +16,7 @@ from story_harness_cli.utils.text import count_words, paragraphs_from_text, stri
 
 
 SimilarityScorer = Callable[[str, str], float]
+CJK_RANGE = f"{chr(0x4E00)}-{chr(0x9FFF)}"
 
 
 # ---------------------------------------------------------------------------
@@ -158,6 +160,12 @@ def detect_ai_style(
         total_deduction += 1
     results.append(_repetition_result(repetition))
 
+    # Special term repetition
+    special_terms = _detect_special_term_repetition(clean_text, profile_config or {})
+    if special_terms["detected"]:
+        total_deduction += 1 if special_terms["severity"] == "low" else 2
+    results.append(_special_term_result(special_terms))
+
     # Cap total deduction at 6
     total_deduction = min(total_deduction, 6)
 
@@ -173,6 +181,7 @@ def detect_ai_style(
         "sensoryDistribution": sensory,
         "paragraphUniformity": uniformity,
         "sentenceRepetition": repetition,
+        "specialTermRepetition": special_terms,
         "sources": {
             "sentenceRepetition": repetition["source"],
         },
@@ -407,6 +416,77 @@ def _detect_sentence_repetition(
     }
 
 
+def _detect_special_term_repetition(text: str, profile_config: Dict[str, Any]) -> Dict[str, Any]:
+    term_policy = profile_config.get("termPolicy", {}) if isinstance(profile_config, dict) else {}
+    allow_repeated = {
+        item for item in term_policy.get("allowRepeated", [])
+        if isinstance(item, str) and item
+    }
+    watch_terms = [
+        item for item in term_policy.get("watchTerms", [])
+        if isinstance(item, str) and item
+    ]
+    suffixes = [
+        item for item in term_policy.get("specialTermSuffixes", [])
+        if isinstance(item, str) and item
+    ]
+    per_term_thresholds = {
+        key: int(value)
+        for key, value in term_policy.get("perTermThresholds", {}).items()
+        if isinstance(key, str) and key and isinstance(value, int) and value >= 1
+    }
+    candidates: List[str] = []
+    quoted_terms = re.findall(r"[“「『《]([^”」』》]{2,10})[”」』》]", text)
+    suffix_pattern = "|".join(
+        re.escape(item)
+        for item in [
+            "效应", "法则", "定律", "理论", "模型", "体系", "术式", "仪式", "回路", "协议",
+            "计划", "印记", "烙印", "命格", "命途", "体质", "灵根", "血脉", "规则",
+            *suffixes,
+        ]
+    )
+    suffix_matches = re.findall(
+        f"([{CJK_RANGE}]{{2,10}}(?:{suffix_pattern}))",
+        text,
+    ) if suffix_pattern else []
+    candidates.extend(term for term in quoted_terms if _is_special_term_candidate(term))
+    for raw_term in suffix_matches:
+        candidates.extend(_normalize_suffix_term_candidates(raw_term))
+    for term in watch_terms:
+        candidates.extend([term] * text.count(term))
+
+    counts = Counter(candidates)
+    repeated = [
+        {"term": term, "count": count}
+        for term, count in counts.items()
+        if not _term_is_allowlisted(term, allow_repeated) and count >= per_term_thresholds.get(term, 3)
+    ]
+    repeated.sort(key=lambda item: (-item["count"], item["term"]))
+    if not repeated:
+        return {
+            "detected": False,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topTerms": [],
+        }
+
+    top_count = repeated[0]["count"]
+    if top_count >= 6:
+        severity = "high"
+    elif top_count >= 4:
+        severity = "medium"
+    else:
+        severity = "low"
+    return {
+        "detected": True,
+        "severity": severity,
+        "count": sum(item["count"] for item in repeated),
+        "evidence": [f"{item['term']} ×{item['count']}" for item in repeated[:3]],
+        "topTerms": repeated[:5],
+    }
+
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -479,6 +559,25 @@ def _repetition_result(repetition: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def _special_term_result(special_terms: Dict[str, Any]) -> Dict[str, Any]:
+    top_terms = special_terms.get("topTerms", [])
+    top_label = "、".join(item["term"] for item in top_terms[:2])
+    suggestion = ""
+    if special_terms.get("detected"):
+        suggestion = f"特殊术语复用偏多（如 {top_label}），可减少直呼其名的次数，改用动作结果、人物理解或上下文代称分散表达"
+    return {
+        "id": "specialTermRepetition",
+        "label": "特殊术语复用",
+        "detected": special_terms.get("detected", False),
+        "count": special_terms.get("count", 0),
+        "perThousand": 0,
+        "threshold": 3,
+        "severity": special_terms.get("severity", "none"),
+        "evidence": special_terms.get("evidence", []),
+        "suggestion": suggestion,
+    }
+
+
 def _exact_similarity(left: str, right: str) -> float:
     return 100.0 if left == right else 0.0
 
@@ -490,7 +589,7 @@ def _average_length(paragraphs: List[str]) -> int:
 
 
 def _count_cjk(text: str) -> int:
-    return len(re.findall(r'[一-鿿]', text))
+    return len(re.findall(f"[{CJK_RANGE}]", text))
 
 
 def _empty_result() -> Dict[str, Any]:
@@ -501,6 +600,7 @@ def _empty_result() -> Dict[str, Any]:
         "sensoryDistribution": {},
         "paragraphUniformity": {},
         "sentenceRepetition": {},
+        "specialTermRepetition": {},
         "summary": "文本过短，跳过风格检测",
         "suggestions": [],
     }
@@ -512,6 +612,35 @@ def _generate_summary(results: List[Dict[str, Any]], deduction: int) -> str:
         return "未检测到明显AI风格特征。"
     labels = "、".join(r["label"] for r in detected)
     return f"检测到{len(detected)}项AI风格特征：{labels}。扣{deduction}分。"
+
+
+def _is_special_term_candidate(term: str) -> bool:
+    if len(term) < 2 or len(term) > 10:
+        return False
+    if re.search(r"(今天|现在|自己|事情|时候|地方|东西|问题|声音|目光|空气)$", term):
+        return False
+    return True
+
+
+def _normalize_suffix_term_candidates(raw_term: str) -> List[str]:
+    if len(raw_term) <= 4:
+        return [raw_term] if _is_special_term_candidate(raw_term) else []
+    variants: List[str] = []
+    for prefix_len in range(2, min(6, len(raw_term) - 1) + 1):
+        candidate = raw_term[-(prefix_len + 2):]
+        if _is_special_term_candidate(candidate):
+            variants.append(candidate)
+    if _is_special_term_candidate(raw_term):
+        variants.append(raw_term)
+    deduped: List[str] = []
+    for item in variants:
+        if item not in deduped:
+            deduped.append(item)
+    return deduped
+
+
+def _term_is_allowlisted(term: str, allow_repeated: set[str]) -> bool:
+    return any(allowed in term or term in allowed for allowed in allow_repeated)
 
 
 # ---------------------------------------------------------------------------

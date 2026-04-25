@@ -48,6 +48,8 @@ class ConsistencyCommandTest(unittest.TestCase):
         data = json.loads(check_file.read_text(encoding="utf-8"))
         self.assertIn("hardChecks", data)
         self.assertIn("softChecks", data)
+        self.assertIn("settingCandidates", data)
+        self.assertIn("settingConflicts", data)
         self.assertIn("contextForAI", data)
 
 

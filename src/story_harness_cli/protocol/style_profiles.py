@@ -12,6 +12,12 @@ def get_default_style_profiles() -> Dict[str, Dict[str, Any]]:
         "default": {
             "patternThresholds": {},
             "extraPatterns": {},
+            "termPolicy": {
+                "watchTerms": [],
+                "allowRepeated": [],
+                "perTermThresholds": {},
+                "specialTermSuffixes": [],
+            },
         },
         "web-serial-zh": {
             "patternThresholds": {
@@ -20,6 +26,12 @@ def get_default_style_profiles() -> Dict[str, Dict[str, Any]]:
             },
             "extraPatterns": {
                 "formulaicTransition": [r"下一刻", r"下一秒", r"话音未落"],
+            },
+            "termPolicy": {
+                "watchTerms": [],
+                "allowRepeated": [],
+                "perTermThresholds": {},
+                "specialTermSuffixes": [],
             },
         },
         "literary-zh": {
@@ -30,6 +42,12 @@ def get_default_style_profiles() -> Dict[str, Dict[str, Any]]:
             },
             "extraPatterns": {
                 "tellingEmotion": [r"灵魂深处[^。，？！\n]{1,12}", r"某种[^。，？！\n]{1,10}情绪"],
+            },
+            "termPolicy": {
+                "watchTerms": [],
+                "allowRepeated": [],
+                "perTermThresholds": {},
+                "specialTermSuffixes": [],
             },
         },
     }
