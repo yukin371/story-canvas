@@ -3,19 +3,20 @@ requires = ["hatchling>=1.27.0"]
 build-backend = "hatchling.build"
 
 [project]
-name = "story-harness-cli"
+name = "story-canvas"
 version = "0.2.1"
-description = "Agent-native fiction workflow CLI for long-form narrative writing"
+description = "Agent-native story and visual workflow platform for structured fiction and image generation"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
-  { name = "Story Harness Contributors", email = "opensource@example.com" }
+  { name = "Story Canvas Contributors", email = "opensource@example.com" }
 ]
 dependencies = []
 
 [project.scripts]
-story-harness = "story_harness_cli.main:main"
+story-canvas = "story_canvas.main:main"
+story-harness = "story_canvas.main:main"
 
 [project.optional-dependencies]
 style-local = [
@@ -29,7 +30,7 @@ image-openai = [
 dev = []
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/story_harness_cli"]
+packages = ["src/story_canvas", "src/story_harness_cli"]
 
 [tool.ruff]
 target-version = "py310"

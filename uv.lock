@@ -463,7 +463,7 @@ wheels = [
 ]
 
 [[package]]
-name = "story-harness-cli"
+name = "story-canvas"
 version = "0.2.1"
 source = { editable = "." }
 

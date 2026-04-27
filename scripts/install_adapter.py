@@ -53,7 +53,7 @@ def install_tree(source: Path, target: Path, force: bool) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Install a Story Harness host adapter.")
+    parser = argparse.ArgumentParser(description="Install a Story Canvas host adapter.")
     parser.add_argument("--host", required=True, choices=sorted(HOST_DIR_MAP))
     parser.add_argument("--skill-name", default="story-harness-writing")
     parser.add_argument("--workspace", help="Workspace root for hosts that use workspace-local skill directories.")
@@ -89,4 +89,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

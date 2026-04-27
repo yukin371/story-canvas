@@ -9,7 +9,7 @@ from install_adapter import HOST_DIR_MAP, main as install_one_main
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Install Story Harness adapters for one or more hosts.")
+    parser = argparse.ArgumentParser(description="Install Story Canvas adapters for one or more hosts.")
     parser.add_argument(
         "--hosts",
         nargs="+",
@@ -70,4 +70,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
