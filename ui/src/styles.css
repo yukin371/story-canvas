@@ -1,0 +1,216 @@
+:root {
+  color-scheme: light;
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --surface-soft: #f8f9fb;
+  --surface-side: #eef3f8;
+  --surface-side-soft: #e6edf5;
+  --line: #d9dde4;
+  --text: #1f2329;
+  --muted: #6b7280;
+  --accent: #0052d9;
+  --sidebar-bg: #1f2329;
+  --sidebar-line: rgba(255, 255, 255, 0.08);
+  --sidebar-text: rgba(255, 255, 255, 0.88);
+  --workbench-side-width: 336px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+code {
+  padding: 0.08rem 0.28rem;
+  border-radius: 4px;
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.surface-card,
+.summary-card,
+.chapter-card,
+.action-item,
+.fact-item {
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.surface-card,
+.summary-card,
+.chapter-card,
+.action-item,
+.fact-item,
+.result-card {
+  border-radius: 4px;
+}
+
+.summary-card {
+  padding: 12px 14px;
+}
+
+.summary-label,
+.detail-copy,
+.fact-row span,
+.chapter-card p,
+.action-item p,
+.preview-copy p {
+  color: var(--muted);
+}
+
+.summary-value {
+  display: block;
+  margin-top: 6px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.compact-list,
+.compact-stack,
+.action-stack,
+.fact-list {
+  display: grid;
+  gap: 8px;
+}
+
+.fact-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eef1f4;
+}
+
+.fact-row:last-child {
+  border-bottom: 0;
+}
+
+.fact-row strong {
+  max-width: 56%;
+  overflow: hidden;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.chapter-stack {
+  min-height: 0;
+  overflow: auto;
+  padding-right: 0;
+}
+
+.chapter-card {
+  width: 100%;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.chapter-card:hover,
+.chapter-card.is-active {
+  border-color: rgba(0, 82, 217, 0.3);
+  background: #f7faff;
+}
+
+.chapter-card-head,
+.action-head,
+.config-inline,
+.result-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.chapter-card-head {
+  align-items: flex-start;
+}
+
+.chapter-card strong,
+.section-title,
+.result-path {
+  font-weight: 600;
+}
+
+.chapter-card p {
+  margin: 4px 0 0;
+  line-height: 1.45;
+  font-size: 12px;
+}
+
+.compact-form {
+  display: grid;
+  gap: 0;
+}
+
+.compact-form-row,
+.compact-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.compact-actions {
+  padding-top: 2px;
+}
+
+.inline-error {
+  margin: 0;
+  color: #c93537;
+}
+
+.t-card,
+.t-button,
+.t-input__wrap,
+.t-textarea__inner,
+.t-select__wrap,
+.t-tag {
+  border-radius: 4px !important;
+}
+
+.t-card {
+  box-shadow: none !important;
+}
+
+.t-button--theme-primary {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.t-button--theme-primary:hover {
+  background-color: #0045b5;
+  border-color: #0045b5;
+}
+
+@media (max-width: 1180px) {
+  html,
+  body,
+  #app {
+    overflow: auto;
+  }
+
+  .compact-form-row,
+  .compact-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
