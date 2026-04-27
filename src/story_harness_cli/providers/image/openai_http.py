@@ -3,25 +3,46 @@ from __future__ import annotations
 import base64
 import json
 import mimetypes
+import os
 import posixpath
+import ssl
+import urllib.error
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
-from uuid import uuid4
 
 from ..base import ProviderError
 
 
+def _normalize_base_url(value: str) -> str:
+    text = value.strip().rstrip("/")
+    if text.endswith("/v1"):
+        return text
+    return f"{text}/v1"
+
+
+def _guess_mime_type(path: Path) -> str:
+    guessed = mimetypes.guess_type(path.name)[0]
+    return guessed or "application/octet-stream"
+
+
+def _path_to_data_url(path: Path) -> str:
+    return f"data:{_guess_mime_type(path)};base64,{base64.b64encode(path.read_bytes()).decode('utf-8')}"
+
+
 @dataclass(slots=True)
 class OpenAIImageHTTPClient:
-    """Minimal stdlib-only OpenAI image client."""
+    """Stdlib-only image client using Responses API + image_generation."""
 
     api_key: str
-    generations_url: str = "https://api.openai.com/v1/images/generations"
-    edits_url: str = "https://api.openai.com/v1/images/edits"
-    timeout_seconds: int = 60
+    base_url: str = "https://api.openai.com/v1"
+    timeout_seconds: int = 300
+
+    @property
+    def responses_url(self) -> str:
+        return f"{_normalize_base_url(self.base_url)}/responses"
 
     def build_generation_request(
         self,
@@ -30,15 +51,26 @@ class OpenAIImageHTTPClient:
         model: str,
         size: str,
         quality: str,
+        response_model: str = "gpt-5.4",
     ) -> dict[str, Any]:
         return {
-            "endpoint": self.generations_url,
+            "endpoint": self.responses_url,
             "transport": "json",
+            "stream": True,
             "json": {
-                "model": model,
-                "prompt": prompt,
-                "size": size,
-                "quality": quality,
+                "model": response_model,
+                "input": prompt,
+                "stream": True,
+                "tools": [
+                    {
+                        "type": "image_generation",
+                        "model": model,
+                        "size": size,
+                        "quality": quality,
+                        "output_format": "png",
+                    }
+                ],
+                "tool_choice": {"type": "image_generation"},
             },
         }
 
@@ -51,63 +83,92 @@ class OpenAIImageHTTPClient:
         quality: str,
         input_images: list[str],
         mask_path: str = "",
+        response_model: str = "gpt-5.4",
     ) -> dict[str, Any]:
         if not input_images:
             raise ProviderError("OpenAI 图生图至少需要一张 input image")
 
-        files = [{"field": "image[]", "path": path} for path in input_images]
+        content: list[dict[str, Any]] = [{"type": "input_text", "text": prompt}]
+        for index, image_path in enumerate(input_images, start=1):
+            path = Path(image_path)
+            if not path.exists():
+                raise ProviderError(f"OpenAI image upload file does not exist: {path}")
+            content.append(
+                {
+                    "type": "input_text",
+                    "text": f"Input image {index}: primary reference image. Preserve identity/layout unless the prompt explicitly changes it.",
+                }
+            )
+            content.append({"type": "input_image", "image_url": _path_to_data_url(path)})
+
         if mask_path:
-            files.append({"field": "mask", "path": mask_path})
+            path = Path(mask_path)
+            if not path.exists():
+                raise ProviderError(f"OpenAI mask file does not exist: {path}")
+            content.append(
+                {
+                    "type": "input_text",
+                    "text": "Mask image: treat the following input image as the edit mask reference. Change only the masked/indicated region and preserve everything else.",
+                }
+            )
+            content.append({"type": "input_image", "image_url": _path_to_data_url(path)})
+
         return {
-            "endpoint": self.edits_url,
-            "transport": "multipart",
-            "fields": {
-                "model": model,
-                "prompt": prompt,
-                "size": size,
-                "quality": quality,
+            "endpoint": self.responses_url,
+            "transport": "json",
+            "stream": True,
+            "json": {
+                "model": response_model,
+                "input": [{"role": "user", "content": content}],
+                "stream": True,
+                "tools": [
+                    {
+                        "type": "image_generation",
+                        "model": model,
+                        "size": size,
+                        "quality": quality,
+                        "output_format": "png",
+                        "action": "edit",
+                    }
+                ],
+                "tool_choice": {"type": "image_generation"},
             },
-            "files": files,
         }
 
     def generate_image(self, request: dict[str, Any]) -> dict[str, Any]:
-        transport = request.get("transport")
-        if transport == "json":
-            body = json.dumps(request.get("json", {})).encode("utf-8")
-            content_type = "application/json"
-        elif transport == "multipart":
-            body, content_type = self._build_multipart_body(
-                request.get("fields", {}),
-                request.get("files", []),
-            )
-        else:
-            raise ProviderError(f"Unsupported OpenAI image transport: {transport}")
+        if request.get("transport") != "json":
+            raise ProviderError(f"Unsupported OpenAI image transport: {request.get('transport')}")
 
+        body = json.dumps(request.get("json", {})).encode("utf-8")
         http_request = urllib.request.Request(
-            request.get("endpoint", self.generations_url),
+            request.get("endpoint", self.responses_url),
             data=body,
             headers={
                 "Authorization": f"Bearer {self.api_key}",
-                "Content-Type": content_type,
+                "Content-Type": "application/json",
+                "Accept": "text/event-stream",
+                "User-Agent": "story-harness-cli/1.0",
             },
             method="POST",
         )
 
         try:
-            with urllib.request.urlopen(http_request, timeout=self.timeout_seconds) as response:
-                response_body = response.read().decode("utf-8")
+            opener = urllib.request.build_opener(
+                urllib.request.ProxyHandler({}),
+                urllib.request.HTTPSHandler(context=ssl.create_default_context()),
+            )
+            with opener.open(http_request, timeout=self.timeout_seconds) as response:
+                response_payload = self._read_sse_response(response)
+        except urllib.error.HTTPError as exc:
+            response_body = exc.read().decode("utf-8", errors="replace")
+            raise ProviderError(f"OpenAI image request failed: HTTP {exc.code}: {response_body or exc.reason}") from exc
         except Exception as exc:  # pragma: no cover - exercised through command-side mocking later
             raise ProviderError(f"OpenAI image request failed: {exc}") from exc
 
-        try:
-            payload = json.loads(response_body)
-        except json.JSONDecodeError as exc:
-            raise ProviderError("OpenAI image response was not valid JSON") from exc
-
         return {
             "provider": "openai-http",
-            "artifacts": self._extract_artifacts(payload),
-            "payload": payload,
+            "artifacts": self._extract_artifacts(response_payload),
+            "payload": response_payload,
         }
 
     def build_payload(
@@ -117,46 +178,15 @@ class OpenAIImageHTTPClient:
         model: str,
         size: str,
         quality: str,
+        response_model: str = "gpt-5.4",
     ) -> dict[str, Any]:
         return self.build_generation_request(
             prompt,
             model=model,
             size=size,
             quality=quality,
+            response_model=response_model,
         )
-
-    def _build_multipart_body(
-        self,
-        fields: dict[str, Any],
-        files: list[dict[str, str]],
-    ) -> tuple[bytes, str]:
-        boundary = f"----story-harness-{uuid4().hex}"
-        body = bytearray()
-
-        for name, value in fields.items():
-            body.extend(f"--{boundary}\r\n".encode("utf-8"))
-            body.extend(f'Content-Disposition: form-data; name="{name}"\r\n\r\n'.encode("utf-8"))
-            body.extend(str(value).encode("utf-8"))
-            body.extend(b"\r\n")
-
-        for item in files:
-            file_path = Path(item["path"])
-            if not file_path.exists():
-                raise ProviderError(f"OpenAI image upload file does not exist: {file_path}")
-            mime_type = mimetypes.guess_type(file_path.name)[0] or "application/octet-stream"
-            body.extend(f"--{boundary}\r\n".encode("utf-8"))
-            body.extend(
-                (
-                    f'Content-Disposition: form-data; name="{item["field"]}"; '
-                    f'filename="{file_path.name}"\r\n'
-                ).encode("utf-8")
-            )
-            body.extend(f"Content-Type: {mime_type}\r\n\r\n".encode("utf-8"))
-            body.extend(file_path.read_bytes())
-            body.extend(b"\r\n")
-
-        body.extend(f"--{boundary}--\r\n".encode("utf-8"))
-        return bytes(body), f"multipart/form-data; boundary={boundary}"
 
     def materialize_artifacts(self, result: dict[str, Any]) -> list[dict[str, Any]]:
         artifacts = result.get("artifacts", [])
@@ -210,6 +240,75 @@ class OpenAIImageHTTPClient:
     def materialize_first_artifact(self, result: dict[str, Any]) -> dict[str, Any]:
         return self.materialize_artifacts(result)[0]
 
+    def _read_sse_response(self, response: Any) -> dict[str, Any]:
+        response_id = ""
+        image_items: list[dict[str, Any]] = []
+        response_error: dict[str, Any] | None = None
+        event_lines: list[str] = []
+        for raw_line in response:
+            line = raw_line.decode("utf-8", errors="replace").rstrip("\r\n")
+            if line:
+                event_lines.append(line)
+                continue
+
+            event_name, data = self._parse_sse_event(event_lines)
+            event_lines = []
+            if not event_name:
+                continue
+            payload = json.loads(data) if data else {}
+            if event_name == "response.created":
+                response_id = payload.get("response", {}).get("id", response_id)
+                continue
+            if event_name == "response.output_item.done":
+                item = payload.get("item", {})
+                if item.get("type") == "image_generation_call" and item.get("result"):
+                    image_items.append(item)
+                continue
+            if event_name == "response.failed":
+                response_error = payload.get("response", {}).get("error") or {
+                    "code": "unknown_error",
+                    "message": "Responses API image_generation failed.",
+                }
+
+        if response_error is not None:
+            raise ProviderError(
+                f"{response_error.get('code', 'unknown_error')}: {response_error.get('message', 'Responses API image_generation failed.')}"
+            )
+
+        output_data = []
+        for item in image_items:
+            output_data.append(
+                {
+                    "type": "image_generation_call",
+                    "result": item.get("result", ""),
+                    "revised_prompt": item.get("revised_prompt", ""),
+                    "output_format": item.get("output_format", "png"),
+                }
+            )
+
+        return {
+            "id": response_id,
+            "output": output_data,
+            "data": [
+                {
+                    "b64_json": item.get("result", ""),
+                    "revised_prompt": item.get("revised_prompt", ""),
+                    "output_format": item.get("output_format", "png"),
+                }
+                for item in image_items
+            ],
+        }
+
+    def _parse_sse_event(self, lines: list[str]) -> tuple[str, str]:
+        event_name = ""
+        data_parts: list[str] = []
+        for line in lines:
+            if line.startswith("event:"):
+                event_name = line[len("event:") :].strip()
+            elif line.startswith("data:"):
+                data_parts.append(line[len("data:") :].strip())
+        return event_name, "\n".join(data_parts)
+
     def _extract_artifacts(self, payload: dict[str, Any]) -> list[dict[str, Any]]:
         artifacts: list[dict[str, Any]] = []
         payload_output_format = payload.get("output_format") or "png"
@@ -219,7 +318,7 @@ class OpenAIImageHTTPClient:
             artifacts.append(
                 {
                     "index": index,
-                    "b64Json": item.get("b64_json", ""),
+                    "b64Json": item.get("b64_json", "") or item.get("result", ""),
                     "url": item.get("url", ""),
                     "revisedPrompt": item.get("revised_prompt", ""),
                     "outputFormat": item.get("output_format") or payload_output_format,
@@ -245,3 +344,27 @@ class OpenAIImageHTTPClient:
         if normalized in {"png", "webp", "jpeg"}:
             return normalized
         return "png"
+
+
+def resolve_api_key(cli_value: str) -> str:
+    if cli_value.strip():
+        return cli_value.strip()
+    for env_name in ("IMAGEGEN_API_KEY", "OPENAI_API_KEY", "API_KEY"):
+        value = os.environ.get(env_name, "").strip()
+        if value:
+            return value
+    return ""
+
+
+def resolve_base_url(cli_value: str, configured_value: str = "") -> str:
+    for candidate in (
+        cli_value.strip(),
+        configured_value.strip(),
+        os.environ.get("IMAGEGEN_BASE_URL", "").strip(),
+        os.environ.get("OPENAI_BASE_URL", "").strip(),
+        os.environ.get("BASE_URL", "").strip(),
+        "https://api.openai.com/v1",
+    ):
+        if candidate:
+            return _normalize_base_url(candidate)
+    return "https://api.openai.com/v1"

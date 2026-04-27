@@ -60,8 +60,10 @@ def default_project_state() -> Dict[str, Dict[str, Any]]:
         "story_reviews": {
             "rubricVersion": "chapter-review-v1",
             "sceneRubricVersion": "scene-review-v1",
+            "volumeSelfReviewRubricVersion": "volume-self-review-v1",
             "chapterReviews": [],
             "sceneReviews": [],
+            "volumeSelfReviews": [],
         },
         "projection": {
             "snapshotProjections": [],
@@ -92,6 +94,24 @@ def default_project_state() -> Dict[str, Dict[str, Any]]:
                 "name": "default",
                 "version": "builtin",
             },
+            "promptSystem": {
+                "defaultPack": {
+                    "source": "builtin",
+                    "packId": "story-canvas/default",
+                    "version": "1.0",
+                },
+                "defaultTemplateByUseCase": {
+                    "character": "character-standard",
+                    "chapter-scene": "scene-standard",
+                    "promo": "promo-standard",
+                },
+                "defaultModifierRefs": [],
+                "commercialMode": "personal",
+            },
+            "batchSystem": {
+                "defaultDeliveryMode": "webui-manual",
+                "externalAgentSkill": "story-canvas-imagegen",
+            },
             "generated": [],
         },
         "threads": {"threads": []},
@@ -99,6 +119,7 @@ def default_project_state() -> Dict[str, Dict[str, Any]]:
         "worldbook": {
             "premiseFacts": [],
             "worldRules": [],
+            "powerProgressions": [],
             "factions": [],
             "locations": [],
             "artifacts": [],

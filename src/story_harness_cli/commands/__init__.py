@@ -13,6 +13,7 @@ from .outline import register_outline_commands
 from .projection import register_projection_commands
 from .project import register_project_commands
 from .review import register_review_commands
+from .status import register_status_commands
 from .stats import register_stats_commands
 from .structure import register_structure_commands
 from .timeline import register_timeline_commands
@@ -21,6 +22,7 @@ from .style import register_style_commands
 from .thread import register_thread_commands
 from .workflow import register_workflow_commands
 from .migrate import register_migrate_commands
+from .world import register_world_commands
 
 __all__ = [
     "register_arc_commands",
@@ -38,6 +40,7 @@ __all__ = [
     "register_projection_commands",
     "register_project_commands",
     "register_review_commands",
+    "register_status_commands",
     "register_stats_commands",
     "register_structure_commands",
     "register_timeline_commands",
@@ -46,4 +49,5 @@ __all__ = [
     "register_thread_commands",
     "register_workflow_commands",
     "register_migrate_commands",
+    "register_world_commands",
 ]

@@ -32,10 +32,13 @@ class SchemaTest(unittest.TestCase):
         story_reviews = state["story_reviews"]
         self.assertEqual(story_reviews["rubricVersion"], "chapter-review-v1")
         self.assertEqual(story_reviews["sceneRubricVersion"], "scene-review-v1")
+        self.assertEqual(story_reviews["volumeSelfReviewRubricVersion"], "volume-self-review-v1")
         self.assertIn("chapterReviews", story_reviews)
         self.assertIn("sceneReviews", story_reviews)
+        self.assertIn("volumeSelfReviews", story_reviews)
         self.assertIsInstance(story_reviews["chapterReviews"], list)
         self.assertIsInstance(story_reviews["sceneReviews"], list)
+        self.assertIsInstance(story_reviews["volumeSelfReviews"], list)
 
     def test_project_has_positioning_and_story_contract(self):
         state = default_project_state()
@@ -59,6 +62,7 @@ class SchemaTest(unittest.TestCase):
         worldbook = state["worldbook"]
         self.assertIn("premiseFacts", worldbook)
         self.assertIn("worldRules", worldbook)
+        self.assertIn("powerProgressions", worldbook)
         self.assertIn("factions", worldbook)
         self.assertIn("mysteries", worldbook)
 
@@ -109,8 +113,11 @@ class SchemaTest(unittest.TestCase):
             self.assertEqual(state["project"]["commercialPositioning"]["hookStack"], [])
             self.assertEqual(state["project"]["commercialPositioning"]["chapterWordTarget"], 0)
             self.assertEqual(state["worldbook"]["worldRules"], [])
+            self.assertEqual(state["worldbook"]["powerProgressions"], [])
             self.assertEqual(state["story_reviews"]["sceneRubricVersion"], "scene-review-v1")
             self.assertEqual(state["story_reviews"]["sceneReviews"], [])
+            self.assertEqual(state["story_reviews"]["volumeSelfReviewRubricVersion"], "volume-self-review-v1")
+            self.assertEqual(state["story_reviews"]["volumeSelfReviews"], [])
             self.assertEqual(state["workflow_progress"]["currentStage"], "")
             self.assertEqual(state["workflow_progress"]["gateHistory"], [])
 

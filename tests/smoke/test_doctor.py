@@ -86,6 +86,82 @@ class DoctorSmokeTest(unittest.TestCase):
         self.assertIn("missing-core-emotions", codes)
         self.assertGreaterEqual(payload["summary"]["warnings"], len(warning_items))
         self.assertGreater(payload["summary"]["warnings"], 0)
+        target_audience_rule = next(
+            item for item in payload["judgements"] if item.get("ruleId") == "missing-target-audience"
+        )
+        self.assertEqual(target_audience_rule["source"], "core")
+        self.assertEqual(target_audience_rule["scope"], "project")
+        self.assertIn("project-gate", target_audience_rule["tags"])
+
+    def test_doctor_warns_for_missing_project_prd(self) -> None:
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["doctor", "--root", str(self.temp_dir)])
+        payload = json.loads(buffer.getvalue())
+        warning_codes = [item.get("code") for item in payload["checks"] if item.get("level") == "warning"]
+        prd_rule = next(item for item in payload["judgements"] if item.get("ruleId") == "missing-project-prd")
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("missing-project-prd", warning_codes)
+        self.assertEqual(prd_rule["source"], "core")
+        self.assertEqual(prd_rule["scope"], "project")
+        self.assertIn("prd", prd_rule["tags"])
+
+    def test_doctor_warns_for_incomplete_bootstrap_project_prd(self) -> None:
+        (self.temp_dir / "PRD.md").write_text(
+            "# PRD: 测试项目\n\n"
+            "## 8. 第一卷 / 当前启动焦点\n\n"
+            "- 卷目标: TBD\n"
+            "- 读者钩子: TBD\n"
+            "- 压制源与预期爆发点: TBD\n"
+            "- 关键设定 onboarding: TBD\n\n"
+            "## 9. 当前起始章节\n\n"
+            "- activeChapterId: `chapter-001`\n"
+            "- chapterTitle: 第一章\n"
+            "- 本章承接点: TBD\n"
+            "- 本章交付点: TBD\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["doctor", "--root", str(self.temp_dir)])
+        payload = json.loads(buffer.getvalue())
+        warning_codes = [item.get("code") for item in payload["checks"] if item.get("level") == "warning"]
+        prd_rule = next(item for item in payload["judgements"] if item.get("ruleId") == "project-prd-incomplete")
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("project-prd-incomplete", warning_codes)
+        self.assertEqual(prd_rule["source"], "core")
+        self.assertEqual(prd_rule["scope"], "project")
+        self.assertIn("prd", prd_rule["tags"])
+        self.assertIn("卷目标", prd_rule["message"])
+        self.assertIn("本章交付点", prd_rule["message"])
+
+    def test_doctor_does_not_warn_for_completed_project_prd(self) -> None:
+        (self.temp_dir / "PRD.md").write_text(
+            "# PRD: 测试项目\n\n"
+            "## 8. 第一卷 / 当前启动焦点\n\n"
+            "- 卷目标: 第一卷完成主角脱离旧势力控制，并建立第一层主动权。\n"
+            "- 读者钩子: 看主角如何把死局反转成第一层入局资格。\n"
+            "- 压制源与预期爆发点: 宗门压火制度持续施压，卷尾爆发点是主角首次掌控命灯代价。\n"
+            "- 关键设定 onboarding: 前三章交代命灯与压火制度的基本关系。\n\n"
+            "## 9. 当前起始章节\n\n"
+            "- activeChapterId: `chapter-001`\n"
+            "- chapterTitle: 第一章\n"
+            "- 本章承接点: 从主角即将被送去压火的处境切入。\n"
+            "- 本章交付点: 让读者理解命灯危险，并留下主角反抗的第一层钩子。\n",
+            encoding="utf-8",
+        )
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["doctor", "--root", str(self.temp_dir)])
+        payload = json.loads(buffer.getvalue())
+        warning_codes = [item.get("code") for item in payload["checks"] if item.get("level") == "warning"]
+
+        self.assertEqual(exit_code, 0)
+        self.assertNotIn("missing-project-prd", warning_codes)
+        self.assertNotIn("project-prd-incomplete", warning_codes)
 
     def test_doctor_warns_when_story_template_requires_worldbook(self) -> None:
         project = json.loads((self.temp_dir / "project.yaml").read_text(encoding="utf-8"))
@@ -134,6 +210,88 @@ class DoctorSmokeTest(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertIn("missing-required-foreshadow-ledger", codes)
         self.assertIn("missing-character-state-tracking", codes)
+
+    def test_doctor_uses_stable_rule_id_for_missing_entity_profile(self) -> None:
+        (self.temp_dir / "entities.yaml").write_text(
+            json.dumps(
+                {
+                    "entities": [
+                        {
+                            "id": "char-shenzhao",
+                            "name": "沈昭",
+                            "type": "character",
+                        }
+                    ],
+                    "enrichmentProposals": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["doctor", "--root", str(self.temp_dir)])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("entity-missing-profile", {item.get("code") for item in payload["checks"] if item.get("code")})
+        profile_rule = next(item for item in payload["judgements"] if item.get("ruleId") == "entity-missing-profile")
+        self.assertEqual(profile_rule["source"], "core")
+        self.assertEqual(profile_rule["scope"], "entity")
+        self.assertEqual(profile_rule["kind"], "soft")
+        self.assertEqual(profile_rule["severity"], "warning")
+        self.assertIn("entity-profile", profile_rule["tags"])
+        self.assertNotIn("doctor-check", {item.get("ruleId") for item in payload["judgements"]})
+
+    def test_doctor_judgements_do_not_fallback_to_generic_rule_ids(self) -> None:
+        project = json.loads((self.temp_dir / "project.yaml").read_text(encoding="utf-8"))
+        project["positioning"] = {
+            "primaryGenre": "Fantasy Epic",
+            "subGenre": "urban-occult",
+            "styleTags": ["web-serial"],
+            "targetAudience": ["qidian-reader"],
+        }
+        project["storyContract"] = {
+            "corePromises": [""],
+            "avoidances": [],
+            "endingContract": "",
+            "paceContract": "",
+        }
+        project["storyTemplate"] = {
+            "id": "Mystery Longform",
+            "label": "悬疑长篇",
+            "modulePolicy": "required",
+            "reviewFocus": [],
+        }
+        (self.temp_dir / "project.yaml").write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding="utf-8")
+        (self.temp_dir / "entities.yaml").write_text(
+            json.dumps(
+                {
+                    "entities": [
+                        {
+                            "id": "char-shenzhao",
+                            "name": "沈昭",
+                            "type": "character",
+                        }
+                    ],
+                    "enrichmentProposals": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["doctor", "--root", str(self.temp_dir)])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertTrue(payload["judgements"])
+        self.assertNotIn("doctor-check", {item.get("ruleId") for item in payload["judgements"]})
 
     def test_doctor_reads_worldbook_when_present(self) -> None:
         (self.temp_dir / "worldbook.yaml").write_text(
@@ -201,6 +359,14 @@ class DoctorSmokeTest(unittest.TestCase):
         self.assertIn("missing-commercial-premise", codes)
         self.assertIn("missing-commercial-hook-line", codes)
         self.assertIn("missing-commercial-target-platform", codes)
+        commercial_rule = next(
+            item for item in payload["judgements"] if item.get("ruleId") == "missing-commercial-premise"
+        )
+        self.assertEqual(commercial_rule["source"], "project-pack")
+        self.assertEqual(commercial_rule["scope"], "project")
+        self.assertEqual(commercial_rule["kind"], "soft")
+        self.assertEqual(commercial_rule["severity"], "warning")
+        self.assertIn("commercial-positioning", commercial_rule["tags"])
 
     def test_doctor_uses_project_commercial_word_targets(self) -> None:
         project = json.loads((self.temp_dir / "project.yaml").read_text(encoding="utf-8"))
@@ -250,6 +416,12 @@ class DoctorSmokeTest(unittest.TestCase):
         self.assertEqual(len(short_chapter_items), 1)
         self.assertIn("chapter-001", short_chapter_items[0]["message"])
         self.assertIn("最低 2000 字", short_chapter_items[0]["message"])
+        short_chapter_rule = next(item for item in payload["judgements"] if item.get("ruleId") == "chapter-below-minimum")
+        self.assertEqual(short_chapter_rule["source"], "core")
+        self.assertEqual(short_chapter_rule["scope"], "chapter")
+        self.assertEqual(short_chapter_rule["kind"], "soft")
+        self.assertEqual(short_chapter_rule["severity"], "warning")
+        self.assertIn("chapter-word-count", short_chapter_rule["tags"])
 
     def test_doctor_reports_gap_to_target_with_custom_thresholds(self) -> None:
         buffer = StringIO()
@@ -361,6 +533,48 @@ class DoctorSmokeTest(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertIn("invalid-style-threshold-value", codes)
         self.assertIn("invalid-style-pattern-list", codes)
+
+    def test_doctor_reports_review_rule_profile_and_invalid_exemption(self) -> None:
+        (self.temp_dir / "review-rules.yaml").write_text(
+            json.dumps(
+                {
+                    "activeProfile": "novel-meta",
+                    "profiles": {
+                        "novel-meta": {
+                            "enabledRules": ["metaLeakage", "povOverreach"],
+                            "exemptions": [
+                                {
+                                    "ruleId": "metaLeakage",
+                                    "scope": {"chapterIds": ["chapter-012"]},
+                                    "allowWhen": {"quotedOnly": True, "matchPatterns": ["第[0-9]+章"]},
+                                    "reason": "主角讨论自己的小说章节",
+                                }
+                            ],
+                        },
+                        "broken": {
+                            "enabledRules": ["metaLeakage", ""],
+                            "exemptions": [{"ruleId": "", "reason": ""}],
+                        },
+                    },
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["doctor", "--root", str(self.temp_dir)])
+        payload = json.loads(buffer.getvalue())
+        codes = {item.get("code") for item in payload["checks"]}
+        warning_codes = {item.get("code") for item in payload["checks"] if item.get("level") == "warning"}
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("parsed-review-rules", codes)
+        self.assertIn("active-review-rule-profile", codes)
+        self.assertIn("invalid-review-rule-enabled-rules", warning_codes)
+        self.assertIn("invalid-review-rule-exemption", warning_codes)
 
     def test_doctor_warns_for_missing_illustration_asset(self) -> None:
         (self.temp_dir / "illustrations.yaml").write_text(
@@ -521,6 +735,89 @@ class DoctorSmokeTest(unittest.TestCase):
         self.assertIn("wrapped-entity-missing-registry", judgement_rule_ids)
         wrapped_judgements = [item for item in payload["judgements"] if item["ruleId"] == "wrapped-entity-missing-registry"]
         self.assertTrue(all(item["scope"] == "entity" for item in wrapped_judgements))
+
+    def test_doctor_warns_for_known_references_left_unwrapped(self) -> None:
+        (self.temp_dir / "entities.yaml").write_text(
+            json.dumps(
+                {
+                    "entities": [
+                        {
+                            "id": "char-shenxuan",
+                            "name": "沈玄",
+                            "type": "character",
+                            "aliases": [],
+                            "profile": {},
+                        }
+                    ],
+                    "enrichmentProposals": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "worldbook.yaml").write_text(
+            json.dumps(
+                {
+                    "premiseFacts": [],
+                    "worldRules": [],
+                    "powerProgressions": [],
+                    "factions": [
+                        {"id": "faction-qingyun", "name": "青云宗", "summary": "本地中型宗门"}
+                    ],
+                    "locations": [],
+                    "artifacts": [],
+                    "mysteries": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 第一章\n\n"
+            "沈玄抬头看向青云宗的山门。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["doctor", "--root", str(self.temp_dir)])
+        payload = json.loads(buffer.getvalue())
+        warning_items = [item for item in payload["checks"] if item.get("code") == "known-reference-unwrapped"]
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(len(warning_items), 2)
+        self.assertTrue(any("沈玄" in item["message"] for item in warning_items))
+        self.assertTrue(any("青云宗" in item["message"] for item in warning_items))
+        judgement_rule_ids = [item["ruleId"] for item in payload["judgements"]]
+        self.assertIn("known-reference-unwrapped", judgement_rule_ids)
+        known_judgements = [item for item in payload["judgements"] if item["ruleId"] == "known-reference-unwrapped"]
+        self.assertTrue(all(item["scope"] == "chapter" for item in known_judgements))
+
+    def test_doctor_warns_for_malformed_entity_tags(self) -> None:
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 第一章\n\n"
+            "\"你身上有一种新的气息。\"@{她淡淡地说，\"很淡，但和我感受到的某种东西很像。\"\n"
+            "@{} 也不应该出现。\n"
+            "@{她淡淡地说，风险很高} 也不是合法实体名。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["doctor", "--root", str(self.temp_dir)])
+        payload = json.loads(buffer.getvalue())
+        codes = [item["code"] for item in payload["checks"]]
+        judgement_rule_ids = [item["ruleId"] for item in payload["judgements"]]
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("unclosed-wrapped-entity-tag", codes)
+        self.assertIn("empty-wrapped-entity-tag", codes)
+        self.assertIn("invalid-wrapped-entity-tag", codes)
+        self.assertIn("unclosed-wrapped-entity-tag", judgement_rule_ids)
+        self.assertIn("empty-wrapped-entity-tag", judgement_rule_ids)
+        self.assertIn("invalid-wrapped-entity-tag", judgement_rule_ids)
 
 
 if __name__ == "__main__":

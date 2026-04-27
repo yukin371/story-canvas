@@ -324,6 +324,28 @@ class ReviewChapterSmokeTest(unittest.TestCase):
         alignment_text = payload["contractAlignment"]["matched"] + payload["contractAlignment"]["risks"] + payload["contractAlignment"]["notes"]
         self.assertTrue(any("题材语域失真" in item or "现代项目管理口吻" in item for item in alignment_text))
 
+    def test_review_chapter_surfaces_structured_plan_block_actions(self) -> None:
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(
+            "# 第一章\n\n"
+            "目标：先压住体内失控的潮息。\n风险：顾长渊可能提前察觉异样。\n\n"
+            "约束：不能在宗门长老面前暴露归墟体。\n时间窗口：只剩今夜到天明前这段空档。\n\n"
+            "沈玄意识到自己又把念头排成了清单，像是在给一场逃亡写执行方案。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertTrue(
+            any(item["id"] == "structuredPlanBlock" and item["detected"] for item in payload["styleAnalysis"]["styleAnalysis"]["patternResults"])
+        )
+        self.assertTrue(any("目标/风险/约束" in item or "方案说明" in item for item in payload["priorityActions"]))
+        self.assertTrue(any("方案文档腔" in item for item in payload["contractAlignment"]["risks"]))
+
     def test_review_chapter_exposes_wrapped_entity_registry_gaps(self) -> None:
         (self.temp_dir / "entities.yaml").write_text(
             json.dumps(
@@ -363,6 +385,15 @@ class ReviewChapterSmokeTest(unittest.TestCase):
         self.assertTrue(any(item["name"] == "镇海印" for item in payload["wrappedEntitySignals"]["missing"]))
         self.assertGreaterEqual(payload["analysisSignals"]["wrappedEntityMissingCount"], 2)
         self.assertTrue(any("青云宗" in item or "镇海印" in item for item in payload["priorityActions"]))
+        wrapped_entity_rule = next(
+            item for item in payload["ruleJudgements"] if item.get("ruleId") == "wrappedEntityMissingRegistry"
+        )
+        self.assertEqual(wrapped_entity_rule["source"], "core")
+        self.assertEqual(wrapped_entity_rule["scope"], "chapter")
+        self.assertEqual(wrapped_entity_rule["kind"], "hard")
+        self.assertEqual(wrapped_entity_rule["severity"], "warning")
+        self.assertIn("registry-coverage", wrapped_entity_rule["tags"])
+        self.assertIn("wrapped-entity", wrapped_entity_rule["tags"])
         alignment_text = payload["contractAlignment"]["matched"] + payload["contractAlignment"]["risks"] + payload["contractAlignment"]["notes"]
         self.assertTrue(any("未建档" in item or "真相源" in item for item in alignment_text))
 
@@ -432,6 +463,272 @@ class ReviewChapterSmokeTest(unittest.TestCase):
         self.assertTrue(any("沈玄" in item for item in payload["priorityActions"]))
         alignment_text = payload["contractAlignment"]["matched"] + payload["contractAlignment"]["risks"] + payload["contractAlignment"]["notes"]
         self.assertTrue(any("任务门槛" in item or "保护条件" in item for item in alignment_text))
+
+    def test_review_chapter_surfaces_power_progression_conflict_signal(self) -> None:
+        (self.temp_dir / "entities.yaml").write_text(
+            json.dumps(
+                {
+                    "entities": [
+                        {
+                            "id": "char-shenxuan",
+                            "name": "沈玄",
+                            "type": "character",
+                            "state": {
+                                "powerLevel": {"publicLevel": "练气一层"},
+                            },
+                        }
+                    ],
+                    "enrichmentProposals": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "worldbook.yaml").write_text(
+            json.dumps(
+                {
+                    "premiseFacts": [],
+                    "worldRules": [],
+                    "powerProgressions": [
+                        {
+                            "id": "immortal-path",
+                            "label": "仙道境界",
+                            "stages": [
+                                {"name": "练气一层", "nextStage": "练气二层", "breakthroughRequirements": ["凝气入脉"]},
+                                {"name": "练气二层", "nextStage": "练气三层"},
+                                {"name": "练气三层", "nextStage": "筑基"},
+                                {"name": "筑基", "nextStage": "金丹"},
+                            ],
+                        }
+                    ],
+                    "factions": [],
+                    "locations": [],
+                    "artifacts": [],
+                    "mysteries": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
+        chapter_path = self.temp_dir / "chapters" / "chapter-007.md"
+        chapter_path.write_text(
+            "# 第七章\n\n"
+            "沈玄如今仍停在练气一层，可他偏要借这一夜直接突破筑基，连护法与药引都还没备齐。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-007"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["analysisSignals"]["powerProgressionConflictCount"], 1)
+        self.assertTrue(payload["consistencySignals"]["powerProgressionConflicts"])
+        self.assertEqual(payload["consistencySignals"]["powerProgressionConflicts"][0]["expectedNextStage"], "练气二层")
+        self.assertTrue(any(item["ruleId"] == "powerProgressionConflict" for item in payload["ruleJudgements"]))
+        self.assertTrue(any("练气二层" in item or "突破链" in item for item in payload["priorityActions"]))
+        alignment_text = payload["contractAlignment"]["matched"] + payload["contractAlignment"]["risks"] + payload["contractAlignment"]["notes"]
+        self.assertTrue(any("越阶" in item or "世界规则" in item for item in alignment_text))
+
+    def test_review_chapter_flags_weak_chapter_handoff(self) -> None:
+        (self.temp_dir / "outline.yaml").write_text(
+            json.dumps(
+                {
+                    "chapters": [
+                        {
+                            "id": "chapter-001",
+                            "title": "仓库惊变",
+                            "status": "draft",
+                            "direction": "林舟在仓库冲突后确认自己被盯上。",
+                            "beats": [{"summary": "确认风险来源"}],
+                            "scenePlans": [{"title": "仓库对峙", "goal": "暴露追踪风险"}],
+                        },
+                        {
+                            "id": "chapter-002",
+                            "title": "追踪余波",
+                            "status": "draft",
+                            "direction": "承接仓库冲突后的追踪风险，决定是否继续深查守夜人。",
+                            "beats": [{"summary": "接住余波"}, {"summary": "做出选择"}],
+                            "scenePlans": [{"title": "回到住处", "goal": "处理伤势并判断下一步"}],
+                        },
+                    ],
+                    "chapterDirections": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "entities.yaml").write_text(
+            json.dumps(
+                {
+                    "entities": [
+                        {
+                            "id": "char-linzhou",
+                            "name": "林舟",
+                            "type": "character",
+                            "state": {"statusTags": ["受伤", "暴露风险上升"]},
+                            "changeLog": [
+                                {
+                                    "id": "chg-001",
+                                    "chapterId": "chapter-001",
+                                    "field": "state.statusTags",
+                                    "reason": "仓库冲突后确认自己被盯上",
+                                }
+                            ],
+                        }
+                    ],
+                    "enrichmentProposals": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "threads.yaml").write_text(
+            json.dumps(
+                {
+                    "threads": [
+                        {
+                            "id": "thread-night-watch",
+                            "label": "守夜人暗线",
+                            "status": "active",
+                            "relatedEntities": ["char-linzhou"],
+                            "relatedChapters": ["chapter-001", "chapter-002"],
+                        }
+                    ]
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
+        chapter_path = self.temp_dir / "chapters" / "chapter-002.md"
+        chapter_path.write_text(
+            "# 第二章\n\n"
+            "清晨的集市已经热闹起来，卖药的、卖鱼的、吆喝的声音混在一起，像一锅翻滚的水。\n\n"
+            "他只是随意买了份热汤，便去城南打听旧案，整段开场都没有回到前夜留下的伤势、追踪或守夜人压力。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-002"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["analysisSignals"]["chapterHandoffRiskCount"], 1)
+        self.assertTrue(payload["chapterHandoffSignals"]["detected"])
+        self.assertEqual(payload["storyConstraintSignals"]["chapterHandoff"]["previousChapter"]["id"], "chapter-001")
+        self.assertTrue(any("上一章" in item or "细纲" in item for item in payload["priorityActions"]))
+        self.assertTrue(any(item["ruleId"] == "chapterHandoffWeak" for item in payload["ruleJudgements"]))
+        alignment_text = payload["contractAlignment"]["matched"] + payload["contractAlignment"]["risks"] + payload["contractAlignment"]["notes"]
+        self.assertTrue(any("自然续写" in item or "切场" in item for item in alignment_text))
+
+    def test_review_chapter_emits_meta_leakage_rule_judgement(self) -> None:
+        (self.temp_dir / "review-rules.yaml").write_text(
+            json.dumps(
+                {
+                    "profiles": {
+                        "default": {
+                            "enabledRules": ["metaLeakage"],
+                            "exemptions": [],
+                        }
+                    }
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(
+            "# 第一章\n\n"
+            "沈照推开旧库房的门，扑面而来的灰味让他下意识屏住呼吸，可脑子里忽然冒出上一章没有的确定判断。\n\n"
+            "这种判断与眼前场景并不相连，反而像作者在正文里提醒读者，第三章里某个伏笔已经提前动了一下。\n\n"
+            "他很快把心思拉回地上的灰痕，却已经让叙述露出一丝不属于故事世界的裂口。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["styleAnalysis"]["reviewRuleProfile"], "default")
+        self.assertEqual(payload["styleAnalysis"]["reviewRuleProfileSource"], "project")
+        meta = next(item for item in payload["styleAnalysis"]["styleAnalysis"]["patternResults"] if item["id"] == "metaLeakage")
+        self.assertTrue(meta["detected"])
+        self.assertTrue(any(item["ruleId"] == "metaLeakage" for item in payload["ruleJudgements"]))
+
+    def test_review_chapter_emits_pov_overreach_rule_judgement(self) -> None:
+        (self.temp_dir / "review-rules.yaml").write_text(
+            json.dumps(
+                {
+                    "profiles": {
+                        "default": {
+                            "enabledRules": ["povOverreach"],
+                            "exemptions": [],
+                        }
+                    }
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(
+            "# 第一章\n\n"
+            "沈照站在废灯棚前，肩背绷得很紧，连呼吸都像在等下一声裂响。\n\n"
+            "就在这片诡异的静里，西侧木梁上忽然落下一点灰，正落在沈照右后方那条废弃排灰沟的边沿。\n\n"
+            "他没有回头，也没有任何镜面或感知来源，可旁白却替他看见了那块盲区里的细节。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        pov = next(item for item in payload["styleAnalysis"]["styleAnalysis"]["patternResults"] if item["id"] == "povOverreach")
+        self.assertTrue(pov["detected"])
+        self.assertTrue(any(item["ruleId"] == "povOverreach" for item in payload["ruleJudgements"]))
+
+    def test_review_chapter_emits_new_ai_phrase_rule_judgement(self) -> None:
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(
+            "# 第一章\n\n"
+            "那不是犹豫，是多年压下去的旧火重新顶了上来。这不是侥幸，不是误打误撞，是他早就留在袖里的后手。\n\n"
+            "那不像试探，更像有人故意把门缝留给他。这不是风声。更像旧灯室深处有人轻轻拨了一下灯芯。真正值钱的，从来都是这盏灯现在指着的地方。\n\n"
+            "岳怀川压低声音问了一句：“还有什么？”沈照沿着废灯棚外那条狭窄的灰沟慢慢往前挪，脚下每一块松动的砖都像会突然塌下去，他一边盯着风里晃动的残灯，一边还得分神去记那些被夜色吞没的脚印、火痕和断裂木梁的位置，整个人绷得像一根被拉到快断的旧弦。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        pattern_ids = {
+            item["id"]
+            for item in payload["styleAnalysis"]["styleAnalysis"]["patternResults"]
+            if item.get("detected")
+        }
+        self.assertIn("contrastFlipPattern", pattern_ids)
+        self.assertIn("analogicalPivotPattern", pattern_ids)
+        self.assertIn("templateCatchphrasePattern", pattern_ids)
+        self.assertIn("paragraphReadability", pattern_ids)
+        self.assertTrue(any(item["ruleId"] == "contrastFlipPattern" for item in payload["ruleJudgements"]))
+        self.assertTrue(any(item["ruleId"] == "paragraphReadability" for item in payload["ruleJudgements"]))
 
 
 if __name__ == "__main__":

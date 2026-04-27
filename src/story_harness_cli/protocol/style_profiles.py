@@ -26,6 +26,11 @@ def get_default_style_profiles() -> Dict[str, Dict[str, Any]]:
                 "allowPrefixes": [],
                 "perPrefixThresholds": {},
             },
+            "planBlockPolicy": {
+                "allowLabels": [],
+                "minLabels": 3,
+                "minDistinctLabels": 2,
+            },
         },
         "web-serial-zh": {
             "patternThresholds": {
@@ -48,6 +53,11 @@ def get_default_style_profiles() -> Dict[str, Dict[str, Any]]:
             "framePolicy": {
                 "allowPrefixes": [],
                 "perPrefixThresholds": {},
+            },
+            "planBlockPolicy": {
+                "allowLabels": [],
+                "minLabels": 3,
+                "minDistinctLabels": 2,
             },
         },
         "literary-zh": {
@@ -72,6 +82,11 @@ def get_default_style_profiles() -> Dict[str, Dict[str, Any]]:
             "framePolicy": {
                 "allowPrefixes": [],
                 "perPrefixThresholds": {},
+            },
+            "planBlockPolicy": {
+                "allowLabels": [],
+                "minLabels": 3,
+                "minDistinctLabels": 2,
             },
         },
         "xuanhuan-zh": {
@@ -112,6 +127,11 @@ def get_default_style_profiles() -> Dict[str, Dict[str, Any]]:
             "framePolicy": {
                 "allowPrefixes": [],
                 "perPrefixThresholds": {},
+            },
+            "planBlockPolicy": {
+                "allowLabels": [],
+                "minLabels": 3,
+                "minDistinctLabels": 2,
             },
         },
     }

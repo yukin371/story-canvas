@@ -89,6 +89,9 @@ HIGH_RISK_TASK_PATTERNS = (
     ("宗门试炼", (r"试炼", r"秘境|险地|禁地|猎杀|历练")),
     ("险地任务", (r"禁地|险地|绝地", r"前往|进入|深入|探索")),
 )
+BREAKTHROUGH_TARGET_CUES = (
+    "突破", "冲击", "晋入", "晋升", "迈入", "踏入", "直入",
+)
 TASK_PARTICIPATION_CUES = (
     "参加", "报名", "被派", "派去", "前往", "进入", "去往", "赴", "安排", "最终环节",
 )
@@ -96,6 +99,15 @@ TASK_SAFEGUARD_CUES = (
     "外围", "外层", "边缘", "低阶弟子", "只限练气", "只许练气", "练气弟子试炼",
     "长老带队", "随行长老", "护道", "护符", "保命符", "传送符", "接应", "安全区域",
     "不得深入", "不许深入", "禁制压制", "风险可控", "不会致命", "演练",
+)
+PROGRESSION_EXCEPTION_CUES = (
+    "传承灌顶", "灌顶", "秘法", "禁术", "外力", "奇遇", "重修", "转世", "夺舍", "破格",
+)
+BREAKTHROUGH_NEGATION_PREFIXES = (
+    "未能", "不能", "不敢", "不会", "难以", "无法", "尚未", "还未", "没能", "未曾",
+)
+BREAKTHROUGH_FAILURE_SUFFIXES = (
+    "失败", "未成", "未果", "受阻", "夭折", "中断",
 )
 
 
@@ -129,6 +141,7 @@ def check_consistency(
     setting_conflicts = _check_setting_conflicts(state, setting_candidates)
     unintroduced_name_reveals = _detect_unintroduced_name_reveals(chapter_text, chapter_id)
     capability_task_risks = _detect_capability_task_risks(state, chapter_text, chapter_id)
+    power_progression_conflicts = _detect_power_progression_conflicts(state, chapter_text, chapter_id)
 
     context_for_ai = _build_ai_context(state, chapter_text, chapter_id)
     judgements = _build_consistency_judgements(
@@ -137,6 +150,7 @@ def check_consistency(
         setting_conflicts=setting_conflicts,
         unintroduced_name_reveals=unintroduced_name_reveals,
         capability_task_risks=capability_task_risks,
+        power_progression_conflicts=power_progression_conflicts,
         chapter_id=chapter_id,
     )
 
@@ -147,6 +161,7 @@ def check_consistency(
         "settingConflicts": setting_conflicts,
         "unintroducedNameReveals": unintroduced_name_reveals,
         "capabilityTaskRisks": capability_task_risks,
+        "powerProgressionConflicts": power_progression_conflicts,
         "judgements": judgements,
         "contextForAI": context_for_ai,
     }
@@ -673,6 +688,183 @@ def _detect_high_risk_task_label(text: str) -> str:
     return ""
 
 
+def _detect_power_progression_conflicts(
+    state: Dict[str, Dict[str, Any]],
+    chapter_text: str,
+    chapter_id: str,
+) -> List[Dict[str, Any]]:
+    paragraphs = paragraphs_from_text(chapter_text)
+    if not paragraphs:
+        return []
+    stage_lookup = _build_power_progression_lookup(state.get("worldbook", {}))
+    if not stage_lookup:
+        return []
+
+    results: List[Dict[str, Any]] = []
+    for entity in state.get("entities", {}).get("entities", []):
+        if not isinstance(entity, dict):
+            continue
+        name = str(entity.get("name", "")).strip()
+        current_stage = _extract_entity_progression_stage(entity)
+        current_stage_info = stage_lookup.get(_normalize_progression_stage(current_stage))
+        if not name or not current_stage_info:
+            continue
+        expected_next_stage = current_stage_info.get("nextStage", "")
+        if not isinstance(expected_next_stage, str) or not expected_next_stage:
+            continue
+
+        for paragraph_index, _paragraph in enumerate(paragraphs, start=1):
+            window_text = _paragraph_window_text(paragraphs, paragraph_index)
+            if name not in window_text:
+                continue
+            target_stage_info = None
+            target_stage = ""
+            for clause in _progression_clauses(window_text):
+                if name not in clause:
+                    continue
+                if any(cue in clause for cue in PROGRESSION_EXCEPTION_CUES):
+                    continue
+                target_stage_info = _detect_breakthrough_target_stage(clause, stage_lookup)
+                if not target_stage_info:
+                    continue
+                if target_stage_info.get("progressionId") != current_stage_info.get("progressionId"):
+                    target_stage_info = None
+                    continue
+                target_stage = str(target_stage_info.get("name", ""))
+                if target_stage in {current_stage_info.get("name", ""), expected_next_stage}:
+                    target_stage_info = None
+                    continue
+                break
+            if not target_stage_info:
+                continue
+
+            bottleneck = str(current_stage_info.get("bottleneck", ""))
+            requirements = [
+                item for item in current_stage_info.get("breakthroughRequirements", [])
+                if isinstance(item, str) and item
+            ]
+            requirement_hint = ""
+            if bottleneck:
+                requirement_hint = f"当前瓶颈是“{bottleneck}”"
+            elif requirements:
+                requirement_hint = f"当前突破条件包括“{requirements[0]}”"
+            suggestion_suffix = f"，并把 {requirement_hint} 写进正文" if requirement_hint else ""
+            results.append(
+                {
+                    "entityId": str(entity.get("id", "")),
+                    "entityName": name,
+                    "currentStage": current_stage_info.get("name", ""),
+                    "targetStage": target_stage,
+                    "expectedNextStage": expected_next_stage,
+                    "progressionLabel": current_stage_info.get("progressionLabel", ""),
+                    "issue": (
+                        f"{name} 当前境界“{current_stage_info.get('name', '')}”按世界规则应先突破到“{expected_next_stage}”，"
+                        f"但正文却直接指向“{target_stage}”"
+                    ),
+                    "chapterId": chapter_id,
+                    "paragraphIndex": paragraph_index,
+                    "severity": "warning",
+                    "evidence": [window_text.strip()[:120]],
+                    "suggestion": (
+                        f"确认 {name} 本章的突破目标是否应改为“{expected_next_stage}”，"
+                        f"或补足能越阶冲击“{target_stage}”的明确例外规则{suggestion_suffix}。"
+                    ),
+                }
+            )
+            break
+    return results
+
+
+def _build_power_progression_lookup(worldbook: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    lookup: Dict[str, Dict[str, Any]] = {}
+    for index, progression in enumerate(worldbook.get("powerProgressions", []), start=1):
+        if not isinstance(progression, dict):
+            continue
+        progression_id = str(progression.get("id") or progression.get("label") or f"progression-{index}")
+        progression_label = str(progression.get("label") or progression_id)
+        for stage in progression.get("stages", []):
+            if not isinstance(stage, dict):
+                continue
+            name = str(stage.get("name", "")).strip()
+            next_stage = str(stage.get("nextStage", "")).strip()
+            if not name:
+                continue
+            stage_info = {
+                "progressionId": progression_id,
+                "progressionLabel": progression_label,
+                "name": name,
+                "nextStage": next_stage,
+                "bottleneck": str(stage.get("bottleneck", "")).strip(),
+                "breakthroughRequirements": [
+                    item for item in stage.get("breakthroughRequirements", [])
+                    if isinstance(item, str) and item
+                ],
+            }
+            aliases = [name]
+            aliases.extend(
+                item for item in stage.get("aliases", [])
+                if isinstance(item, str) and item
+            )
+            for alias in aliases:
+                lookup[_normalize_progression_stage(alias)] = stage_info
+    return lookup
+
+
+def _normalize_progression_stage(text: str) -> str:
+    return re.sub(r"\s+", "", text or "")
+
+
+def _extract_entity_progression_stage(entity: Dict[str, Any]) -> str:
+    state_info = entity.get("state", {}) if isinstance(entity.get("state"), dict) else {}
+    power_level = state_info.get("powerLevel", {}) if isinstance(state_info.get("powerLevel"), dict) else {}
+    for key in ("publicLevel", "trueLevel"):
+        value = power_level.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    current_state = entity.get("currentState")
+    if isinstance(current_state, dict):
+        value = current_state.get("powerLevel")
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    return ""
+
+
+def _progression_clauses(text: str) -> List[str]:
+    return [item.strip() for item in re.split(r"[。！？；\n]", text) if item.strip()]
+
+
+def _detect_breakthrough_target_stage(
+    text: str,
+    stage_lookup: Dict[str, Dict[str, Any]],
+) -> Dict[str, Any] | None:
+    normalized_text = _normalize_progression_stage(text)
+    sorted_stages = sorted(
+        stage_lookup.items(),
+        key=lambda item: len(item[0]),
+        reverse=True,
+    )
+    for normalized_stage, stage_info in sorted_stages:
+        stage_name = normalized_stage
+        if not stage_name:
+            continue
+        for cue in BREAKTHROUGH_TARGET_CUES:
+            if re.search(rf"{re.escape(cue)}[^。！？；，,\n]{{0,8}}{re.escape(stage_name)}", normalized_text):
+                if _is_negated_breakthrough_target(normalized_text, cue, stage_name):
+                    continue
+                return stage_info
+    return None
+
+
+def _is_negated_breakthrough_target(text: str, cue: str, stage_name: str) -> bool:
+    for prefix in BREAKTHROUGH_NEGATION_PREFIXES:
+        if re.search(rf"{re.escape(prefix)}[^。\n]{{0,4}}{re.escape(cue)}[^。\n]{{0,8}}{re.escape(stage_name)}", text):
+            return True
+    for suffix in BREAKTHROUGH_FAILURE_SUFFIXES:
+        if re.search(rf"{re.escape(cue)}[^。\n]{{0,8}}{re.escape(stage_name)}[^。\n]{{0,4}}{re.escape(suffix)}", text):
+            return True
+    return False
+
+
 def _build_consistency_judgements(
     *,
     hard: Dict[str, List[Any]],
@@ -680,24 +872,24 @@ def _build_consistency_judgements(
     setting_conflicts: List[Dict[str, Any]],
     unintroduced_name_reveals: List[Dict[str, Any]],
     capability_task_risks: List[Dict[str, Any]],
+    power_progression_conflicts: List[Dict[str, Any]],
     chapter_id: str,
 ) -> List[Dict[str, Any]]:
     judgements: List[Dict[str, Any]] = []
-    judgements.extend(_judgements_from_items(hard.get("stateContradictions", []), "stateContradiction", "chapter", "hard", "error", chapter_id))
-    judgements.extend(_judgements_from_items(hard.get("relationContradictions", []), "relationContradiction", "chapter", "hard", "error", chapter_id))
-    judgements.extend(_judgements_from_items(hard.get("timelineConflicts", []), "timelineConflict", "chapter", "hard", "error", chapter_id))
-    judgements.extend(_judgements_from_items(soft.get("outlineDeviations", []), "outlineDeviation", "chapter", "soft", "warning", chapter_id))
-    judgements.extend(_judgements_from_items(setting_conflicts, "settingConflict", "world", "hard", "warning", chapter_id))
-    judgements.extend(_judgements_from_items(unintroduced_name_reveals, "unintroducedNameReveal", "chapter", "soft", "warning", chapter_id))
-    judgements.extend(_judgements_from_items(capability_task_risks, "capabilityTaskMismatch", "chapter", "soft", "warning", chapter_id))
+    judgements.extend(_judgements_from_items(hard.get("stateContradictions", []), "stateContradiction", "error", chapter_id))
+    judgements.extend(_judgements_from_items(hard.get("relationContradictions", []), "relationContradiction", "error", chapter_id))
+    judgements.extend(_judgements_from_items(hard.get("timelineConflicts", []), "timelineConflict", "error", chapter_id))
+    judgements.extend(_judgements_from_items(soft.get("outlineDeviations", []), "outlineDeviation", "warning", chapter_id))
+    judgements.extend(_judgements_from_items(setting_conflicts, "settingConflict", "warning", chapter_id))
+    judgements.extend(_judgements_from_items(unintroduced_name_reveals, "unintroducedNameReveal", "warning", chapter_id))
+    judgements.extend(_judgements_from_items(capability_task_risks, "capabilityTaskMismatch", "warning", chapter_id))
+    judgements.extend(_judgements_from_items(power_progression_conflicts, "powerProgressionConflict", "warning", chapter_id))
     return judgements
 
 
 def _judgements_from_items(
     items: List[Dict[str, Any]],
     rule_id: str,
-    scope: str,
-    kind: str,
     default_severity: str,
     chapter_id: str,
 ) -> List[Dict[str, Any]]:
@@ -713,16 +905,12 @@ def _judgements_from_items(
         judgements.append(
             build_rule_judgement(
                 rule_id=rule_id,
-                source="core",
-                scope=scope,
-                kind=kind,
                 severity=_normalize_consistency_severity(str(item.get("severity", default_severity)), default_severity),
                 message=message,
                 suggestion=suggestion,
                 evidence=evidence,
                 scope_ref=scope_ref,
                 payload=item,
-                tags=["consistency"],
             )
         )
     return judgements

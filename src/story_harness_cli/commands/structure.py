@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from story_harness_cli.commands.project_support import build_project_advisories
 from story_harness_cli.protocol import ensure_project_root, load_project_state, save_state
 from story_harness_cli.services.structure import (
     apply_template,
@@ -11,6 +12,11 @@ from story_harness_cli.services.structure import (
     scaffold_structure_to_outline,
     show_structure,
 )
+
+
+def _with_project_advisories(root: Path, payload: dict) -> dict:
+    payload["projectAdvisories"] = build_project_advisories(root, include_prd_content=True)
+    return payload
 
 
 def command_structure_list(args) -> int:
@@ -30,11 +36,11 @@ def command_structure_apply(args) -> int:
     try:
         result = apply_template(state, template_id=args.template)
     except ValueError as exc:
-        print(json.dumps({"error": str(exc)}, ensure_ascii=False, indent=2))
+        print(json.dumps(_with_project_advisories(root, {"error": str(exc)}), ensure_ascii=False, indent=2))
         return 1
 
     save_state(root, state)
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+    print(json.dumps(_with_project_advisories(root, result), ensure_ascii=False, indent=2))
     return 0
 
 
@@ -44,7 +50,7 @@ def command_structure_show(args) -> int:
     state = load_project_state(root)
 
     result = show_structure(state)
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+    print(json.dumps(_with_project_advisories(root, result), ensure_ascii=False, indent=2))
     return 0
 
 
@@ -54,7 +60,7 @@ def command_structure_check(args) -> int:
     state = load_project_state(root)
 
     result = check_structure(state)
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+    print(json.dumps(_with_project_advisories(root, result), ensure_ascii=False, indent=2))
     return 0
 
 
@@ -65,7 +71,13 @@ def command_structure_map(args) -> int:
 
     structures = state.setdefault("structures", {"activeStructure": None, "mappings": []})
     if not structures.get("activeStructure"):
-        print(json.dumps({"error": "No active structure. Run 'structure apply' first."}, ensure_ascii=False, indent=2))
+        print(
+            json.dumps(
+                _with_project_advisories(root, {"error": "No active structure. Run 'structure apply' first."}),
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
         return 1
 
     mappings = structures.get("mappings", [])
@@ -77,11 +89,23 @@ def command_structure_map(args) -> int:
             break
 
     if not found:
-        print(json.dumps({"error": f"Beat '{args.beat}' not found in active structure"}, ensure_ascii=False, indent=2))
+        print(
+            json.dumps(
+                _with_project_advisories(root, {"error": f"Beat '{args.beat}' not found in active structure"}),
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
         return 1
 
     save_state(root, state)
-    print(json.dumps({"beatName": args.beat, "chapterId": args.chapter_id}, ensure_ascii=False, indent=2))
+    print(
+        json.dumps(
+            _with_project_advisories(root, {"beatName": args.beat, "chapterId": args.chapter_id}),
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
     return 0
 
 
@@ -97,11 +121,11 @@ def command_structure_scaffold(args) -> int:
             replace_directions=args.replace_directions,
         )
     except ValueError as exc:
-        print(json.dumps({"error": str(exc)}, ensure_ascii=False, indent=2))
+        print(json.dumps(_with_project_advisories(root, {"error": str(exc)}), ensure_ascii=False, indent=2))
         return 1
 
     save_state(root, state)
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+    print(json.dumps(_with_project_advisories(root, result), ensure_ascii=False, indent=2))
     return 0
 
 

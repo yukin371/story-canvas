@@ -8,6 +8,7 @@ from story_harness_cli.utils.project_meta import normalize_machine_label, normal
 from story_harness_cli.utils.text import count_words, extract_tag_mentions, paragraphs_from_text, strip_entity_tags
 
 from .analyzer import chapter_title, resolve_named_reference
+from .context_lens import build_chapter_handoff_context
 from .rule_semantics import build_rule_judgement, chapter_scope_ref, scene_scope_ref
 from .style_detector import analyze_style_text
 
@@ -211,6 +212,7 @@ def build_chapter_review(
     relation_candidates = list(analysis.get("relationCandidates", []))
     scene_entities = analysis.get("sceneScope", {}).get("activeEntityNames", []) or mention_names[:6]
     story_constraint_signals = _build_story_constraint_signals(state, chapter_id, scene_entities or mention_names)
+    chapter_handoff_signals = _build_chapter_handoff_signals(chapter_text, story_constraint_signals)
     wrapped_entity_signals = _build_wrapped_entity_signals(state, chapter_text)
     consistency_result = consistency_result or {}
     consistency_signals = _build_consistency_signals(style_report, consistency_result)
@@ -219,6 +221,7 @@ def build_chapter_review(
         style_report=style_report,
         consistency_result=consistency_result,
         wrapped_entity_signals=wrapped_entity_signals,
+        chapter_handoff_signals=chapter_handoff_signals,
         scope="chapter",
     )
 
@@ -229,19 +232,16 @@ def build_chapter_review(
         "dialogueParagraphs": _dialogue_paragraphs(paragraphs),
         "tagMentions": mention_names,
     }
-    analysis_signals = {
-        "analysisBacked": bool(analysis),
-        "activeEntityCount": len(active_entities) if active_entities else len(mention_names),
-        "snapshotCandidateCount": len(snapshot_candidates),
-        "relationCandidateCount": len(relation_candidates),
-        "sceneEntityNames": scene_entities,
-        "settingCandidateCount": len(consistency_signals["settingCandidates"]),
-        "settingConflictCount": len(consistency_signals["settingConflicts"]),
-        "unintroducedNameRevealCount": len(consistency_signals["unintroducedNameReveals"]),
-        "capabilityTaskRiskCount": len(consistency_signals["capabilityTaskRisks"]),
-        "wrappedEntityCount": wrapped_entity_signals["count"],
-        "wrappedEntityMissingCount": len(wrapped_entity_signals["missing"]),
-    }
+    analysis_signals = _build_review_analysis_signals(
+        analysis_backed=bool(analysis),
+        active_entity_count=len(active_entities) if active_entities else len(mention_names),
+        snapshot_candidate_count=len(snapshot_candidates),
+        relation_candidate_count=len(relation_candidates),
+        consistency_signals=consistency_signals,
+        wrapped_entity_signals=wrapped_entity_signals,
+        chapter_handoff_signals=chapter_handoff_signals,
+        scene_entity_names=scene_entities,
+    )
 
     dimensions = [
         _score_plot_momentum(word_count, paragraphs, snapshot_candidates, relation_candidates, clean_text),
@@ -260,42 +260,29 @@ def build_chapter_review(
     if not strengths:
         strengths = [f"{best['label']}：{best['comment']}"]
 
-    priority_actions: List[str] = []
-    for item in sorted(dimensions, key=lambda current: current["score"]):
-        for suggestion in item["suggestions"]:
-            if suggestion not in priority_actions:
-                priority_actions.append(suggestion)
-            if len(priority_actions) >= 4:
-                break
-        if len(priority_actions) >= 4:
-            break
-    for suggestion in _consistency_priority_actions(consistency_signals):
-        if suggestion not in priority_actions:
-            priority_actions.insert(0, suggestion)
-        if len(priority_actions) > 4:
-            priority_actions = priority_actions[:4]
-    for suggestion in _style_priority_actions(style_report):
-        if suggestion not in priority_actions:
-            priority_actions.insert(0, suggestion)
-        if len(priority_actions) > 4:
-            priority_actions = priority_actions[:4]
-    for suggestion in _wrapped_entity_priority_actions(wrapped_entity_signals):
-        if suggestion not in priority_actions:
-            priority_actions.insert(0, suggestion)
-        if len(priority_actions) > 4:
-            priority_actions = priority_actions[:4]
+    priority_actions = _build_priority_actions(
+        dimensions,
+        consistency_signals=consistency_signals,
+        style_report=style_report,
+        wrapped_entity_signals=wrapped_entity_signals,
+        chapter_handoff_signals=chapter_handoff_signals,
+        limit=4,
+    )
 
     fingerprint = f"{RUBRIC_VERSION}:{chapter_id}:{stable_hash(clean_text, size=16)}"
-    contract_alignment = _evaluate_contract_alignment(
-        state.get("project", {}),
-        dimension_map,
-        text_metrics,
-        clean_text,
-        story_constraint_signals,
+    contract_alignment = _finalize_contract_alignment(
+        _evaluate_contract_alignment(
+            state.get("project", {}),
+            dimension_map,
+            text_metrics,
+            clean_text,
+            story_constraint_signals,
+        ),
+        consistency_signals=consistency_signals,
+        style_report=style_report,
+        wrapped_entity_signals=wrapped_entity_signals,
+        chapter_handoff_signals=chapter_handoff_signals,
     )
-    _apply_consistency_signals_to_alignment(contract_alignment, consistency_signals)
-    _apply_style_signals_to_alignment(contract_alignment, style_report)
-    _apply_wrapped_entity_signals_to_alignment(contract_alignment, wrapped_entity_signals)
     return {
         "reviewId": f"chapter-review-{stable_hash(fingerprint)}",
         "fingerprint": fingerprint,
@@ -315,15 +302,9 @@ def build_chapter_review(
         "priorityActions": priority_actions,
         "textMetrics": text_metrics,
         "analysisSignals": analysis_signals,
+        "chapterHandoffSignals": chapter_handoff_signals,
         "styleAnalysis": style_report,
-        "projectContext": {
-            "genre": state.get("project", {}).get("genre", ""),
-            "positioning": state.get("project", {}).get("positioning", {}),
-            "storyContract": state.get("project", {}).get("storyContract", {}),
-            "emotionalContract": state.get("project", {}).get("emotionalContract", {}),
-            "storyTemplate": state.get("project", {}).get("storyTemplate", {}),
-            "commercialPositioning": state.get("project", {}).get("commercialPositioning", {}),
-        },
+        "projectContext": _build_review_project_context(state.get("project", {})),
         "storyConstraintSignals": story_constraint_signals,
         "wrappedEntitySignals": wrapped_entity_signals,
         "consistencySignals": consistency_signals,
@@ -398,18 +379,14 @@ def build_scene_review(
         "tagMentions": mention_names,
         "totalChapterParagraphs": total_paragraphs,
     }
-    analysis_signals = {
-        "analysisBacked": bool(analysis),
-        "activeEntityCount": len(scene_analysis["activeEntities"]) if scene_analysis["activeEntities"] else len(mention_names),
-        "snapshotCandidateCount": len(scene_analysis["snapshotCandidates"]),
-        "relationCandidateCount": len(scene_analysis["relationCandidates"]),
-        "settingCandidateCount": len(consistency_signals["settingCandidates"]),
-        "settingConflictCount": len(consistency_signals["settingConflicts"]),
-        "unintroducedNameRevealCount": len(consistency_signals["unintroducedNameReveals"]),
-        "capabilityTaskRiskCount": len(consistency_signals["capabilityTaskRisks"]),
-        "wrappedEntityCount": wrapped_entity_signals["count"],
-        "wrappedEntityMissingCount": len(wrapped_entity_signals["missing"]),
-    }
+    analysis_signals = _build_review_analysis_signals(
+        analysis_backed=bool(analysis),
+        active_entity_count=len(scene_analysis["activeEntities"]) if scene_analysis["activeEntities"] else len(mention_names),
+        snapshot_candidate_count=len(scene_analysis["snapshotCandidates"]),
+        relation_candidate_count=len(scene_analysis["relationCandidates"]),
+        consistency_signals=consistency_signals,
+        wrapped_entity_signals=wrapped_entity_signals,
+    )
 
     dimensions = [
         _score_scene_function(selected_clean, scene_analysis["snapshotCandidates"], scene_analysis["relationCandidates"], scene_text),
@@ -427,44 +404,29 @@ def build_scene_review(
     if not strengths:
         strengths = [f"{best['label']}：{best['comment']}"]
 
-    priority_actions: List[str] = []
-    for item in sorted(dimensions, key=lambda current: current["score"]):
-        for suggestion in item["suggestions"]:
-            if suggestion not in priority_actions:
-                priority_actions.append(suggestion)
-            if len(priority_actions) >= 4:
-                break
-        if len(priority_actions) >= 4:
-            break
-    for suggestion in _consistency_priority_actions(consistency_signals):
-        if suggestion not in priority_actions:
-            priority_actions.insert(0, suggestion)
-        if len(priority_actions) > 4:
-            priority_actions = priority_actions[:4]
-    for suggestion in _style_priority_actions(style_report):
-        if suggestion not in priority_actions:
-            priority_actions.insert(0, suggestion)
-        if len(priority_actions) > 4:
-            priority_actions = priority_actions[:4]
-    for suggestion in _wrapped_entity_priority_actions(wrapped_entity_signals):
-        if suggestion not in priority_actions:
-            priority_actions.insert(0, suggestion)
-        if len(priority_actions) > 4:
-            priority_actions = priority_actions[:4]
+    priority_actions = _build_priority_actions(
+        dimensions,
+        consistency_signals=consistency_signals,
+        style_report=style_report,
+        wrapped_entity_signals=wrapped_entity_signals,
+        limit=4,
+    )
 
     fingerprint = (
         f"{SCENE_RUBRIC_VERSION}:{chapter_id}:{start_paragraph}:{end_paragraph}:{stable_hash(scene_text, size=16)}"
     )
-    contract_alignment = _evaluate_scene_contract_alignment(
-        state.get("project", {}),
-        dimension_map,
-        text_metrics,
-        scene_text,
-        story_constraint_signals,
+    contract_alignment = _finalize_contract_alignment(
+        _evaluate_scene_contract_alignment(
+            state.get("project", {}),
+            dimension_map,
+            text_metrics,
+            scene_text,
+            story_constraint_signals,
+        ),
+        consistency_signals=consistency_signals,
+        style_report=style_report,
+        wrapped_entity_signals=wrapped_entity_signals,
     )
-    _apply_consistency_signals_to_alignment(contract_alignment, consistency_signals)
-    _apply_style_signals_to_alignment(contract_alignment, style_report)
-    _apply_wrapped_entity_signals_to_alignment(contract_alignment, wrapped_entity_signals)
     return {
         "reviewId": f"scene-review-{stable_hash(fingerprint)}",
         "fingerprint": fingerprint,
@@ -490,14 +452,7 @@ def build_scene_review(
         "textMetrics": text_metrics,
         "analysisSignals": analysis_signals,
         "styleAnalysis": style_report,
-        "projectContext": {
-            "genre": state.get("project", {}).get("genre", ""),
-            "positioning": state.get("project", {}).get("positioning", {}),
-            "storyContract": state.get("project", {}).get("storyContract", {}),
-            "emotionalContract": state.get("project", {}).get("emotionalContract", {}),
-            "storyTemplate": state.get("project", {}).get("storyTemplate", {}),
-            "commercialPositioning": state.get("project", {}).get("commercialPositioning", {}),
-        },
+        "projectContext": _build_review_project_context(state.get("project", {})),
         "storyConstraintSignals": story_constraint_signals,
         "wrappedEntitySignals": wrapped_entity_signals,
         "consistencySignals": consistency_signals,
@@ -1625,6 +1580,12 @@ def _build_story_constraint_signals(
             }
         )
 
+    chapter_handoff = build_chapter_handoff_context(
+        state,
+        chapter_id,
+        active_entity_ids=[item.get("id") for item in tracked_entities if item.get("id")],
+    )
+
     return {
         "emotionalContract": {
             "coreEmotions": [item for item in project.get("emotionalContract", {}).get("coreEmotions", []) if item][:4],
@@ -1634,6 +1595,85 @@ def _build_story_constraint_signals(
         "worldRules": world_rules,
         "dueForeshadows": due_foreshadows,
         "trackedEntities": tracked_entities[:5],
+        "chapterHandoff": chapter_handoff,
+    }
+
+
+def _build_chapter_handoff_signals(
+    chapter_text: str,
+    story_constraint_signals: Dict[str, Any],
+) -> Dict[str, Any]:
+    handoff = story_constraint_signals.get("chapterHandoff", {}) if isinstance(story_constraint_signals, dict) else {}
+    previous_chapter = handoff.get("previousChapter", {}) if isinstance(handoff.get("previousChapter"), dict) else {}
+    current_chapter = handoff.get("currentChapter", {}) if isinstance(handoff.get("currentChapter"), dict) else {}
+    next_chapter = handoff.get("nextChapter", {}) if isinstance(handoff.get("nextChapter"), dict) else {}
+    carry_over_changes = handoff.get("carryOverEntityChanges", []) if isinstance(handoff.get("carryOverEntityChanges", []), list) else []
+    active_thread_labels = [item for item in handoff.get("activeThreadLabels", []) if item] if isinstance(handoff, dict) else []
+
+    clean_paragraphs = paragraphs_from_text(strip_entity_tags(chapter_text))
+    opening_text = "\n\n".join(clean_paragraphs[:2])
+    closing_text = "\n\n".join(clean_paragraphs[-2:])
+    opening_entity_names = [
+        item.get("name")
+        for item in carry_over_changes
+        if isinstance(item, dict) and item.get("name") and item.get("name") in opening_text
+    ]
+    opening_state_tags = []
+    for item in carry_over_changes:
+        if not isinstance(item, dict):
+            continue
+        state_tags = item.get("stateTags", []) if isinstance(item.get("stateTags", []), list) else []
+        for tag in state_tags:
+            if isinstance(tag, str) and tag and len(tag) <= 12 and tag in opening_text and tag not in opening_state_tags:
+                opening_state_tags.append(tag)
+    opening_thread_hits = [label for label in active_thread_labels if label in opening_text]
+    continuity_hits = _count_keyword_hits(opening_text, SCENE_CONTINUITY_KEYWORDS)
+    closing_hook_hits = _count_keyword_hits(closing_text, HOOK_KEYWORDS)
+    has_previous_load = bool(previous_chapter.get("id")) and bool(
+        carry_over_changes or active_thread_labels or previous_chapter.get("direction", "")
+    )
+    anchor_score = min(len(opening_entity_names), 1) + min(len(opening_state_tags), 1) + min(len(opening_thread_hits), 1)
+    if continuity_hits >= 1:
+        anchor_score += 1
+    opening_bridged = anchor_score >= 2
+    detected = has_previous_load and not opening_bridged
+
+    previous_title = previous_chapter.get("title") or previous_chapter.get("id") or "上一章"
+    focus_hint = (
+        (opening_state_tags[0] if opening_state_tags else "")
+        or (active_thread_labels[0] if active_thread_labels else "")
+        or (opening_entity_names[0] if opening_entity_names else "")
+        or "前章余波"
+    )
+    current_direction = (current_chapter.get("direction") or "").strip()
+    next_title = next_chapter.get("title") or next_chapter.get("id") or ""
+    suggestion = ""
+    if detected:
+        direction_suffix = f"，再推进“{current_direction[:18]}”" if current_direction else ""
+        suggestion = f"开章先接住上一章《{previous_title}》留下的{focus_hint}{direction_suffix}，避免像直接执行细纲。"
+
+    evidence = []
+    if previous_title:
+        evidence.append(f"上一章：{previous_title}")
+    if current_direction:
+        evidence.append(f"本章方向：{current_direction[:24]}")
+    if clean_paragraphs:
+        evidence.append(f"开章：{clean_paragraphs[0][:24]}")
+
+    return {
+        "detected": detected,
+        "severity": "warning" if detected else "none",
+        "previousChapterId": previous_chapter.get("id", ""),
+        "previousChapterTitle": previous_title,
+        "currentDirection": current_direction,
+        "nextChapterTitle": next_title,
+        "openingEntityAnchors": opening_entity_names[:3],
+        "openingStateAnchors": opening_state_tags[:3],
+        "openingThreadAnchors": opening_thread_hits[:3],
+        "openingContinuityHits": continuity_hits,
+        "closingHookHits": closing_hook_hits,
+        "suggestion": suggestion,
+        "evidence": evidence[:3],
     }
 
 
@@ -1701,7 +1741,108 @@ def _build_consistency_signals(
         "settingConflicts": list(consistency_result.get("settingConflicts", []))[:5],
         "unintroducedNameReveals": list(consistency_result.get("unintroducedNameReveals", []))[:3],
         "capabilityTaskRisks": list(consistency_result.get("capabilityTaskRisks", []))[:3],
+        "powerProgressionConflicts": list(consistency_result.get("powerProgressionConflicts", []))[:3],
     }
+
+
+def _build_review_analysis_signals(
+    *,
+    analysis_backed: bool,
+    active_entity_count: int,
+    snapshot_candidate_count: int,
+    relation_candidate_count: int,
+    consistency_signals: Dict[str, Any],
+    wrapped_entity_signals: Dict[str, Any],
+    chapter_handoff_signals: Dict[str, Any] | None = None,
+    scene_entity_names: List[str] | None = None,
+) -> Dict[str, Any]:
+    signals = {
+        "analysisBacked": analysis_backed,
+        "activeEntityCount": active_entity_count,
+        "snapshotCandidateCount": snapshot_candidate_count,
+        "relationCandidateCount": relation_candidate_count,
+        "settingCandidateCount": len(consistency_signals["settingCandidates"]),
+        "settingConflictCount": len(consistency_signals["settingConflicts"]),
+        "unintroducedNameRevealCount": len(consistency_signals["unintroducedNameReveals"]),
+        "capabilityTaskRiskCount": len(consistency_signals["capabilityTaskRisks"]),
+        "powerProgressionConflictCount": len(consistency_signals["powerProgressionConflicts"]),
+        "wrappedEntityCount": wrapped_entity_signals["count"],
+        "wrappedEntityMissingCount": len(wrapped_entity_signals["missing"]),
+    }
+    if chapter_handoff_signals is not None:
+        signals["chapterHandoffRiskCount"] = 1 if chapter_handoff_signals.get("detected") else 0
+    if scene_entity_names is not None:
+        signals["sceneEntityNames"] = scene_entity_names
+    return signals
+
+
+def _build_review_project_context(project_state: Dict[str, Any]) -> Dict[str, Any]:
+    return {
+        "genre": project_state.get("genre", ""),
+        "positioning": project_state.get("positioning", {}),
+        "storyContract": project_state.get("storyContract", {}),
+        "emotionalContract": project_state.get("emotionalContract", {}),
+        "storyTemplate": project_state.get("storyTemplate", {}),
+        "commercialPositioning": project_state.get("commercialPositioning", {}),
+    }
+
+
+def _build_priority_actions(
+    dimensions: List[Dict[str, Any]],
+    *,
+    consistency_signals: Dict[str, Any],
+    style_report: Dict[str, Any],
+    wrapped_entity_signals: Dict[str, Any],
+    chapter_handoff_signals: Dict[str, Any] | None = None,
+    limit: int = 4,
+) -> List[str]:
+    priority_actions: List[str] = []
+    for item in sorted(dimensions, key=lambda current: current["score"]):
+        for suggestion in item["suggestions"]:
+            if suggestion not in priority_actions:
+                priority_actions.append(suggestion)
+            if len(priority_actions) >= limit:
+                break
+        if len(priority_actions) >= limit:
+            break
+    return _prepend_priority_actions(
+        priority_actions,
+        _chapter_handoff_priority_actions(chapter_handoff_signals or {}),
+        _consistency_priority_actions(consistency_signals),
+        _style_priority_actions(style_report),
+        _wrapped_entity_priority_actions(wrapped_entity_signals),
+        limit=limit,
+    )
+
+
+def _prepend_priority_actions(
+    priority_actions: List[str],
+    *action_groups: List[str],
+    limit: int = 4,
+) -> List[str]:
+    merged = list(priority_actions)
+    for group in action_groups:
+        for suggestion in group:
+            if suggestion not in merged:
+                merged.insert(0, suggestion)
+            if len(merged) > limit:
+                merged = merged[:limit]
+    return merged
+
+
+def _finalize_contract_alignment(
+    contract_alignment: Dict[str, Any],
+    *,
+    consistency_signals: Dict[str, Any],
+    style_report: Dict[str, Any],
+    wrapped_entity_signals: Dict[str, Any],
+    chapter_handoff_signals: Dict[str, Any] | None = None,
+) -> Dict[str, Any]:
+    _apply_consistency_signals_to_alignment(contract_alignment, consistency_signals)
+    _apply_style_signals_to_alignment(contract_alignment, style_report)
+    _apply_wrapped_entity_signals_to_alignment(contract_alignment, wrapped_entity_signals)
+    _apply_chapter_handoff_signals_to_alignment(contract_alignment, chapter_handoff_signals or {})
+    return contract_alignment
 
 
 def _collect_review_rule_judgements(
@@ -1710,6 +1851,7 @@ def _collect_review_rule_judgements(
     style_report: Dict[str, Any],
     consistency_result: Dict[str, Any],
     wrapped_entity_signals: Dict[str, Any],
+    chapter_handoff_signals: Dict[str, Any] | None = None,
     scope: str,
     start_paragraph: int | None = None,
     end_paragraph: int | None = None,
@@ -1742,6 +1884,13 @@ def _collect_review_rule_judgements(
             end_paragraph=end_paragraph,
         )
     )
+    if scope == "chapter":
+        judgements.extend(
+            _chapter_handoff_judgements(
+                chapter_handoff_signals or {},
+                chapter_id=chapter_id,
+            )
+        )
     return judgements[:20]
 
 
@@ -1790,16 +1939,13 @@ def _wrapped_entity_judgements(
         judgements.append(
             build_rule_judgement(
                 rule_id="wrappedEntityMissingRegistry",
-                source="core",
                 scope=scope,
-                kind="hard",
-                severity="warning",
                 message=f"检测到已包裹但未建档的实体引用：{name}。",
                 suggestion=f"为 {name} 补齐角色卡、势力、地点或特殊物品真相源。",
                 evidence=[name] if name else [],
                 scope_ref=scope_ref,
                 payload=item,
-                tags=["registry", "wrapped-entity"],
+                tags=["wrapped-entity"],
             )
         )
     return judgements
@@ -1821,6 +1967,12 @@ def _consistency_priority_actions(consistency_signals: Dict[str, Any]) -> List[s
     capability_risks = consistency_signals.get("capabilityTaskRisks", [])
     if capability_risks:
         actions.append(f"补足角色能力与任务门槛的合理性说明：{capability_risks[0].get('entityName', '该角色')}。")
+    progression_conflicts = consistency_signals.get("powerProgressionConflicts", [])
+    if progression_conflicts:
+        first = progression_conflicts[0]
+        actions.append(
+            f"校正角色突破链：{first.get('entityName', '该角色')} 本章应先指向 {first.get('expectedNextStage', '下一阶段')}。"
+        )
     return actions
 
 
@@ -1857,6 +2009,18 @@ def _apply_consistency_signals_to_alignment(
         task_label = first.get("taskLabel", "高风险任务")
         risks.append(f"检测到角色能力与任务门槛可能不匹配：{entity_name} 被卷入 {task_label}，但正文缺少足够的规则解释或保护条件。")
 
+    progression_conflicts = consistency_signals.get("powerProgressionConflicts", [])
+    if progression_conflicts:
+        first = progression_conflicts[0]
+        entity_name = first.get("entityName", "该角色")
+        current_stage = first.get("currentStage", "当前境界")
+        target_stage = first.get("targetStage", "目标境界")
+        expected_next_stage = first.get("expectedNextStage", "下一阶段")
+        risks.append(
+            f"检测到突破链条可能越阶：{entity_name} 当前仍在 {current_stage}，按世界规则应先到 {expected_next_stage}，"
+            f"但正文却直接指向 {target_stage}。"
+        )
+
     setting_candidates = consistency_signals.get("settingCandidates", [])
     if setting_candidates and not setting_conflicts:
         labels = [item.get("label") for item in setting_candidates if item.get("label")]
@@ -1882,6 +2046,9 @@ def _style_priority_actions(style_report: Dict[str, Any]) -> List[str]:
     register_drift = style_analysis.get("registerDrift", {})
     if register_drift.get("detected") and register_drift.get("suggestion"):
         actions.append(register_drift["suggestion"])
+    structured_plan_block = style_analysis.get("structuredPlanBlock", {})
+    if structured_plan_block.get("detected") and structured_plan_block.get("suggestion"):
+        actions.append(structured_plan_block["suggestion"])
     narrative_frames = style_analysis.get("narrativeFrameRepetition", {})
     top_frames = narrative_frames.get("topFrames", [])
     if narrative_frames.get("detected") and top_frames:
@@ -1892,13 +2059,21 @@ def _style_priority_actions(style_report: Dict[str, Any]) -> List[str]:
     return actions[:2]
 
 
+def _chapter_handoff_priority_actions(chapter_handoff_signals: Dict[str, Any]) -> List[str]:
+    if not chapter_handoff_signals.get("detected"):
+        return []
+    suggestion = chapter_handoff_signals.get("suggestion", "")
+    return [suggestion] if suggestion else []
+
+
 def _apply_style_signals_to_alignment(
     contract_alignment: Dict[str, Any],
     style_report: Dict[str, Any],
 ) -> None:
     style_analysis = style_report.get("styleAnalysis", {}) if isinstance(style_report, dict) else {}
     register_drift = style_analysis.get("registerDrift", {})
-    if not register_drift.get("detected"):
+    structured_plan_block = style_analysis.get("structuredPlanBlock", {})
+    if not register_drift.get("detected") and not structured_plan_block.get("detected"):
         narrative_frames = style_analysis.get("narrativeFrameRepetition", {})
         if not narrative_frames.get("detected"):
             return
@@ -1908,6 +2083,10 @@ def _apply_style_signals_to_alignment(
         evidence = register_drift.get("evidence", [])
         evidence_suffix = f"，例如 {evidence[0]}" if evidence else ""
         risks.append(f"检测到题材语域失真词汇{evidence_suffix}，容易让正文带出现代工具/项目管理口吻。")
+    if structured_plan_block.get("detected"):
+        evidence = structured_plan_block.get("evidence", [])
+        evidence_suffix = f"，例如 {evidence[0]}" if evidence else ""
+        risks.append(f"检测到方案文档腔{evidence_suffix}，容易让正文像提纲或执行清单。")
     narrative_frames = style_analysis.get("narrativeFrameRepetition", {})
     if narrative_frames.get("detected"):
         evidence = narrative_frames.get("evidence", [])
@@ -1918,6 +2097,52 @@ def _apply_style_signals_to_alignment(
         contract_alignment["status"] = "mixed"
     else:
         contract_alignment["status"] = "at-risk"
+
+
+def _apply_chapter_handoff_signals_to_alignment(
+    contract_alignment: Dict[str, Any],
+    chapter_handoff_signals: Dict[str, Any],
+) -> None:
+    if not chapter_handoff_signals.get("detected"):
+        return
+
+    previous_title = chapter_handoff_signals.get("previousChapterTitle", "上一章")
+    focus_hint = (
+        (chapter_handoff_signals.get("openingEntityAnchors", []) or [None])[0]
+        or (chapter_handoff_signals.get("openingStateAnchors", []) or [None])[0]
+        or "前章状态/关系余波"
+    )
+    risks = contract_alignment.setdefault("risks", [])
+    risks.append(f"当前章开头没有明显接住《{previous_title}》留下的{focus_hint}，容易像按细纲切场而不是自然续写。")
+    contract_alignment["risks"] = risks[:5]
+    if contract_alignment.get("matched"):
+        contract_alignment["status"] = "mixed"
+    else:
+        contract_alignment["status"] = "at-risk"
+
+
+def _chapter_handoff_judgements(
+    chapter_handoff_signals: Dict[str, Any],
+    *,
+    chapter_id: str,
+) -> List[Dict[str, Any]]:
+    if not chapter_handoff_signals.get("detected"):
+        return []
+    return [
+        build_rule_judgement(
+            rule_id="chapterHandoffWeak",
+            message=f"当前章开头没有明显承接上一章《{chapter_handoff_signals.get('previousChapterTitle', '上一章')}》留下的状态或线索。",
+            suggestion=chapter_handoff_signals.get("suggestion", ""),
+            evidence=chapter_handoff_signals.get("evidence", []),
+            scope_ref=chapter_scope_ref(chapter_id),
+            payload={
+                "previousChapterId": chapter_handoff_signals.get("previousChapterId", ""),
+                "currentDirection": chapter_handoff_signals.get("currentDirection", ""),
+                "nextChapterTitle": chapter_handoff_signals.get("nextChapterTitle", ""),
+            },
+            tags=["review", "chapter-handoff", "continuity"],
+        )
+    ]
 
 
 def _build_wrapped_entity_signals(

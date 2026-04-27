@@ -3,10 +3,18 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from story_harness_cli.commands.project_support import build_project_advisories
 from story_harness_cli.protocol import ensure_project_root, load_project_state, save_state
 from story_harness_cli.protocol.io import load_json_compatible_yaml
 from story_harness_cli.services import refresh_context_lens
 from story_harness_cli.utils import now_iso
+
+
+def _decorate_context_lens(root: Path, lens: dict) -> dict:
+    return {
+        **lens,
+        "projectAdvisories": build_project_advisories(root, include_prd_content=True),
+    }
 
 
 def command_context_refresh(args) -> int:
@@ -24,7 +32,7 @@ def command_context_refresh(args) -> int:
     state["project"]["activeChapterId"] = chapter_id
     state["project"]["updatedAt"] = now_iso()
     save_state(root, state)
-    print(json.dumps(lens, ensure_ascii=False, indent=2))
+    print(json.dumps(_decorate_context_lens(root, lens), ensure_ascii=False, indent=2))
     return 0
 
 
@@ -37,7 +45,7 @@ def command_context_show(args) -> int:
         raise SystemExit("缺少 chapter id 且没有活跃章节")
     for lens in state["context_lens"].get("lenses", []):
         if lens.get("chapterId") == chapter_id:
-            print(json.dumps(lens, ensure_ascii=False, indent=2))
+            print(json.dumps(_decorate_context_lens(root, lens), ensure_ascii=False, indent=2))
             return 0
     raise SystemExit(f"章节 {chapter_id} 尚无 context lens，请先运行 context refresh")
 

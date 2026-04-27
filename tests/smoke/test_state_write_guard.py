@@ -67,7 +67,10 @@ class StateWriteGuardSmokeTest(unittest.TestCase):
         ctx = multiprocessing.get_context("spawn")
         ready_event = ctx.Event()
         release_event = ctx.Event()
-        error_queue = ctx.Queue()
+        try:
+            error_queue = ctx.Queue()
+        except PermissionError as exc:
+            self.skipTest(f"当前环境不允许创建 multiprocessing.Queue: {exc}")
         process = ctx.Process(
             target=_hold_project_write_lock,
             args=(str(self.project_root), ready_event, release_event, error_queue),

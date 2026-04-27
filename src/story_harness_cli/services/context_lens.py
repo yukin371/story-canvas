@@ -118,6 +118,122 @@ def _select_active_threads(state: Dict[str, Dict[str, Any]], chapter_id: str, ac
     return active_threads[:5]
 
 
+def _chapter_plan_hints(items: list[Any], *, fields: tuple[str, ...]) -> list[str]:
+    hints: list[str] = []
+    for item in items:
+        text = ""
+        if isinstance(item, str):
+            text = item.strip()
+        elif isinstance(item, dict):
+            for field in fields:
+                value = item.get(field)
+                if isinstance(value, str) and value.strip():
+                    text = value.strip()
+                    break
+        if text and text not in hints:
+            hints.append(text)
+        if len(hints) >= 3:
+            break
+    return hints
+
+
+def _compact_handoff_chapter(chapter: Dict[str, Any] | None) -> Dict[str, Any] | None:
+    if not isinstance(chapter, dict):
+        return None
+    return {
+        "id": chapter.get("id"),
+        "title": chapter.get("title") or chapter.get("id", ""),
+        "direction": (chapter.get("direction") or "").strip(),
+        "beatHints": _chapter_plan_hints(chapter.get("beats", []), fields=("summary", "goal", "title", "beat")),
+        "sceneGoals": _chapter_plan_hints(chapter.get("scenePlans", []), fields=("goal", "summary", "title")),
+    }
+
+
+def _chapter_triplet(outline: Dict[str, Any], chapter_id: str) -> tuple[Dict[str, Any] | None, Dict[str, Any] | None, Dict[str, Any] | None]:
+    chapters = outline.get("chapters", [])
+    for index, chapter in enumerate(chapters):
+        if isinstance(chapter, dict) and chapter.get("id") == chapter_id:
+            previous_chapter = chapters[index - 1] if index > 0 else None
+            next_chapter = chapters[index + 1] if index + 1 < len(chapters) else None
+            return previous_chapter, chapter, next_chapter
+    return None, None, None
+
+
+def build_chapter_handoff_context(
+    state: Dict[str, Dict[str, Any]],
+    chapter_id: str,
+    *,
+    active_entity_ids: list[str] | None = None,
+) -> Dict[str, Any]:
+    outline = state.get("outline", {})
+    previous_chapter, current_chapter, next_chapter = _chapter_triplet(outline, chapter_id)
+    previous_id = previous_chapter.get("id") if isinstance(previous_chapter, dict) else None
+    active_entity_set = {item for item in (active_entity_ids or []) if item}
+
+    carry_over_entity_changes = []
+    if previous_id:
+        for entity in state.get("entities", {}).get("entities", []):
+            if not isinstance(entity, dict):
+                continue
+            if active_entity_set and entity.get("id") not in active_entity_set:
+                continue
+            change_log = entity.get("changeLog", []) if isinstance(entity.get("changeLog", []), list) else []
+            matched_change = next(
+                (
+                    change
+                    for change in reversed(change_log)
+                    if isinstance(change, dict) and change.get("chapterId") == previous_id
+                ),
+                None,
+            )
+            if not matched_change:
+                continue
+            entity_state = entity.get("state", {}) if isinstance(entity.get("state"), dict) else {}
+            carry_over_entity_changes.append(
+                {
+                    "entityId": entity.get("id"),
+                    "name": entity.get("name", entity.get("id", "")),
+                    "fromChapterId": previous_id,
+                    "field": matched_change.get("field", ""),
+                    "reason": matched_change.get("reason", ""),
+                    "stateTags": entity_state.get("statusTags", [])[:4]
+                    if isinstance(entity_state.get("statusTags", []), list)
+                    else [],
+                }
+            )
+            if len(carry_over_entity_changes) >= 5:
+                break
+
+    active_thread_labels: list[str] = []
+    for thread in state.get("threads", {}).get("threads", []):
+        if not isinstance(thread, dict):
+            continue
+        related_entities = set(thread.get("relatedEntities", []))
+        related_chapters = set(thread.get("relatedChapters", []))
+        target_chapter_id = thread.get("targetChapterId")
+        label = str(thread.get("label") or "").strip()
+        if not label:
+            continue
+        if (
+            chapter_id in related_chapters
+            or previous_id in related_chapters
+            or target_chapter_id in {chapter_id, previous_id}
+            or bool(active_entity_set and active_entity_set.intersection(related_entities))
+        ) and label not in active_thread_labels:
+            active_thread_labels.append(label)
+        if len(active_thread_labels) >= 4:
+            break
+
+    return {
+        "previousChapter": _compact_handoff_chapter(previous_chapter),
+        "currentChapter": _compact_handoff_chapter(current_chapter)
+        or {"id": chapter_id, "title": chapter_title(outline, chapter_id), "direction": "", "beatHints": [], "sceneGoals": []},
+        "nextChapter": _compact_handoff_chapter(next_chapter),
+        "carryOverEntityChanges": carry_over_entity_changes,
+        "activeThreadLabels": active_thread_labels,
+    }
+
+
 def refresh_context_lens(state: Dict[str, Dict[str, Any]], chapter_id: str, analysis: Dict[str, Any]) -> Dict[str, Any]:
     project = state["project"]
     projection = state["projection"]
@@ -236,6 +352,7 @@ def refresh_context_lens(state: Dict[str, Dict[str, Any]], chapter_id: str, anal
         "chapterTitle": chapter_title(state["outline"], chapter_id),
         "emotionalContract": project.get("emotionalContract", {}),
         "storyTemplate": project.get("storyTemplate", {}),
+        "chapterHandoff": build_chapter_handoff_context(state, chapter_id, active_entity_ids=active_entity_ids),
         "activeCharacters": active_characters,
         "activeRelations": active_relations,
         "activeWorldRules": active_world_rules,

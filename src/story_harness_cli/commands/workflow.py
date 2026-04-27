@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from story_harness_cli.commands.project_support import build_project_advisories
+from story_harness_cli.commands.review_support import build_review_preflight_payload
 from story_harness_cli.protocol import (
     chapter_path,
     ensure_project_root,
@@ -16,7 +18,9 @@ from story_harness_cli.services import (
     build_workflow_progress,
     export_workflow_payload,
     hydrate_workflow_progress,
+    infer_volume_preflight_workflow,
     infer_workflow_status,
+    latest_volume_self_review,
     reset_workflow_progress,
 )
 from story_harness_cli.utils import now_iso
@@ -45,10 +49,39 @@ def _workflow_path(root: Path) -> Path:
     return resolve_state_path(root, "workflow_progress")
 
 
+def _validate_scope_args(chapter_id: str | None, volume_id: str | None) -> None:
+    if chapter_id and volume_id:
+        raise SystemExit("`--chapter-id` 与 `--volume-id` 不能同时使用")
+
+
+def _build_volume_workflow_payload(root: Path, state: dict[str, Any], volume_id: str) -> dict[str, Any]:
+    preflight_payload = build_review_preflight_payload(root, state, volume_id=volume_id)
+    volume_self_review = latest_volume_self_review(state.get("story_reviews", {}), volume_id)
+    workflow = infer_volume_preflight_workflow(preflight_payload, volume_self_review)
+    return {
+        "scope": "volume",
+        "stateSource": "inferred",
+        "workflowFile": "",
+        "workflowFileExists": False,
+        "volumeId": workflow["volumeId"],
+        "volumeTitle": workflow["volumeTitle"],
+        "chapterCount": workflow["chapterCount"],
+        "preflight": preflight_payload,
+        "latestVolumeSelfReview": volume_self_review or None,
+        "projectAdvisories": build_project_advisories(root, include_prd_content=True),
+        **workflow,
+    }
+
+
 def command_workflow_status(args) -> int:
     root = Path(args.root).resolve()
     ensure_project_root(root)
     state = load_project_state(root)
+    _validate_scope_args(args.chapter_id, args.volume_id)
+    if args.volume_id:
+        payload = _build_volume_workflow_payload(root, state, args.volume_id)
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return 0
     workflow_path = _workflow_path(root)
     inferred = _infer(root, state, args.chapter_id)
     workflow_progress = hydrate_workflow_progress(state.get("workflow_progress", {}), inferred)
@@ -60,6 +93,7 @@ def command_workflow_status(args) -> int:
         "inferredCurrentStage": inferred["currentStage"],
         "inferredWorkflowStatus": inferred["workflowStatus"],
         "projectGate": inferred["projectGate"],
+        "projectAdvisories": build_project_advisories(root, include_prd_content=True),
         "targetChapterTitle": inferred["targetChapterTitle"],
         **workflow_progress,
         "stageOrder": inferred["stageOrder"],
@@ -75,6 +109,9 @@ def command_workflow_run(args) -> int:
     root = Path(args.root).resolve()
     ensure_project_root(root)
     state = load_project_state(root)
+    _validate_scope_args(args.chapter_id, args.volume_id)
+    if args.volume_id:
+        raise SystemExit("当前 volume scope 仅支持 workflow status/export，只读卷级 gate 尚未接入持久化 run")
     workflow_path = _workflow_path(root)
     inferred = _infer(root, state, args.chapter_id)
 
@@ -104,6 +141,9 @@ def command_workflow_advance(args) -> int:
     root = Path(args.root).resolve()
     ensure_project_root(root)
     state = load_project_state(root)
+    _validate_scope_args(args.chapter_id, args.volume_id)
+    if args.volume_id:
+        raise SystemExit("当前 volume scope 仅支持 workflow status/export，只读卷级 gate 尚未接入 advance")
     inferred = _infer(root, state, args.chapter_id)
     workflow_progress = hydrate_workflow_progress(state.get("workflow_progress", {}), inferred)
 
@@ -134,6 +174,9 @@ def command_workflow_reset(args) -> int:
     root = Path(args.root).resolve()
     ensure_project_root(root)
     state = load_project_state(root)
+    _validate_scope_args(args.chapter_id, args.volume_id)
+    if args.volume_id:
+        raise SystemExit("当前 volume scope 仅支持 workflow status/export，只读卷级 gate 尚未接入 reset")
     inferred = _infer(root, state, args.chapter_id)
     workflow_progress = hydrate_workflow_progress(state.get("workflow_progress", {}), inferred)
     from_gate = args.from_gate or workflow_progress["currentStage"]
@@ -163,9 +206,14 @@ def command_workflow_export(args) -> int:
     root = Path(args.root).resolve()
     ensure_project_root(root)
     state = load_project_state(root)
-    inferred = _infer(root, state, args.chapter_id)
-    workflow_progress = hydrate_workflow_progress(state.get("workflow_progress", {}), inferred)
-    payload = export_workflow_payload(workflow_progress, inferred)
+    _validate_scope_args(args.chapter_id, args.volume_id)
+    if args.volume_id:
+        payload = _build_volume_workflow_payload(root, state, args.volume_id)
+    else:
+        inferred = _infer(root, state, args.chapter_id)
+        workflow_progress = hydrate_workflow_progress(state.get("workflow_progress", {}), inferred)
+        payload = export_workflow_payload(workflow_progress, inferred)
+        payload["projectAdvisories"] = build_project_advisories(root, include_prd_content=True)
 
     if args.output:
         output_path = Path(args.output).resolve()
@@ -183,11 +231,13 @@ def register_workflow_commands(subparsers) -> None:
     status_parser = workflow_subparsers.add_parser("status", help="Show workflow status for a project")
     status_parser.add_argument("--root", required=True)
     status_parser.add_argument("--chapter-id")
+    status_parser.add_argument("--volume-id")
     status_parser.set_defaults(func=command_workflow_status)
 
     run_parser = workflow_subparsers.add_parser("run", help="Initialize or refresh workflow.yaml from inferred state")
     run_parser.add_argument("--root", required=True)
     run_parser.add_argument("--chapter-id")
+    run_parser.add_argument("--volume-id")
     run_parser.add_argument("--resume-from")
     run_parser.add_argument("--non-interactive", action="store_true")
     run_parser.set_defaults(func=command_workflow_run)
@@ -195,6 +245,7 @@ def register_workflow_commands(subparsers) -> None:
     advance_parser = workflow_subparsers.add_parser("advance", help="Record a gate decision and move the workflow")
     advance_parser.add_argument("--root", required=True)
     advance_parser.add_argument("--chapter-id")
+    advance_parser.add_argument("--volume-id")
     advance_parser.add_argument("--gate", required=True)
     advance_parser.add_argument("--decision", required=True, choices=["accept", "modify", "reject"])
     advance_parser.add_argument("--feedback")
@@ -203,11 +254,13 @@ def register_workflow_commands(subparsers) -> None:
     reset_parser = workflow_subparsers.add_parser("reset", help="Reset workflow decisions from one gate onward")
     reset_parser.add_argument("--root", required=True)
     reset_parser.add_argument("--chapter-id")
+    reset_parser.add_argument("--volume-id")
     reset_parser.add_argument("--from-gate")
     reset_parser.set_defaults(func=command_workflow_reset)
 
     export_parser = workflow_subparsers.add_parser("export", help="Export the current workflow snapshot")
     export_parser.add_argument("--root", required=True)
     export_parser.add_argument("--chapter-id")
+    export_parser.add_argument("--volume-id")
     export_parser.add_argument("-o", "--output")
     export_parser.set_defaults(func=command_workflow_export)

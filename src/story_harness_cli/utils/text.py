@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 
 
 STATE_KEYWORDS = {
@@ -77,6 +77,48 @@ def extract_tag_mentions(text: str) -> List[str]:
             seen.add(normalized)
 
     return mentions
+
+
+def find_malformed_entity_tags(text: str) -> List[Dict[str, Any]]:
+    issues: List[Dict[str, Any]] = []
+    valid_wrapped_name = re.compile(
+        r"(?:"
+        r"[A-Za-z][A-Za-z0-9_-]{0,31}"
+        r"|"
+        r"[\u4e00-\u9fff·-]{1,24}"
+        r")$"
+    )
+    cursor = 0
+    while True:
+        start = text.find("@{", cursor)
+        if start < 0:
+            break
+        end = text.find("}", start + 2)
+        newline = text.find("\n", start + 2)
+        if end < 0 or (newline >= 0 and newline < end):
+            snippet_end = newline if newline >= 0 else min(len(text), start + 40)
+            issues.append(
+                {
+                    "code": "unclosed-wrapped-entity-tag",
+                    "snippet": text[start:snippet_end].strip(),
+                }
+            )
+            cursor = start + 2
+            continue
+
+        name = text[start + 2 : end].strip()
+        if not name:
+            issues.append({"code": "empty-wrapped-entity-tag", "snippet": "@{}"})
+        elif not valid_wrapped_name.fullmatch(name):
+            issues.append(
+                {
+                    "code": "invalid-wrapped-entity-tag",
+                    "snippet": f"@{{{name[:40]}}}",
+                    "name": name,
+                }
+            )
+        cursor = end + 1
+    return issues
 
 
 def state_tags_for_paragraph(paragraph: str) -> List[str]:

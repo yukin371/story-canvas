@@ -139,6 +139,90 @@ class ExportCommandTest(unittest.TestCase):
         self.assertIn("但脑海中反复浮现的，始终是那道银色的剑光。", content)
         self.assertNotIn("第一章 停电夜", content)
 
+    def test_export_strips_leaked_next_chapter_heading_from_previous_body(self):
+        outline = json.loads((self.temp_dir / "outline.yaml").read_text(encoding="utf-8"))
+        outline["chapters"] = [
+            {"id": "chapter-001", "title": "第一章 停电夜"},
+            {"id": "chapter-002", "title": "第二章 风暴前夜"},
+        ]
+        outline["volumes"] = []
+        (self.temp_dir / "outline.yaml").write_text(
+            json.dumps(outline, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 第一章 停电夜\n\n"
+            "林舟抬头时，窗外的雷声已经逼近城墙。\n\n"
+            "# 第二章 风暴前夜\n",
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-002.md").write_text(
+            "# 第二章 风暴前夜\n\n"
+            "风暴真正压下来时，所有人都知道夜里不会平静。\n",
+            encoding="utf-8",
+        )
+
+        out_file = self.temp_dir / "single.txt"
+        result = main([
+            "export", "--root", str(self.temp_dir),
+            "--chapter-id", "chapter-001",
+            "--output", str(out_file),
+        ])
+
+        self.assertEqual(result, 0)
+        content = out_file.read_text(encoding="utf-8")
+        self.assertIn("林舟抬头时，窗外的雷声已经逼近城墙。", content)
+        self.assertNotIn("第二章 风暴前夜", content)
+
+    def test_export_volume_markdown_uses_volume_title_as_default_filename(self):
+        outline = {
+            "chapters": [],
+            "chapterDirections": [],
+            "volumes": [
+                {
+                    "id": "volume-001",
+                    "title": "第一卷",
+                    "chapters": [
+                        {"id": "chapter-001", "title": "第一章 停电夜"},
+                        {"id": "chapter-002", "title": "第二章 风暴前夜"},
+                    ],
+                },
+                {
+                    "id": "volume-002",
+                    "title": "第二卷",
+                    "chapters": [
+                        {"id": "chapter-003", "title": "第三章 新夜"},
+                    ],
+                },
+            ],
+        }
+        (self.temp_dir / "outline.yaml").write_text(
+            json.dumps(outline, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text("# 第一章 停电夜\n\n卷一正文甲。\n", encoding="utf-8")
+        (self.temp_dir / "chapters" / "chapter-002.md").write_text("# 第二章 风暴前夜\n\n卷一正文乙。\n", encoding="utf-8")
+        (self.temp_dir / "chapters" / "chapter-003.md").write_text("# 第三章 新夜\n\n卷二正文。\n", encoding="utf-8")
+        out_dir = self.temp_dir / "exports"
+        out_dir.mkdir(exist_ok=True)
+
+        result = main([
+            "export", "--root", str(self.temp_dir),
+            "--format", "markdown",
+            "--volume-id", "volume-001",
+            "--output", str(out_dir),
+        ])
+
+        self.assertEqual(result, 0)
+        out_file = out_dir / "第一卷.md"
+        self.assertTrue(out_file.exists())
+        content = out_file.read_text(encoding="utf-8")
+        self.assertIn("第一章 停电夜", content)
+        self.assertIn("第二章 风暴前夜", content)
+        self.assertNotIn("第三章 新夜", content)
+        self.assertIn("卷一正文甲。", content)
+        self.assertNotIn("卷二正文。", content)
+
 
 if __name__ == "__main__":
     unittest.main()

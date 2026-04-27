@@ -16,21 +16,80 @@
 - JSON 输出格式化（`print(json.dumps(...))`）
 - 文件 I/O 时机控制（何时 save_state）
 - workflow 命令编排（如 `review apply`、`review chapter`、`review scene` 的不同评审路径，以及 `review scene --list-scenes` 的场景枚举）
+- `review preflight` 现负责章节 / 卷级只读预检聚合：把 mention hygiene、伏笔到窗 / 逾期、世界 onboarding / 势力与战力风险收敛成一个 AI 自审入口，减少在卷级闭环前来回手拼多个命令输出
+- `review preflight` 当前还会带出顶层 `projectAdvisories`；首个 advisory 为缺少 `PRD.md`，让 AI 在常规预检入口就能看到项目立项文档缺口
+- `review preflight --volume-id` 当前还会附带 `volumeStructureCheck`，用轻量阶段映射和检查项暴露卷级结构明示度、引入卷 onboarding、伏笔债务和卷尾收束准备度，先服务 AI 自审与人工审查
+- `review volume-self-template` 现负责 repo-native 的卷级 AI 自审模板生成：基于卷级 `review preflight` 输出模板骨架、当前卷风险摘要、逐章信号和建议修补方向，减少 AI/作者手拼输入文件
+- `review volume-self-template` 当前还会把 `projectAdvisories` 写入模板 `_templateContext`，让 AI 自审时同步看到项目级立项缺口
+- `review volume-self` 现负责 repo-native 的卷级 AI 自审结果写入：从外部结构化输入读取卷级闭环结论、评分、归因和修正建议，落盘到 `reviews/story-reviews.yaml`，避免继续手改该状态文件
+- `review volume-self` 当前还会显式拒绝模板占位值（如 `待填写`），避免把未完成的自审草稿写入真相层
+- `review volume-self` 当前还会做最小健康检查：不接受所有维度都为 `0` 的空白评分；`closed` 必须写出 `delivered`，`not_closed` 必须写出 `missing`
+- `review volume-self` 当前还会做最小一致性检查：`allowHumanReview=true` 时最低门槛维度必须过线；`not_closed` 或存在 `0-2` 分弱项时至少要写出一项 `issues`
+- `review volume-self` 当前还会对 `0-2` 分弱项做最小联动检查：若对应问题或修复动作里完全没提到该弱项方向，会拒绝写入，避免“分数和问题清单各说各话”
+- `review volume-self` 当前还会基于当前卷章节正文与 `scenePlans` 校验 `issues.chapterRefs/evidenceRefs`：至少会验证 `chapter-xxx#paragraph-n` 与 `chapter-xxx#scene-n` 是否真的存在，减少写入空锚点
+- `review volume-self` 当前还会在 command 层额外构建章节级 `semanticAnchors`，首批支持 `chapter-xxx#world-rule-onboarding` 与 `chapter-xxx#handoff-gap`，只有当前卷里真实存在对应 world onboarding / chapter handoff 信号时才允许写入
+- `review volume-self` 对 `chapter-xxx#scene-n` 的校验当前还要求该场景已能映射到持久化 `sceneReviews`，避免 scene 锚点只能指向 outline 结构却跳不到 review-packet 的对应场景
+- `chapter create` 的 command-side 编排：原子化创建章节正文 stub、插入 outline / volume 章节列表、回填 direction / beats / scenePlans 种子，并按需推进 `project.activeChapterId`
 - `projection apply` 的 command-side 编排：加载 analysis、读取章节正文并补跑设定一致性抽取，把非冲突高置信新设定交给 service 入账
-- `outline scene-add` / `outline scene-list` / `outline scene-detect` / `outline scene-update` / `outline scene-remove` 这类轻量结构维护命令
+- `outline scene-add` / `outline scene-list` / `outline scene-detect` / `outline scene-update` / `outline scene-remove` / `outline scene-sync` 这类轻量结构维护命令
 - `outline check` 这类“写作前门禁”命令，以及 `chapter suggest` 的 outline-first workflow gate
   默认门禁口径为 `project.positioning` / `project.storyContract` + chapter `direction` + `beats` + `scenePlans`
-- 项目初始化参数装配（如 `init` 写入 positioning / storyContract / emotionalContract / storyTemplate / commercialPositioning，并落盘 `worldbook` / `foreshadowing` 默认文件）
-- `context refresh` 的 command-side 编排：加载 analysis 日志，刷新并持久化包含情绪契约、题材模板、世界约束、线索和伏笔切片的写作上下文
+- `outline check` 与 `chapter suggest` 当前还会在顶层输出 `projectAdvisories`；不仅会提示缺少 `PRD.md`，也会提示 `PRD.md` 仍停留在 bootstrap/TBD 占位状态，让 AI 在真正开写/续写前就能看到项目级立项文档缺口，同时保持非阻塞
+- `brainstorm outline` 与 `structure apply/show/check/map/scaffold` 当前也会在顶层输出 `projectAdvisories`；不仅会提示缺少 `PRD.md`，也会提示 `PRD.md` 仍未补齐卷目标/读者钩子/章节承接点等占位项，把项目级立项缺口继续前推到正式起稿前的灵感/结构整理入口
+- 项目初始化参数装配（如 `init` 写入 positioning / storyContract / emotionalContract / storyTemplate / commercialPositioning，并落盘 `worldbook` / `foreshadowing` 默认文件）；当前还会默认生成根目录 `PRD.md`，把立项/卷职责文档作为真实项目初始化产物显式留下
+- `init` 当前还支持通过 `--volume-goal` / `--reader-hook` / `--suppression-source` / `--onboarding-focus` / `--chapter-handoff` / `--chapter-delivery` 直接回填 PRD 启动焦点，减少后续 agent/UI 继续手改 `PRD.md`
+- `context refresh` 的 command-side 编排：加载 analysis 日志，刷新并持久化包含情绪契约、题材模板、世界约束、线索和伏笔切片的写作上下文；当前还会输出 `chapterHandoff`
+- `context refresh/show` 当前还会在命令输出层附带 `projectAdvisories`；不仅会提示缺少 `PRD.md`，也会提示 `PRD.md` 仍停留在模板占位状态，让 AI 在真正拿写作上下文时就能看到项目级立项缺口，同时不污染持久化 `context-lens.yaml`
 - doctor 类命令中的项目元数据校验编排
-- doctor 现在还负责校验可选项目配置如 `style-profiles.yaml` 的基本结构，以及 `storyTemplate` 驱动的 `worldbook` / 伏笔账本 / 角色状态追踪基础约束
+- doctor 现在还会检查项目根目录是否存在 `PRD.md`，在缺失时给出只读 warning，提醒项目仍缺正式立项/卷职责文档入口
+- doctor 现在还会识别 `PRD.md` 是否仍停留在 bootstrap/TBD 占位状态；若卷目标、读者钩子、本章承接点/交付点等仍未补齐，会给出 `project-prd-incomplete` warning
+- doctor 现在还负责校验可选项目配置如 `style-profiles.yaml`、`review-rules.yaml` 的基本结构，以及 `storyTemplate` 驱动的 `worldbook` / 伏笔账本 / 角色状态追踪基础约束
 - doctor 现在还会扫描全项目章节中的 `@{实体}` 包裹引用，并检查是否已在 `entities/worldbook` 中建档
+- doctor 现在还会扫描全项目章节中的“已建档但未包裹” plain mention，并提示哪些引用仍应回到 `entity mention-plan/mention-apply` 或显式 adopt 闭环
+- doctor 现在还会检查章节中的坏标签语法，例如未闭合 `@{`、空标签 `@{}`、以及把整句对白/叙述塞进 `@{...}` 的非法实体标签
 - doctor 现在还会校验 `illustrations.yaml` 中的主图/多图资产引用、缺失文件和孤儿资产
+- `entity add` / `entity state-update` / `entity mention-adopt` / `entity mention-plan` / `entity mention-apply` / `entity mention-tag-apply` 现负责 repo-native 的实体建档、状态维护与确定性正文修正，覆盖 `seed/profile/currentState/state/changeLog` 的最小可用写入，并支持把章节中的缺失 mention 显式采纳进 `entities`、把已知 plain mention 批量包成规范 `@{}`，减少 AI 直接改 `entities.yaml` 与章节正文
+- `entity mention-check` 现负责章节级实体 mention 审查编排：输出已包裹已建档、已包裹未建档、已建档但未包裹、引号内降级忽略，以及最小相关实体/势力/物品上下文
+- `entity mention-plan` 现负责把章节级 mention 审查收敛成结构化 action plan：区分“可确定性包裹的已知引用”和“仍需显式建档的缺失引用”，避免 AI 直接根据原文手改正文或 yaml
+- `entity mention-plan` 现支持 `--volume-id` 做卷级只读预览：逐章列出待包裹 / 待建档 action，便于卷级自审或人工审查前先看整卷闭环缺口
+- `entity mention-apply` 现只允许显式应用 `mention-plan` 中的确定性 tag action；遇到缺失建档 action 仍必须改走 `entity mention-adopt` 或 `world mention-adopt`
+- `foreshadow check` 现负责伏笔到窗/逾期/未排期检查编排：兼容旧版 `plannedPayoffChapter` 与新版 `payoffPlan.window`，输出当前章的 due / overdue / unresolved-without-schedule 视图
+- `world list` / `world add` / `world mention-adopt` / `world progression-add` / `world progression-stage-add` 现负责 repo-native 的 worldbook 浏览与显式写入，覆盖 `worldRules`、`factions`、`locations`、`artifacts`、`mysteries` 与最小 `powerProgressions` 维护，并支持把章节中的缺失 mention 显式采纳进 `worldbook`，减少 AI 直接改 `worldbook.yaml`
+- `world check` 现负责核心概念 onboarding 与世界尺度审查编排：输出 `storyTemplate.modulePolicy` 下的世界模块缺口、当前章/当前卷涉及的势力/地点/物品/谜团上下文、早期世界规则缺失提示、势力建档薄弱项，以及复用一致性引擎的高风险任务/战力突破冲突信号
 - `style check` / `style constraints` / `style report` / `style repair` 这组风格治理命令，以及 optional scorer 的 command-side 装配
-- `style check` / `style constraints` / `style report` / `style repair` 这组风格治理命令，以及 `style-profiles.yaml` 中 pattern / 术语词典 / 白名单 / 题材语域词表的 command-side 装配；未显式传 `--profile` 时会按项目定位自动选 profile
-- `style check` / `consistency check` / `review chapter` / `review scene` 现已开始对外暴露统一规则 judgement 结果，作为后续统一规则引擎协议的 Phase 1 兼容输出
-- `illustration prompt` / `illustration generate` / `illustration list` / `illustration config` 这组插图命令，负责编排 prompt 构造、文生图/图生图 provider 请求与 `illustrations.yaml` 配置读写
+- `style check` / `style constraints` / `style report` / `style repair` 这组风格治理命令，以及 `style-profiles.yaml` 中 pattern / 术语词典 / 白名单 / 题材语域词表的 command-side 装配；未显式传 `--profile` 时会按项目定位自动选 profile；当前还会装配 `review-rules.yaml` 的 resolved profile，并把章节/卷/scene scope 透传给服务层规则检测；章节输出现会直接暴露中文高频 AI 句式簇与 `paragraphReadability` 等新风格信号
+- `style check` / `consistency check` / `review chapter` / `review scene` 现已开始对外暴露统一规则 judgement 结果，作为后续统一规则引擎协议的 Phase 1 兼容输出；其中 chapter review 还会暴露 `chapterHandoffSignals`
+- `status` 现负责 repo-native 状态浏览编排：默认聚合项目概览、当前卷/章、context lens、最近 chapter / scene review、style 摘要、persisted consistency check、章节级 mention hygiene 摘要与 workflow gate；传 `--volume-id` 时则切到卷级视角，输出卷摘要、最新卷级 AI 自审摘要与卷级 gate，减少真实写作时直接翻 `project.yaml` / `outline.yaml` / `story-reviews.yaml` / `context-lens.yaml`
+- `status` 当前还会在 `project.projectAdvisories` 与 `workflow.projectAdvisories` 暴露项目级只读提示；既会提示缺少 `PRD.md`，也会提示 `PRD.md` 是否仍停留在 bootstrap/TBD 占位状态，便于 UI / agent 在总览页直接看到立项文档缺口；同时 `project.reviewRuleConfig` 会暴露 `review-rules.yaml` 的 active/resolved profile 与豁免数量
+- `status` 的卷级 AI 自审摘要当前还会直接暴露 `repairCoverage` 紧凑信号，说明低分弱项是否已经被 `issues/repairSuggestions` 覆盖，便于 UI 或人工审查看到“还有哪些弱项根本没进入修复清单”
+- `outline scene-sync` 现负责显式 `scenePlans` 的边界校验与安全回填：默认输出校验报告和建议，显式传 `--apply` 才会回写；当前优先覆盖尾部越界收正与“scene 数量一致时按 heuristic 重算边界”
+- `entity add` / `entity state-update` / `entity mention-adopt` / `entity mention-apply` / `entity mention-tag-apply` 只在显式子命令下写入实体卡、变化日志与章节正文，不会按正文自动建档或自动改状态
+- `entity mention-check` 默认只做只读检查，不会自动补 `@{}` 或自动建档；当前主要服务写后自查和后续审查注入，而不是替代人工命名判断
+- `entity mention-plan` 默认只做只读计划预览；即使输出了缺失引用 action，也不会隐式补档
+- `entity mention-plan --volume-id` 只做卷级预览，不会跨章自动 apply；真正修正仍必须逐章调用 `mention-apply` 或 adopt 命令
+- `foreshadow check` 默认只做只读聚合，不会自动 resolve 或自动改 payoff window；当前主要服务写前提醒、写后自查和 review 前预检
+- `world add` / `world mention-adopt` / `world progression-add` / `world progression-stage-add` 只在显式子命令下写入 worldbook，不会按正文自动补档
+- `world check` 默认只做只读聚合，不会自动补 worldbook、不会自动改 faction/powerProgressions；当前主要服务首卷 onboarding 审查、世界尺度核对与卷内世界名词回顾
+- `export` 现会在导出链路中额外剥离“当前章正文末尾误混入下一章标题”的边界污染，但不会回写原始章节文件
+- `export` 现支持 `review-packet`，把章节目标、scenePlans、最新 chapter / scene review、风险与优先动作、正文聚合成单个 Markdown 审查包，供不依赖 MCP 的人工审查使用
+- `export review-packet` 当前还会在审查包头部带出项目级 `Project Advisories`；既会提示缺少 `PRD.md`，也会提示 `PRD.md` 是否仍停留在模板占位状态，让人工审查时也能直接看到立项文档缺口
+- `export review-packet` 现还会带出章节/卷级 mention hygiene 摘要，明确哪些引用仍待补 `@{}`、哪些包裹引用仍待建档，方便人工审查时直接定位工具闭环缺口
+- `export` 现支持 `--volume-id`，可按卷导出 `txt/json/markdown`，并支持卷级 `review-packet`；目录输出时默认使用卷标题命名，如 `第一卷.md`、`第一卷-review-packet.md`
+- 卷级 `export review-packet --volume-id` 当前还会带出卷级自审的 `repairCoverage` 摘要，明确弱项覆盖状态与未覆盖弱项，减少人工审查前再反查原始 YAML
+- `illustration prompt` / `illustration generate` / `illustration batch-export` / `illustration batch-record` / `illustration export` / `illustration list` / `illustration config` 这组插图命令，负责编排 prompt pack/template/modifier/commercialMode 解析、文生图/图生图/重绘 provider 请求、batch manifest 导出/回录、临时资产导出，以及 `illustrations.yaml` 配置读写
+- `illustration prompt` / `illustration generate` 当前还负责最小 batch task 编排：支持 `batch.count` 的同模板重复生成，并把 `batch.count / variantStrategy` 写入 dry-run 输出与生成历史，避免 UI 或脚本自行发明平行批量协议
+- `illustration batch-export` 当前是批量插画的 canonical 导出入口：把 project state + prompt pack 展开成 manifest，并显式区分 `webui-manual` / `external-agent` 两种交付模式
+- `illustration batch-record` 当前只负责把 manifest 约定路径下的现存图片资产回录到 `illustrations.yaml`；WebUI 或外部 agent 不得直接修改状态文件
+- `illustration export` 当前负责把已生成或已回录的资产导出到目标目录，主要服务临时暂存图的转存，而不是重新生成
+- 本地 UI API 若需要触发插画 dry-run 或真实 generate，应复用 `commands/illustration.py` 的命令侧 helper；插画请求组装、provider request 构造和落盘写入仍由命令层 owner
 - `workflow status` / `workflow run` / `workflow advance` / `workflow reset` / `workflow export` 这组 workflow 状态机入口，负责把 protocol + service 的推断结果、gate 决策和快照导出编排到 `workflow.yaml`
+- `workflow status/export` 现支持 `--volume-id` 的卷级 gate 视图：先基于 `review preflight` 聚合结果判断工具侧阻塞项，再结合最新 `review volume-self` 结果显式判断“是否允许进入人工审查”
+- `workflow status/export --volume-id` 当前还会带出卷级自审的 `repairCoverage` 紧凑摘要，便于 workflow 面板直接区分“已有自审”与“弱项是否真的进入修复动作”
+- `workflow status/export --volume-id` 当前还会把 `review preflight` 里的 `volumeStructureCheck` 直接抬到顶层输出，便于 UI / agent 不必先反查嵌套 preflight 才能消费卷级结构检查摘要
+- 当卷级自审里存在 `repairCoverage.uncoveredWeakDimensionLabels` 时，`workflow status/export --volume-id` 当前还会把这些未覆盖弱项直接翻成 gate 阻塞原因与 `nextActions`，减少人工自己解读 raw review
+- `workflow status/export --volume-id` 当前还会额外输出只读 `changeRequestDrafts`，把当前卷级 gate 的阻塞项收敛成带章节定位与 evidence 的 change-request 风格草案；若尚未进入卷级自审，也会附带 `volumeStructureCheck` 派生的结构修补草案，便于 UI 或 agent 直接组织修稿闭环
+- 当卷级自审的 `issues` 已带 `chapterRefs/evidenceRefs` 时，`workflow status/export --volume-id` 当前会优先复用这些结构化定位，而不是只靠 preflight 启发式推断
+- `workflow status/export` 当前还会统一输出顶层 `projectAdvisories`；既会提示缺少 `PRD.md`，也会提示 `PRD.md` 是否仍停留在模板占位状态，用于提醒项目尚未补齐立项/卷职责文档入口，但不会改变 gate blocking 结果
 - `doctor` 与 `workflow` 现也开始对外暴露统一规则语义：`doctor.judgements`、workflow gate 下的 `ruleJudgements/gateDecision`，用于把结构校验和流程门禁逐步收口到同一规则协议
 
 ## 3. Must Not Own
@@ -68,15 +127,31 @@
 - 一旦章节里存在显式 `scenePlans`，`review scene --scene-index` 会优先使用显式边界，而不是启发式切分
 - `outline scene-update` 更新段落范围时，必须同时提供 `--start-paragraph` 和 `--end-paragraph`
 - `outline scene-detect` 默认不会覆盖已有 `scenePlans`，需要显式传入 `--replace`
+- `outline scene-sync` 当前不会强行重排 scene 数量；若现有 scene 数量与 heuristic 切分数量不一致，它会保留为只读报告，避免把人工结构直接覆盖掉
+- `entity mention-check` 对引号内的 plain mention 默认降级忽略，避免把角色彼此的称呼变化机械当成“必须补 `@{}`”的问题
+- `entity mention-apply` 只接受 `mention-plan` 中的确定性 tag action；若把缺失建档 action id 直接喂给它，会明确报错并要求改走 adopt 命令
+- `foreshadow check` 的 overdue 判断当前只基于 chapter id / chapter number 顺序，不理解更复杂的非线性时间轴
 - `chapter suggest` 默认要求目标章节先通过 `outline check`，旧项目如需跳过必须显式传 `--allow-without-outline`
 - `outline check` 默认是严格模式；只有显式传入 `--allow-missing-project-gate`、`--allow-missing-beats`、`--allow-missing-scene-plans` 才会放宽
+- `review chapter` 的 `priorityActions` / `contractAlignment` 已会消费 `structuredPlanBlock` 这类高置信风格信号；若只看到 `patternResults` 没看到动作项，优先检查 style report 是否被截断或文本是否低于检测阈值
 - `workflow advance` 只能对当前 gate 执行；如果要回到更早 gate，必须先 `workflow run --resume-from <stage>` 或 `workflow reset --from-gate <stage>`
 - `workflow status` 会把持久化的 `workflow.yaml` 与当前推断结果合并展示，因此 `currentStage` 可能早于 `inferredCurrentStage`
+- `workflow status/export --volume-id` 当前仍不会写 `workflow.yaml`；卷级状态依旧由 `review preflight` + `review volume-self` 的组合结果临时推断，而不是持久化成独立 volume workflow 文件
+- `status` 只做只读聚合；若 `scenePlans` 段落范围已越界，它只会报告 `invalidScenePlans`，不会自动回写修正
+- `status.targetChapter.mentionHygiene` 只输出紧凑摘要和 top items；需要完整 action plan 时仍应改用 `entity mention-plan`
 - `illustration generate --dry-run` 不会写 `illustrations.yaml`；只有真实生成成功后才会落记录
+- `illustration generate --batch-count <n>` 当前只支持 `same-template` 策略：会按同一 prompt 连续请求并顺序落盘，不会自动做 modifier/prompt 变体扩散
+- `illustration batch-export` 默认会把 manifest 写到 `logs/illustration-batches/<label>.json`；这只是派生清单，不是新的长期真相源
+- `illustration batch-record` 要求 manifest 中声明的 `outputFiles[]` 已经落盘；若文件缺失会直接失败，而不是静默跳过
+- `illustration generate` / `batch-export` 当前会按 target type 自动选路径：`chapter` 进入 `assets/illustrations/chapters/<chapter-id>/`，`entity` 进入 `assets/illustrations/entities/<entity-id>/`，`temporary` 进入 `tmp/illustrations/staging/<temp-label>/`
+- `illustration prompt/generate` 当前支持 `--temp-label`，用于不绑定具体小说章节/角色的临时图任务；默认命名仍由系统给出，自定义命名继续走 `--output-name`
+- 本地 UI API 的 `/api/illustration/dry-run` 与 `/api/illustration/generate` 也应保持与 CLI 相同的 payload / provider request / 落盘行为，避免维护平行实现
 - `illustration generate --mode image-to-image` 至少需要一张 `--input-image`
+- `illustration generate --mode inpaint` 当前复用 edit request，但额外要求 `--mask`
 - `illustration generate --mode image-to-image --mask <path>` 会把 mask 一并上传给 provider，mask 仅作用于第一张输入图
 - `illustration generate` 真实执行时会把返回图批量写入 `assets/illustrations/`；`filePath` 仍指向主图，额外结果写入 `artifacts[]`
 - `illustration list` 会补充资产存在性、数量、主图标记，以及 chapter/entity/input-image/mask 的引用状态
+- `illustration prompt/generate` 当前会把已解析的 `promptSnapshot/policySnapshot` 暴露到 CLI 输出与落盘历史，便于后续复现 pack/template/modifier 展开结果
 - `doctor` 会基于 `illustrations.yaml` 检查缺失资产、主图路径不一致、失效 target/input/mask 引用和 `assets/illustrations/` 下的孤儿文件
 
 ## 8. 测试方式

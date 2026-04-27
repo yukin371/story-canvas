@@ -218,6 +218,176 @@ class ConsistencyEngineTest(unittest.TestCase):
         )
         self.assertEqual(result["capabilityTaskRisks"], [])
 
+    def test_flags_power_progression_conflict_when_breakthrough_target_skips_registered_next_stage(self):
+        state = {
+            "entities": {
+                "entities": [
+                    {
+                        "id": "char-shenxuan",
+                        "name": "沈玄",
+                        "state": {"powerLevel": {"publicLevel": "练气一层"}},
+                    }
+                ],
+                "enrichmentProposals": [],
+            },
+            "projection": {"snapshotProjections": [], "relationProjections": [], "sceneScopeProjections": [], "timelineProjections": [], "causalityProjections": []},
+            "worldbook": {
+                "premiseFacts": [],
+                "worldRules": [],
+                "powerProgressions": [
+                    {
+                        "id": "immortal-path",
+                        "label": "仙道境界",
+                        "stages": [
+                            {"name": "练气一层", "nextStage": "练气二层", "breakthroughRequirements": ["凝气入脉"]},
+                            {"name": "练气二层", "nextStage": "练气三层"},
+                            {"name": "练气三层", "nextStage": "筑基"},
+                            {"name": "筑基", "nextStage": "金丹"},
+                        ],
+                    }
+                ],
+                "factions": [],
+                "locations": [],
+                "artifacts": [],
+                "mysteries": [],
+            },
+            "outline": { "volumes": [], "chapters": [], "chapterDirections": [] },
+        }
+        result = check_consistency(
+            state,
+            "沈玄如今仍停在练气一层，却想借这一夜直接突破筑基，连护法都还没备齐。",
+            "chapter-007",
+        )
+        self.assertTrue(result["powerProgressionConflicts"])
+        self.assertEqual(result["powerProgressionConflicts"][0]["entityName"], "沈玄")
+        self.assertEqual(result["powerProgressionConflicts"][0]["expectedNextStage"], "练气二层")
+        self.assertEqual(result["powerProgressionConflicts"][0]["targetStage"], "筑基")
+        self.assertTrue(any(item["ruleId"] == "powerProgressionConflict" for item in result["judgements"]))
+
+    def test_does_not_flag_power_progression_when_target_matches_registered_next_stage(self):
+        state = {
+            "entities": {
+                "entities": [
+                    {
+                        "id": "char-shenxuan",
+                        "name": "沈玄",
+                        "state": {"powerLevel": {"publicLevel": "练气一层"}},
+                    }
+                ],
+                "enrichmentProposals": [],
+            },
+            "projection": {"snapshotProjections": [], "relationProjections": [], "sceneScopeProjections": [], "timelineProjections": [], "causalityProjections": []},
+            "worldbook": {
+                "premiseFacts": [],
+                "worldRules": [],
+                "powerProgressions": [
+                    {
+                        "id": "immortal-path",
+                        "label": "仙道境界",
+                        "stages": [
+                            {"name": "练气一层", "nextStage": "练气二层"},
+                            {"name": "练气二层", "nextStage": "练气三层"},
+                        ],
+                    }
+                ],
+                "factions": [],
+                "locations": [],
+                "artifacts": [],
+                "mysteries": [],
+            },
+            "outline": { "volumes": [], "chapters": [], "chapterDirections": [] },
+        }
+        result = check_consistency(
+            state,
+            "沈玄这几日一直稳固气海，只等今夜一举突破练气二层。",
+            "chapter-007",
+        )
+        self.assertEqual(result["powerProgressionConflicts"], [])
+
+    def test_does_not_assign_other_characters_breakthrough_target_to_current_entity(self):
+        state = {
+            "entities": {
+                "entities": [
+                    {
+                        "id": "char-shenxuan",
+                        "name": "沈玄",
+                        "state": {"powerLevel": {"publicLevel": "练气一层"}},
+                    }
+                ],
+                "enrichmentProposals": [],
+            },
+            "projection": {"snapshotProjections": [], "relationProjections": [], "sceneScopeProjections": [], "timelineProjections": [], "causalityProjections": []},
+            "worldbook": {
+                "premiseFacts": [],
+                "worldRules": [],
+                "powerProgressions": [
+                    {
+                        "id": "immortal-path",
+                        "label": "仙道境界",
+                        "stages": [
+                            {"name": "练气一层", "nextStage": "练气二层"},
+                            {"name": "练气二层", "nextStage": "练气三层"},
+                            {"name": "练气三层", "nextStage": "筑基"},
+                            {"name": "筑基", "nextStage": "金丹"},
+                        ],
+                    }
+                ],
+                "factions": [],
+                "locations": [],
+                "artifacts": [],
+                "mysteries": [],
+            },
+            "outline": {"volumes": [], "chapters": [], "chapterDirections": []},
+        }
+        result = check_consistency(
+            state,
+            "沈玄仍停在练气一层，连气海都还没稳住。\n\n顾长渊昨夜已经开始冲击筑基。",
+            "chapter-007",
+        )
+        self.assertEqual(result["powerProgressionConflicts"], [])
+
+    def test_does_not_flag_negated_or_failed_breakthrough_target(self):
+        state = {
+            "entities": {
+                "entities": [
+                    {
+                        "id": "char-shenxuan",
+                        "name": "沈玄",
+                        "state": {"powerLevel": {"publicLevel": "练气一层"}},
+                    }
+                ],
+                "enrichmentProposals": [],
+            },
+            "projection": {"snapshotProjections": [], "relationProjections": [], "sceneScopeProjections": [], "timelineProjections": [], "causalityProjections": []},
+            "worldbook": {
+                "premiseFacts": [],
+                "worldRules": [],
+                "powerProgressions": [
+                    {
+                        "id": "immortal-path",
+                        "label": "仙道境界",
+                        "stages": [
+                            {"name": "练气一层", "nextStage": "练气二层"},
+                            {"name": "练气二层", "nextStage": "练气三层"},
+                            {"name": "练气三层", "nextStage": "筑基"},
+                            {"name": "筑基", "nextStage": "金丹"},
+                        ],
+                    }
+                ],
+                "factions": [],
+                "locations": [],
+                "artifacts": [],
+                "mysteries": [],
+            },
+            "outline": {"volumes": [], "chapters": [], "chapterDirections": []},
+        }
+        result = check_consistency(
+            state,
+            "沈玄如今仍在练气一层，却还不敢冲击筑基，上次强行突破筑基失败后他已经收敛许多。",
+            "chapter-007",
+        )
+        self.assertEqual(result["powerProgressionConflicts"], [])
+
 
 if __name__ == "__main__":
     unittest.main()

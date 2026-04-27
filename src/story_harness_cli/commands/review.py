@@ -3,11 +3,17 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from story_harness_cli.commands.review_support import (
+    build_review_preflight_payload,
+    build_world_check_payload,
+)
 from story_harness_cli.protocol import (
     chapter_path,
     choose_style_profile_name,
     ensure_project_root,
     load_project_state,
+    resolve_review_rule_profile,
+    resolve_state_path,
     resolve_style_profile,
     save_state,
 )
@@ -15,12 +21,17 @@ from story_harness_cli.protocol.io import load_json_compatible_yaml
 from story_harness_cli.providers import load_style_similarity_scorer
 from story_harness_cli.services import (
     analyze_style_text,
+    build_volume_self_review_template,
     build_chapter_review,
     build_scene_review,
     check_consistency,
+    latest_volume_self_review,
+    normalize_volume_self_review,
     resolve_scene_candidates,
     review_change_requests,
+    validate_volume_self_review_refs,
 )
+from story_harness_cli.utils import now_iso
 from story_harness_cli.utils.text import paragraphs_from_text
 
 
@@ -63,6 +74,8 @@ def command_review_chapter(args) -> int:
     scorer, source = load_style_similarity_scorer()
     profile_name = choose_style_profile_name(state.get("project", {}))
     profile_config, profile_source = resolve_style_profile(root, profile_name)
+    review_rule_config, review_rule_profile_name, review_rule_source = resolve_review_rule_profile(root)
+    volume = _find_volume_for_chapter(state, chapter_id)
     consistency_result = check_consistency(state, chapter_text, chapter_id)
     review = build_chapter_review(
         state,
@@ -75,10 +88,18 @@ def command_review_chapter(args) -> int:
             repetition_source=source,
             profile_name=profile_name,
             profile_config=profile_config,
+            review_rule_profile_name=review_rule_profile_name,
+            review_rule_config=review_rule_config,
+            review_rule_scope={
+                "chapterId": chapter_id,
+                "volumeId": str(volume.get("id", "")),
+                "scenePlanId": "",
+            },
         ),
         consistency_result=consistency_result,
     )
     review["styleAnalysis"]["profileSource"] = profile_source
+    review["styleAnalysis"]["reviewRuleProfileSource"] = review_rule_source
 
     story_reviews = state["story_reviews"].setdefault("chapterReviews", [])
     state["story_reviews"]["rubricVersion"] = review["rubricVersion"]
@@ -141,6 +162,11 @@ def command_review_scene(args) -> int:
     scorer, source = load_style_similarity_scorer()
     profile_name = choose_style_profile_name(state.get("project", {}))
     profile_config, profile_source = resolve_style_profile(root, profile_name)
+    review_rule_config, review_rule_profile_name, review_rule_source = resolve_review_rule_profile(root)
+    volume = _find_volume_for_chapter(state, chapter_id)
+    selected_scene_plan_id = ""
+    if selected_scene_index is not None:
+        selected_scene_plan_id = str(scene_candidates[selected_scene_index - 1].get("scenePlanId", ""))
 
     try:
         review = build_scene_review(
@@ -156,12 +182,20 @@ def command_review_scene(args) -> int:
                 repetition_source=source,
                 profile_name=profile_name,
                 profile_config=profile_config,
+                review_rule_profile_name=review_rule_profile_name,
+                review_rule_config=review_rule_config,
+                review_rule_scope={
+                    "chapterId": chapter_id,
+                    "volumeId": str(volume.get("id", "")),
+                    "scenePlanId": selected_scene_plan_id,
+                },
             ),
             consistency_result=check_consistency(state, selected_scene_text, chapter_id),
         )
     except ValueError as exc:
         raise SystemExit(str(exc)) from exc
     review["styleAnalysis"]["profileSource"] = profile_source
+    review["styleAnalysis"]["reviewRuleProfileSource"] = review_rule_source
     if selected_scene_index is not None:
         review["sceneRange"]["sceneIndex"] = selected_scene_index
         review["sceneRange"]["source"] = scene_candidates[selected_scene_index - 1].get("source", "heuristic")
@@ -182,6 +216,232 @@ def command_review_scene(args) -> int:
     return 0
 
 
+def command_review_preflight(args) -> int:
+    root = Path(args.root).resolve()
+    ensure_project_root(root)
+    state = load_project_state(root)
+    payload = build_review_preflight_payload(
+        root,
+        state,
+        chapter_id=args.chapter_id,
+        volume_id=args.volume_id,
+    )
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    return 0
+
+
+def command_review_volume_self(args) -> int:
+    root = Path(args.root).resolve()
+    ensure_project_root(root)
+    state = load_project_state(root)
+    volume = _find_volume(state, args.volume_id)
+    input_path = Path(args.input).resolve()
+    if not input_path.exists():
+        raise SystemExit(f"卷级自审输入文件不存在: {input_path}")
+
+    raw_payload = load_json_compatible_yaml(input_path, {})
+    generated_at = raw_payload.get("generatedAt") or now_iso()
+    try:
+        review = normalize_volume_self_review(
+            raw_payload,
+            volume_id=volume.get("id", ""),
+            volume_title=volume.get("title", volume.get("id", "")),
+            generated_at=generated_at,
+        )
+        validate_volume_self_review_refs(
+            review,
+            chapter_anchor_index=_build_volume_chapter_anchor_index(root, state, volume),
+            volume_id=volume.get("id", ""),
+        )
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
+
+    story_reviews = state["story_reviews"].setdefault("volumeSelfReviews", [])
+    state["story_reviews"]["volumeSelfReviewRubricVersion"] = review["rubricVersion"]
+    for index, existing in enumerate(story_reviews):
+        if (
+            existing.get("volumeId") == review["volumeId"]
+            and existing.get("generatedAt") == review["generatedAt"]
+        ):
+            story_reviews[index] = review
+            break
+    else:
+        story_reviews.append(review)
+
+    save_state(root, state)
+    print(
+        json.dumps(
+            {
+                "saved": True,
+                "reviewFile": str(resolve_state_path(root, "story_reviews")),
+                "inputFile": str(input_path),
+                "volumeId": review["volumeId"],
+                "volumeTitle": review["volumeTitle"],
+                "finalAllowHumanReview": review["finalAllowHumanReview"],
+                "gateFailures": review["gateFailures"],
+                "review": review,
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
+    return 0
+
+
+def command_review_volume_self_template(args) -> int:
+    root = Path(args.root).resolve()
+    ensure_project_root(root)
+    state = load_project_state(root)
+    volume = _find_volume(state, args.volume_id)
+    preflight_payload = build_review_preflight_payload(root, state, volume_id=args.volume_id)
+    latest_review = latest_volume_self_review(state.get("story_reviews", {}), args.volume_id)
+    try:
+        payload = build_volume_self_review_template(
+            preflight_payload,
+            generated_at=now_iso(),
+            latest_review=latest_review,
+        )
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
+
+    if args.output:
+        output_path = Path(args.output)
+        if output_path.exists() and output_path.is_dir():
+            output_path = output_path / f"{args.volume_id}-volume-self-review.template.yaml"
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        result = {
+            "saved": True,
+            "outputFile": str(output_path.resolve()),
+            "volumeId": args.volume_id,
+            "template": payload,
+        }
+    else:
+        result = {
+            "saved": False,
+            "outputFile": "",
+            "volumeId": args.volume_id,
+            "template": payload,
+        }
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
+def _find_volume(state: dict, volume_id: str) -> dict:
+    for volume in state.get("outline", {}).get("volumes", []):
+        if volume.get("id") == volume_id:
+            return volume
+    raise SystemExit(f"volume 不存在: {volume_id}")
+
+
+def _find_volume_for_chapter(state: dict, chapter_id: str) -> dict:
+    for volume in state.get("outline", {}).get("volumes", []):
+        for chapter in volume.get("chapters", []):
+            if chapter.get("id") == chapter_id:
+                return volume
+    return {}
+
+
+def _find_outline_chapter(state: dict, chapter_id: str) -> dict:
+    for volume in state.get("outline", {}).get("volumes", []):
+        for chapter in volume.get("chapters", []):
+            if chapter.get("id") == chapter_id:
+                return chapter
+    for chapter in state.get("outline", {}).get("chapters", []):
+        if chapter.get("id") == chapter_id:
+            return chapter
+    return {}
+
+
+def _build_volume_chapter_anchor_index(root: Path, state: dict, volume: dict) -> dict:
+    chapters: dict[str, dict] = {}
+    scene_reviews = state.get("story_reviews", {}).get("sceneReviews", [])
+    chapter_reviews = state.get("story_reviews", {}).get("chapterReviews", [])
+    for chapter_ref in volume.get("chapters", []):
+        chapter_id = str(chapter_ref.get("id", "")).strip()
+        if not chapter_id:
+            continue
+        chapter_entry = _find_outline_chapter(state, chapter_id)
+        chapter_file = chapter_path(root, chapter_id)
+        chapter_file_exists = chapter_file.exists()
+        paragraph_count = 0
+        if chapter_file_exists:
+            paragraph_count = len(paragraphs_from_text(chapter_file.read_text(encoding="utf-8")))
+        scene_numbers: list[int] = []
+        scene_plan_ids: dict[str, int] = {}
+        for index, scene in enumerate(chapter_entry.get("scenePlans", []), start=1):
+            if not isinstance(scene, dict):
+                continue
+            scene_numbers.append(index)
+            scene_id = str(scene.get("id", "")).strip()
+            if scene_id:
+                scene_plan_ids[scene_id] = index
+        reviewed_scene_numbers = _collect_reviewed_scene_numbers(
+            scene_reviews,
+            chapter_id=chapter_id,
+            scene_plan_ids=scene_plan_ids,
+        )
+        semantic_anchors = set()
+        if chapter_file_exists:
+            world_check = build_world_check_payload(root, state, chapter_id)
+            if world_check.get("onboardingGaps"):
+                semantic_anchors.add("world-rule-onboarding")
+        if _chapter_has_handoff_gap(chapter_reviews, chapter_id):
+            semantic_anchors.add("handoff-gap")
+        chapters[chapter_id] = {
+            "chapterId": chapter_id,
+            "paragraphCount": paragraph_count,
+            "sceneNumbers": scene_numbers,
+            "reviewedSceneNumbers": reviewed_scene_numbers,
+            "semanticAnchors": sorted(semantic_anchors),
+            "chapterFileExists": chapter_file_exists,
+        }
+    return {
+        "volumeId": volume.get("id", ""),
+        "chapters": chapters,
+    }
+
+
+def _collect_reviewed_scene_numbers(
+    scene_reviews: list[dict],
+    *,
+    chapter_id: str,
+    scene_plan_ids: dict[str, int],
+) -> list[int]:
+    reviewed: list[int] = []
+    for review in scene_reviews:
+        if review.get("chapterId") != chapter_id:
+            continue
+        scene_range = review.get("sceneRange", {})
+        scene_index = scene_range.get("sceneIndex")
+        if isinstance(scene_index, int) and scene_index > 0 and scene_index not in reviewed:
+            reviewed.append(scene_index)
+            continue
+        scene_plan_id = str(scene_range.get("scenePlanId", "")).strip()
+        mapped_index = scene_plan_ids.get(scene_plan_id)
+        if mapped_index and mapped_index not in reviewed:
+            reviewed.append(mapped_index)
+    reviewed.sort()
+    return reviewed
+
+
+def _chapter_has_handoff_gap(chapter_reviews: list[dict], chapter_id: str) -> bool:
+    normalized_chapter_id = chapter_id.lower()
+    for item in chapter_reviews:
+        if str(item.get("chapterId", "")).strip().lower() != normalized_chapter_id:
+            continue
+        chapter_handoff_signals = item.get("chapterHandoffSignals", {})
+        if isinstance(chapter_handoff_signals, dict) and chapter_handoff_signals.get("detected"):
+            return True
+        for judgement in item.get("ruleJudgements", []):
+            if not isinstance(judgement, dict):
+                continue
+            rule_id = str(judgement.get("ruleId", "")).strip().lower()
+            if rule_id in {"chapterhandoffweak", "chapter-handoff-weak"}:
+                return True
+    return False
+
+
 def register_review_commands(subparsers) -> None:
     review_parser = subparsers.add_parser("review", help="Review workflow items and chapter quality")
     review_subparsers = review_parser.add_subparsers(dest="review_command", required=True)
@@ -199,6 +459,33 @@ def register_review_commands(subparsers) -> None:
     chapter_parser.add_argument("--root", required=True)
     chapter_parser.add_argument("--chapter-id")
     chapter_parser.set_defaults(func=command_review_chapter)
+
+    preflight_parser = review_subparsers.add_parser(
+        "preflight",
+        help="Aggregate mention, foreshadow, and world-scale checks for one chapter or one volume",
+    )
+    preflight_parser.add_argument("--root", required=True)
+    preflight_parser.add_argument("--chapter-id")
+    preflight_parser.add_argument("--volume-id")
+    preflight_parser.set_defaults(func=command_review_preflight)
+
+    volume_self_parser = review_subparsers.add_parser(
+        "volume-self",
+        help="Persist one structured volume AI self-review result",
+    )
+    volume_self_parser.add_argument("--root", required=True)
+    volume_self_parser.add_argument("--volume-id", required=True)
+    volume_self_parser.add_argument("--input", required=True)
+    volume_self_parser.set_defaults(func=command_review_volume_self)
+
+    volume_self_template_parser = review_subparsers.add_parser(
+        "volume-self-template",
+        help="Generate a structured template file for one volume AI self-review",
+    )
+    volume_self_template_parser.add_argument("--root", required=True)
+    volume_self_template_parser.add_argument("--volume-id", required=True)
+    volume_self_template_parser.add_argument("-o", "--output")
+    volume_self_template_parser.set_defaults(func=command_review_volume_self_template)
 
     scene_parser = review_subparsers.add_parser("scene", help="Review one scene fragment by paragraph range or scene index")
     scene_parser.add_argument("--root", required=True)

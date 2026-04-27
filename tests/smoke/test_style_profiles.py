@@ -59,6 +59,11 @@ class StyleProfilesTest(unittest.TestCase):
                         "allowPrefixes": ["前世的"],
                         "perPrefixThresholds": {"前世的": 4},
                     },
+                    "planBlockPolicy": {
+                        "allowLabels": ["目标"],
+                        "minLabels": 4,
+                        "minDistinctLabels": 3,
+                    },
                 }
             }
         }
@@ -76,6 +81,9 @@ class StyleProfilesTest(unittest.TestCase):
         self.assertEqual(profile["registerPolicy"]["disallowedCategories"][0]["terms"], ["优先级"])
         self.assertIn("前世的", profile["framePolicy"]["allowPrefixes"])
         self.assertEqual(profile["framePolicy"]["perPrefixThresholds"]["前世的"], 4)
+        self.assertIn("目标", profile["planBlockPolicy"]["allowLabels"])
+        self.assertEqual(profile["planBlockPolicy"]["minLabels"], 4)
+        self.assertEqual(profile["planBlockPolicy"]["minDistinctLabels"], 3)
 
     def test_choose_profile_name_from_project_positioning(self) -> None:
         project = {"positioning": {"primaryGenre": "fantasy", "styleTags": ["web-serial"]}}

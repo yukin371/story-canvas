@@ -1,0 +1,1258 @@
+from __future__ import annotations
+
+import json
+import shutil
+import sys
+import tempfile
+import unittest
+from contextlib import redirect_stdout
+from io import StringIO
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+SRC_ROOT = REPO_ROOT / "src"
+if str(SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(SRC_ROOT))
+
+from story_harness_cli.cli import main
+from story_harness_cli.protocol.state import load_project_state
+
+
+class ReviewVolumeSelfSmokeTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp_dir = Path(tempfile.mkdtemp(prefix="story-harness-review-volume-self-"))
+
+    def tearDown(self) -> None:
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
+
+    def _write_incomplete_prd(self) -> None:
+        (self.temp_dir / "PRD.md").write_text(
+            "# PRD\n\n- 卷目标: TBD\n- 读者钩子: TBD\n- 本章交付点: TBD\n",
+            encoding="utf-8",
+        )
+
+    def _run_json(self, args: list[str]) -> tuple[int, dict]:
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(args)
+        return exit_code, json.loads(buffer.getvalue())
+
+    def _init_volume_project(self) -> None:
+        exit_code, _ = self._run_json(
+            [
+                "init",
+                "--root",
+                str(self.temp_dir),
+                "--title",
+                "命灯",
+                "--genre",
+                "玄幻",
+            ]
+        )
+        self.assertEqual(exit_code, 0)
+
+        outline_path = self.temp_dir / "outline.yaml"
+        outline = json.loads(outline_path.read_text(encoding="utf-8"))
+        outline["chapters"] = []
+        outline["chapterDirections"] = []
+        outline["volumes"] = [
+            {
+                "id": "volume-001",
+                "title": "第一卷",
+                "chapters": [
+                    {"id": "chapter-001", "title": "灯尽人未绝", "status": "completed"},
+                    {"id": "chapter-002", "title": "灰里递名", "status": "completed"},
+                ],
+            }
+        ]
+        outline_path.write_text(json.dumps(outline, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    def test_review_volume_self_persists_structured_review(self) -> None:
+        self._init_volume_project()
+        input_path = self.temp_dir / "volume-self-review-input.yaml"
+        input_path.write_text(
+            json.dumps(
+                {
+                    "generatedAt": "2026-04-27T09:30:00+08:00",
+                    "conclusion": {
+                        "closureStatus": "closed",
+                        "allowHumanReview": True,
+                        "strongestPoint": "章间承接稳定",
+                        "biggestRisk": "世界规则解释仍偏薄",
+                    },
+                    "scores": [
+                        {"dimensionId": "volumeClosure", "score": 4, "conclusion": "已形成阶段性闭环"},
+                        {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "最低可读性已建立"},
+                        {"dimensionId": "worldLogic", "score": 3, "conclusion": "制度逻辑基本成立"},
+                        {"dimensionId": "chapterHandoff", "score": 4, "conclusion": "章间承接自然"},
+                        {"dimensionId": "characterContinuity", "score": 4, "conclusion": "主角反应连续"},
+                        {"dimensionId": "antagonistShaping", "score": 3, "conclusion": "对手动机基本可读"},
+                        {"dimensionId": "conflictEscalation", "score": 4, "conclusion": "冲突逐步抬升"},
+                        {"dimensionId": "payoffDelivery", "score": 3, "conclusion": "阶段性兑现成立"},
+                        {"dimensionId": "foreshadowRhythm", "score": 3, "conclusion": "伏笔密度可控"},
+                        {"dimensionId": "styleReadability", "score": 3, "conclusion": "可读性基本达标"},
+                    ],
+                    "issues": [
+                        {
+                            "issue": "世界规则解释仍偏薄",
+                            "evidence": ["压火制度只体现压迫，解释仍少"],
+                            "impact": "读者理解成本偏高",
+                            "primaryCause": "tooling_miss",
+                            "fixAction": "补一处制度代价解释",
+                            "chapterRefs": ["chapter-001"],
+                            "evidenceRefs": [
+                                "chapter-001#paragraph-1",
+                                "review-packet:volume-001:chapter-001",
+                            ],
+                        }
+                    ],
+                    "closureAssessment": {
+                        "mainProblem": "主角如何在压火死局中活下来并拿到第一条主动线索",
+                        "delivered": ["主角活下来了", "拿到第一条真相线索"],
+                        "missing": ["阶段性反制仍偏弱"],
+                        "reasoning": "已完成小闭环，但卷尾胜负感还可以更强。",
+                    },
+                    "repairSuggestions": ["先补制度解释", "再强化卷尾胜负感"],
+                    "acceptedRisks": ["保留一条长线谜团到下一卷"],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        exit_code, payload = self._run_json(
+            [
+                "review",
+                "volume-self",
+                "--root",
+                str(self.temp_dir),
+                "--volume-id",
+                "volume-001",
+                "--input",
+                str(input_path),
+            ]
+        )
+        self.assertEqual(exit_code, 0)
+        self.assertTrue(payload["saved"])
+        self.assertEqual(payload["volumeId"], "volume-001")
+        self.assertTrue(payload["finalAllowHumanReview"])
+        self.assertEqual(payload["review"]["rubricVersion"], "volume-self-review-v1")
+        self.assertEqual(payload["review"]["scoreSummary"]["lowestScore"], 3)
+
+        state = load_project_state(self.temp_dir)
+        self.assertEqual(state["story_reviews"]["volumeSelfReviewRubricVersion"], "volume-self-review-v1")
+        self.assertEqual(len(state["story_reviews"]["volumeSelfReviews"]), 1)
+        saved_review = state["story_reviews"]["volumeSelfReviews"][0]
+        self.assertEqual(saved_review["volumeId"], "volume-001")
+        self.assertTrue(saved_review["finalAllowHumanReview"])
+        self.assertEqual(saved_review["conclusion"]["closureStatus"], "closed")
+        self.assertEqual(saved_review["issues"][0]["chapterRefs"], ["chapter-001"])
+        self.assertEqual(
+            saved_review["issues"][0]["evidenceRefs"],
+            ["chapter-001#paragraph-1", "review-packet:volume-001:chapter-001"],
+        )
+
+    def test_review_volume_self_template_generates_prefilled_template_file(self) -> None:
+        self._init_volume_project()
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 灯尽人未绝\n\n林舟抬头望向青云宗。\n",
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-002.md").write_text(
+            "# 灰里递名\n\n@{岳池}站在高处，看着林舟被押去青云宗压火。\n",
+            encoding="utf-8",
+        )
+        out_dir = self.temp_dir / "templates"
+        out_dir.mkdir(exist_ok=True)
+
+        exit_code, payload = self._run_json(
+            [
+                "review",
+                "volume-self-template",
+                "--root",
+                str(self.temp_dir),
+                "--volume-id",
+                "volume-001",
+                "--output",
+                str(out_dir),
+            ]
+        )
+        self.assertEqual(exit_code, 0)
+        self.assertTrue(payload["saved"])
+        output_file = out_dir / "volume-001-volume-self-review.template.yaml"
+        self.assertTrue(output_file.exists())
+        self.assertEqual(payload["outputFile"], str(output_file.resolve()))
+        template = payload["template"]
+        self.assertEqual(template["conclusion"]["closureStatus"], "not_closed")
+        self.assertFalse(template["conclusion"]["allowHumanReview"])
+        self.assertEqual(len(template["scores"]), 10)
+        self.assertIn("_templateContext", template)
+        self.assertEqual(template["_templateContext"]["volumeId"], "volume-001")
+        self.assertEqual(template["_templateContext"]["projectAdvisories"][0]["ruleId"], "project-prd-incomplete")
+        self.assertEqual(len(template["_templateContext"]["chapterSignals"]), 2)
+        self.assertGreater(template["_templateContext"]["preflightSummary"]["mentionActionCount"], 0)
+        self.assertTrue(template["repairSuggestions"])
+        self.assertEqual(template["_templateContext"]["volumeStructureCheck"]["role"], "intro-volume")
+        self.assertTrue(template["_templateContext"]["volumeStructureCheck"]["checklist"])
+        self.assertIn("chapter-001#scene-1", template["_templateContext"]["evidenceRefExamples"])
+
+    def test_review_volume_self_template_carries_missing_project_prd_advisory(self) -> None:
+        self._init_volume_project()
+        (self.temp_dir / "PRD.md").unlink()
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 灯尽人未绝\n\n林舟抬头望向青云宗。\n",
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-002.md").write_text(
+            "# 灰里递名\n\n@{岳池}站在高处，看着林舟被押去青云宗压火。\n",
+            encoding="utf-8",
+        )
+
+        exit_code, payload = self._run_json(
+            [
+                "review",
+                "volume-self-template",
+                "--root",
+                str(self.temp_dir),
+                "--volume-id",
+                "volume-001",
+            ]
+        )
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(
+            payload["template"]["_templateContext"]["projectAdvisories"][0]["ruleId"],
+            "missing-project-prd",
+        )
+
+    def test_review_volume_self_template_carries_incomplete_project_prd_advisory(self) -> None:
+        self._init_volume_project()
+        self._write_incomplete_prd()
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 灯尽人未绝\n\n林舟抬头望向青云宗。\n",
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-002.md").write_text(
+            "# 灰里递名\n\n@{岳池}站在高处，看着林舟被押去青云宗压火。\n",
+            encoding="utf-8",
+        )
+
+        exit_code, payload = self._run_json(
+            [
+                "review",
+                "volume-self-template",
+                "--root",
+                str(self.temp_dir),
+                "--volume-id",
+                "volume-001",
+            ]
+        )
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(
+            payload["template"]["_templateContext"]["projectAdvisories"][0]["ruleId"],
+            "project-prd-incomplete",
+        )
+
+    def test_review_volume_self_rejects_unfilled_template_placeholders(self) -> None:
+        self._init_volume_project()
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 灯尽人未绝\n\n林舟抬头望向青云宗。\n",
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-002.md").write_text(
+            "# 灰里递名\n\n@{岳池}站在高处，看着林舟被押去青云宗压火。\n",
+            encoding="utf-8",
+        )
+        template_file = self.temp_dir / "volume-self-review-input.yaml"
+
+        exit_code, payload = self._run_json(
+            [
+                "review",
+                "volume-self-template",
+                "--root",
+                str(self.temp_dir),
+                "--volume-id",
+                "volume-001",
+                "--output",
+                str(template_file),
+            ]
+        )
+        self.assertEqual(exit_code, 0)
+        self.assertTrue(payload["saved"])
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            with self.assertRaises(SystemExit) as exc_info:
+                main(
+                    [
+                        "review",
+                        "volume-self",
+                        "--root",
+                        str(self.temp_dir),
+                        "--volume-id",
+                        "volume-001",
+                        "--input",
+                        str(template_file),
+                    ]
+                )
+        self.assertIn("模板占位值", str(exc_info.exception))
+
+    def test_review_volume_self_rejects_all_zero_scores_even_after_placeholder_replacement(self) -> None:
+        self._init_volume_project()
+        input_path = self.temp_dir / "volume-self-review-input.yaml"
+        input_path.write_text(
+            json.dumps(
+                {
+                    "generatedAt": "2026-04-27T10:30:00+08:00",
+                    "conclusion": {
+                        "closureStatus": "not_closed",
+                        "allowHumanReview": False,
+                        "strongestPoint": "至少完成了第一轮整卷回看",
+                        "biggestRisk": "卷级问题仍未收束",
+                    },
+                    "scores": [
+                        {"dimensionId": "volumeClosure", "score": 0, "conclusion": "仍需继续评估"},
+                        {"dimensionId": "openingOnboarding", "score": 0, "conclusion": "仍需继续评估"},
+                        {"dimensionId": "worldLogic", "score": 0, "conclusion": "仍需继续评估"},
+                        {"dimensionId": "chapterHandoff", "score": 0, "conclusion": "仍需继续评估"},
+                        {"dimensionId": "characterContinuity", "score": 0, "conclusion": "仍需继续评估"},
+                        {"dimensionId": "antagonistShaping", "score": 0, "conclusion": "仍需继续评估"},
+                        {"dimensionId": "conflictEscalation", "score": 0, "conclusion": "仍需继续评估"},
+                        {"dimensionId": "payoffDelivery", "score": 0, "conclusion": "仍需继续评估"},
+                        {"dimensionId": "foreshadowRhythm", "score": 0, "conclusion": "仍需继续评估"},
+                        {"dimensionId": "styleReadability", "score": 0, "conclusion": "仍需继续评估"},
+                    ],
+                    "issues": [],
+                    "closureAssessment": {
+                        "mainProblem": "这一卷还没有形成完整小闭环",
+                        "delivered": [],
+                        "missing": ["卷尾还缺少阶段性交付"],
+                        "reasoning": "虽然已经回看，但还没形成有效维度判断。",
+                    },
+                    "repairSuggestions": ["先补卷尾交付"],
+                    "acceptedRisks": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            with self.assertRaises(SystemExit) as exc_info:
+                main(
+                    [
+                        "review",
+                        "volume-self",
+                        "--root",
+                        str(self.temp_dir),
+                        "--volume-id",
+                        "volume-001",
+                        "--input",
+                        str(input_path),
+                    ]
+                )
+        self.assertIn("scores 不能全部为 0", str(exc_info.exception))
+
+    def test_review_volume_self_rejects_human_review_yes_when_threshold_not_met(self) -> None:
+        self._init_volume_project()
+        input_path = self.temp_dir / "volume-self-review-input.yaml"
+        input_path.write_text(
+            json.dumps(
+                {
+                    "generatedAt": "2026-04-27T10:40:00+08:00",
+                    "conclusion": {
+                        "closureStatus": "closed",
+                        "allowHumanReview": True,
+                        "strongestPoint": "至少形成了阶段性承接",
+                        "biggestRisk": "风格与承接仍不稳",
+                    },
+                    "scores": [
+                        {"dimensionId": "volumeClosure", "score": 4, "conclusion": "阶段性闭环成立"},
+                        {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "最低可读性成立"},
+                        {"dimensionId": "worldLogic", "score": 3, "conclusion": "世界逻辑基本成立"},
+                        {"dimensionId": "chapterHandoff", "score": 2, "conclusion": "章间承接仍偏弱"},
+                        {"dimensionId": "characterContinuity", "score": 3, "conclusion": "角色基本连续"},
+                        {"dimensionId": "antagonistShaping", "score": 3, "conclusion": "对手基本成立"},
+                        {"dimensionId": "conflictEscalation", "score": 3, "conclusion": "冲突抬升可用"},
+                        {"dimensionId": "payoffDelivery", "score": 3, "conclusion": "有阶段性交付"},
+                        {"dimensionId": "foreshadowRhythm", "score": 3, "conclusion": "伏笔节奏可控"},
+                        {"dimensionId": "styleReadability", "score": 2, "conclusion": "风格仍有明显问题"},
+                    ],
+                    "issues": [
+                        {
+                            "issue": "章间承接和风格仍偏弱",
+                            "evidence": ["第 12 章与第 13 章过渡不足"],
+                            "impact": "人工审查前仍有明显阅读断裂",
+                            "primaryCause": "self_review_miss",
+                            "fixAction": "补承接段并重写两处高 AI 味句子",
+                        }
+                    ],
+                    "closureAssessment": {
+                        "mainProblem": "这一卷能否形成完整小闭环",
+                        "delivered": ["主角拿到第一层主动"],
+                        "missing": [],
+                        "reasoning": "虽然已形成闭环，但仍不该进入人工审查。",
+                    },
+                    "repairSuggestions": ["补承接段并做一轮风格精修"],
+                    "acceptedRisks": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            with self.assertRaises(SystemExit) as exc_info:
+                main(
+                    [
+                        "review",
+                        "volume-self",
+                        "--root",
+                        str(self.temp_dir),
+                        "--volume-id",
+                        "volume-001",
+                        "--input",
+                        str(input_path),
+                    ]
+                )
+        self.assertIn("allowHumanReview=true 与评分门槛不一致", str(exc_info.exception))
+
+    def test_review_volume_self_rejects_not_closed_without_issues(self) -> None:
+        self._init_volume_project()
+        input_path = self.temp_dir / "volume-self-review-input.yaml"
+        input_path.write_text(
+            json.dumps(
+                {
+                    "generatedAt": "2026-04-27T10:50:00+08:00",
+                    "conclusion": {
+                        "closureStatus": "not_closed",
+                        "allowHumanReview": False,
+                        "strongestPoint": "至少完成了第一轮回看",
+                        "biggestRisk": "卷尾仍未形成阶段性交付",
+                    },
+                    "scores": [
+                        {"dimensionId": "volumeClosure", "score": 2, "conclusion": "卷尾未收住"},
+                        {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "基础可读"},
+                        {"dimensionId": "worldLogic", "score": 3, "conclusion": "世界逻辑可用"},
+                        {"dimensionId": "chapterHandoff", "score": 3, "conclusion": "承接基本顺"},
+                        {"dimensionId": "characterContinuity", "score": 3, "conclusion": "角色连续"},
+                        {"dimensionId": "antagonistShaping", "score": 3, "conclusion": "对手成立"},
+                        {"dimensionId": "conflictEscalation", "score": 3, "conclusion": "冲突可用"},
+                        {"dimensionId": "payoffDelivery", "score": 2, "conclusion": "兑现不足"},
+                        {"dimensionId": "foreshadowRhythm", "score": 3, "conclusion": "伏笔节奏可控"},
+                        {"dimensionId": "styleReadability", "score": 3, "conclusion": "风格可读"},
+                    ],
+                    "issues": [],
+                    "closureAssessment": {
+                        "mainProblem": "这一卷还没形成完整闭环",
+                        "delivered": [],
+                        "missing": ["卷尾还缺少阶段性交付"],
+                        "reasoning": "能看出问题，但还没把问题正式列出来。",
+                    },
+                    "repairSuggestions": ["补卷尾阶段性交付"],
+                    "acceptedRisks": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            with self.assertRaises(SystemExit) as exc_info:
+                main(
+                    [
+                        "review",
+                        "volume-self",
+                        "--root",
+                        str(self.temp_dir),
+                        "--volume-id",
+                        "volume-001",
+                        "--input",
+                        str(input_path),
+                    ]
+                )
+        self.assertIn("issues 不能为空；未闭环时至少要明确一项主要问题", str(exc_info.exception))
+
+    def test_review_volume_self_rejects_weak_dimensions_not_covered_by_issues_or_repairs(self) -> None:
+        self._init_volume_project()
+        input_path = self.temp_dir / "volume-self-review-input.yaml"
+        input_path.write_text(
+            json.dumps(
+                {
+                    "generatedAt": "2026-04-27T11:00:00+08:00",
+                    "conclusion": {
+                        "closureStatus": "not_closed",
+                        "allowHumanReview": False,
+                        "strongestPoint": "角色连续性仍然稳定",
+                        "biggestRisk": "卷尾兑现和伏笔节奏仍有明显问题",
+                    },
+                    "scores": [
+                        {"dimensionId": "volumeClosure", "score": 3, "conclusion": "整体可读但未完全收住"},
+                        {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "开篇可读"},
+                        {"dimensionId": "worldLogic", "score": 3, "conclusion": "世界规则基本成立"},
+                        {"dimensionId": "chapterHandoff", "score": 3, "conclusion": "承接基本顺畅"},
+                        {"dimensionId": "characterContinuity", "score": 4, "conclusion": "角色连续"},
+                        {"dimensionId": "antagonistShaping", "score": 3, "conclusion": "对手成立"},
+                        {"dimensionId": "conflictEscalation", "score": 3, "conclusion": "冲突可用"},
+                        {"dimensionId": "payoffDelivery", "score": 2, "conclusion": "阶段性爆发不足"},
+                        {"dimensionId": "foreshadowRhythm", "score": 2, "conclusion": "伏笔回收节奏失衡"},
+                        {"dimensionId": "styleReadability", "score": 3, "conclusion": "风格可读"},
+                    ],
+                    "issues": [
+                        {
+                            "issue": "世界规则解释仍偏薄",
+                            "evidence": ["前段制度解释仍然不足"],
+                            "impact": "读者理解成本偏高",
+                            "primaryCause": "generation_miss",
+                            "fixAction": "补一段制度规则解释",
+                        }
+                    ],
+                    "closureAssessment": {
+                        "mainProblem": "本卷还没有交出足够明确的阶段性结果",
+                        "delivered": [],
+                        "missing": ["卷尾还缺少阶段性胜负和回收"],
+                        "reasoning": "能看出卷尾还没收住，但当前问题清单没覆盖最弱项。",
+                    },
+                    "repairSuggestions": ["补一段制度规则解释"],
+                    "acceptedRisks": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            with self.assertRaises(SystemExit) as exc_info:
+                main(
+                    [
+                        "review",
+                        "volume-self",
+                        "--root",
+                        str(self.temp_dir),
+                        "--volume-id",
+                        "volume-001",
+                        "--input",
+                        str(input_path),
+                    ]
+                )
+        self.assertIn("低分维度还没有被 issues / repairSuggestions 明确覆盖", str(exc_info.exception))
+
+    def test_review_volume_self_rejects_malformed_evidence_refs(self) -> None:
+        self._init_volume_project()
+        input_path = self.temp_dir / "volume-self-review-input.yaml"
+        input_path.write_text(
+            json.dumps(
+                {
+                    "generatedAt": "2026-04-27T11:10:00+08:00",
+                    "conclusion": {
+                        "closureStatus": "not_closed",
+                        "allowHumanReview": False,
+                        "strongestPoint": "至少完成了卷级回看",
+                        "biggestRisk": "问题定位锚点格式不规范",
+                    },
+                    "scores": [
+                        {"dimensionId": "volumeClosure", "score": 3, "conclusion": "整体可读"},
+                        {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "可读"},
+                        {"dimensionId": "worldLogic", "score": 3, "conclusion": "基本成立"},
+                        {"dimensionId": "chapterHandoff", "score": 2, "conclusion": "承接偏弱"},
+                        {"dimensionId": "characterContinuity", "score": 3, "conclusion": "连续"},
+                        {"dimensionId": "antagonistShaping", "score": 3, "conclusion": "成立"},
+                        {"dimensionId": "conflictEscalation", "score": 3, "conclusion": "可用"},
+                        {"dimensionId": "payoffDelivery", "score": 3, "conclusion": "可用"},
+                        {"dimensionId": "foreshadowRhythm", "score": 3, "conclusion": "可控"},
+                        {"dimensionId": "styleReadability", "score": 3, "conclusion": "可读"},
+                    ],
+                    "issues": [
+                        {
+                            "issue": "章间承接仍偏弱",
+                            "evidence": ["两章之间缺少直接过渡"],
+                            "impact": "读者会感到跳跃",
+                            "primaryCause": "generation_miss",
+                            "fixAction": "补一段承接段",
+                            "evidenceRefs": ["chapter-002 paragraph-4"],
+                        }
+                    ],
+                    "closureAssessment": {
+                        "mainProblem": "卷内承接仍需补强",
+                        "delivered": [],
+                        "missing": ["关键过渡还没补齐"],
+                        "reasoning": "问题已经识别，但引用锚点写法错误。",
+                    },
+                    "repairSuggestions": ["补一段承接段"],
+                    "acceptedRisks": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            with self.assertRaises(SystemExit) as exc_info:
+                main(
+                    [
+                        "review",
+                        "volume-self",
+                        "--root",
+                        str(self.temp_dir),
+                        "--volume-id",
+                        "volume-001",
+                        "--input",
+                        str(input_path),
+                    ]
+                )
+        self.assertIn("evidenceRefs[1] 格式无效", str(exc_info.exception))
+
+    def test_review_volume_self_rejects_nonexistent_paragraph_and_scene_refs(self) -> None:
+        self._init_volume_project()
+        outline_path = self.temp_dir / "outline.yaml"
+        outline = json.loads(outline_path.read_text(encoding="utf-8"))
+        outline["volumes"][0]["chapters"][0]["scenePlans"] = [
+            {
+                "id": "scene-001",
+                "title": "第一幕",
+                "summary": "开场死局",
+                "startParagraph": 1,
+                "endParagraph": 1,
+            }
+        ]
+        outline_path.write_text(json.dumps(outline, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 灯尽人未绝\n\n只有一段正文。\n",
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-002.md").write_text(
+            "# 灰里递名\n\n第二章也只有一段。\n",
+            encoding="utf-8",
+        )
+
+        input_path = self.temp_dir / "volume-self-review-input.yaml"
+        input_path.write_text(
+            json.dumps(
+                {
+                    "generatedAt": "2026-04-27T11:20:00+08:00",
+                    "conclusion": {
+                        "closureStatus": "not_closed",
+                        "allowHumanReview": False,
+                        "strongestPoint": "至少完成了回看",
+                        "biggestRisk": "章节锚点不存在",
+                    },
+                    "scores": [
+                        {"dimensionId": "volumeClosure", "score": 3, "conclusion": "整体可读"},
+                        {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "可读"},
+                        {"dimensionId": "worldLogic", "score": 3, "conclusion": "基本成立"},
+                        {"dimensionId": "chapterHandoff", "score": 2, "conclusion": "承接偏弱"},
+                        {"dimensionId": "characterContinuity", "score": 3, "conclusion": "连续"},
+                        {"dimensionId": "antagonistShaping", "score": 3, "conclusion": "成立"},
+                        {"dimensionId": "conflictEscalation", "score": 3, "conclusion": "可用"},
+                        {"dimensionId": "payoffDelivery", "score": 3, "conclusion": "可用"},
+                        {"dimensionId": "foreshadowRhythm", "score": 3, "conclusion": "可控"},
+                        {"dimensionId": "styleReadability", "score": 3, "conclusion": "可读"},
+                    ],
+                    "issues": [
+                        {
+                            "issue": "第一章承接问题定位错了段落",
+                            "evidence": ["正文只有一段，但引用了第四段"],
+                            "impact": "定位会失真",
+                            "primaryCause": "tooling_miss",
+                            "fixAction": "改成真实存在的 paragraph ref，并明确承接问题",
+                            "evidenceRefs": ["chapter-001#paragraph-4"],
+                        },
+                        {
+                            "issue": "第二章承接问题定位错了场景",
+                            "evidence": ["章节根本没有第二幕"],
+                            "impact": "定位会失真",
+                            "primaryCause": "tooling_miss",
+                            "fixAction": "改成真实存在的 scene ref，并补承接说明",
+                            "evidenceRefs": ["chapter-001#scene-2"],
+                        },
+                    ],
+                    "closureAssessment": {
+                        "mainProblem": "卷内承接仍需补强",
+                        "delivered": [],
+                        "missing": ["关键问题的锚点还没写对"],
+                        "reasoning": "先保证问题定位正确。",
+                    },
+                    "repairSuggestions": ["先修正承接问题的 evidenceRefs 再继续自审"],
+                    "acceptedRisks": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            with self.assertRaises(SystemExit) as exc_info:
+                main(
+                    [
+                        "review",
+                        "volume-self",
+                        "--root",
+                        str(self.temp_dir),
+                        "--volume-id",
+                        "volume-001",
+                        "--input",
+                        str(input_path),
+                    ]
+                )
+        self.assertIn("paragraph-4", str(exc_info.exception))
+
+    def test_review_volume_self_rejects_nonexistent_scene_refs(self) -> None:
+        self._init_volume_project()
+        outline_path = self.temp_dir / "outline.yaml"
+        outline = json.loads(outline_path.read_text(encoding="utf-8"))
+        outline["volumes"][0]["chapters"][0]["scenePlans"] = [
+            {
+                "id": "scene-001",
+                "title": "第一幕",
+                "summary": "开场死局",
+                "startParagraph": 1,
+                "endParagraph": 1,
+            }
+        ]
+        outline_path.write_text(json.dumps(outline, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 灯尽人未绝\n\n只有一段正文。\n",
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-002.md").write_text(
+            "# 灰里递名\n\n第二章也只有一段。\n",
+            encoding="utf-8",
+        )
+
+        input_path = self.temp_dir / "volume-self-review-input.yaml"
+        input_path.write_text(
+            json.dumps(
+                {
+                    "generatedAt": "2026-04-27T11:25:00+08:00",
+                    "conclusion": {
+                        "closureStatus": "not_closed",
+                        "allowHumanReview": False,
+                        "strongestPoint": "至少完成了回看",
+                        "biggestRisk": "scene 锚点不存在",
+                    },
+                    "scores": [
+                        {"dimensionId": "volumeClosure", "score": 3, "conclusion": "整体可读"},
+                        {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "可读"},
+                        {"dimensionId": "worldLogic", "score": 3, "conclusion": "基本成立"},
+                        {"dimensionId": "chapterHandoff", "score": 2, "conclusion": "承接偏弱"},
+                        {"dimensionId": "characterContinuity", "score": 3, "conclusion": "连续"},
+                        {"dimensionId": "antagonistShaping", "score": 3, "conclusion": "成立"},
+                        {"dimensionId": "conflictEscalation", "score": 3, "conclusion": "可用"},
+                        {"dimensionId": "payoffDelivery", "score": 3, "conclusion": "可用"},
+                        {"dimensionId": "foreshadowRhythm", "score": 3, "conclusion": "可控"},
+                        {"dimensionId": "styleReadability", "score": 3, "conclusion": "可读"},
+                    ],
+                    "issues": [
+                        {
+                            "issue": "第一章承接问题定位错了场景",
+                            "evidence": ["章节只有第一幕，但引用了第二幕"],
+                            "impact": "定位会失真",
+                            "primaryCause": "tooling_miss",
+                            "fixAction": "改成真实存在的 scene ref，并补承接说明",
+                            "evidenceRefs": ["chapter-001#scene-2"],
+                        }
+                    ],
+                    "closureAssessment": {
+                        "mainProblem": "卷内承接仍需补强",
+                        "delivered": [],
+                        "missing": ["关键问题的锚点还没写对"],
+                        "reasoning": "先保证问题定位正确。",
+                    },
+                    "repairSuggestions": ["先修正承接问题的 scene evidenceRef"],
+                    "acceptedRisks": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            with self.assertRaises(SystemExit) as exc_info:
+                main(
+                    [
+                        "review",
+                        "volume-self",
+                        "--root",
+                        str(self.temp_dir),
+                        "--volume-id",
+                        "volume-001",
+                        "--input",
+                        str(input_path),
+                    ]
+                )
+        self.assertIn("scene-2", str(exc_info.exception))
+
+    def test_review_volume_self_accepts_scene_refs_when_scene_review_exists(self) -> None:
+        self._init_volume_project()
+        outline_path = self.temp_dir / "outline.yaml"
+        outline = json.loads(outline_path.read_text(encoding="utf-8"))
+        outline["volumes"][0]["chapters"][0]["scenePlans"] = [
+            {
+                "id": "scene-001",
+                "title": "第一幕",
+                "summary": "开场死局",
+                "startParagraph": 1,
+                "endParagraph": 1,
+            }
+        ]
+        outline_path.write_text(json.dumps(outline, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 灯尽人未绝\n\n只有一段正文。\n",
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-002.md").write_text(
+            "# 灰里递名\n\n第二章也只有一段。\n",
+            encoding="utf-8",
+        )
+        story_reviews_path = self.temp_dir / "reviews" / "story-reviews.yaml"
+        story_reviews = json.loads(story_reviews_path.read_text(encoding="utf-8"))
+        story_reviews["sceneReviews"] = [
+            {
+                "reviewId": "scene-review-001",
+                "chapterId": "chapter-001",
+                "sceneRange": {
+                    "sceneIndex": 1,
+                    "scenePlanId": "scene-001",
+                    "startParagraph": 1,
+                    "endParagraph": 1,
+                },
+                "summary": "第一幕成立。",
+            }
+        ]
+        story_reviews_path.write_text(json.dumps(story_reviews, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+        input_path = self.temp_dir / "volume-self-review-input.yaml"
+        input_path.write_text(
+            json.dumps(
+                {
+                    "generatedAt": "2026-04-27T11:30:00+08:00",
+                    "conclusion": {
+                        "closureStatus": "not_closed",
+                        "allowHumanReview": False,
+                        "strongestPoint": "至少完成了回看",
+                        "biggestRisk": "承接问题仍需继续修",
+                    },
+                    "scores": [
+                        {"dimensionId": "volumeClosure", "score": 3, "conclusion": "整体可读"},
+                        {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "可读"},
+                        {"dimensionId": "worldLogic", "score": 3, "conclusion": "基本成立"},
+                        {"dimensionId": "chapterHandoff", "score": 2, "conclusion": "承接偏弱"},
+                        {"dimensionId": "characterContinuity", "score": 3, "conclusion": "连续"},
+                        {"dimensionId": "antagonistShaping", "score": 3, "conclusion": "成立"},
+                        {"dimensionId": "conflictEscalation", "score": 3, "conclusion": "可用"},
+                        {"dimensionId": "payoffDelivery", "score": 3, "conclusion": "可用"},
+                        {"dimensionId": "foreshadowRhythm", "score": 3, "conclusion": "可控"},
+                        {"dimensionId": "styleReadability", "score": 3, "conclusion": "可读"},
+                    ],
+                    "issues": [
+                        {
+                            "issue": "第一章承接问题仍需补强",
+                            "evidence": ["第一幕死局之后的余波还不够直接"],
+                            "impact": "读者会感到承接偏弱",
+                            "primaryCause": "generation_miss",
+                            "fixAction": "补一段第一幕后余波",
+                            "evidenceRefs": ["chapter-001#scene-1"],
+                        }
+                    ],
+                    "closureAssessment": {
+                        "mainProblem": "卷内承接仍需补强",
+                        "delivered": [],
+                        "missing": ["关键过渡还没补齐"],
+                        "reasoning": "问题已定位到可审查的场景。",
+                    },
+                    "repairSuggestions": ["先补第一幕余波，再复检承接"],
+                    "acceptedRisks": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        exit_code, payload = self._run_json(
+            [
+                "review",
+                "volume-self",
+                "--root",
+                str(self.temp_dir),
+                "--volume-id",
+                "volume-001",
+                "--input",
+                str(input_path),
+            ]
+        )
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["review"]["issues"][0]["evidenceRefs"], ["chapter-001#scene-1"])
+
+    def test_review_volume_self_rejects_scene_refs_without_scene_review_mapping(self) -> None:
+        self._init_volume_project()
+        outline_path = self.temp_dir / "outline.yaml"
+        outline = json.loads(outline_path.read_text(encoding="utf-8"))
+        outline["volumes"][0]["chapters"][0]["scenePlans"] = [
+            {
+                "id": "scene-001",
+                "title": "第一幕",
+                "summary": "开场死局",
+                "startParagraph": 1,
+                "endParagraph": 1,
+            }
+        ]
+        outline_path.write_text(json.dumps(outline, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 灯尽人未绝\n\n只有一段正文。\n",
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-002.md").write_text(
+            "# 灰里递名\n\n第二章也只有一段。\n",
+            encoding="utf-8",
+        )
+
+        input_path = self.temp_dir / "volume-self-review-input.yaml"
+        input_path.write_text(
+            json.dumps(
+                {
+                    "generatedAt": "2026-04-27T11:35:00+08:00",
+                    "conclusion": {
+                        "closureStatus": "not_closed",
+                        "allowHumanReview": False,
+                        "strongestPoint": "至少完成了回看",
+                        "biggestRisk": "scene 锚点还没映射到审查结果",
+                    },
+                    "scores": [
+                        {"dimensionId": "volumeClosure", "score": 3, "conclusion": "整体可读"},
+                        {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "可读"},
+                        {"dimensionId": "worldLogic", "score": 3, "conclusion": "基本成立"},
+                        {"dimensionId": "chapterHandoff", "score": 2, "conclusion": "承接偏弱"},
+                        {"dimensionId": "characterContinuity", "score": 3, "conclusion": "连续"},
+                        {"dimensionId": "antagonistShaping", "score": 3, "conclusion": "成立"},
+                        {"dimensionId": "conflictEscalation", "score": 3, "conclusion": "可用"},
+                        {"dimensionId": "payoffDelivery", "score": 3, "conclusion": "可用"},
+                        {"dimensionId": "foreshadowRhythm", "score": 3, "conclusion": "可控"},
+                        {"dimensionId": "styleReadability", "score": 3, "conclusion": "可读"},
+                    ],
+                    "issues": [
+                        {
+                            "issue": "第一章承接问题仍需补强",
+                            "evidence": ["第一幕死局之后的余波还不够直接"],
+                            "impact": "读者会感到承接偏弱",
+                            "primaryCause": "generation_miss",
+                            "fixAction": "补一段第一幕后余波",
+                            "evidenceRefs": ["chapter-001#scene-1"],
+                        }
+                    ],
+                    "closureAssessment": {
+                        "mainProblem": "卷内承接仍需补强",
+                        "delivered": [],
+                        "missing": ["关键过渡还没补齐"],
+                        "reasoning": "问题已经指向 scene，但还没有对应审查结果。",
+                    },
+                    "repairSuggestions": ["先补第一幕余波，再复检承接"],
+                    "acceptedRisks": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            with self.assertRaises(SystemExit) as exc_info:
+                main(
+                    [
+                        "review",
+                        "volume-self",
+                        "--root",
+                        str(self.temp_dir),
+                        "--volume-id",
+                        "volume-001",
+                        "--input",
+                        str(input_path),
+                    ]
+                )
+        self.assertIn("尚未映射到已持久化的 scene review", str(exc_info.exception))
+
+    def test_review_volume_self_accepts_world_rule_onboarding_semantic_ref(self) -> None:
+        self._init_volume_project()
+        worldbook_path = self.temp_dir / "worldbook.yaml"
+        worldbook = json.loads(worldbook_path.read_text(encoding="utf-8"))
+        worldbook["factions"] = [
+            {
+                "id": "faction-001",
+                "name": "青云宗",
+                "summary": "负责压火的本地宗门。",
+            }
+        ]
+        worldbook_path.write_text(json.dumps(worldbook, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 灯尽人未绝\n\n@{青云宗}的人又来押人压火。\n",
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-002.md").write_text(
+            "# 灰里递名\n\n第二章补了一点余波。\n",
+            encoding="utf-8",
+        )
+
+        input_path = self.temp_dir / "volume-self-review-input.yaml"
+        input_path.write_text(
+            json.dumps(
+                {
+                    "generatedAt": "2026-04-27T11:40:00+08:00",
+                    "conclusion": {
+                        "closureStatus": "not_closed",
+                        "allowHumanReview": False,
+                        "strongestPoint": "主线已经立住",
+                        "biggestRisk": "开篇设定 onboarding 仍偏薄",
+                    },
+                    "scores": [
+                        {"dimensionId": "volumeClosure", "score": 3, "conclusion": "整体可读"},
+                        {"dimensionId": "openingOnboarding", "score": 2, "conclusion": "解释仍偏薄"},
+                        {"dimensionId": "worldLogic", "score": 2, "conclusion": "制度逻辑还没讲透"},
+                        {"dimensionId": "chapterHandoff", "score": 3, "conclusion": "承接基本成立"},
+                        {"dimensionId": "characterContinuity", "score": 3, "conclusion": "连续"},
+                        {"dimensionId": "antagonistShaping", "score": 3, "conclusion": "成立"},
+                        {"dimensionId": "conflictEscalation", "score": 3, "conclusion": "可用"},
+                        {"dimensionId": "payoffDelivery", "score": 3, "conclusion": "可用"},
+                        {"dimensionId": "foreshadowRhythm", "score": 3, "conclusion": "可控"},
+                        {"dimensionId": "styleReadability", "score": 3, "conclusion": "可读"},
+                    ],
+                    "issues": [
+                        {
+                            "issue": "第一章世界规则 onboarding 仍偏薄",
+                            "evidence": ["青云宗压火已经出现，但制度代价与命灯规则解释不足"],
+                            "impact": "读者会难以理解主角为何必须留下",
+                            "primaryCause": "generation_miss",
+                            "fixAction": "补一段青云宗压火制度与命灯规则的解释",
+                            "evidenceRefs": ["chapter-001#world-rule-onboarding"],
+                        }
+                    ],
+                    "closureAssessment": {
+                        "mainProblem": "开篇设定 onboarding 仍需补强",
+                        "delivered": [],
+                        "missing": ["命灯规则和压火制度解释还不够清楚"],
+                        "reasoning": "问题已经锚到具体的世界规则 onboarding 缺口。",
+                    },
+                    "repairSuggestions": ["先补命灯规则和青云宗压火制度解释，再复检开篇 onboarding"],
+                    "acceptedRisks": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        exit_code, payload = self._run_json(
+            [
+                "review",
+                "volume-self",
+                "--root",
+                str(self.temp_dir),
+                "--volume-id",
+                "volume-001",
+                "--input",
+                str(input_path),
+            ]
+        )
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["review"]["issues"][0]["evidenceRefs"], ["chapter-001#world-rule-onboarding"])
+
+    def test_review_volume_self_accepts_handoff_gap_semantic_ref(self) -> None:
+        self._init_volume_project()
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 灯尽人未绝\n\n第一章埋下了余波。\n",
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-002.md").write_text(
+            "# 灰里递名\n\n第二章开头直接切到集市。\n",
+            encoding="utf-8",
+        )
+        story_reviews_path = self.temp_dir / "reviews" / "story-reviews.yaml"
+        story_reviews = json.loads(story_reviews_path.read_text(encoding="utf-8"))
+        story_reviews["chapterReviews"] = [
+            {
+                "reviewId": "chapter-review-002",
+                "chapterId": "chapter-002",
+                "chapterHandoffSignals": {
+                    "detected": True,
+                    "previousChapterId": "chapter-001",
+                    "previousChapterTitle": "灯尽人未绝",
+                },
+                "ruleJudgements": [
+                    {
+                        "ruleId": "chapterHandoffWeak",
+                    }
+                ],
+            }
+        ]
+        story_reviews_path.write_text(json.dumps(story_reviews, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+        input_path = self.temp_dir / "volume-self-review-input.yaml"
+        input_path.write_text(
+            json.dumps(
+                {
+                    "generatedAt": "2026-04-27T11:45:00+08:00",
+                    "conclusion": {
+                        "closureStatus": "not_closed",
+                        "allowHumanReview": False,
+                        "strongestPoint": "核心冲突已经起来",
+                        "biggestRisk": "章间承接仍偏弱",
+                    },
+                    "scores": [
+                        {"dimensionId": "volumeClosure", "score": 3, "conclusion": "整体可读"},
+                        {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "可读"},
+                        {"dimensionId": "worldLogic", "score": 3, "conclusion": "基本成立"},
+                        {"dimensionId": "chapterHandoff", "score": 2, "conclusion": "承接偏弱"},
+                        {"dimensionId": "characterContinuity", "score": 3, "conclusion": "连续"},
+                        {"dimensionId": "antagonistShaping", "score": 3, "conclusion": "成立"},
+                        {"dimensionId": "conflictEscalation", "score": 3, "conclusion": "可用"},
+                        {"dimensionId": "payoffDelivery", "score": 3, "conclusion": "可用"},
+                        {"dimensionId": "foreshadowRhythm", "score": 3, "conclusion": "可控"},
+                        {"dimensionId": "styleReadability", "score": 3, "conclusion": "可读"},
+                    ],
+                    "issues": [
+                        {
+                            "issue": "第二章承接仍偏弱",
+                            "evidence": ["第二章开头没有明显接住第一章余波"],
+                            "impact": "读者会感到章间跳跃",
+                            "primaryCause": "tooling_miss",
+                            "fixAction": "补一段承接第一章余波的过渡",
+                            "evidenceRefs": ["chapter-002#handoff-gap"],
+                        }
+                    ],
+                    "closureAssessment": {
+                        "mainProblem": "卷内承接仍需补强",
+                        "delivered": [],
+                        "missing": ["关键过渡还没补齐"],
+                        "reasoning": "问题已经锚到持久化 chapter review 的承接信号。",
+                    },
+                    "repairSuggestions": ["先补章间承接过渡，再复检第二章开头"],
+                    "acceptedRisks": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        exit_code, payload = self._run_json(
+            [
+                "review",
+                "volume-self",
+                "--root",
+                str(self.temp_dir),
+                "--volume-id",
+                "volume-001",
+                "--input",
+                str(input_path),
+            ]
+        )
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["review"]["issues"][0]["evidenceRefs"], ["chapter-002#handoff-gap"])
+
+    def test_review_volume_self_rejects_missing_semantic_ref(self) -> None:
+        self._init_volume_project()
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 灯尽人未绝\n\n第一章只有一段正文。\n",
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-002.md").write_text(
+            "# 灰里递名\n\n第二章也只有一段正文。\n",
+            encoding="utf-8",
+        )
+
+        input_path = self.temp_dir / "volume-self-review-input.yaml"
+        input_path.write_text(
+            json.dumps(
+                {
+                    "generatedAt": "2026-04-27T11:50:00+08:00",
+                    "conclusion": {
+                        "closureStatus": "not_closed",
+                        "allowHumanReview": False,
+                        "strongestPoint": "至少完成了回看",
+                        "biggestRisk": "承接问题锚点并不存在",
+                    },
+                    "scores": [
+                        {"dimensionId": "volumeClosure", "score": 3, "conclusion": "整体可读"},
+                        {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "可读"},
+                        {"dimensionId": "worldLogic", "score": 3, "conclusion": "基本成立"},
+                        {"dimensionId": "chapterHandoff", "score": 2, "conclusion": "承接偏弱"},
+                        {"dimensionId": "characterContinuity", "score": 3, "conclusion": "连续"},
+                        {"dimensionId": "antagonistShaping", "score": 3, "conclusion": "成立"},
+                        {"dimensionId": "conflictEscalation", "score": 3, "conclusion": "可用"},
+                        {"dimensionId": "payoffDelivery", "score": 3, "conclusion": "可用"},
+                        {"dimensionId": "foreshadowRhythm", "score": 3, "conclusion": "可控"},
+                        {"dimensionId": "styleReadability", "score": 3, "conclusion": "可读"},
+                    ],
+                    "issues": [
+                        {
+                            "issue": "第一章承接问题锚点不存在",
+                            "evidence": ["当前卷里还没有对应的 handoff 审查信号"],
+                            "impact": "定位会失真",
+                            "primaryCause": "tooling_miss",
+                            "fixAction": "先产出真实承接信号，再回填引用",
+                            "evidenceRefs": ["chapter-001#handoff-gap"],
+                        }
+                    ],
+                    "closureAssessment": {
+                        "mainProblem": "卷内承接仍需补强",
+                        "delivered": [],
+                        "missing": ["关键承接锚点还没建立"],
+                        "reasoning": "先保证问题引用确实能对上真实信号。",
+                    },
+                    "repairSuggestions": ["先跑章节审查确认承接问题，再回填 handoff-gap evidenceRef"],
+                    "acceptedRisks": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            with self.assertRaises(SystemExit) as exc_info:
+                main(
+                    [
+                        "review",
+                        "volume-self",
+                        "--root",
+                        str(self.temp_dir),
+                        "--volume-id",
+                        "volume-001",
+                        "--input",
+                        str(input_path),
+                    ]
+                )
+        self.assertIn("语义锚点不存在", str(exc_info.exception))
+        self.assertIn("handoff-gap", str(exc_info.exception))
+
+
+if __name__ == "__main__":
+    unittest.main()

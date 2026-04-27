@@ -34,6 +34,120 @@ def _parse_module_policy(items: list[str] | None) -> Dict[str, str]:
     return policy
 
 
+def _markdown_bullets(items: list[str]) -> list[str]:
+    cleaned = [str(item).strip() for item in items if str(item).strip()]
+    return [f"- {item}" for item in cleaned] if cleaned else ["- TBD"]
+
+
+def _seed_or_tbd(value: object, *, fallback: str = "TBD") -> str:
+    text = str(value or "").strip()
+    return text or fallback
+
+
+def _build_prd_markdown(
+    project: Dict[str, object],
+    *,
+    chapter_id: str,
+    chapter_title: str,
+    volume_goal: str = "",
+    reader_hook: str = "",
+    suppression_source: str = "",
+    onboarding_focus: str = "",
+    chapter_handoff: str = "",
+    chapter_delivery: str = "",
+) -> str:
+    positioning = project.get("positioning", {}) if isinstance(project.get("positioning"), dict) else {}
+    story_contract = project.get("storyContract", {}) if isinstance(project.get("storyContract"), dict) else {}
+    emotional_contract = (
+        project.get("emotionalContract", {}) if isinstance(project.get("emotionalContract"), dict) else {}
+    )
+    story_template = project.get("storyTemplate", {}) if isinstance(project.get("storyTemplate"), dict) else {}
+    commercial = (
+        project.get("commercialPositioning", {})
+        if isinstance(project.get("commercialPositioning"), dict)
+        else {}
+    )
+    title = str(project.get("title", "")).strip() or "未命名项目"
+    genre = str(project.get("genre", "")).strip() or "TBD"
+    primary_genre = str(positioning.get("primaryGenre", "")).strip() or "TBD"
+    sub_genre = str(positioning.get("subGenre", "")).strip() or "TBD"
+    style_tags = [str(item).strip() for item in positioning.get("styleTags", []) if str(item).strip()]
+    target_audience = [str(item).strip() for item in positioning.get("targetAudience", []) if str(item).strip()]
+    core_promises = [str(item).strip() for item in story_contract.get("corePromises", []) if str(item).strip()]
+    avoidances = [str(item).strip() for item in story_contract.get("avoidances", []) if str(item).strip()]
+    core_emotions = [str(item).strip() for item in emotional_contract.get("coreEmotions", []) if str(item).strip()]
+    review_focus = [str(item).strip() for item in story_template.get("reviewFocus", []) if str(item).strip()]
+    hook_stack = [str(item).strip() for item in commercial.get("hookStack", []) if str(item).strip()]
+    reader_hook_text = reader_hook.strip() or str(commercial.get("hookLine", "")).strip()
+
+    lines = [
+        f"# PRD: {title}",
+        "",
+        "> 状态: draft",
+        "> 说明: 用于明确项目定位、卷级职责与当前启动焦点；不是协议真相源。",
+        "",
+        "## 1. 项目定义",
+        "",
+        f"- 书名: {title}",
+        f"- genre: `{genre}`",
+        f"- primaryGenre: `{primary_genre}`",
+        f"- subGenre: `{sub_genre}`",
+        f"- styleTags: {', '.join(style_tags) if style_tags else 'TBD'}",
+        "",
+        "## 2. 目标读者",
+        "",
+        *_markdown_bullets(target_audience),
+        "",
+        "## 3. 核心承诺",
+        "",
+        *_markdown_bullets(core_promises),
+        "",
+        "## 4. 明确避免",
+        "",
+        *_markdown_bullets(avoidances),
+        "",
+        "## 5. 情绪与体验",
+        "",
+        *_markdown_bullets(core_emotions),
+        "",
+        "## 6. 商业与连载钩子",
+        "",
+        f"- premise: {str(commercial.get('premise', '')).strip() or 'TBD'}",
+        f"- hookLine: {str(commercial.get('hookLine', '')).strip() or 'TBD'}",
+        f"- targetPlatform: {str(commercial.get('targetPlatform', '')).strip() or 'TBD'}",
+        f"- chapterWordFloor: {commercial.get('chapterWordFloor', 0) or 'TBD'}",
+        f"- chapterWordTarget: {commercial.get('chapterWordTarget', 0) or 'TBD'}",
+        f"- hookStack: {', '.join(hook_stack) if hook_stack else 'TBD'}",
+        "",
+        "## 7. 题材与审查重点",
+        "",
+        f"- storyTemplate: {str(story_template.get('id', '')).strip() or 'TBD'}",
+        f"- reviewFocus: {', '.join(review_focus) if review_focus else 'TBD'}",
+        "",
+        "## 8. 第一卷 / 当前启动焦点",
+        "",
+        f"- 卷目标: {_seed_or_tbd(volume_goal)}",
+        f"- 读者钩子: {_seed_or_tbd(reader_hook_text)}",
+        f"- 压制源与预期爆发点: {_seed_or_tbd(suppression_source)}",
+        f"- 关键设定 onboarding: {_seed_or_tbd(onboarding_focus)}",
+        "",
+        "## 9. 当前起始章节",
+        "",
+        f"- activeChapterId: `{chapter_id}`",
+        f"- chapterTitle: {chapter_title}",
+        f"- 本章承接点: {_seed_or_tbd(chapter_handoff)}",
+        f"- 本章交付点: {_seed_or_tbd(chapter_delivery)}",
+        "",
+        "## 10. 待补清单",
+        "",
+        "- 明确第一卷的小闭环交付",
+        "- 明确核心世界规则/制度代价",
+        "- 明确主角阶段性目标、主要阻力与短线爽点",
+        "",
+    ]
+    return "\n".join(lines)
+
+
 def command_init(args) -> int:
     root = Path(args.root).resolve()
     root.mkdir(parents=True, exist_ok=True)
@@ -156,6 +270,23 @@ def command_init(args) -> int:
             encoding="utf-8",
         )
 
+    prd_file = root / "PRD.md"
+    if not prd_file.exists() or args.force:
+        prd_file.write_text(
+            _build_prd_markdown(
+                project,
+                chapter_id=args.chapter_id,
+                chapter_title=args.chapter_title,
+                volume_goal=getattr(args, "volume_goal", "") or "",
+                reader_hook=getattr(args, "reader_hook", "") or "",
+                suppression_source=getattr(args, "suppression_source", "") or "",
+                onboarding_focus=getattr(args, "onboarding_focus", "") or "",
+                chapter_handoff=getattr(args, "chapter_handoff", "") or "",
+                chapter_delivery=getattr(args, "chapter_delivery", "") or "",
+            ),
+            encoding="utf-8",
+        )
+
     print(
         json.dumps(
             {
@@ -169,6 +300,7 @@ def command_init(args) -> int:
                 "commercialPositioning": project["commercialPositioning"],
                 "chapterId": args.chapter_id,
                 "chapterFile": str(chapter_file),
+                "prdFile": str(prd_file),
             },
             ensure_ascii=False,
             indent=2,
@@ -178,7 +310,7 @@ def command_init(args) -> int:
 
 
 def register_project_commands(subparsers) -> None:
-    init_parser = subparsers.add_parser("init", help="Initialize a story harness project")
+    init_parser = subparsers.add_parser("init", help="Initialize a Story Canvas project")
     init_parser.add_argument("--root", required=True)
     init_parser.add_argument("--title", required=True)
     init_parser.add_argument("--genre", required=True)
@@ -211,6 +343,12 @@ def register_project_commands(subparsers) -> None:
     init_parser.add_argument("--chapter-word-target", type=int)
     init_parser.add_argument("--chapter-id", default="chapter-001")
     init_parser.add_argument("--chapter-title", default="第一章")
+    init_parser.add_argument("--volume-goal")
+    init_parser.add_argument("--reader-hook")
+    init_parser.add_argument("--suppression-source")
+    init_parser.add_argument("--onboarding-focus")
+    init_parser.add_argument("--chapter-handoff")
+    init_parser.add_argument("--chapter-delivery")
     init_parser.add_argument("--force", action="store_true")
     init_parser.add_argument(
         "--layout", choices=["flat", "layered"], default="flat",

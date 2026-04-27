@@ -3,8 +3,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from story_harness_cli.commands.project_support import build_project_advisories
 from story_harness_cli.protocol import chapter_path, ensure_project_root, load_project_state, save_state
 from story_harness_cli.services import detect_scene_plans, evaluate_project_outline_readiness
+from story_harness_cli.utils.text import paragraphs_from_text
 from story_harness_cli.utils import now_iso, stable_hash
 
 
@@ -111,6 +113,7 @@ def command_outline_check(args) -> int:
         require_scene_plans=not args.allow_missing_scene_plans,
         require_project_gate=not args.allow_missing_project_gate,
     )
+    result["projectAdvisories"] = build_project_advisories(root, include_prd_content=True)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if result["ready"] else 1
 
@@ -329,6 +332,190 @@ def command_outline_scene_remove(args) -> int:
     return 0
 
 
+def _validate_scene_ranges(scene_plans: list[dict], paragraph_count: int) -> list[dict]:
+    issues: list[dict] = []
+    previous_end = 0
+    for index, scene in enumerate(scene_plans, start=1):
+        start = scene.get("startParagraph")
+        end = scene.get("endParagraph")
+        issue = {
+            "sceneId": scene.get("id", ""),
+            "title": scene.get("title", ""),
+            "index": index,
+        }
+        if not isinstance(start, int) or not isinstance(end, int):
+            issues.append({**issue, "issue": "missing-range"})
+            continue
+        if start < 1 or end < start or end > paragraph_count:
+            issues.append(
+                {
+                    **issue,
+                    "issue": "out-of-range",
+                    "startParagraph": start,
+                    "endParagraph": end,
+                    "paragraphCount": paragraph_count,
+                }
+            )
+            continue
+        if start <= previous_end:
+            issues.append(
+                {
+                    **issue,
+                    "issue": "overlap-or-nonascending",
+                    "startParagraph": start,
+                    "endParagraph": end,
+                    "previousEndParagraph": previous_end,
+                }
+            )
+        previous_end = end
+    return issues
+
+
+def _persisted_detected_scenes(chapter_id: str, chapter_text: str) -> list[dict]:
+    scenes = []
+    for scene in detect_scene_plans(chapter_id, chapter_text):
+        timestamp = now_iso()
+        scenes.append({**scene, "createdAt": timestamp, "updatedAt": timestamp})
+    return scenes
+
+
+def _trim_tail_overflow(scene_plans: list[dict], paragraph_count: int) -> tuple[list[dict], str] | tuple[None, str]:
+    issues = _validate_scene_ranges(scene_plans, paragraph_count)
+    if len(issues) != 1:
+        return None, ""
+    issue = issues[0]
+    if issue.get("issue") != "out-of-range":
+        return None, ""
+    last_scene = scene_plans[-1] if scene_plans else {}
+    if issue.get("sceneId") != last_scene.get("id"):
+        return None, ""
+    start = last_scene.get("startParagraph")
+    end = last_scene.get("endParagraph")
+    if not isinstance(start, int) or not isinstance(end, int):
+        return None, ""
+    if start < 1 or start > paragraph_count or end <= paragraph_count:
+        return None, ""
+
+    repaired = []
+    for scene in scene_plans:
+        updated = dict(scene)
+        if scene.get("id") == last_scene.get("id"):
+            updated["endParagraph"] = paragraph_count
+            updated["updatedAt"] = now_iso()
+            updated["syncMethod"] = "trim-tail-overflow"
+        repaired.append(updated)
+    if _validate_scene_ranges(repaired, paragraph_count):
+        return None, ""
+    return repaired, "trim-tail-overflow"
+
+
+def _repartition_scene_ranges(
+    scene_plans: list[dict],
+    detected_scenes: list[dict],
+) -> tuple[list[dict], str] | tuple[None, str]:
+    if not scene_plans or not detected_scenes or len(scene_plans) != len(detected_scenes):
+        return None, ""
+
+    updated_scenes = []
+    changed = False
+    for existing, detected in zip(scene_plans, detected_scenes):
+        updated = dict(existing)
+        for field in ("startParagraph", "endParagraph"):
+            if updated.get(field) != detected.get(field):
+                changed = True
+            updated[field] = detected.get(field)
+        if not updated.get("title"):
+            updated["title"] = detected.get("title", "")
+        if not updated.get("summary"):
+            updated["summary"] = detected.get("summary", "")
+        updated["updatedAt"] = now_iso()
+        updated["syncMethod"] = "heuristic-repartition"
+        updated_scenes.append(updated)
+
+    if not changed:
+        return None, ""
+    return updated_scenes, "heuristic-repartition"
+
+
+def _scene_sync_suggestion(
+    chapter_id: str,
+    chapter_text: str,
+    scene_plans: list[dict],
+    paragraph_count: int,
+) -> tuple[list[dict], str, bool]:
+    if not scene_plans:
+        detected = _persisted_detected_scenes(chapter_id, chapter_text)
+        if detected:
+            return detected, "heuristic-detect", True
+        return [], "", False
+
+    trimmed, trim_method = _trim_tail_overflow(scene_plans, paragraph_count)
+    if trimmed:
+        return trimmed, trim_method, True
+
+    detected = _persisted_detected_scenes(chapter_id, chapter_text)
+    repartitioned, repartition_method = _repartition_scene_ranges(scene_plans, detected)
+    if repartitioned:
+        return repartitioned, repartition_method, True
+
+    return [], "", False
+
+
+def command_outline_scene_sync(args) -> int:
+    root = Path(args.root).resolve()
+    ensure_project_root(root)
+    state = load_project_state(root)
+    chapter = _find_chapter(state["outline"], args.chapter_id)
+    if chapter is None:
+        raise SystemExit(f"找不到章节: {args.chapter_id}")
+
+    target_chapter = chapter_path(root, args.chapter_id)
+    if not target_chapter.exists():
+        raise SystemExit(f"章节不存在: {target_chapter}")
+
+    chapter_text = target_chapter.read_text(encoding="utf-8")
+    paragraphs = paragraphs_from_text(chapter_text)
+    paragraph_count = len(paragraphs)
+    if paragraph_count == 0:
+        raise SystemExit("章节中没有可用于 scenePlans 同步的正文段落")
+
+    current_scenes = [dict(scene) for scene in chapter.get("scenePlans", [])]
+    validation_issues = _validate_scene_ranges(current_scenes, paragraph_count)
+    suggested_scenes, suggestion_method, can_apply = _scene_sync_suggestion(
+        args.chapter_id,
+        chapter_text,
+        current_scenes,
+        paragraph_count,
+    )
+
+    applied = False
+    if args.apply:
+        if not can_apply or not suggested_scenes:
+            raise SystemExit("当前 scenePlans 没有可安全应用的同步建议")
+        chapter["scenePlans"] = suggested_scenes
+        save_state(root, state)
+        applied = True
+
+    payload = {
+        "chapterId": args.chapter_id,
+        "paragraphCount": paragraph_count,
+        "currentScenePlanCount": len(current_scenes),
+        "validation": {
+            "valid": len(validation_issues) == 0,
+            "issues": validation_issues,
+        },
+        "suggestion": {
+            "available": can_apply,
+            "method": suggestion_method,
+            "scenePlanCount": len(suggested_scenes),
+            "scenes": suggested_scenes,
+        },
+        "applied": applied,
+    }
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    return 0
+
+
 def _find_detailed_entry(detailed_outlines: dict, chapter_id: str) -> dict | None:
     for entry in detailed_outlines.get("entries", []):
         if entry.get("chapterId") == chapter_id:
@@ -484,6 +671,15 @@ def register_outline_commands(subparsers) -> None:
     scene_remove_parser.add_argument("--chapter-id", required=True)
     scene_remove_parser.add_argument("--scene-id", required=True)
     scene_remove_parser.set_defaults(func=command_outline_scene_remove)
+
+    scene_sync_parser = outline_subparsers.add_parser(
+        "scene-sync",
+        help="Validate explicit scenePlans and suggest or apply safe boundary syncs",
+    )
+    scene_sync_parser.add_argument("--root", required=True)
+    scene_sync_parser.add_argument("--chapter-id", required=True)
+    scene_sync_parser.add_argument("--apply", action="store_true")
+    scene_sync_parser.set_defaults(func=command_outline_scene_sync)
 
     detail_init_parser = outline_subparsers.add_parser("detail-init", help="Initialize detailed outline for a chapter")
     detail_init_parser.add_argument("--root", required=True)

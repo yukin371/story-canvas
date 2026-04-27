@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import json
 import sys
+import re
 from pathlib import Path
 
-from story_harness_cli.protocol import ensure_project_root
+from story_harness_cli.commands.review_support import build_foreshadow_check_payload
+from story_harness_cli.protocol import ensure_project_root, load_project_state
 from story_harness_cli.protocol.files import resolve_state_path
 
 
@@ -35,6 +37,114 @@ def _next_id(foreshadows: list) -> str:
         except (ValueError, IndexError):
             pass
     return f"fs-{max_num + 1:03d}"
+
+
+def _chapter_number(chapter_ref: str) -> int | None:
+    match = re.search(r"(\d+)(?!.*\d)", chapter_ref or "")
+    if not match:
+        return None
+    return int(match.group(1))
+
+
+def _chapter_in_window(chapter_id: str, window: dict) -> bool:
+    if not isinstance(window, dict):
+        return False
+    target_chapter = window.get("targetChapter")
+    if target_chapter:
+        return target_chapter == chapter_id
+
+    start = window.get("targetChapterStart")
+    end = window.get("targetChapterEnd")
+    if not start and not end:
+        return False
+
+    current_num = _chapter_number(chapter_id)
+    start_num = _chapter_number(start) if start else None
+    end_num = _chapter_number(end) if end else None
+    if current_num is not None and (start_num is not None or end_num is not None):
+        if start_num is not None and current_num < start_num:
+            return False
+        if end_num is not None and current_num > end_num:
+            return False
+        return True
+
+    if start and chapter_id < start:
+        return False
+    if end and chapter_id > end:
+        return False
+    return True
+
+
+def _chapter_after(target: str, chapter_id: str) -> bool:
+    target_num = _chapter_number(target)
+    current_num = _chapter_number(chapter_id)
+    if target_num is not None and current_num is not None:
+        return current_num > target_num
+    return chapter_id > target
+
+
+def _window_ended_before_chapter(window: dict, chapter_id: str) -> bool:
+    if not isinstance(window, dict):
+        return False
+    target_chapter = window.get("targetChapter")
+    if target_chapter:
+        return _chapter_after(target_chapter, chapter_id)
+    end = window.get("targetChapterEnd")
+    if end:
+        return _chapter_after(end, chapter_id)
+    return False
+
+
+def _foreshadow_title(item: dict) -> str:
+    return str(item.get("title") or item.get("description") or item.get("id") or "").strip()
+
+
+def _foreshadow_due_in_chapter(item: dict, chapter_id: str) -> bool:
+    if item.get("status") == "resolved":
+        return False
+    if item.get("plannedPayoffChapter") == chapter_id:
+        return True
+    for payoff_point in item.get("payoffPoints", []):
+        if payoff_point.get("chapterId") == chapter_id:
+            return True
+    payoff_plan = item.get("payoffPlan", {})
+    if not isinstance(payoff_plan, dict):
+        return False
+    return _chapter_in_window(chapter_id, payoff_plan.get("window", {}))
+
+
+def _foreshadow_overdue_for_chapter(item: dict, chapter_id: str) -> bool:
+    if item.get("status") == "resolved":
+        return False
+    planned_payoff = item.get("plannedPayoffChapter")
+    if isinstance(planned_payoff, str) and planned_payoff and _chapter_after(planned_payoff, chapter_id):
+        return True
+    payoff_plan = item.get("payoffPlan", {})
+    if isinstance(payoff_plan, dict) and _window_ended_before_chapter(payoff_plan.get("window", {}), chapter_id):
+        return True
+    return False
+
+
+def _foreshadow_schedule_summary(item: dict) -> dict:
+    payoff_plan = item.get("payoffPlan", {}) if isinstance(item.get("payoffPlan", {}), dict) else {}
+    window = payoff_plan.get("window", {}) if isinstance(payoff_plan, dict) else {}
+    return {
+        "plannedPayoffChapter": item.get("plannedPayoffChapter"),
+        "window": window,
+        "payoffPointCount": len(item.get("payoffPoints", [])),
+    }
+
+
+def _compact_foreshadow(item: dict) -> dict:
+    return {
+        "id": item.get("id", ""),
+        "title": _foreshadow_title(item),
+        "status": item.get("status", ""),
+        "plantedChapter": item.get("plantedChapter") or (
+            item.get("plantPoints", [{}])[0].get("chapterId") if item.get("plantPoints") else ""
+        ),
+        "schedule": _foreshadow_schedule_summary(item),
+    }
 
 
 def run_plant(args) -> int:
@@ -96,6 +206,18 @@ def run_list(args) -> int:
     return 0
 
 
+def run_check(args) -> int:
+    root = Path(args.root).resolve()
+    ensure_project_root(root)
+    state = load_project_state(root)
+    chapter_id = args.chapter_id or state.get("project", {}).get("activeChapterId")
+    if not chapter_id:
+        raise SystemExit("缺少 chapter id")
+    payload = build_foreshadow_check_payload(state, chapter_id)
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    return 0
+
+
 def register_foreshadow_commands(subparsers) -> None:
     foreshadow_parser = subparsers.add_parser("foreshadow", help="Foreshadow tracking")
     foreshadow_sub = foreshadow_parser.add_subparsers(dest="foreshadow_action")
@@ -119,3 +241,11 @@ def register_foreshadow_commands(subparsers) -> None:
     list_cmd.add_argument("--root", required=True)
     list_cmd.add_argument("--status", choices=["planted", "resolved"], default=None)
     list_cmd.set_defaults(func=run_list)
+
+    check_cmd = foreshadow_sub.add_parser(
+        "check",
+        help="Check due, overdue, and unscheduled unresolved foreshadows for a chapter",
+    )
+    check_cmd.add_argument("--root", required=True)
+    check_cmd.add_argument("--chapter-id")
+    check_cmd.set_defaults(func=run_check)

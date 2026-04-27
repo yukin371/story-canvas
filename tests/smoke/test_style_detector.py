@@ -92,6 +92,39 @@ class StyleDetectorTests(unittest.TestCase):
         self.assertEqual(judgement["kind"], "style")
         self.assertEqual(judgement["source"], "genre-pack")
 
+    def test_detect_ai_style_flags_structured_plan_block(self) -> None:
+        paragraphs = [
+            "目标：先压住体内失控的潮息。\n风险：顾长渊可能提前察觉异样。",
+            "约束：不能在宗门长老面前暴露归墟体。\n时间窗口：只剩今夜到天明前这段空档。",
+            "沈玄意识到自己又把念头排成了清单，连呼吸都带着不合时宜的执行味道。",
+        ]
+        clean_text = "".join(paragraphs) * 3
+
+        result = detect_ai_style(paragraphs, clean_text)
+        pattern = next(item for item in result["patternResults"] if item["id"] == "structuredPlanBlock")
+
+        self.assertTrue(pattern["detected"])
+        self.assertIn("目标：", "".join(pattern["evidence"]))
+        judgement = next(item for item in result["judgements"] if item["ruleId"] == "structuredPlanBlock")
+        self.assertEqual(judgement["kind"], "style")
+        self.assertEqual(judgement["source"], "core")
+
+    def test_detect_ai_style_respects_plan_block_allow_labels(self) -> None:
+        paragraphs = [
+            "目标：先压住体内失控的潮息。\n风险：顾长渊可能提前察觉异样。",
+            "约束：不能在宗门长老面前暴露归墟体。\n时间窗口：只剩今夜到天明前这段空档。",
+        ]
+        clean_text = "".join(paragraphs) * 4
+
+        result = detect_ai_style(
+            paragraphs,
+            clean_text,
+            profile_config={"planBlockPolicy": {"allowLabels": ["目标", "风险", "约束", "时间窗口"]}},
+        )
+        pattern = next(item for item in result["patternResults"] if item["id"] == "structuredPlanBlock")
+
+        self.assertFalse(pattern["detected"])
+
     def test_detect_ai_style_respects_register_allow_terms(self) -> None:
         paragraphs = [
             "沈玄先把所有线索整合成一个时间框架。",
@@ -133,6 +166,67 @@ class StyleDetectorTests(unittest.TestCase):
 
         self.assertTrue(pattern["detected"])
         self.assertIn("前世的", "".join(pattern["evidence"]))
+
+    def test_detect_ai_style_flags_contrast_flip_patterns(self) -> None:
+        paragraphs = [
+            "那不是犹豫，是多年压下去的旧火重新顶了上来。",
+            "这不是侥幸，不是误打误撞，是他早就留在袖里的后手。",
+            "他没有再退，只让那点发烫的念头继续往前推。",
+        ]
+        clean_text = "".join(paragraphs) * 2
+
+        result = detect_ai_style(paragraphs, clean_text)
+        pattern = next(item for item in result["patternResults"] if item["id"] == "contrastFlipPattern")
+
+        self.assertTrue(pattern["detected"])
+        self.assertIn("不是", "".join(pattern["evidence"]))
+        self.assertTrue(any(item["ruleId"] == "contrastFlipPattern" for item in result["judgements"]))
+
+    def test_detect_ai_style_flags_analogical_pivot_patterns(self) -> None:
+        paragraphs = [
+            "那不像试探，更像有人故意把门缝留给他。",
+            "这不是风声。更像旧灯室深处有人轻轻拨了一下灯芯。",
+            "他越往里走，越觉得那股旧意不是在提醒，更像在把他往深处拽。",
+        ]
+        clean_text = "".join(paragraphs) * 2
+
+        result = detect_ai_style(paragraphs, clean_text)
+        pattern = next(item for item in result["patternResults"] if item["id"] == "analogicalPivotPattern")
+
+        self.assertTrue(pattern["detected"])
+        self.assertIn("更像", "".join(pattern["evidence"]))
+        self.assertTrue(any(item["ruleId"] == "analogicalPivotPattern" for item in result["judgements"]))
+
+    def test_detect_ai_style_flags_template_catchphrases(self) -> None:
+        paragraphs = [
+            "真正值钱的，从来都是这盏灯现在指着的地方。",
+            "岳怀川压低声音问了一句：“还有什么？”",
+            "沈照没有立刻回答，可那句追问还在耳边一下一下敲着。",
+        ]
+        clean_text = "".join(paragraphs) * 3
+
+        result = detect_ai_style(paragraphs, clean_text)
+        pattern = next(item for item in result["patternResults"] if item["id"] == "templateCatchphrasePattern")
+
+        self.assertTrue(pattern["detected"])
+        self.assertTrue(any("真正值钱的" in item or "还有什么" in item for item in pattern["evidence"]))
+        self.assertTrue(any(item["ruleId"] == "templateCatchphrasePattern" for item in result["judgements"]))
+
+    def test_detect_ai_style_flags_paragraph_readability(self) -> None:
+        paragraphs = [
+            "沈照沿着废灯棚外那条狭窄的灰沟慢慢往前挪，脚下每一块松动的砖都像会突然塌下去，他一边盯着风里晃动的残灯，一边还得分神去记那些被夜色吞没的脚印、火痕和断裂木梁的位置，整个人绷得像一根被拉到快断的旧弦。",
+            "岳怀川跟在后面，同样没有开口，只是把呼吸压得更轻，可他眼角的余光始终在扫四周那些被烟熏黑的墙角、塌陷的梁柱和半埋在灰里的旧灯座，像是生怕下一瞬又有什么被人从黑暗里轻轻拨动，让他们前面所有的判断都变成了更深一层的误导。",
+            "短段落用来形成对比。",
+        ]
+        clean_text = "".join(paragraphs)
+
+        result = detect_ai_style(paragraphs, clean_text)
+        pattern = next(item for item in result["patternResults"] if item["id"] == "paragraphReadability")
+
+        self.assertTrue(pattern["detected"])
+        self.assertGreaterEqual(pattern["count"], 2)
+        self.assertIn("第1段", "".join(pattern["evidence"]))
+        self.assertTrue(any(item["ruleId"] == "paragraphReadability" for item in result["judgements"]))
 
     def test_detect_ai_style_uses_builtin_repetition_fallback(self) -> None:
         paragraphs = [

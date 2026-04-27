@@ -10,6 +10,7 @@ from typing import Any, Dict
 
 from .files import LAYOUT_FLAT, LAYOUT_LAYERED, ROOT_FILES, detect_layout, resolve_state_path, root_file
 from .io import dump_json_compatible_yaml, load_json_compatible_yaml
+from .prompt_packs import default_pack_ref_from_name, prompt_pack_name_from_ref
 from .schema import default_project_state
 
 STATE_FILE_NAMES = (
@@ -69,6 +70,8 @@ def load_project_state(root: Path) -> Dict[str, Any]:
         raw = load_json_compatible_yaml(fpath, defaults[internal_key])
         if state_key in ("project", "story_reviews", "workflow_progress", "illustrations", "worldbook"):
             state[internal_key] = merge_defaults(raw, defaults[internal_key])
+            if state_key == "illustrations":
+                _normalize_illustrations_state(state[internal_key], defaults[internal_key])
         else:
             state[internal_key] = raw
 
@@ -174,7 +177,7 @@ def ensure_project_root(root: Path) -> None:
         if not resolve_state_path(root, key).exists():
             missing.append(f"{key}.yaml")
     if missing:
-        raise SystemExit(f"{root} 不是已初始化的 story harness 项目，缺少: {', '.join(missing)}")
+        raise SystemExit(f"{root} 不是已初始化的 Story Canvas 项目，缺少: {', '.join(missing)}")
 
 
 def load_outline_for_chapter(root: Path, chapter_id: str) -> dict:
@@ -237,6 +240,48 @@ def merge_defaults(payload: Dict[str, Any], defaults: Dict[str, Any]) -> Dict[st
         if key not in merged:
             merged[key] = value
     return merged
+
+
+def _normalize_illustrations_state(illustrations: Dict[str, Any], defaults: Dict[str, Any]) -> None:
+    prompt_pack = illustrations.setdefault("promptPack", {})
+    if not isinstance(prompt_pack, dict):
+        illustrations["promptPack"] = {}
+        prompt_pack = illustrations["promptPack"]
+
+    prompt_system = illustrations.setdefault("promptSystem", {})
+    if not isinstance(prompt_system, dict):
+        illustrations["promptSystem"] = {}
+        prompt_system = illustrations["promptSystem"]
+
+    default_prompt_system = defaults.get("promptSystem", {})
+    normalized_prompt_system = merge_defaults(prompt_system, default_prompt_system)
+    illustrations["promptSystem"] = normalized_prompt_system
+    prompt_system = normalized_prompt_system
+
+    batch_system = illustrations.setdefault("batchSystem", {})
+    if not isinstance(batch_system, dict):
+        illustrations["batchSystem"] = {}
+        batch_system = illustrations["batchSystem"]
+    default_batch_system = defaults.get("batchSystem", {})
+    illustrations["batchSystem"] = merge_defaults(batch_system, default_batch_system)
+
+    pack_name = str(prompt_pack.get("name") or "").strip()
+    pack_version = str(prompt_pack.get("version") or "").strip()
+    pack_ref = prompt_system.setdefault("defaultPack", {})
+    if not isinstance(pack_ref, dict):
+        prompt_system["defaultPack"] = {}
+        pack_ref = prompt_system["defaultPack"]
+
+    if pack_name and not str(pack_ref.get("packId") or "").strip():
+        pack_ref.update(default_pack_ref_from_name(pack_name, version=pack_version or None))
+
+    if not pack_name:
+        prompt_pack["name"] = prompt_pack_name_from_ref(pack_ref) or "default"
+    if not pack_version:
+        prompt_pack["version"] = str(pack_ref.get("version") or "builtin")
+
+    if not str(pack_ref.get("packId") or "").strip():
+        pack_ref.update(default_pack_ref_from_name(str(prompt_pack.get("name") or "default"), version=str(prompt_pack.get("version") or "") or None))
 
 
 # ---------------------------------------------------------------------------

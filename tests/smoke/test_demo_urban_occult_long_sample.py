@@ -67,11 +67,11 @@ class DemoUrbanOccultLongSampleSmokeTest(unittest.TestCase):
         expected_ratings = {
             "chapter-001": "strong",
             "chapter-002": "solid",
-            "chapter-003": "strong",
-            "chapter-004": "strong",
+            "chapter-003": "solid",
+            "chapter-004": "solid",
             "chapter-005": "solid",
             "chapter-006": "solid",
-            "chapter-007": "strong",
+            "chapter-007": "solid",
             "chapter-008": "solid",
         }
 

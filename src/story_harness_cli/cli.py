@@ -19,6 +19,7 @@ from story_harness_cli.commands import (
     register_projection_commands,
     register_project_commands,
     register_review_commands,
+    register_status_commands,
     register_stats_commands,
     register_structure_commands,
     register_timeline_commands,
@@ -27,11 +28,14 @@ from story_harness_cli.commands import (
     register_thread_commands,
     register_workflow_commands,
     register_migrate_commands,
+    register_world_commands,
 )
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Story Harness CLI")
+    parser = argparse.ArgumentParser(
+        description="Story Canvas command-line workflow entrypoint"
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
     register_arc_commands(subparsers)
     register_brainstorm_commands(subparsers)
@@ -39,6 +43,7 @@ def build_parser() -> argparse.ArgumentParser:
     register_project_commands(subparsers)
     register_chapter_commands(subparsers)
     register_review_commands(subparsers)
+    register_status_commands(subparsers)
     register_outline_commands(subparsers)
     register_projection_commands(subparsers)
     register_context_commands(subparsers)
@@ -56,6 +61,7 @@ def build_parser() -> argparse.ArgumentParser:
     register_workflow_commands(subparsers)
     register_structure_commands(subparsers)
     register_migrate_commands(subparsers)
+    register_world_commands(subparsers)
     return parser
 
 

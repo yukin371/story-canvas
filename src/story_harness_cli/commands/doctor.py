@@ -5,17 +5,19 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 from story_harness_cli.commands.illustration_support import decorate_generated_entry
+from story_harness_cli.commands.project_support import build_project_advisories
 from story_harness_cli.protocol import chapter_path, choose_style_profile_name, root_file
 from story_harness_cli.protocol.files import resolve_state_path
 from story_harness_cli.protocol.io import load_json_compatible_yaml
+from story_harness_cli.protocol.review_rules import merge_review_rules_with_defaults
 from story_harness_cli.protocol.schema import default_project_state
 from story_harness_cli.protocol.state import merge_defaults
 from story_harness_cli.protocol.style_profiles import get_default_style_profiles, merge_with_defaults
-from story_harness_cli.services.analyzer import resolve_named_reference
+from story_harness_cli.services.reference_mentions import build_reference_mention_report
 from story_harness_cli.services.outline_guard import evaluate_chapter_outline_readiness
 from story_harness_cli.services.rule_semantics import build_rule_judgement
 from story_harness_cli.services.stats import compute_project_stats
-from story_harness_cli.utils.text import extract_tag_mentions
+from story_harness_cli.utils.text import find_malformed_entity_tags
 from story_harness_cli.utils.project_meta import (
     is_commercial_serial_project,
     is_machine_label,
@@ -48,29 +50,8 @@ def record_check(checks: List[Dict[str, str]], level: str, code: str, message: s
     checks.append({"level": level, "code": code, "message": message})
 
 
-def _doctor_scope_for_code(code: str) -> str:
-    if code.startswith("wrapped-entity") or "entity-profile" in code or "character-state" in code:
-        return "entity"
-    if "world" in code or "faction" in code or "foreshadow" in code:
-        return "world"
-    if "chapter" in code or "outline" in code or "scene" in code or "context-chapter" in code:
-        return "chapter"
-    if "illustration" in code:
-        return "export"
-    return "project"
-
-
-def _doctor_source_for_code(code: str) -> str:
-    if code.startswith("missing-required-") or code.startswith("empty-required-"):
-        return "project-pack"
-    if "style-profile" in code or code in {
-        "missing-style-profiles",
-        "invalid-style-profiles",
-        "invalid-style-profiles-shape",
-        "missing-active-style-profile",
-    }:
-        return "project-pack"
-    return "core"
+def _doctor_tags_for_code(code: str) -> List[str]:
+    return ["doctor"]
 
 
 def _build_doctor_judgements(checks: List[Dict[str, str]]) -> List[Dict[str, Any]]:
@@ -86,15 +67,13 @@ def _build_doctor_judgements(checks: List[Dict[str, str]]) -> List[Dict[str, Any
         judgements.append(
             build_rule_judgement(
                 rule_id=code,
-                source=_doctor_source_for_code(code),
-                scope=_doctor_scope_for_code(code),
                 kind="hard" if level == "error" else "soft",
                 severity=level,
                 message=message,
                 suggestion="",
                 evidence=[message],
                 payload=item,
-                tags=["doctor"],
+                tags=_doctor_tags_for_code(code),
             )
         )
     return judgements
@@ -235,7 +214,7 @@ def validate_project_links(root: Path, state: Dict[str, Dict[str, Any]], checks:
             record_check(checks, "warning", "missing-context-chapter", f"context-lens 指向不存在的章节: {context_chapter_id}")
 
 
-def _check_outline_volumes(root: Path, issues: list) -> None:
+def _check_outline_volumes(root: Path, checks: List[Dict[str, str]]) -> None:
     """Validate outline.yaml has volumes structure."""
     outline_path = resolve_state_path(root, "outline")
     if not outline_path.exists():
@@ -243,19 +222,21 @@ def _check_outline_volumes(root: Path, issues: list) -> None:
     outline = load_json_compatible_yaml(outline_path, {})
     volumes = outline.get("volumes")
     if volumes is None:
-        issues.append({"level": "warning", "message": "outline.yaml 缺少 volumes 字段，建议运行 brainstorm outline 初始化"})
+        record_check(checks, "warning", "missing-outline-volumes", "outline.yaml 缺少 volumes 字段，建议运行 brainstorm outline 初始化")
     else:
         for vol in volumes:
             for ch in vol.get("chapters", []):
                 for beat in ch.get("beats", []):
                     if beat.get("status") == "planned" and ch.get("status") == "completed":
-                        issues.append({
-                            "level": "info",
-                            "message": f"卷 '{vol.get('title')}' 章 '{ch.get('title')}' 的 beat '{beat.get('summary')}' 状态仍为 planned，但章节已标记 completed",
-                        })
+                        record_check(
+                            checks,
+                            "info",
+                            "completed-chapter-has-planned-beat",
+                            f"卷 '{vol.get('title')}' 章 '{ch.get('title')}' 的 beat '{beat.get('summary')}' 状态仍为 planned，但章节已标记 completed",
+                        )
 
 
-def _check_entity_profiles(root: Path, issues: list) -> None:
+def _check_entity_profiles(root: Path, checks: List[Dict[str, str]]) -> None:
     """Validate entities have profile structure."""
     entities_path = resolve_state_path(root, "entities")
     if not entities_path.exists():
@@ -263,23 +244,29 @@ def _check_entity_profiles(root: Path, issues: list) -> None:
     entities_data = load_json_compatible_yaml(entities_path, {})
     for entity in entities_data.get("entities", []):
         if "profile" not in entity:
-            issues.append({
-                "level": "warning",
-                "message": f"实体 '{entity.get('name')}' 缺少 profile 字段，建议重新初始化或运行 entity enrich",
-            })
+            record_check(
+                checks,
+                "warning",
+                "entity-missing-profile",
+                f"实体 '{entity.get('name')}' 缺少 profile 字段，建议重新初始化或运行 entity enrich",
+            )
         if "seed" not in entity:
-            issues.append({
-                "level": "info",
-                "message": f"实体 '{entity.get('name')}' 缺少 seed 字段，建议通过 brainstorm character 创建种子",
-            })
+            record_check(
+                checks,
+                "info",
+                "entity-missing-seed",
+                f"实体 '{entity.get('name')}' 缺少 seed 字段，建议通过 brainstorm character 创建种子",
+            )
         if entity.get("source") == "inferred" and not entity.get("profile"):
-            issues.append({
-                "level": "info",
-                "message": f"推断实体 '{entity.get('name')}' 缺少 profile，建议运行 entity enrich 补充",
-            })
+            record_check(
+                checks,
+                "info",
+                "inferred-entity-missing-profile",
+                f"推断实体 '{entity.get('name')}' 缺少 profile，建议运行 entity enrich 补充",
+            )
 
 
-def _check_threads(root: Path, state: Dict, issues: list) -> None:
+def _check_threads(root: Path, state: Dict, checks: List[Dict[str, str]]) -> None:
     """Check thread (suspense) health."""
     from story_harness_cli.services.thread import check_threads as thread_check
 
@@ -291,27 +278,29 @@ def _check_threads(root: Path, state: Dict, issues: list) -> None:
     last_ch_id = chapters[-1].get("id") if chapters else None
     result = thread_check(state, current_chapter_id=last_ch_id)
     for w in result.get("warnings", []):
-        issues.append({"level": "warning", "message": w.get("message", "")})
+        warning_type = str(w.get("type", "warning")).strip() or "warning"
+        record_check(checks, "warning", f"thread-{warning_type}", w.get("message", ""))
     stats = result.get("stats", {})
     if stats.get("overdue", 0) > 0:
-        issues.append({"level": "warning", "message": f"有 {stats['overdue']} 条悬念线索已逾期未回收"})
+        record_check(checks, "warning", "thread-overdue-count", f"有 {stats['overdue']} 条悬念线索已逾期未回收")
     open_count = stats.get("majorOpen", 0) + stats.get("minorOpen", 0)
     if open_count > 0:
-        issues.append({"level": "info", "message": f"有 {open_count} 条悬念线索待回收"})
+        record_check(checks, "info", "thread-open-count", f"有 {open_count} 条悬念线索待回收")
 
 
-def _check_arcs(root: Path, state: Dict, issues: list) -> None:
+def _check_arcs(root: Path, state: Dict, checks: List[Dict[str, str]]) -> None:
     """Check character arc completeness."""
     from story_harness_cli.services.arc import check_arcs as arc_check
 
     result = arc_check(state)
     for w in result.get("warnings", []):
-        issues.append({"level": "warning", "message": w.get("message", "")})
+        warning_type = str(w.get("type", "warning")).strip() or "warning"
+        record_check(checks, "warning", f"arc-{warning_type}", w.get("message", ""))
     for a in result.get("advisory", []):
-        issues.append({"level": "info", "message": a.get("message", "")})
+        record_check(checks, "info", "arc-missing-definition", a.get("message", ""))
 
 
-def _check_structure_coverage(root: Path, state: Dict, issues: list) -> None:
+def _check_structure_coverage(root: Path, state: Dict, checks: List[Dict[str, str]]) -> None:
     """Check narrative structure coverage."""
     from story_harness_cli.services.structure import check_structure as struct_check
 
@@ -321,10 +310,11 @@ def _check_structure_coverage(root: Path, state: Dict, issues: list) -> None:
     result = struct_check(state)
     for w in result.get("warnings", []):
         level = "warning" if w.get("type") == "missing_critical_beat" else "info"
-        issues.append({"level": level, "message": w.get("message", "")})
+        warning_type = str(w.get("type", "warning")).strip() or "warning"
+        record_check(checks, level, f"structure-{warning_type}", w.get("message", ""))
     coverage = result.get("coverage", 0)
     if coverage < 1.0:
-        issues.append({"level": "info", "message": f"叙事结构覆盖率: {int(coverage * 100)}%"})
+        record_check(checks, "info", "structure-coverage", f"叙事结构覆盖率: {int(coverage * 100)}%")
 
 
 def _check_chapter_word_counts(
@@ -449,6 +439,13 @@ def _check_project_positioning(state: Dict, checks: List[Dict[str, str]]) -> Non
                     "invalid-story-template-module-mode",
                     f"storyTemplate.modulePolicy.{module_name} 取值无效: {mode}",
                 )
+
+
+def _check_project_prd(root: Path, checks: List[Dict[str, str]]) -> None:
+    for advisory in build_project_advisories(root, include_prd_content=True):
+        severity = str(advisory.get("severity", "warning")).strip().lower()
+        level = "error" if severity == "error" else "warning"
+        record_check(checks, level, str(advisory.get("ruleId", "project-prd-advisory")), str(advisory.get("message", "")).strip())
 
 
 def _check_story_constraint_modules(root: Path, state: Dict, checks: List[Dict[str, str]]) -> None:
@@ -593,9 +590,129 @@ def _check_style_profiles(root: Path, state: Dict[str, Dict[str, Any]], checks: 
             record_check(checks, "info", "style-profile-custom", f"profile '{profile_name}' 是项目自定义 style profile")
 
 
+def _check_review_rules(root: Path, checks: List[Dict[str, str]]) -> None:
+    config_path = root / "review-rules.yaml"
+    active_profile = "default"
+    if not config_path.exists():
+        record_check(checks, "info", "active-review-rule-profile", "当前 active review rule profile: default")
+        return
+
+    try:
+        raw_payload = load_json_compatible_yaml(config_path, {})
+    except SystemExit as exc:
+        record_check(checks, "error", "invalid-review-rules", str(exc))
+        record_check(checks, "info", "active-review-rule-profile", "当前 active review rule profile: default")
+        return
+
+    record_check(checks, "info", "parsed-review-rules", "文件可解析: review-rules.yaml")
+    merged = merge_review_rules_with_defaults(raw_payload)
+    active_profile = str(merged.get("activeProfile", "default")).strip() or "default"
+    record_check(checks, "info", "active-review-rule-profile", f"当前 active review rule profile: {active_profile}")
+
+    profiles = raw_payload.get("profiles")
+    if profiles is None:
+        record_check(checks, "warning", "missing-review-rule-profiles", "review-rules.yaml 缺少 profiles 字段")
+        return
+    if not isinstance(profiles, dict):
+        record_check(checks, "warning", "invalid-review-rules-shape", "review-rules.yaml 的 profiles 必须是对象")
+        return
+    if active_profile not in merged.get("profiles", {}):
+        record_check(
+            checks,
+            "warning",
+            "missing-active-review-rule-profile",
+            f"当前 active review rule profile 不存在，将回退 default: {active_profile}",
+        )
+
+    for profile_name, payload in profiles.items():
+        if not isinstance(payload, dict):
+            record_check(
+                checks,
+                "warning",
+                "invalid-review-rule-profile-payload",
+                f"profile '{profile_name}' 必须是对象",
+            )
+            continue
+
+        enabled_rules = payload.get("enabledRules", [])
+        if enabled_rules and (
+            not isinstance(enabled_rules, list)
+            or not all(isinstance(item, str) and item.strip() for item in enabled_rules)
+        ):
+            record_check(
+                checks,
+                "warning",
+                "invalid-review-rule-enabled-rules",
+                f"profile '{profile_name}' 的 enabledRules 必须是非空字符串列表",
+            )
+
+        exemptions = payload.get("exemptions", [])
+        if exemptions and not isinstance(exemptions, list):
+            record_check(
+                checks,
+                "warning",
+                "invalid-review-rule-exemptions",
+                f"profile '{profile_name}' 的 exemptions 必须是对象列表",
+            )
+            continue
+
+        for index, item in enumerate(exemptions, start=1):
+            if not isinstance(item, dict):
+                record_check(
+                    checks,
+                    "warning",
+                    "invalid-review-rule-exemption",
+                    f"profile '{profile_name}' 的 exemptions[{index}] 必须是对象",
+                )
+                continue
+            rule_id = str(item.get("ruleId", "")).strip()
+            reason = str(item.get("reason", "")).strip()
+            scope = item.get("scope", {})
+            allow_when = item.get("allowWhen", {})
+            scope_ok = not scope or (
+                isinstance(scope, dict)
+                and all(
+                    not value
+                    or (isinstance(value, list) and all(isinstance(entry, str) and entry.strip() for entry in value))
+                    for value in (
+                        scope.get("chapterIds", []),
+                        scope.get("volumeIds", []),
+                        scope.get("scenePlanIds", []),
+                    )
+                )
+            )
+            allow_when_ok = not allow_when or (
+                isinstance(allow_when, dict)
+                and (
+                    "quotedOnly" not in allow_when or isinstance(allow_when.get("quotedOnly"), bool)
+                )
+                and (
+                    "matchPatterns" not in allow_when
+                    or (
+                        isinstance(allow_when.get("matchPatterns"), list)
+                        and all(
+                            isinstance(entry, str) and entry.strip()
+                            for entry in allow_when.get("matchPatterns", [])
+                        )
+                    )
+                )
+            )
+            if not rule_id or not reason or not scope_ok or not allow_when_ok:
+                record_check(
+                    checks,
+                    "warning",
+                    "invalid-review-rule-exemption",
+                    (
+                        f"profile '{profile_name}' 的 exemptions[{index}] 缺少合法 ruleId/reason，"
+                        "或 scope/allowWhen 结构不合法"
+                    ),
+                )
+
+
 def _check_wrapped_entity_registry(root: Path, state: Dict[str, Dict[str, Any]], checks: List[Dict[str, str]]) -> None:
     outline_chapters = state.get("outline", {}).get("chapters", [])
     missing_refs: Dict[str, Dict[str, Any]] = {}
+    known_unwrapped_refs: Dict[str, Dict[str, Any]] = {}
     covered_count = 0
     wrapped_count = 0
 
@@ -607,17 +724,52 @@ def _check_wrapped_entity_registry(root: Path, state: Dict[str, Dict[str, Any]],
         if not chapter_file.exists():
             continue
         chapter_text = chapter_file.read_text(encoding="utf-8")
-        wrapped_names = sorted({name for name in extract_tag_mentions(chapter_text) if name})
-        wrapped_count += len(wrapped_names)
-        for name in wrapped_names:
-            resolved = resolve_named_reference(state, name)
-            if resolved:
-                covered_count += 1
+        malformed_tags = find_malformed_entity_tags(chapter_text)
+        for issue in malformed_tags[:5]:
+            snippet = str(issue.get("snippet", "")).strip() or "@{...}"
+            if issue["code"] == "unclosed-wrapped-entity-tag":
+                message = (
+                    f"章节 {chapter_id} 存在未闭合的实体标签，"
+                    f"请使用合法的 `@{{实体}}` 或 `@实体` 语法。片段: {snippet}"
+                )
+            elif issue["code"] == "empty-wrapped-entity-tag":
+                message = f"章节 {chapter_id} 存在空的实体标签 `@{{}}`，请删除或改为合法实体名。"
+            else:
+                message = (
+                    f"章节 {chapter_id} 存在非法的包裹实体标签，"
+                    f"`@{{...}}` 内应只包含实体名。片段: {snippet}"
+                )
+            record_check(checks, "warning", issue["code"], message)
+        mention_report = build_reference_mention_report(state, chapter_text)
+        wrapped_count += mention_report["summary"]["taggedCount"]
+        covered_count += mention_report["summary"]["taggedCoveredCount"]
+
+        for item in mention_report["taggedMissing"]:
+            name = item.get("name", "")
+            if not name:
                 continue
             if name not in missing_refs:
                 missing_refs[name] = {"name": name, "chapters": [chapter_id]}
             elif chapter_id not in missing_refs[name]["chapters"]:
                 missing_refs[name]["chapters"].append(chapter_id)
+
+        for item in mention_report["knownUnwrapped"]:
+            name = item.get("name", "")
+            if not name:
+                continue
+            current = known_unwrapped_refs.setdefault(
+                name,
+                {
+                    "name": name,
+                    "kind": item.get("kind", ""),
+                    "source": item.get("source", ""),
+                    "plainCount": 0,
+                    "chapters": [],
+                },
+            )
+            current["plainCount"] += int(item.get("plainCount", 0) or 0)
+            if chapter_id not in current["chapters"]:
+                current["chapters"].append(chapter_id)
 
     if wrapped_count:
         record_check(
@@ -634,6 +786,19 @@ def _check_wrapped_entity_registry(root: Path, state: Dict[str, Dict[str, Any]],
             "warning",
             "wrapped-entity-missing-registry",
             f"已包裹实体“{name}”尚未在 entities/worldbook 建档，出现在: {chapter_list}",
+        )
+
+    for name, item in sorted(known_unwrapped_refs.items()):
+        chapter_list = "、".join(item["chapters"][:3])
+        source = str(item.get("source", "")).strip() or "entities/worldbook"
+        record_check(
+            checks,
+            "warning",
+            "known-reference-unwrapped",
+            (
+                f"已建档引用“{name}”在正文中仍以未包裹形式出现 {item['plainCount']} 次，"
+                f"来源 {source}，出现在: {chapter_list}"
+            ),
         )
 
 
@@ -831,10 +996,12 @@ def command_doctor(args) -> int:
 
     state = validate_project_shape(root, checks)
     validate_project_links(root, state, checks)
+    _check_project_prd(root, checks)
     _check_project_positioning(state, checks)
     _check_commercial_positioning(state, checks)
     _check_story_constraint_modules(root, state, checks)
     _check_style_profiles(root, state, checks)
+    _check_review_rules(root, checks)
     _check_wrapped_entity_registry(root, state, checks)
     _check_illustration_assets(root, state, checks)
     _check_outline_volumes(root, checks)

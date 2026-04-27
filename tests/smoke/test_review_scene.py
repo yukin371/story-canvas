@@ -476,6 +476,146 @@ class ReviewSceneSmokeTest(unittest.TestCase):
         self.assertTrue(any("设定冲突" in item or "守夜代价" in item for item in alignment_text))
         self.assertTrue(any("蝴蝶效应" in item for item in payload["consistencySignals"]["specialTermRepetition"]["evidence"]))
 
+    def test_review_scene_emits_meta_leakage_rule_judgement(self) -> None:
+        (self.temp_dir / "review-rules.yaml").write_text(
+            json.dumps(
+                {
+                    "profiles": {
+                        "default": {
+                            "enabledRules": ["metaLeakage"],
+                            "exemptions": [],
+                        }
+                    }
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(
+            "# 第一章\n\n"
+            "沈照沿着断墙往前摸，指尖一遍遍擦过潮湿的砖缝，耳边只有风从洞口灌进来的呜咽声。\n\n"
+            "他忽然意识到这一卷里最早埋下的那点异样正在回头追他，可这种想法本不该以作品结构的口吻闯进当下。\n\n"
+            "更糟的是，他甚至像在提醒读者，上一章那盏旧灯并没有真正熄灭，而是把新的危险悄悄送到了眼前。\n\n"
+            "意识到不对之后，他立刻压下杂念，继续顺着灰痕向前找人，不让自己再偏离现场。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(
+                [
+                    "review",
+                    "scene",
+                    "--root",
+                    str(self.temp_dir),
+                    "--chapter-id",
+                    "chapter-001",
+                    "--start-paragraph",
+                    "2",
+                    "--end-paragraph",
+                    "3",
+                ]
+            )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["styleAnalysis"]["reviewRuleProfile"], "default")
+        self.assertEqual(payload["styleAnalysis"]["reviewRuleProfileSource"], "project")
+        meta = next(item for item in payload["styleAnalysis"]["styleAnalysis"]["patternResults"] if item["id"] == "metaLeakage")
+        self.assertTrue(meta["detected"])
+        self.assertTrue(any(item["ruleId"] == "metaLeakage" for item in payload["ruleJudgements"]))
+
+    def test_review_scene_emits_pov_overreach_rule_judgement(self) -> None:
+        (self.temp_dir / "review-rules.yaml").write_text(
+            json.dumps(
+                {
+                    "profiles": {
+                        "default": {
+                            "enabledRules": ["povOverreach"],
+                            "exemptions": [],
+                        }
+                    }
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(
+            "# 第一章\n\n"
+            "沈照贴着断墙往前挪，连脚下碎瓦都不敢踩实，生怕再惊动黑暗里的东西。\n\n"
+            "就在这时，背后高处忽然落下一点灰，正落在他右后方那条废弃排灰沟的边沿。\n\n"
+            "他没有回头，也没有任何余光、镜面或感知来源，可叙述却直接把盲区里的细节摆到了读者眼前。\n\n"
+            "下一瞬，他才真正听见身后传来更轻的一声脆响。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(
+                [
+                    "review",
+                    "scene",
+                    "--root",
+                    str(self.temp_dir),
+                    "--chapter-id",
+                    "chapter-001",
+                    "--start-paragraph",
+                    "2",
+                    "--end-paragraph",
+                    "3",
+                ]
+            )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        pov = next(item for item in payload["styleAnalysis"]["styleAnalysis"]["patternResults"] if item["id"] == "povOverreach")
+        self.assertTrue(pov["detected"])
+        self.assertTrue(any(item["ruleId"] == "povOverreach" for item in payload["ruleJudgements"]))
+
+    def test_review_scene_emits_new_ai_phrase_rule_judgement(self) -> None:
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(
+            "# 第一章\n\n"
+            "前置段落只用来保证场景编号稳定。\n\n"
+            "那不是犹豫，是多年压下去的旧火重新顶了上来。这不是侥幸，不是误打误撞，是他早就留在袖里的后手。\n\n"
+            "那不像试探，更像有人故意把门缝留给他。这不是风声。更像旧灯室深处有人轻轻拨了一下灯芯。真正值钱的，从来都是这盏灯现在指着的地方。岳怀川压低声音问了一句：“还有什么？”\n\n"
+            "收束段落放在场景之外。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(
+                [
+                    "review",
+                    "scene",
+                    "--root",
+                    str(self.temp_dir),
+                    "--chapter-id",
+                    "chapter-001",
+                    "--start-paragraph",
+                    "2",
+                    "--end-paragraph",
+                    "3",
+                ]
+            )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        pattern_ids = {
+            item["id"]
+            for item in payload["styleAnalysis"]["styleAnalysis"]["patternResults"]
+            if item.get("detected")
+        }
+        self.assertIn("contrastFlipPattern", pattern_ids)
+        self.assertIn("analogicalPivotPattern", pattern_ids)
+        self.assertIn("templateCatchphrasePattern", pattern_ids)
+        self.assertTrue(any(item["ruleId"] == "analogicalPivotPattern" for item in payload["ruleJudgements"]))
+
 
 if __name__ == "__main__":
     unittest.main()

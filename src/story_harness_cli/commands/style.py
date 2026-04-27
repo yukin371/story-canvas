@@ -9,6 +9,7 @@ from story_harness_cli.protocol import (
     choose_style_profile_name,
     ensure_project_root,
     load_project_state,
+    resolve_review_rule_profile,
     resolve_style_profile,
 )
 from story_harness_cli.providers import load_style_similarity_scorer
@@ -47,6 +48,10 @@ def _build_style_report(
     *,
     profile_name: str,
     profile_config: dict[str, Any],
+    review_rule_profile_name: str,
+    review_rule_config: dict[str, Any],
+    review_rule_source: str,
+    review_rule_scope: dict[str, str],
 ) -> dict[str, Any]:
     scorer, source = load_style_similarity_scorer()
     report = analyze_style_text(
@@ -55,10 +60,15 @@ def _build_style_report(
         repetition_source=source,
         profile_name=profile_name,
         profile_config=profile_config,
+        review_rule_profile_name=review_rule_profile_name,
+        review_rule_config=review_rule_config,
+        review_rule_scope=review_rule_scope,
     )
     report["judgements"] = _attach_chapter_scope(report.get("judgements", []), chapter_id)
     report["chapterId"] = chapter_id
     report["source"] = source
+    report["reviewRuleProfile"] = review_rule_profile_name
+    report["reviewRuleProfileSource"] = review_rule_source
     return report
 
 
@@ -88,6 +98,14 @@ def _attach_chapter_scope(judgements: list[dict[str, Any]], chapter_id: str) -> 
     return scoped
 
 
+def _find_volume_for_chapter(state: dict[str, Any], chapter_id: str) -> dict[str, Any]:
+    for volume in state.get("outline", {}).get("volumes", []):
+        for chapter in volume.get("chapters", []):
+            if chapter.get("id") == chapter_id:
+                return volume
+    return {}
+
+
 def command_style_check(args) -> int:
     root = Path(args.root).resolve()
     ensure_project_root(root)
@@ -96,11 +114,21 @@ def command_style_check(args) -> int:
     chapter_text = _load_chapter_text(root, chapter_id)
     profile_name = _resolve_profile_name(args.profile, state)
     profile_config, profile_source = resolve_style_profile(root, profile_name)
+    volume = _find_volume_for_chapter(state, chapter_id)
+    review_rule_config, review_rule_profile_name, review_rule_source = resolve_review_rule_profile(root)
     report = _build_style_report(
         chapter_id,
         chapter_text,
         profile_name=profile_name,
         profile_config=profile_config,
+        review_rule_profile_name=review_rule_profile_name,
+        review_rule_config=review_rule_config,
+        review_rule_source=review_rule_source,
+        review_rule_scope={
+            "chapterId": chapter_id,
+            "volumeId": str(volume.get("id", "")),
+            "scenePlanId": "",
+        },
     )
     report["profileSource"] = profile_source
     print(json.dumps(report, ensure_ascii=False, indent=2))
@@ -115,16 +143,28 @@ def command_style_constraints(args) -> int:
     chapter_text = _load_chapter_text(root, chapter_id)
     profile_name = _resolve_profile_name(args.profile, state)
     profile_config, profile_source = resolve_style_profile(root, profile_name)
+    volume = _find_volume_for_chapter(state, chapter_id)
+    review_rule_config, review_rule_profile_name, review_rule_source = resolve_review_rule_profile(root)
     report = _build_style_report(
         chapter_id,
         chapter_text,
         profile_name=profile_name,
         profile_config=profile_config,
+        review_rule_profile_name=review_rule_profile_name,
+        review_rule_config=review_rule_config,
+        review_rule_source=review_rule_source,
+        review_rule_scope={
+            "chapterId": chapter_id,
+            "volumeId": str(volume.get("id", "")),
+            "scenePlanId": "",
+        },
     )
     payload = {
         "chapterId": chapter_id,
         "profile": report["profile"],
         "profileSource": profile_source,
+        "reviewRuleProfile": report["reviewRuleProfile"],
+        "reviewRuleProfileSource": report["reviewRuleProfileSource"],
         "source": report["source"],
         "constraints": report["constraints"],
         "summary": report["styleAnalysis"]["summary"],
@@ -146,16 +186,26 @@ def command_style_report(args) -> int:
     missing_chapters = []
     profile_name = _resolve_profile_name(args.profile, state)
     profile_config, profile_source = resolve_style_profile(root, profile_name)
+    review_rule_config, review_rule_profile_name, review_rule_source = resolve_review_rule_profile(root)
     for chapter_id in chapter_ids:
         chapter_file = chapter_path(root, chapter_id)
         if not chapter_file.exists():
             missing_chapters.append(chapter_id)
             continue
+        volume = _find_volume_for_chapter(state, chapter_id)
         report = _build_style_report(
             chapter_id,
             chapter_file.read_text(encoding="utf-8"),
             profile_name=profile_name,
             profile_config=profile_config,
+            review_rule_profile_name=review_rule_profile_name,
+            review_rule_config=review_rule_config,
+            review_rule_source=review_rule_source,
+            review_rule_scope={
+                "chapterId": chapter_id,
+                "volumeId": str(volume.get("id", "")),
+                "scenePlanId": "",
+            },
         )
         chapter_reports.append(
             {
@@ -174,6 +224,8 @@ def command_style_report(args) -> int:
     payload = {
         "profile": profile_name,
         "profileSource": profile_source,
+        "reviewRuleProfile": review_rule_profile_name,
+        "reviewRuleProfileSource": review_rule_source,
         "volumeId": resolved_volume_id,
         "chapterCount": len(chapter_reports),
         "missingChapters": missing_chapters,
@@ -201,11 +253,21 @@ def command_style_repair(args) -> int:
     chapter_text = _load_chapter_text(root, chapter_id)
     profile_name = _resolve_profile_name(args.profile, state)
     profile_config, profile_source = resolve_style_profile(root, profile_name)
+    volume = _find_volume_for_chapter(state, chapter_id)
+    review_rule_config, review_rule_profile_name, review_rule_source = resolve_review_rule_profile(root)
     report = _build_style_report(
         chapter_id,
         chapter_text,
         profile_name=profile_name,
         profile_config=profile_config,
+        review_rule_profile_name=review_rule_profile_name,
+        review_rule_config=review_rule_config,
+        review_rule_source=review_rule_source,
+        review_rule_scope={
+            "chapterId": chapter_id,
+            "volumeId": str(volume.get("id", "")),
+            "scenePlanId": "",
+        },
     )
 
     if args.format == "change-requests":
@@ -213,6 +275,8 @@ def command_style_repair(args) -> int:
             "chapterId": chapter_id,
             "profile": report["profile"],
             "profileSource": profile_source,
+            "reviewRuleProfile": report["reviewRuleProfile"],
+            "reviewRuleProfileSource": report["reviewRuleProfileSource"],
             "source": report["source"],
             "summary": report["styleAnalysis"]["summary"],
             "changeRequests": build_style_change_request_drafts(chapter_id, report),
@@ -222,6 +286,8 @@ def command_style_repair(args) -> int:
             "chapterId": chapter_id,
             "profile": report["profile"],
             "profileSource": profile_source,
+            "reviewRuleProfile": report["reviewRuleProfile"],
+            "reviewRuleProfileSource": report["reviewRuleProfileSource"],
             "source": report["source"],
             "summary": report["styleAnalysis"]["summary"],
             "constraints": report["constraints"],

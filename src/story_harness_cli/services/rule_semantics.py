@@ -2,14 +2,16 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
+from .rule_registry import resolve_rule_metadata
+
 
 def build_rule_judgement(
     *,
     rule_id: str,
-    source: str,
-    scope: str,
-    kind: str,
-    severity: str,
+    source: str | None = None,
+    scope: str | None = None,
+    kind: str | None = None,
+    severity: str | None = None,
     status: str = "triggered",
     message: str,
     suggestion: str = "",
@@ -18,19 +20,27 @@ def build_rule_judgement(
     payload: Dict[str, Any] | None = None,
     tags: List[str] | None = None,
 ) -> Dict[str, Any]:
+    metadata = resolve_rule_metadata(
+        rule_id,
+        source=source,
+        scope=scope,
+        kind=kind,
+        severity=severity,
+        tags=tags,
+    )
     return {
         "ruleId": rule_id,
-        "source": source,
-        "scope": scope,
-        "kind": kind,
-        "severity": severity,
+        "source": metadata["source"],
+        "scope": metadata["scope"],
+        "kind": metadata["kind"],
+        "severity": metadata["severity"],
         "status": status,
         "message": message,
         "suggestion": suggestion,
         "evidence": list(evidence or [])[:5],
         "scopeRef": dict(scope_ref or {}),
         "payload": dict(payload or {}),
-        "tags": list(tags or []),
+        "tags": metadata["tags"],
     }
 
 

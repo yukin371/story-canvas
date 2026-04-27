@@ -215,6 +215,121 @@ class ForeshadowCommandTest(unittest.TestCase):
         self.assertEqual(exit_code, 1)
         self.assertIn("not found", err_buffer.getvalue())
 
+    def test_check_foreshadow_reports_due_overdue_and_unscheduled(self) -> None:
+        (self.temp_dir / "foreshadowing.yaml").write_text(
+            json.dumps(
+                {
+                    "foreshadows": [
+                        {
+                            "id": "fs-001",
+                            "description": "旧版单章回收",
+                            "plantedChapter": "ch-001",
+                            "plannedPayoffChapter": "ch-005",
+                            "actualPayoffChapter": None,
+                            "status": "planted",
+                            "notes": "",
+                        },
+                        {
+                            "id": "fs-002",
+                            "title": "新版窗口回收",
+                            "plantPoints": [{"chapterId": "ch-002"}],
+                            "payoffPlan": {
+                                "window": {
+                                    "type": "short",
+                                    "targetChapterStart": "ch-004",
+                                    "targetChapterEnd": "ch-005",
+                                }
+                            },
+                            "status": "planted",
+                            "payoffPoints": [],
+                        },
+                        {
+                            "id": "fs-003",
+                            "title": "已经拖过回收窗",
+                            "plantPoints": [{"chapterId": "ch-001"}],
+                            "payoffPlan": {
+                                "window": {
+                                    "type": "short",
+                                    "targetChapterStart": "ch-002",
+                                    "targetChapterEnd": "ch-003",
+                                }
+                            },
+                            "status": "planted",
+                            "payoffPoints": [],
+                        },
+                        {
+                            "id": "fs-004",
+                            "description": "没有计划回收",
+                            "plantedChapter": "ch-001",
+                            "plannedPayoffChapter": None,
+                            "actualPayoffChapter": None,
+                            "status": "planted",
+                            "notes": "",
+                        },
+                        {
+                            "id": "fs-005",
+                            "description": "已经回收",
+                            "plantedChapter": "ch-001",
+                            "plannedPayoffChapter": "ch-004",
+                            "actualPayoffChapter": "ch-004",
+                            "status": "resolved",
+                            "notes": "",
+                        },
+                    ]
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["foreshadow", "check", "--root", str(self.temp_dir), "--chapter-id", "ch-005"])
+        self.assertEqual(exit_code, 0)
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(payload["chapterId"], "ch-005")
+        self.assertEqual(payload["summary"]["dueCount"], 2)
+        self.assertEqual(payload["summary"]["overdueCount"], 1)
+        self.assertEqual(payload["summary"]["unresolvedWithoutScheduleCount"], 1)
+        self.assertTrue(any(item["id"] == "fs-001" for item in payload["dueForeshadows"]))
+        self.assertTrue(any(item["id"] == "fs-002" for item in payload["dueForeshadows"]))
+        self.assertTrue(any(item["id"] == "fs-003" for item in payload["overdueForeshadows"]))
+        self.assertTrue(any(item["id"] == "fs-004" for item in payload["unresolvedWithoutSchedule"]))
+
+    def test_check_foreshadow_defaults_to_active_chapter(self) -> None:
+        (self.temp_dir / "foreshadowing.yaml").write_text(
+            json.dumps(
+                {
+                    "foreshadows": [
+                        {
+                            "id": "fs-010",
+                            "description": "活跃章节回收",
+                            "plantedChapter": "ch-001",
+                            "plannedPayoffChapter": "ch-001",
+                            "actualPayoffChapter": None,
+                            "status": "planted",
+                            "notes": "",
+                        }
+                    ]
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["foreshadow", "check", "--root", str(self.temp_dir)])
+        self.assertEqual(exit_code, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["chapterId"], "ch-001")
+        self.assertEqual(payload["summary"]["dueCount"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()

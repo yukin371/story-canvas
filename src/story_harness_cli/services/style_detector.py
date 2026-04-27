@@ -13,6 +13,7 @@ from typing import Any, Callable, Dict, List, Tuple
 from story_harness_cli.utils import now_iso, stable_hash
 
 from story_harness_cli.utils.text import count_words, paragraphs_from_text, strip_entity_tags
+from .review_rule_detector import detect_review_rule_signals
 from .rule_semantics import build_rule_judgement, chapter_scope_ref
 
 
@@ -28,6 +29,13 @@ CONCRETE_FRAME_PREFIXES = {
     "锋利的", "柔软的", "巨大的", "沉重的", "苍白的", "熟悉的", "陌生的",
     "手中的", "眼前的", "身后的", "脚下的", "耳边的", "掌中的", "心里的",
 }
+PLAN_BLOCK_LABELS = (
+    "目标",
+    "风险",
+    "约束",
+    "时间窗口",
+    "优先级",
+)
 
 
 # ---------------------------------------------------------------------------
@@ -85,6 +93,43 @@ AI_STYLE_PATTERNS: Dict[str, Dict[str, Any]] = {
         ],
         "threshold_per_1000": 2.0,
     },
+    "contrast_flip_pattern": {
+        "id": "contrastFlipPattern",
+        "label": "翻转句式",
+        "description": "高频使用'不是……是……'类解释式翻转",
+        "patterns": [
+            r"不是[^。！？\n]{1,18}[，,；;]\s*是[^。！？\n]{1,18}",
+            r"不是[^。！？\n]{1,18}。\s*是[^。！？\n]{1,18}",
+            r"不是[^。！？\n]{1,18}[，,；;]\s*不是[^。！？\n]{1,18}[，,；;]\s*是[^。！？\n]{1,18}",
+            r"不是[^。！？\n]{1,18}。\s*不是[^。！？\n]{1,18}。\s*是[^。！？\n]{1,18}",
+        ],
+        "threshold_per_1000": 1.2,
+    },
+    "analogical_pivot_pattern": {
+        "id": "analogicalPivotPattern",
+        "label": "类比翻转句",
+        "description": "高频使用'不像……更像……'或'不是……更像……'类抽象转折",
+        "patterns": [
+            r"不像[^。！？\n]{1,18}[，,；;]\s*更像[^。！？\n]{1,18}",
+            r"不像[^。！？\n]{1,18}。\s*更像[^。！？\n]{1,18}",
+            r"不是[^。！？\n]{1,18}[，,；;]\s*更像[^。！？\n]{1,18}",
+            r"不是[^。！？\n]{1,18}。\s*更像[^。！？\n]{1,18}",
+            r"不像[^。！？\n]{1,18}[，,；;]\s*倒像[^。！？\n]{1,18}",
+            r"不是[^。！？\n]{1,18}[，,；;]\s*倒像[^。！？\n]{1,18}",
+        ],
+        "threshold_per_1000": 0.8,
+    },
+    "template_catchphrase_pattern": {
+        "id": "templateCatchphrasePattern",
+        "label": "模板化口癖",
+        "description": "高频出现故作深沉或追问式模板短句",
+        "patterns": [
+            r"真正[^。！？\n]{1,20}(?:从来都是|才是)",
+            r"还有什么[？?]",
+            r"从来都不是[^。！？\n]{1,18}",
+        ],
+        "threshold_per_1000": 0.8,
+    },
 }
 
 SENSORY_CATEGORIES: Dict[str, str] = {
@@ -107,6 +152,8 @@ def detect_ai_style(
     opener_similarity_scorer: SimilarityScorer | None = None,
     repetition_source: str = "builtin",
     profile_config: Dict[str, Any] | None = None,
+    review_rule_config: Dict[str, Any] | None = None,
+    review_rule_scope: Dict[str, str] | None = None,
 ) -> Dict[str, Any]:
     """Run all AI style detection patterns against chapter text.
 
@@ -114,11 +161,30 @@ def detect_ai_style(
     paragraphUniformity, sentenceRepetition, and scoring info.
     """
     word_count = _count_cjk(clean_text)
-    if word_count < 50:
-        return _empty_result()
-
+    review_rule_config = review_rule_config or {}
+    review_rule_scope = review_rule_scope or {}
     results: List[Dict[str, Any]] = []
     total_deduction = 0
+
+    review_rule_signals = detect_review_rule_signals(
+        clean_text,
+        word_count=word_count,
+        review_rule_config=review_rule_config,
+        review_rule_scope=review_rule_scope,
+    )
+    results.extend(review_rule_signals.get("patternResults", []))
+    meta_leakage = review_rule_signals.get("signals", {}).get("metaLeakage", {})
+    for item in review_rule_signals.get("patternResults", []):
+        total_deduction += _deduction_for_severity(item.get("severity", "none"))
+
+    if word_count < 50:
+        total_deduction = min(total_deduction, 6)
+        return _build_short_text_result(
+            results,
+            total_deduction,
+            meta_leakage=meta_leakage,
+            review_rule_config=review_rule_config,
+        )
 
     for key, spec in AI_STYLE_PATTERNS.items():
         threshold, patterns = _resolve_pattern_profile(spec, profile_config or {})
@@ -161,6 +227,12 @@ def detect_ai_style(
         total_deduction += 1
     results.append(_uniformity_result(uniformity))
 
+    # Paragraph readability
+    readability = _detect_paragraph_readability(paragraphs)
+    if readability["detected"]:
+        total_deduction += _deduction_for_severity(readability["severity"])
+    results.append(_paragraph_readability_result(readability))
+
     # Sentence repetition
     repetition = _detect_sentence_repetition(
         paragraphs,
@@ -189,6 +261,12 @@ def detect_ai_style(
         total_deduction += 1 if register_drift["severity"] == "low" else 2
     results.append(_register_drift_result(register_drift))
 
+    # Structured planning/checklist prose
+    structured_plan_block = _detect_structured_plan_block(paragraphs, profile_config or {})
+    if structured_plan_block["detected"]:
+        total_deduction += 3 if structured_plan_block["severity"] == "high" else 2
+    results.append(_structured_plan_block_result(structured_plan_block))
+
     # Cap total deduction at 6
     total_deduction = min(total_deduction, 6)
 
@@ -203,14 +281,17 @@ def detect_ai_style(
         "patternResults": results,
         "sensoryDistribution": sensory,
         "paragraphUniformity": uniformity,
+        "paragraphReadability": readability,
         "sentenceRepetition": repetition,
         "specialTermRepetition": special_terms,
         "narrativeFrameRepetition": narrative_frames,
         "registerDrift": register_drift,
+        "structuredPlanBlock": structured_plan_block,
+        "metaLeakage": meta_leakage,
         "sources": {
             "sentenceRepetition": repetition["source"],
         },
-        "judgements": _build_style_judgements(results, profile_config or {}),
+        "judgements": _build_style_judgements(results, profile_config or {}, review_rule_config),
         "summary": _generate_summary(results, total_deduction),
         "suggestions": suggestions[:5],
     }
@@ -223,6 +304,9 @@ def analyze_style_text(
     repetition_source: str = "builtin",
     profile_name: str = "default",
     profile_config: Dict[str, Any] | None = None,
+    review_rule_profile_name: str = "default",
+    review_rule_config: Dict[str, Any] | None = None,
+    review_rule_scope: Dict[str, str] | None = None,
 ) -> Dict[str, Any]:
     """Analyze style for one chapter-like text block."""
     clean_text = strip_entity_tags(chapter_text)
@@ -233,10 +317,14 @@ def analyze_style_text(
         opener_similarity_scorer=opener_similarity_scorer,
         repetition_source=repetition_source,
         profile_config=profile_config,
+        review_rule_config=review_rule_config,
+        review_rule_scope=review_rule_scope,
     )
     constraints = generate_style_constraints(style_analysis)
     return {
         "profile": profile_name,
+        "reviewRuleProfile": review_rule_profile_name,
+        "reviewRuleEnabledRules": list((review_rule_config or {}).get("enabledRules", [])),
         "styleAnalysis": style_analysis,
         "judgements": _attach_style_scope(style_analysis.get("judgements", []), chapter_id=""),
         "constraints": constraints,
@@ -310,6 +398,7 @@ def build_style_report(
 def _build_style_judgements(
     pattern_results: List[Dict[str, Any]],
     profile_config: Dict[str, Any],
+    review_rule_config: Dict[str, Any],
 ) -> List[Dict[str, Any]]:
     judgements: List[Dict[str, Any]] = []
     for item in pattern_results:
@@ -319,25 +408,28 @@ def _build_style_judgements(
         if severity == "none":
             continue
         rule_id = str(item.get("id", "style-pattern"))
-        kind = "style"
-        source = _style_rule_source(rule_id, profile_config)
+        source = _style_rule_source(rule_id, profile_config, review_rule_config)
         judgements.append(
             build_rule_judgement(
                 rule_id=rule_id,
                 source=source,
-                scope="chapter",
-                kind=kind,
                 severity=severity,
                 message=_style_rule_message(item),
                 suggestion=str(item.get("suggestion", "")),
                 evidence=list(item.get("evidence", [])),
-                tags=["style"],
             )
         )
     return judgements
 
 
-def _style_rule_source(rule_id: str, profile_config: Dict[str, Any]) -> str:
+def _style_rule_source(
+    rule_id: str,
+    profile_config: Dict[str, Any],
+    review_rule_config: Dict[str, Any],
+) -> str:
+    enabled_rules = review_rule_config.get("enabledRules", []) if isinstance(review_rule_config, dict) else []
+    if rule_id in {"metaLeakage", "povOverreach"} and rule_id in enabled_rules:
+        return "review-rule-profile"
     if rule_id == "registerDrift":
         register_policy = profile_config.get("registerPolicy", {}) if isinstance(profile_config, dict) else {}
         if register_policy.get("disallowedCategories"):
@@ -436,6 +528,49 @@ def _detect_paragraph_uniformity(paragraphs: List[str]) -> Dict[str, Any]:
         "avgLength": round(avg, 1),
         "isUniform": cv < 0.3,
         "score": 1 if cv < 0.2 else (2 if cv < 0.3 else 3),
+    }
+
+
+def _detect_paragraph_readability(paragraphs: List[str]) -> Dict[str, Any]:
+    long_threshold = 90
+    very_long_threshold = 150
+    overlong: List[Dict[str, Any]] = []
+    max_length = 0
+    for index, paragraph in enumerate(paragraphs, start=1):
+        length = _count_cjk(paragraph)
+        max_length = max(max_length, length)
+        if length < long_threshold:
+            continue
+        snippet = paragraph.strip().replace("\n", " ")
+        if len(snippet) > 32:
+            snippet = snippet[:32] + "..."
+        overlong.append(
+            {
+                "paragraphIndex": index,
+                "length": length,
+                "snippet": snippet,
+            }
+        )
+
+    very_long_count = sum(1 for item in overlong if item["length"] >= very_long_threshold)
+    if very_long_count > 0:
+        severity = "high"
+    elif len(overlong) >= 2:
+        severity = "medium"
+    elif len(overlong) == 1:
+        severity = "low"
+    else:
+        severity = "none"
+
+    return {
+        "detected": bool(overlong),
+        "severity": severity,
+        "count": len(overlong),
+        "threshold": long_threshold,
+        "veryLongThreshold": very_long_threshold,
+        "maxLength": max_length,
+        "evidence": [f"第{item['paragraphIndex']}段约{item['length']}字：{item['snippet']}" for item in overlong[:3]],
+        "overlongParagraphs": overlong[:5],
     }
 
 
@@ -643,6 +778,106 @@ def _detect_register_drift(text: str, profile_config: Dict[str, Any]) -> Dict[st
     }
 
 
+def _detect_structured_plan_block(paragraphs: List[str], profile_config: Dict[str, Any]) -> Dict[str, Any]:
+    plan_block_policy = profile_config.get("planBlockPolicy", {}) if isinstance(profile_config, dict) else {}
+    allow_labels = {
+        item for item in plan_block_policy.get("allowLabels", [])
+        if isinstance(item, str) and item
+    }
+    min_labels = plan_block_policy.get("minLabels", 3)
+    min_distinct_labels = plan_block_policy.get("minDistinctLabels", 2)
+    if not isinstance(min_labels, int) or min_labels < 2:
+        min_labels = 3
+    if not isinstance(min_distinct_labels, int) or min_distinct_labels < 2:
+        min_distinct_labels = 2
+
+    blocks: List[Dict[str, Any]] = []
+    current_lines: List[str] = []
+    current_labels: List[str] = []
+
+    def flush_current() -> None:
+        if not current_labels:
+            return
+        distinct_labels = sorted(set(current_labels))
+        blocks.append(
+            {
+                "labels": list(current_labels),
+                "distinctLabels": distinct_labels,
+                "evidence": list(current_lines[:3]),
+            }
+        )
+
+    for paragraph in paragraphs:
+        paragraph_hits = _plan_block_hits_for_paragraph(paragraph, allow_labels)
+        if not paragraph_hits:
+            flush_current()
+            current_lines = []
+            current_labels = []
+            continue
+        current_lines.extend(item["line"] for item in paragraph_hits)
+        current_labels.extend(item["label"] for item in paragraph_hits)
+
+    flush_current()
+    if not blocks:
+        return {
+            "detected": False,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedLabels": [],
+            "suggestion": "",
+        }
+
+    blocks = [
+        item for item in blocks
+        if len(item["labels"]) >= min_labels and len(item["distinctLabels"]) >= min_distinct_labels
+    ]
+    if not blocks:
+        return {
+            "detected": False,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedLabels": [],
+            "suggestion": "",
+        }
+
+    blocks.sort(
+        key=lambda item: (
+            len(item["labels"]),
+            len(item["distinctLabels"]),
+        ),
+        reverse=True,
+    )
+    best_block = blocks[0]
+    label_count = len(best_block["labels"])
+    distinct_count = len(best_block["distinctLabels"])
+    severity = "high" if label_count >= 4 or distinct_count >= 3 else "medium"
+    return {
+        "detected": True,
+        "severity": severity,
+        "count": label_count,
+        "evidence": best_block["evidence"],
+        "matchedLabels": best_block["distinctLabels"],
+        "suggestion": "将“目标/风险/约束”式清单改写成角色行动、顾虑、代价与抉择，避免正文像方案说明。",
+    }
+
+
+def _plan_block_hits_for_paragraph(paragraph: str, allow_labels: set[str]) -> List[Dict[str, str]]:
+    hits: List[Dict[str, str]] = []
+    for raw_line in paragraph.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        for label in PLAN_BLOCK_LABELS:
+            if label in allow_labels:
+                continue
+            if re.match(rf"^{re.escape(label)}[：:]", line):
+                hits.append({"label": label, "line": line})
+                break
+    return hits
+
+
 def _detect_narrative_frame_repetition(text: str, profile_config: Dict[str, Any]) -> Dict[str, Any]:
     frame_policy = profile_config.get("framePolicy", {}) if isinstance(profile_config, dict) else {}
     allow_prefixes = {
@@ -720,6 +955,16 @@ def _detect_narrative_frame_repetition(text: str, profile_config: Dict[str, Any]
 # Helpers
 # ---------------------------------------------------------------------------
 
+
+def _deduction_for_severity(severity: str) -> int:
+    if severity == "low":
+        return 1
+    if severity == "medium":
+        return 2
+    if severity == "high":
+        return 3
+    return 0
+
 def _severity(per_thousand: float, threshold: float) -> str:
     if per_thousand <= threshold:
         return "none"
@@ -739,6 +984,9 @@ def _pattern_suggestion(pattern_id: str, severity: str, value: float, threshold:
         "hedgeAdverbs": f"模糊副词偏多（每千字{value:.1f}次），尝试用具体感官描写替代'微微'、'不禁'等",
         "tellingEmotion": f"叙述性情感偏多（每千字{value:.1f}次），尝试通过动作、表情、生理反应展示情绪",
         "formulaicTransition": f"程式化过渡偏多（每千字{value:.1f}次），尝试用情节推进自然过渡",
+        "contrastFlipPattern": f"“不是……是……”类翻转句偏多（每千字{value:.1f}次），优先改成直接动作、结果或判断，不要反复先否后立",
+        "analogicalPivotPattern": f"“不像……更像……”类翻转句偏多（每千字{value:.1f}次），优先写清人物实际观察到的事实，不要总靠抽象换挡",
+        "templateCatchphrasePattern": f"模板化口癖偏多（每千字{value:.1f}次），应减少故作深沉的套话或追问式短句，拉开人物口吻差异",
     }
     return msgs.get(pattern_id, "")
 
@@ -770,6 +1018,24 @@ def _uniformity_result(uniformity: Dict[str, Any]) -> Dict[str, Any]:
         "severity": "medium" if uniformity["isUniform"] else "none",
         "evidence": [],
         "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感" if uniformity["isUniform"] else "",
+    }
+
+
+def _paragraph_readability_result(readability: Dict[str, Any]) -> Dict[str, Any]:
+    return {
+        "id": "paragraphReadability",
+        "label": "段落可读性",
+        "detected": readability.get("detected", False),
+        "count": readability.get("count", 0),
+        "perThousand": 0,
+        "threshold": readability.get("threshold", 110),
+        "severity": readability.get("severity", "none"),
+        "evidence": readability.get("evidence", []),
+        "suggestion": (
+            "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+            if readability.get("detected", False)
+            else ""
+        ),
     }
 
 
@@ -822,6 +1088,21 @@ def _register_drift_result(register_drift: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def _structured_plan_block_result(structured_plan_block: Dict[str, Any]) -> Dict[str, Any]:
+    suggestion = structured_plan_block.get("suggestion", "") if structured_plan_block.get("detected") else ""
+    return {
+        "id": "structuredPlanBlock",
+        "label": "方案文档腔",
+        "detected": structured_plan_block.get("detected", False),
+        "count": structured_plan_block.get("count", 0),
+        "perThousand": 0,
+        "threshold": 0,
+        "severity": structured_plan_block.get("severity", "none"),
+        "evidence": structured_plan_block.get("evidence", []),
+        "suggestion": suggestion,
+    }
+
+
 def _narrative_frame_result(narrative_frames: Dict[str, Any]) -> Dict[str, Any]:
     suggestion = ""
     top_frames = narrative_frames.get("topFrames", [])
@@ -862,13 +1143,55 @@ def _empty_result() -> Dict[str, Any]:
         "patternResults": [],
         "sensoryDistribution": {},
         "paragraphUniformity": {},
+        "paragraphReadability": {},
         "sentenceRepetition": {},
         "specialTermRepetition": {},
         "narrativeFrameRepetition": {},
         "registerDrift": {},
+        "structuredPlanBlock": {},
+        "metaLeakage": {},
         "judgements": [],
         "summary": "文本过短，跳过风格检测",
         "suggestions": [],
+    }
+
+
+def _build_short_text_result(
+    pattern_results: List[Dict[str, Any]],
+    total_deduction: int,
+    *,
+    meta_leakage: Dict[str, Any],
+    review_rule_config: Dict[str, Any],
+) -> Dict[str, Any]:
+    if not pattern_results:
+        return _empty_result()
+
+    detected = [item for item in pattern_results if item.get("detected")]
+    if detected:
+        summary = f"文本较短，仅执行规则型检测；{_generate_summary(pattern_results, total_deduction)}"
+    else:
+        summary = "文本较短，仅执行规则型检测，未发现未豁免的问题。"
+    suggestions = [
+        item["suggestion"]
+        for item in pattern_results
+        if item.get("detected") and item.get("suggestion")
+    ]
+    return {
+        "overallScore": max(0, 20 - total_deduction),
+        "totalDeduction": total_deduction,
+        "patternResults": pattern_results,
+        "sensoryDistribution": {},
+        "paragraphUniformity": {},
+        "paragraphReadability": {},
+        "sentenceRepetition": {},
+        "specialTermRepetition": {},
+        "narrativeFrameRepetition": {},
+        "registerDrift": {},
+        "structuredPlanBlock": {},
+        "metaLeakage": meta_leakage,
+        "judgements": _build_style_judgements(pattern_results, {}, review_rule_config),
+        "summary": summary,
+        "suggestions": suggestions[:5],
     }
 
 

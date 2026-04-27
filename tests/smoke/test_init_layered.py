@@ -41,6 +41,12 @@ class _Args:
         self.chapter_word_target = kwargs.get("chapter_word_target", None)
         self.chapter_id = kwargs.get("chapter_id", "chapter-001")
         self.chapter_title = kwargs.get("chapter_title", "Chapter 1")
+        self.volume_goal = kwargs.get("volume_goal", None)
+        self.reader_hook = kwargs.get("reader_hook", None)
+        self.suppression_source = kwargs.get("suppression_source", None)
+        self.onboarding_focus = kwargs.get("onboarding_focus", None)
+        self.chapter_handoff = kwargs.get("chapter_handoff", None)
+        self.chapter_delivery = kwargs.get("chapter_delivery", None)
         self.force = kwargs.get("force", False)
         self.layout = kwargs.get("layout", "flat")
 
@@ -69,6 +75,7 @@ class TestInitFlat(unittest.TestCase):
 
         # project.yaml at root
         self.assertTrue((self.temp_dir / "project.yaml").exists())
+        self.assertTrue((self.temp_dir / "PRD.md").exists())
 
         # chapters/ at root
         self.assertTrue((self.temp_dir / "chapters").is_dir())
@@ -107,6 +114,7 @@ class TestInitLayered(unittest.TestCase):
 
         # project.yaml still at root
         self.assertTrue((self.temp_dir / "project.yaml").exists())
+        self.assertTrue((self.temp_dir / "PRD.md").exists())
 
         # chapters/ at root
         self.assertTrue((self.temp_dir / "chapters").is_dir())
@@ -128,6 +136,27 @@ class TestInitLayered(unittest.TestCase):
         # Should behave as flat: no spec/ dir
         self.assertFalse((self.temp_dir / "spec").is_dir())
         self.assertTrue((self.temp_dir / "outline.yaml").exists())
+
+    def test_init_can_seed_prd_focus_fields(self):
+        args = _Args(
+            root=str(self.temp_dir),
+            hook_line="看主角如何把死局反转成第一层主动资格",
+            volume_goal="第一卷完成主角脱离旧势力控制，并建立第一层主动权。",
+            suppression_source="旧宗门以压火制度榨取底层弟子，主角必须先活下来再反制。",
+            onboarding_focus="命灯、压火制度、宗门层级与主角为何不能轻易脱离。",
+            chapter_handoff="从主角即将被送去压火的处境切入。",
+            chapter_delivery="让读者理解命灯危险，并留下主角第一次反抗的钩子。",
+        )
+        result = command_init(args)
+        self.assertEqual(result, 0)
+
+        prd_text = (self.temp_dir / "PRD.md").read_text(encoding="utf-8")
+        self.assertIn("- 卷目标: 第一卷完成主角脱离旧势力控制，并建立第一层主动权。", prd_text)
+        self.assertIn("- 读者钩子: 看主角如何把死局反转成第一层主动资格", prd_text)
+        self.assertIn("- 压制源与预期爆发点: 旧宗门以压火制度榨取底层弟子，主角必须先活下来再反制。", prd_text)
+        self.assertIn("- 关键设定 onboarding: 命灯、压火制度、宗门层级与主角为何不能轻易脱离。", prd_text)
+        self.assertIn("- 本章承接点: 从主角即将被送去压火的处境切入。", prd_text)
+        self.assertIn("- 本章交付点: 让读者理解命灯危险，并留下主角第一次反抗的钩子。", prd_text)
 
 
 if __name__ == "__main__":

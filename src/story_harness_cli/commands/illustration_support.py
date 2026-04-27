@@ -88,6 +88,14 @@ def target_record_from_entry(root: Path, state: dict[str, Any], entry: dict[str,
             "declaredInState": entity_id in _entity_ids(state),
             "contentFileExists": False,
         }
+    temp_label = entry.get("tempLabel")
+    if temp_label:
+        return {
+            "type": "temporary",
+            "targetId": temp_label,
+            "declaredInState": True,
+            "contentFileExists": False,
+        }
     return {
         "type": entry.get("type", ""),
         "targetId": "",
