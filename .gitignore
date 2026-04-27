@@ -27,6 +27,16 @@ projects/**/manuscript.txt
 projects/**/manuscript.json
 projects/**/logs/latest-analysis.yaml
 projects/**/logs/projection-log.yaml
+projects/.obsidian/
 
 # Local novel corpus and analysis workspace
 noval-data/
+
+# Local scratch files and dev logs
+tmp/
+tmp-*.log
+tmp-*.err.log
+tmp-*.out.log
+tmp-*.png
+tmp-*.diff
+ui/*.log
