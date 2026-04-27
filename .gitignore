@@ -28,5 +28,5 @@ projects/**/manuscript.json
 projects/**/logs/latest-analysis.yaml
 projects/**/logs/projection-log.yaml
 
-# Real-world local novel datasets
-noval-data/**/*.txt
+# Local novel corpus and analysis workspace
+noval-data/
