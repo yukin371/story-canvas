@@ -60,9 +60,16 @@ WORKBENCH_TEMP_UPLOAD_ROOT = WORKBENCH_STATE_ROOT / "tmp" / "illustration-inputs
 WORKBENCH_ILLUSTRATION_SANDBOX_ROOT = WORKBENCH_STATE_ROOT / "workspace-illustration-sandbox"
 
 
+def _send_cors_headers(handler: BaseHTTPRequestHandler) -> None:
+    handler.send_header("Access-Control-Allow-Origin", "*")
+    handler.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    handler.send_header("Access-Control-Allow-Headers", "Content-Type")
+
+
 def _json_response(handler: BaseHTTPRequestHandler, payload: dict[str, Any], status: HTTPStatus = HTTPStatus.OK) -> None:
     body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     handler.send_response(status)
+    _send_cors_headers(handler)
     handler.send_header("Content-Type", "application/json; charset=utf-8")
     handler.send_header("Content-Length", str(len(body)))
     handler.send_header("Cache-Control", "no-store")
@@ -84,6 +91,7 @@ def _file_response(handler: BaseHTTPRequestHandler, path: Path) -> None:
     body = path.read_bytes()
     content_type = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
     handler.send_response(HTTPStatus.OK)
+    _send_cors_headers(handler)
     handler.send_header("Content-Type", content_type)
     handler.send_header("Content-Length", str(len(body)))
     handler.send_header("Cache-Control", "no-store")
@@ -1371,6 +1379,12 @@ def _build_illustration_generate(body: dict[str, Any]) -> dict[str, Any]:
 
 class StoryCanvasApiHandler(BaseHTTPRequestHandler):
     server_version = "StoryCanvasAPI/0.1"
+
+    def do_OPTIONS(self) -> None:  # noqa: N802
+        self.send_response(HTTPStatus.NO_CONTENT)
+        _send_cors_headers(self)
+        self.send_header("Content-Length", "0")
+        self.end_headers()
 
     def do_GET(self) -> None:  # noqa: N802
         parsed = urlparse(self.path)

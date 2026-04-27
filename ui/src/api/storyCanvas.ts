@@ -401,8 +401,31 @@ export type SelectFolderResponse = {
   path: string;
 };
 
+const LOCAL_UI_PORT = "43187";
+const LOCAL_API_ORIGIN = "http://127.0.0.1:43188";
+
+function resolveApiOrigin(): string {
+  const configuredOrigin = String(import.meta.env.VITE_STORY_CANVAS_API_ORIGIN || "").trim();
+  if (configuredOrigin) {
+    return configuredOrigin.replace(/\/+$/, "");
+  }
+  if (typeof window !== "undefined" && window.location.hostname === "127.0.0.1" && window.location.port === LOCAL_UI_PORT) {
+    return LOCAL_API_ORIGIN;
+  }
+  return "";
+}
+
+const API_ORIGIN = resolveApiOrigin();
+
+function withApiOrigin(path: string): string {
+  if (!path.startsWith("/")) {
+    return path;
+  }
+  return API_ORIGIN ? `${API_ORIGIN}${path}` : path;
+}
+
 async function fetchJson<T>(input: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(input, init);
+  const response = await fetch(withApiOrigin(input), init);
   const rawText = await response.text();
   let payload: (T & { error?: string }) | null = null;
 
@@ -544,12 +567,12 @@ export function buildProjectAssetUrl(root: string, filePath: string): string {
   if (!root || !filePath) {
     return "";
   }
-  return `/api/assets?root=${encodeURIComponent(root)}&path=${encodeURIComponent(filePath)}`;
+  return withApiOrigin(`/api/assets?root=${encodeURIComponent(root)}&path=${encodeURIComponent(filePath)}`);
 }
 
 export function buildWorkbenchAssetUrl(filePath: string): string {
   if (!filePath) {
     return "";
   }
-  return `/api/workbench-assets?path=${encodeURIComponent(filePath)}`;
+  return withApiOrigin(`/api/workbench-assets?path=${encodeURIComponent(filePath)}`);
 }

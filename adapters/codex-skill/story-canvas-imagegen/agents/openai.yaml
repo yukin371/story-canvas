@@ -1,0 +1,4 @@
+interface:
+  display_name: "Story Canvas ImageGen"
+  short_description: "Export and execute Story Canvas illustration batches"
+  default_prompt: "Export the Story Canvas illustration batch manifest, generate images in the requested mode, and record the outputs back into the project."

@@ -6,7 +6,7 @@
           <template #top>
             <div class="workspace-explorer">
               <div class="workspace-explorer-head">
-                <strong class="workspace-explorer-label">EXPLORER</strong>
+                <strong class="workspace-explorer-label">项目</strong>
                 <div class="workspace-section-actions">
                   <t-button variant="text" size="small" @click="showProjectSetup = !showProjectSetup">项目</t-button>
                   <t-button variant="text" size="small" @click="refreshProjects">刷新</t-button>
@@ -215,7 +215,7 @@
           <template #top>
             <div class="workspace-explorer">
               <div class="workspace-explorer-head">
-                <strong class="workspace-explorer-label">EXPLORER</strong>
+                <strong class="workspace-explorer-label">项目</strong>
                 <div class="workspace-section-actions">
                   <t-button variant="text" size="small" @click="showProjectSetup = !showProjectSetup">项目</t-button>
                   <t-button variant="text" size="small" @click="refreshProjects">刷新</t-button>
@@ -308,7 +308,7 @@
                     <t-radio-button value="inpaint">重绘</t-radio-button>
                   </t-radio-group>
                 </t-form-item>
-                <t-form-item label="Pack">
+                <t-form-item label="模板包">
                   <t-select v-model="promptPack" :options="promptPackOptions" size="small" />
                 </t-form-item>
                 <t-form-item label="模板">
@@ -317,7 +317,7 @@
                 <t-form-item label="商用">
                   <t-select v-model="commercialMode" :options="commercialModeOptions" size="small" />
                 </t-form-item>
-                <t-form-item label="Response">
+                <t-form-item label="模型">
                   <t-select v-model="responseModel" :options="responseModelOptions" size="small" />
                 </t-form-item>
                 <t-form-item label="尺寸">
@@ -428,10 +428,7 @@
             <div class="illustration-editor-layout">
               <div class="illustration-form illustration-form-main illustration-template-workspace">
                 <section class="workspace-block">
-                  <div class="workspace-block-head">
-                    <strong class="workspace-block-title">Template System</strong>
-                    <span class="workspace-plain-meta">{{ currentPackSourceLabel }} / {{ currentPackLabel }}</span>
-                  </div>
+                  <div class="workspace-plain-meta">当前模板：{{ currentPackSourceLabel }} / {{ currentPackLabel }}</div>
                   <div class="template-source-stack">
                     <div v-for="group in promptPackSourceGroups" :key="group.key" class="template-source-group">
                       <span class="template-source-label">{{ group.label }}</span>
@@ -750,7 +747,7 @@
 
                 <section class="workspace-block">
                   <div class="workspace-block-head">
-                    <strong class="workspace-block-title">Prompt</strong>
+                    <strong class="workspace-block-title">提示词</strong>
                     <span class="workspace-plain-meta">{{ promptSeedTitle }}</span>
                   </div>
                   <div class="prompt-block-grid">
@@ -782,7 +779,7 @@
 
                 <section v-if="mode === 'image-to-image' || mode === 'inpaint'" class="workspace-block">
                   <div class="workspace-block-head">
-                    <strong class="workspace-block-title">Input</strong>
+                    <strong class="workspace-block-title">参考图</strong>
                     <span class="workspace-plain-meta">可上传文件或复用已有路径</span>
                   </div>
                   <div class="asset-upload-grid">
@@ -807,10 +804,10 @@
                     </label>
 
                     <label v-if="mode === 'inpaint'" class="asset-upload-field">
-                      <span>Mask</span>
+                      <span>蒙版</span>
                       <input type="file" accept="image/png,image/*" @change="handleMaskChange" />
                       <div class="asset-preview-frame asset-preview-frame-mask" :class="{ 'is-empty': !maskResolvedPreviewUrl }">
-                        <img v-if="maskResolvedPreviewUrl" :src="maskResolvedPreviewUrl" alt="Mask 预览" />
+                        <img v-if="maskResolvedPreviewUrl" :src="maskResolvedPreviewUrl" alt="蒙版预览" />
                         <p v-else>未选择</p>
                       </div>
                       <div class="asset-upload-meta">
@@ -830,7 +827,7 @@
 
                 <section class="workspace-block workspace-block-run">
                   <div class="workspace-block-head">
-                    <strong class="workspace-block-title">Preview & Run</strong>
+                    <strong class="workspace-block-title">预览</strong>
                     <span class="workspace-plain-meta">{{ currentTargetLabel }}</span>
                   </div>
                   <div class="workspace-inline-field">
@@ -839,11 +836,11 @@
                   </div>
                   <div class="preview-grid">
                     <div class="preview-pane">
-                      <label>Resolved Prompt</label>
+                      <label>合成正向词</label>
                       <t-textarea :model-value="resolvedPromptPreview" :autosize="{ minRows: 7, maxRows: 10 }" readonly />
                     </div>
                     <div class="preview-pane">
-                      <label>Negative</label>
+                      <label>合成负向词</label>
                       <t-textarea :model-value="resolvedNegativePreview" :autosize="{ minRows: 7, maxRows: 10 }" readonly />
                     </div>
                   </div>
@@ -853,8 +850,8 @@
                     <span>命名：{{ outputNameStateLabel }}</span>
                   </div>
                   <div class="detail-actions compact-actions">
-                    <t-button theme="primary" :loading="submitting" @click="handleGenerate">Generate</t-button>
-                    <t-button variant="outline" :loading="submitting" @click="handleDryRun">Dry Run</t-button>
+                    <t-button theme="primary" :loading="submitting" @click="handleGenerate">生成</t-button>
+                    <t-button variant="outline" :loading="submitting" @click="handleDryRun">试运行</t-button>
                   </div>
                 </section>
               </div>
@@ -867,7 +864,7 @@
 
                 <div class="workspace-block">
                   <div class="workspace-block-head">
-                    <strong class="workspace-block-title">Result</strong>
+                    <strong class="workspace-block-title">结果</strong>
                     <span class="workspace-plain-meta">{{ resultSummary?.mode || mode }}</span>
                   </div>
                   <div v-if="resultPreviewUrl" class="asset-preview-frame asset-preview-frame-result">
@@ -1343,7 +1340,10 @@ const maskResolvedPreviewUrl = computed(() => {
   return buildProjectAssetUrl(currentProjectRoot.value, maskPath.value);
 });
 
-const previewRecord = computed(() => generateResult.value?.illustration || activePreviewRecord.value);
+const latestHistoryRecord = computed<IllustrationRecord | null>(() => illustrationHistory.value[0]?.raw || null);
+const previewRecord = computed(
+  () => generateResult.value?.illustration || activePreviewRecord.value || latestHistoryRecord.value
+);
 const resultPreviewUrl = computed(() => {
   const filePath = previewRecord.value?.filePath || "";
   const scope = generateResult.value?.scope || (currentProjectRoot.value ? "project" : "workspace");
@@ -1576,7 +1576,6 @@ function resetResultPanels() {
   generateResult.value = null;
   activePreviewRecord.value = null;
 }
-
 function clonePromptPackDocument(pack: PromptPackDocument | null): PromptPackDocument | null {
   if (!pack) {
     return null;
@@ -2252,7 +2251,7 @@ watch(
     emit("workspace-status", {
       contextLabel: currentTargetType === "entity" ? "角色" : "场景",
       contextValue: targetLabel || "未选择目标",
-      detailLabel: "Pack",
+      detailLabel: "模板包",
       detailValue: packLabel || "-",
       auxLabel: "出图",
       auxValue: `${modeLabel} · ${currentSize} · x${currentBatch}`,
