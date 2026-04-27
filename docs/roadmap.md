@@ -80,6 +80,11 @@
   - 与 review / projection / context 的闭环衔接
   - 让“写前约束 -> 写中遵循 -> 写后检测与修复”成为真实可执行的质量闭环，而不是只停留在大纲推进
   - 在当前单章 gate 之外，补上“整卷 AI 自审 -> 修正 -> 复检 -> 人工审查”的卷级闭环
+- 当前进度:
+  - `review-rules.yaml` 已进入真实检测链，`metaLeakage` 与 `povOverreach` 已可在 `style/review` 中统一输出 judgement，并支持白名单式豁免
+  - 首批中文高频 AI 风格规则已落到 `style` 主链：`contrastFlipPattern`、`analogicalPivotPattern`、`templateCatchphrasePattern`、`paragraphReadability`
+  - 新规则已接入 `style check`、`review chapter`、`review scene` 与样例回归，不再只停留在人工口头约束
+  - 长篇样例基线已开始受新规则影响，说明“AI 味控制”已从提示信号进入真实质量门槛
 - 验收标志:
   - 至少一个真实项目跑通规划 -> 写作 -> 审查 -> 投影 -> 导出
   - 系统能明确区分“章节已闭环”和“整卷已闭环”，避免把单章通过误判成可进入人工终审

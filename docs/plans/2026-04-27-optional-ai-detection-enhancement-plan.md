@@ -310,3 +310,50 @@
 
 - 当前最大问题不是“没有库”，而是“规则分类还不够稳定”
 - 先把人工已发现问题固化成规则集合，再决定哪些值得交给外部增强，风险最低
+
+## 13. 2026-04-28 当前落地状态
+
+### 13.1 本轮已完成
+
+- 已把首批中文高频 AI 风格规则落到 repo-native `style` 主链：
+  - `contrastFlipPattern`
+  - `analogicalPivotPattern`
+  - `templateCatchphrasePattern`
+  - `paragraphReadability`
+- 新规则已接入：
+  - `style check`
+  - `review chapter`
+  - `review scene`
+  - 统一 `patternResults / judgements / ruleJudgements`
+- 已同步：
+  - `services/rule_registry.py` 规则元数据
+  - `services/MODULE.md`
+  - `commands/MODULE.md`
+- 已完成测试回归：
+  - 相关 smoke tests 通过
+  - 全量 `PYTHONPATH=src python -m unittest discover -s tests` 通过
+
+### 13.2 本轮实现判断
+
+- 当前方向成立：优先把人工稳定发现的中文句式问题转成内建规则，而不是先接黑盒 detector。
+- `paragraphReadability` 已开始对真实样例章节评级产生影响，说明它不只是展示信号，而是真正进入了质量基线。
+- 长篇样例中部分章节评级从 `strong` 下调到 `solid`，已同步回归基线；这属于审查标准收紧，不是功能回退。
+
+### 13.3 当前未完成
+
+- 尚未落地更高一层的 `clusteredAIPhrasing` 聚合信号。
+- 句式规则目前仍是启发式正则 + 密度阈值，还没有引入 optional similarity/backend 增强。
+- 还未把外部来源矩阵里的 `Vale / textlint` optional adapter 真正实现进 `providers/`。
+- 还没有把这些新规则显式转成卷级汇总信号，例如：
+  - 首卷 AI 风格密度摘要
+  - 重点问题段落热区
+  - 卷级修稿动作草案
+
+### 13.4 下次续做建议顺序
+
+1. 继续收敛中文高频 AI 句式规则：
+   - 减少误报
+   - 扩充漏报样式
+2. 补 `clusteredAIPhrasing`，把多个轻度命中聚成更高价值的卷级风险。
+3. 评估是否引入 `Vale` 或 `textlint` 作为 optional backend，而不是直接上黑盒 authorship detector。
+4. 再考虑实验性 `SeqXGPT / Binoculars` 热区信号是否值得挂到 `styleAnalysis.extensions.experimental`。
