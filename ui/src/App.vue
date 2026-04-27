@@ -1,6 +1,6 @@
 <template>
   <t-layout class="app-shell">
-    <t-aside class="activitybar" width="56px">
+    <t-aside class="activitybar">
       <div class="activitybar-top">
         <button
           class="activitybar-button brand-button"
@@ -195,9 +195,13 @@ onMounted(() => {
 
 .activitybar {
   display: flex;
+  flex: 0 0 56px;
   flex-direction: column;
   gap: 12px;
   height: 100vh;
+  width: 56px;
+  min-width: 56px;
+  max-width: 56px;
   padding: 10px 8px;
   overflow: hidden;
   background: var(--sidebar-bg);
@@ -321,6 +325,12 @@ onMounted(() => {
     height: auto;
   }
 
+  .app-shell,
+  .main-layout,
+  .page-content {
+    overflow: visible;
+  }
+
   .activitybar {
     height: auto;
   }
@@ -328,6 +338,64 @@ onMounted(() => {
   .statusbar {
     flex-wrap: wrap;
     padding: 6px 16px;
+  }
+
+  .statusbar-item strong {
+    max-width: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    min-height: 100vh;
+  }
+
+  .activitybar {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    height: auto;
+    padding: 8px 10px;
+    border-right: 0;
+    border-bottom: 1px solid var(--sidebar-line);
+  }
+
+  .activitybar-top,
+  .activitybar-nav,
+  .activitybar-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .activitybar-nav {
+    margin-left: 10px;
+    padding-top: 0;
+    padding-left: 10px;
+    border-top: 0;
+    border-left: 1px solid var(--sidebar-line);
+  }
+
+  .activitybar-footer {
+    margin-top: 0;
+    margin-left: auto;
+    padding-top: 0;
+    padding-left: 10px;
+    border-top: 0;
+    border-left: 1px solid var(--sidebar-line);
+  }
+
+  .main-layout {
+    min-height: 0;
+  }
+
+  .statusbar {
+    gap: 8px 12px;
+    padding: 8px 12px;
   }
 }
 </style>

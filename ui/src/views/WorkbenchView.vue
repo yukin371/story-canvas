@@ -429,38 +429,6 @@
               <div class="illustration-form illustration-form-main illustration-template-workspace">
                 <section class="workspace-block">
                   <div class="workspace-block-head">
-                    <strong class="workspace-block-title">Target</strong>
-                    <t-button variant="text" size="small" @click="syncFromProject">同步默认值</t-button>
-                  </div>
-                  <div class="workspace-target-grid">
-                    <div class="workspace-inline-field">
-                      <label>模式</label>
-                      <t-radio-group v-model="mode" variant="default-filled">
-                        <t-radio-button value="text-to-image">文生图</t-radio-button>
-                        <t-radio-button value="image-to-image">图生图</t-radio-button>
-                        <t-radio-button value="inpaint">重绘</t-radio-button>
-                      </t-radio-group>
-                    </div>
-                    <div class="workspace-inline-field">
-                      <label>目标</label>
-                      <t-radio-group v-model="targetType" variant="default-filled">
-                        <t-radio-button value="chapter">章节</t-radio-button>
-                        <t-radio-button value="entity">角色</t-radio-button>
-                      </t-radio-group>
-                    </div>
-                    <div v-if="summary" class="workspace-inline-field">
-                      <label>{{ targetType === "entity" ? "角色" : "章节" }}</label>
-                      <t-select v-model="targetId" :options="targetOptions" />
-                    </div>
-                    <div v-else class="workspace-inline-field">
-                      <label>自由目标</label>
-                      <t-input v-model="manualTargetName" placeholder="例如：首页横幅 / 角色海报" />
-                    </div>
-                  </div>
-                </section>
-
-                <section class="workspace-block">
-                  <div class="workspace-block-head">
                     <strong class="workspace-block-title">Template System</strong>
                     <span class="workspace-plain-meta">{{ currentPackSourceLabel }} / {{ currentPackLabel }}</span>
                   </div>
@@ -865,31 +833,9 @@
                     <strong class="workspace-block-title">Preview & Run</strong>
                     <span class="workspace-plain-meta">{{ currentTargetLabel }}</span>
                   </div>
-                  <div class="run-config-grid">
-                    <div class="workspace-inline-field">
-                      <label>商用</label>
-                      <t-select v-model="commercialMode" :options="commercialModeOptions" />
-                    </div>
-                    <div class="workspace-inline-field">
-                      <label>Response</label>
-                      <t-select v-model="responseModel" :options="responseModelOptions" />
-                    </div>
-                    <div class="workspace-inline-field">
-                      <label>尺寸</label>
-                      <t-select v-model="size" :options="sizeOptions" />
-                    </div>
-                    <div class="workspace-inline-field">
-                      <label>质量</label>
-                      <t-select v-model="quality" :options="qualityOptions" />
-                    </div>
-                    <div class="workspace-inline-field">
-                      <label>批量</label>
-                      <t-input-number v-model="batchCount" :min="1" :max="8" />
-                    </div>
-                    <div class="workspace-inline-field">
-                      <label>命名</label>
-                      <t-input v-model="outputName" placeholder="留空使用默认命名" />
-                    </div>
+                  <div class="workspace-inline-field">
+                    <label>命名</label>
+                    <t-input v-model="outputName" placeholder="留空使用默认命名" />
                   </div>
                   <div class="preview-grid">
                     <div class="preview-pane">
@@ -3037,13 +2983,6 @@ function formatValue(value: unknown): string {
   font-size: 12px;
 }
 
-.workspace-target-grid,
-.run-config-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px 12px;
-}
-
 .workspace-inline-field {
   display: grid;
   gap: 6px;
@@ -3421,6 +3360,7 @@ function formatValue(value: unknown): string {
 @media (max-width: 1180px) {
   .workbench-shell {
     height: auto;
+    overflow: visible;
   }
 
   .review-grid,
@@ -3431,8 +3371,6 @@ function formatValue(value: unknown): string {
   .workspace-project-import-row,
   .workspace-project-create-row,
   .modifier-grid,
-  .workspace-target-grid,
-  .run-config-grid,
   .template-panel-grid,
   .prompt-block-grid,
   .preview-grid,
@@ -3441,14 +3379,71 @@ function formatValue(value: unknown): string {
     grid-template-columns: 1fr;
   }
 
+  .review-grid,
+  .illustration-grid-separated {
+    overflow: visible;
+  }
+
   .illustration-column-side,
   .review-column-nav {
     grid-template-rows: auto;
+    width: auto;
+    min-width: 0;
+    max-width: none;
   }
 
+  .review-column,
+  .illustration-column,
+  .review-column-main,
+  .illustration-column-editor,
+  .review-editor-pane,
+  .review-inspector-pane,
   .review-sections,
-  .illustration-form {
+  .illustration-form,
+  .workspace-nav,
+  .chapter-content {
     overflow: visible;
+  }
+
+  .review-workspace {
+    height: auto;
+  }
+
+  .review-inspector-pane {
+    border-left: 0;
+    border-top: 1px solid rgba(31, 35, 41, 0.08);
+    padding-top: 12px;
+  }
+}
+
+@media (max-width: 900px) {
+  .workbench-shell {
+    padding-bottom: 12px;
+  }
+
+  .workspace-parameter-grid :deep(.t-form__item) {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .workspace-parameter-grid :deep(.t-form__label) {
+    font-size: 11px;
+  }
+
+  .workspace-tree-item {
+    padding-left: 12px;
+  }
+
+  .chapter-content {
+    padding: 12px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .workspace-block,
+  .workbench-sidebar-section {
+    padding-left: 8px;
+    padding-right: 8px;
   }
 }
 </style>
