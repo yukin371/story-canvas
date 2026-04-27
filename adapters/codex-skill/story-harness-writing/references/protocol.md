@@ -1,6 +1,6 @@
 # Protocol
 
-This Codex adapter follows the `story-harness-cli` file protocol.
+This Codex adapter follows the Story Canvas file protocol.
 
 ## Flat Layout (default, for short projects < 5万字)
 

@@ -1,4 +1,4 @@
-# Story Harness CLI
+# Story Canvas
 
 [English](./README.en.md) | [简体中文](./README.md)
 

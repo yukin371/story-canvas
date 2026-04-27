@@ -16,6 +16,8 @@ build/
 .idea/
 Thumbs.db
 .DS_Store
+ui/node_modules/
+ui/dist/
 
 # Sample project transient outputs
 projects/**/.story-harness.lock
@@ -25,3 +27,6 @@ projects/**/manuscript.txt
 projects/**/manuscript.json
 projects/**/logs/latest-analysis.yaml
 projects/**/logs/projection-log.yaml
+
+# Real-world local novel datasets
+noval-data/**/*.txt

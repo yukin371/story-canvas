@@ -60,9 +60,9 @@
 
 ## 4. 本地防线
 
-- `commit-msg` hook: TBD（建议添加格式校验）
-- `pre-commit` hook: TBD（建议添加测试运行）
+- `commit-msg` hook: 已提供 `.githooks/commit-msg`，调用 `scripts/check_commit_message.sh`
+- `pre-commit` hook: 已提供 `.githooks/pre-commit`，拦截明显违规内容与敏感文件
 
 ## 5. CI 防线
 
-- TBD（待 CI 启用后配置）
+- `.github/workflows/ci.yml` 会在 push / pull_request 上校验 commit message 范围

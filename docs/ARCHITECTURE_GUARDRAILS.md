@@ -1,8 +1,10 @@
-# Story Harness CLI 架构护栏
+# Story Canvas 架构护栏
 
-> 最后更新: 2026-04-25
+> 最后更新: 2026-04-27
 > 定位: 仓库级长期边界约束
 > 当前阶段依据: `docs/roadmap.md`
+
+> 命名说明: 对外产品名与主入口已收敛到 `Story Canvas` / `story-canvas` / `story_canvas`；`story-harness` 与 `story_harness_cli` 仅作为兼容别名保留，当前内部实现 owner 仍在 `src/story_harness_cli/`
 
 ## 1. 目的
 
@@ -16,10 +18,12 @@
 
 ### 2.1 入口层
 
-- `src/story_harness_cli/cli.py`, `src/story_harness_cli/main.py`
+- 对外入口: `src/story_canvas/`
+- 内部入口 owner: `src/story_harness_cli/cli.py`, `src/story_harness_cli/main.py`
 
 职责:
 
+- 维持 `story-canvas` / `python -m story_canvas` 的公共入口
 - argparse 解析与子命令注册
 - 路由到 command 函数
 - stdout/stderr 编码处理
@@ -28,6 +32,7 @@
 
 - 业务逻辑
 - 文件 I/O（委托 protocol 层）
+- 对 `src/story_harness_cli/` 之外的实现分叉
 
 ### 2.2 命令层
 
@@ -117,6 +122,8 @@
 | 章节分析 | `services/analyzer.py` | 实体识别、状态检测、关系检测 |
 | 投影管理 | `services/projection_engine.py` | upsert_by_key, apply_projection |
 | 一致性校验 | `services/consistency_engine.py` | hard/soft checks |
+| 规则元数据定义 | `services/rule_registry.py` | builtin rule registry / canonical rule metadata |
+| 规则 judgement 组装 | `services/rule_semantics.py` | build_rule_judgement, scope refs |
 | 文本处理 | `utils/text.py` | strip_entity_tags, extract_tag_mentions 等 |
 | 外部 provider 接入 | `providers/` | API/SDK 封装、optional dependency 包装 |
 | 命令注册 | `commands/__init__.py` + `cli.py` | 所有子命令注册入口 |

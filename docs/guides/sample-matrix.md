@@ -42,14 +42,14 @@
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli doctor --root projects/demo-short-story
-python -m story_harness_cli chapter analyze --root projects/demo-short-story --chapter-id chapter-001
-python -m story_harness_cli chapter suggest --root projects/demo-short-story --chapter-id chapter-001
-python -m story_harness_cli review apply --root projects/demo-short-story --chapter-id chapter-001 --all-pending --decision accepted
-python -m story_harness_cli projection apply --root projects/demo-short-story --chapter-id chapter-001
-python -m story_harness_cli context refresh --root projects/demo-short-story --chapter-id chapter-001
-python -m story_harness_cli review chapter --root projects/demo-short-story --chapter-id chapter-001
-python -m story_harness_cli review scene --root projects/demo-short-story --chapter-id chapter-001 --scene-index 1
+python -m story_canvas doctor --root projects/demo-short-story
+python -m story_canvas chapter analyze --root projects/demo-short-story --chapter-id chapter-001
+python -m story_canvas chapter suggest --root projects/demo-short-story --chapter-id chapter-001
+python -m story_canvas review apply --root projects/demo-short-story --chapter-id chapter-001 --all-pending --decision accepted
+python -m story_canvas projection apply --root projects/demo-short-story --chapter-id chapter-001
+python -m story_canvas context refresh --root projects/demo-short-story --chapter-id chapter-001
+python -m story_canvas review chapter --root projects/demo-short-story --chapter-id chapter-001
+python -m story_canvas review scene --root projects/demo-short-story --chapter-id chapter-001 --scene-index 1
 ```
 
 更多细节：`projects/demo-short-story/README.md`
@@ -68,11 +68,11 @@ python -m story_harness_cli review scene --root projects/demo-short-story --chap
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli doctor --root projects/demo-light-novel-short
-python -m story_harness_cli chapter analyze --root projects/demo-light-novel-short --chapter-id chapter-001
-python -m story_harness_cli review chapter --root projects/demo-light-novel-short --chapter-id chapter-001
-python -m story_harness_cli review scene --root projects/demo-light-novel-short --chapter-id chapter-001 --scene-index 1
-python -m story_harness_cli export --root projects/demo-light-novel-short --format markdown --output projects/demo-light-novel-short/manuscript.md
+python -m story_canvas doctor --root projects/demo-light-novel-short
+python -m story_canvas chapter analyze --root projects/demo-light-novel-short --chapter-id chapter-001
+python -m story_canvas review chapter --root projects/demo-light-novel-short --chapter-id chapter-001
+python -m story_canvas review scene --root projects/demo-light-novel-short --chapter-id chapter-001 --scene-index 1
+python -m story_canvas export --root projects/demo-light-novel-short --format markdown --output projects/demo-light-novel-short/manuscript.md
 ```
 
 更多细节：`projects/demo-light-novel-short/README.md`
@@ -91,11 +91,11 @@ python -m story_harness_cli export --root projects/demo-light-novel-short --form
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli doctor --root projects/demo-xuanhuan-short
-python -m story_harness_cli chapter analyze --root projects/demo-xuanhuan-short --chapter-id chapter-001
-python -m story_harness_cli review chapter --root projects/demo-xuanhuan-short --chapter-id chapter-001
-python -m story_harness_cli review scene --root projects/demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1
-python -m story_harness_cli export --root projects/demo-xuanhuan-short --format markdown --output projects/demo-xuanhuan-short/manuscript.md
+python -m story_canvas doctor --root projects/demo-xuanhuan-short
+python -m story_canvas chapter analyze --root projects/demo-xuanhuan-short --chapter-id chapter-001
+python -m story_canvas review chapter --root projects/demo-xuanhuan-short --chapter-id chapter-001
+python -m story_canvas review scene --root projects/demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1
+python -m story_canvas export --root projects/demo-xuanhuan-short --format markdown --output projects/demo-xuanhuan-short/manuscript.md
 ```
 
 更多细节：`projects/demo-xuanhuan-short/README.md`
@@ -121,11 +121,11 @@ python -m story_harness_cli export --root projects/demo-xuanhuan-short --format 
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli doctor --root projects/demo-urban-occult-long
-python -m story_harness_cli chapter analyze --root projects/demo-urban-occult-long --chapter-id chapter-001
-python -m story_harness_cli review chapter --root projects/demo-urban-occult-long --chapter-id chapter-001
-python -m story_harness_cli review scene --root projects/demo-urban-occult-long --chapter-id chapter-004 --scene-index 3
-python -m story_harness_cli export --root projects/demo-urban-occult-long --format markdown --output projects/demo-urban-occult-long/manuscript.md
+python -m story_canvas doctor --root projects/demo-urban-occult-long
+python -m story_canvas chapter analyze --root projects/demo-urban-occult-long --chapter-id chapter-001
+python -m story_canvas review chapter --root projects/demo-urban-occult-long --chapter-id chapter-001
+python -m story_canvas review scene --root projects/demo-urban-occult-long --chapter-id chapter-004 --scene-index 3
+python -m story_canvas export --root projects/demo-urban-occult-long --format markdown --output projects/demo-urban-occult-long/manuscript.md
 ```
 
 更多细节：`projects/demo-urban-occult-long/README.md`

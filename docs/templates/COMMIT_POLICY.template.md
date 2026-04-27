@@ -11,7 +11,7 @@
 
 推荐格式:
 
-`<type>: <subject>`
+`<type>(<scope>): <description>`
 
 允许的 `type`:
 
@@ -29,9 +29,10 @@
 
 约束:
 
-- subject 简洁明确
+- description 简洁明确
 - 不使用空泛描述
-- 不把 issue 流水账写进 subject
+- 不把 issue 流水账写进 description
+- 若仓库启用“适用规则”治理，提交说明与 PR 描述不应互相矛盾
 
 ## 3. 禁止的协作元信息
 
@@ -45,11 +46,11 @@
 ## 4. 本地防线
 
 - `commit-msg` hook 拦截非法提交信息
-- `pre-commit` hook 拦截明显违规内容
+- `pre-commit` hook 拦截明显违规内容，并可提示本次改动的规则触点
 - commit template 作为默认提示
 
 ## 5. CI 防线
 
 - 扫描提交范围内的 commit messages
 - 阻止 forbidden trailers 和非法提交格式
-- 与 required checks 一起作为合并前门禁
+- 若启用 PR 描述治理，应与 PR body 校验一起作为合并前门禁

@@ -240,12 +240,14 @@
 - `docs/DOCUMENT_LIFECYCLE.md`
 - `docs/releases/RELEASE_CHECKLIST.md`
 - Git hooks / commit policy / CI governance 资产
+- `.github/pull_request_template.md`
 
 必须覆盖:
 
 - build / test / lint / security 最低门禁
 - PR review / branch protection / CODEOWNERS / required checks
 - commit 规则与拦截钩子
+- PR 描述中的适用规则、验证结果与残留风险
 - release / versioning / breaking change 流程
 - 历史文档归档与当前入口切换规则
 
@@ -289,6 +291,7 @@
 - review 要求
 - CODEOWNERS 策略
 - branch protection 或 rulesets 是否存在
+- PR 模板是否要求填写 `Applicable Rules`、`Validation`、`Risks`
 
 ### 5.3 提交治理
 
@@ -299,6 +302,7 @@
 - 是否允许 squash merge / merge commit / rebase merge
 - 禁止 `Co-Authored-By`、`Pair-Programmed-By`、AI 工具签名等协作元信息的规则
 - 本地 hook 与 CI 双重防线
+- 是否有开发中规则触点提醒
 
 ### 5.4 兼容性与破坏性变更
 
@@ -522,9 +526,14 @@
 - `docs/templates/DOCUMENT_LIFECYCLE.template.md`
 - `docs/templates/RELEASE_CHECKLIST.template.md`
 - `docs/templates/COMMIT_POLICY.template.md`
+- `docs/templates/pull_request_template.template.md`
 - `docs/templates/git-hooks/commit-msg.template.sh`
 - `docs/templates/git-hooks/pre-commit.template.sh`
 - `docs/templates/workflows/governance.template.yml`
+- `docs/templates/scripts/check_commit_message.template.sh`
+- `docs/templates/scripts/check_commit_messages_range.template.sh`
+- `docs/templates/scripts/check_pull_request_template.template.py`
+- `docs/templates/scripts/check_rule_touchpoints.template.py`
 
 若模板不存在，再按本文档结构创建最小版本。
 
@@ -548,14 +557,16 @@
 请严格按以下顺序执行：
 1. 建立 docs/PROJECT_PROFILE.md，只写高置信度事实，未知写 TBD。
 2. 基于项目画像生成根目录 AGENTS.md，明确读文件顺序、先复用后新增、验证和文档同步规则。
+   并明确“适用规则”与开发前 / 开发中 / PR 前的规则生命周期。
 3. 选择一个且仅一个当前执行入口：docs/roadmap.md 或 docs/plans/current-execution-control.md。
 4. 建立 docs/ARCHITECTURE_GUARDRAILS.md，定义层次、owner 和禁止事项。
 5. 为 1 到 3 个关键模块建立模块文档。
 6. 建立工程治理门禁，包括 commit policy、hooks、CI governance、document lifecycle 和 release checklist。
+   若提供 PR 模板或本地 hook，确保它们不是空壳，相关脚本与校验入口也一并落地。
 7. 建立 docs/plans 与 docs/adr 的最小入口，并在后续任务中持续维护。
 
 在任何非平凡改动前，先输出：
-目标模块、现有 owner、影响面、计划改动、验证方式、需要同步的文档。
+目标模块、现有 owner、影响面、适用规则、计划改动、验证方式、需要同步的文档。
 
 禁止：
 - 编造事实

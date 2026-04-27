@@ -1,10 +1,10 @@
-# Story Harness CLI
+﻿# Story Canvas
 
 [English](./README.en.md) | [简体中文](./README.md)
 
-Story Harness CLI 是一个面向 Agent 的长篇小说创作工作流工具。
+Story Canvas 是一个面向 Agent 的故事与视觉工作流项目，当前以 `story-canvas` 作为主命令入口，并提供早期单页 UI 作为视觉壳。
 
-它的目标不是用一个超大 Prompt 一次性写完小说，而是把创作过程拆成结构化状态：正文、提案、审查、投影、上下文刷新。这样作者和 AI 可以在更明确的约束下协作，减少设定漂移、状态丢失和长篇写作中的“越写越散”。
+它的目标不是用一个超大 Prompt 一次性写完小说，而是把创作过程拆成结构化状态：正文、提案、审查、投影、上下文刷新，以及逐步纳入的插画生成与可视化操作面。这样作者和 AI 可以在更明确的约束下协作，减少设定漂移、状态丢失和长篇写作中的“越写越散”。
 
 如果你想先看标准闭环流程，建议先读 [docs/guides/creative-workflow.md](./docs/guides/creative-workflow.md)。
 
@@ -15,9 +15,10 @@ Story Harness CLI 是一个面向 Agent 的长篇小说创作工作流工具。
 - 存放在 `projects/` 下的样例工程
 - smoke tests 与可回归的故事基线
 - 面向外部 API / SDK 的可选 provider 基础层
+- 面向插画生成的 provider-backed 图片能力
 - 带有商业化定位与连载蓝图的长篇样例
 
-它并不试图替代写作 UI。它更像是写作协议和工作流内核，后续可以被技能、编辑器和 Web UI 复用。
+它目前还不是一个完整创作工作台，但已经不再只是“单纯 CLI”。当前产品由文件协议、Python 工作流入口与单页 UI 共同构成；短期内主工作流仍以命令入口驱动，UI 和图片能力会并行推进。并行开发清单见 [docs/plans/story-canvas-parallel-roadmap.md](./docs/plans/story-canvas-parallel-roadmap.md)。
 
 ## 它解决什么问题
 
@@ -34,18 +35,25 @@ Story Harness CLI 是一个面向 Agent 的长篇小说创作工作流工具。
 
 | 能力域 | 当前状态 | 已实现内容 | 当前缺口 |
 |------|------|------|------|
-| 项目初始化与仓库骨架 | 已完成 | `init` 会创建固定项目结构、章节文件、协议文件、projections、reviews，以及 flat / layered 布局 | 仍然是 CLI 优先，没有可视化项目初始化界面 |
+| 项目初始化与仓库骨架 | 已完成 | `init` 会创建固定项目结构、章节文件、协议文件、projections、reviews，以及 flat / layered 布局 | 当前仍通过命令完成初始化，尚无可视化项目初始化界面 |
 | 项目级写作约束 | 已完成 | `project.yaml` 已支持 positioning、storyContract、emotionalContract、storyTemplate、commercialPositioning | 更像协议层，不是独立的 PRD 工作台 |
 | 世界观 / 角色 / 伏笔 / 线索 / 时间线 | 已完成 | 已有 worldbook、entities、foreshadowing、threads、timeline、causality 等状态文件和命令 | 编辑体验仍偏原始，没有 UI 辅助 |
 | 大纲与细纲 | 已完成 | 已支持 chapter direction、beats、scenePlans、detailed outline init/show、structure scaffold | 仍依赖 CLI 和人工审查 |
 | 写前门禁与结构审查 | 已完成 | `outline check`、`doctor`、`consistency check`、workflow gate 已可检查写作准备度 | 仍是启发式检查，不是形式化证明 |
 | 落稿支持 | 部分完成 | 正文保存在 `chapters/*.md`，`context refresh` 会给出当前章所需的角色、世界规则、线索、伏笔上下文 | 还没有专门的正文编辑器或桌面写作 UI |
-| 写后审查与迭代 | 已完成 | `chapter analyze -> chapter suggest -> review apply -> projection apply -> context refresh -> review chapter/scene` 已能形成闭环 | 没有 Web UI 时，人类审查不够顺手 |
+| 写后审查与迭代 | 已完成 | `chapter analyze -> chapter suggest -> review apply -> projection apply -> context refresh -> review chapter/scene` 已能形成闭环，并可导出 `review-packet` 给人工审查 | 没有 Web UI 时，批量筛选和修改仍不够顺手 |
 | 成稿导出 | 已完成 | `export` 已支持多种纯文本导出格式 | 发布包装和对外分发还不是这一层负责 |
-| 人工审查界面 | 部分完成 | 所有结构化产物都已落盘，可供人查阅 | 缺少更顺手的阅读、筛选、修改界面，计划在 `v1.1` 补上 |
+| 人工审查界面 | 部分完成 | 所有结构化产物都已落盘，可供人查阅；`export --format review-packet` 可生成单章 Markdown 审查包 | 缺少更顺手的阅读、筛选、修改界面，现已提前进入并行开发轨道 |
 | 模板丰富度与工作流自由编排 | 部分完成 | 已有 structure templates、style profiles、storyTemplate 字段、workflow 状态机 | 更丰富的题材模板和自由编排能力计划在 `v1.2` 增强 |
+| 插画生成与视觉资产流 | 部分完成 | 已有 `illustration` 命令、provider 抽象，以及 OpenAI / 兼容网关图像请求链路 | 仍缺少历史浏览、参数复用、批量确认和更顺手的视觉界面 |
 
 一句话总结：这个仓库已经具备一个可用的“小说工程内核”，可以做约束、写作、审查、投影和导出；当前主要缺的是界面层、人工审查体验，以及更丰富的模板资源。
+
+当前发布边界补充：
+
+- `v1.0.x` 仍以故事协议、workflow 闭环和样例回归为发布锚点
+- 插画生成和早期 UI 不再完全后置到 `v1.1`，而是提前并行开发，用于降低小说生成测试的人力成本
+- 当前主 CLI 命令为 `story-canvas`，旧命令 `story-harness` 仅保留为兼容别名
 
 ## 核心模型
 
@@ -63,13 +71,13 @@ Story Harness CLI 是一个面向 Agent 的长篇小说创作工作流工具。
 
 ```powershell
 uv sync
-uv run story-harness init --root .\demo --title "Fog Harbor" --genre "Mystery"
+uv run story-canvas init --root .\demo --title "Fog Harbor" --genre "Mystery"
 ```
 
 如果你在做真实的商业化连载项目，建议初始化时就把商业定位写进去，而不是事后补元数据：
 
 ```powershell
-uv run story-harness init `
+uv run story-canvas init `
   --root .\demo `
   --title "夜巡收煞录" `
   --genre "奇幻" `
@@ -93,7 +101,7 @@ uv run story-harness init `
 如果你在做重约束长篇，建议初始化时就把情绪契约和模板策略写进去，让后续审查与上下文刷新有明确消费对象：
 
 ```powershell
-uv run story-harness init `
+uv run story-canvas init `
   --root .\demo `
   --title "归墟" `
   --genre "奇幻" `
@@ -128,55 +136,56 @@ uv run story-harness init `
 然后编辑 `demo/chapters/chapter-001.md`，再执行：
 
 ```powershell
-uv run story-harness chapter analyze --root .\demo --chapter-id chapter-001
-uv run story-harness chapter suggest --root .\demo --chapter-id chapter-001
-uv run story-harness review apply --root .\demo --chapter-id chapter-001 --all-pending --decision accepted
-uv run story-harness projection apply --root .\demo --chapter-id chapter-001
-uv run story-harness context refresh --root .\demo --chapter-id chapter-001
-uv run story-harness review chapter --root .\demo --chapter-id chapter-001
-uv run story-harness outline scene-detect --root .\demo --chapter-id chapter-001
-uv run story-harness review scene --root .\demo --chapter-id chapter-001 --scene-index 1
-uv run story-harness doctor --root .\demo
+uv run story-canvas chapter analyze --root .\demo --chapter-id chapter-001
+uv run story-canvas chapter suggest --root .\demo --chapter-id chapter-001
+uv run story-canvas review apply --root .\demo --chapter-id chapter-001 --all-pending --decision accepted
+uv run story-canvas projection apply --root .\demo --chapter-id chapter-001
+uv run story-canvas context refresh --root .\demo --chapter-id chapter-001
+uv run story-canvas review chapter --root .\demo --chapter-id chapter-001
+uv run story-canvas outline scene-detect --root .\demo --chapter-id chapter-001
+uv run story-canvas review scene --root .\demo --chapter-id chapter-001 --scene-index 1
+uv run story-canvas doctor --root .\demo
+uv run story-canvas export --root .\demo --chapter-id chapter-001 --format review-packet --output .\demo\chapter-001-review.md
 ```
 
 方案 B：直接跑已验证的短篇基线
 
 ```powershell
-uv run story-harness doctor --root .\projects\demo-short-story
-uv run story-harness chapter analyze --root .\projects\demo-short-story --chapter-id chapter-001
-uv run story-harness chapter suggest --root .\projects\demo-short-story --chapter-id chapter-001
-uv run story-harness review apply --root .\projects\demo-short-story --chapter-id chapter-001 --all-pending --decision accepted
-uv run story-harness projection apply --root .\projects\demo-short-story --chapter-id chapter-001
-uv run story-harness context refresh --root .\projects\demo-short-story --chapter-id chapter-001
-uv run story-harness review chapter --root .\projects\demo-short-story --chapter-id chapter-001
-uv run story-harness review scene --root .\projects\demo-short-story --chapter-id chapter-001 --scene-index 1
+uv run story-canvas doctor --root .\projects\demo-short-story
+uv run story-canvas chapter analyze --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-canvas chapter suggest --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-canvas review apply --root .\projects\demo-short-story --chapter-id chapter-001 --all-pending --decision accepted
+uv run story-canvas projection apply --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-canvas context refresh --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-canvas review chapter --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-canvas review scene --root .\projects\demo-short-story --chapter-id chapter-001 --scene-index 1
 ```
 
 方案 C：运行已验证的风格驱动短篇基线
 
 ```powershell
-uv run story-harness doctor --root .\projects\demo-light-novel-short
-uv run story-harness chapter analyze --root .\projects\demo-light-novel-short --chapter-id chapter-001
-uv run story-harness review chapter --root .\projects\demo-light-novel-short --chapter-id chapter-001
-uv run story-harness review scene --root .\projects\demo-light-novel-short --chapter-id chapter-001 --scene-index 1
-uv run story-harness export --root .\projects\demo-light-novel-short --format markdown --output .\projects\demo-light-novel-short\manuscript.md
+uv run story-canvas doctor --root .\projects\demo-light-novel-short
+uv run story-canvas chapter analyze --root .\projects\demo-light-novel-short --chapter-id chapter-001
+uv run story-canvas review chapter --root .\projects\demo-light-novel-short --chapter-id chapter-001
+uv run story-canvas review scene --root .\projects\demo-light-novel-short --chapter-id chapter-001 --scene-index 1
+uv run story-canvas export --root .\projects\demo-light-novel-short --format markdown --output .\projects\demo-light-novel-short\manuscript.md
 ```
 
 方案 D：运行已验证的玄幻网文短篇基线
 
 ```powershell
-uv run story-harness doctor --root .\projects\demo-xuanhuan-short
-uv run story-harness chapter analyze --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
-uv run story-harness review chapter --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
-uv run story-harness review scene --root .\projects\demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1
-uv run story-harness export --root .\projects\demo-xuanhuan-short --format markdown --output .\projects\demo-xuanhuan-short\manuscript.md
+uv run story-canvas doctor --root .\projects\demo-xuanhuan-short
+uv run story-canvas chapter analyze --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
+uv run story-canvas review chapter --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
+uv run story-canvas review scene --root .\projects\demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1
+uv run story-canvas export --root .\projects\demo-xuanhuan-short --format markdown --output .\projects\demo-xuanhuan-short\manuscript.md
 ```
 
 仓库直跑回退方式：
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli chapter analyze --root .\demo --chapter-id chapter-001
+python -m story_canvas chapter analyze --root .\demo --chapter-id chapter-001
 ```
 
 如果你想看当前样例矩阵，请读 [docs/guides/sample-matrix.md](./docs/guides/sample-matrix.md)。
@@ -217,47 +226,49 @@ chapter.md
 
 ## 命令概览
 
-- `story-harness init`
-- `story-harness brainstorm character|world|outline`
-- `story-harness chapter analyze`
-- `story-harness chapter suggest`
-- `story-harness review apply`
-- `story-harness review chapter`
-- `story-harness review scene`
-- `story-harness outline propose`
-- `story-harness outline promote`
-- `story-harness outline beat-add`
-- `story-harness outline beat-complete`
-- `story-harness outline beat-list`
-- `story-harness outline scene-add`
-- `story-harness outline scene-list`
-- `story-harness outline scene-detect`
-- `story-harness outline scene-update`
-- `story-harness outline scene-remove`
-- `story-harness outline detail-init`
-- `story-harness outline detail-show`
-- `story-harness projection apply`
-- `story-harness context refresh|show`
-- `story-harness entity enrich|review|list|show|graph`
-- `story-harness style check|constraints|report|repair`
-- `story-harness illustration prompt|generate|list|config`
-- `story-harness structure list|apply|show|check|map|scaffold`
-- `story-harness thread plant|resolve|list|check`
-- `story-harness foreshadow plant|resolve|list`
-- `story-harness arc define|milestone|list|check`
-- `story-harness workflow status|run|advance|reset|export`
-- `story-harness timeline add/list/check`
-- `story-harness causality add/list/check`
-- `story-harness search`
-- `story-harness consistency check`
-- `story-harness stats`
-- `story-harness migrate`
-- `story-harness export --format json|markdown|txt`
-- `story-harness doctor`
+- `story-canvas init`
+- `story-canvas brainstorm character|world|outline`
+- `story-canvas chapter analyze`
+- `story-canvas chapter suggest`
+- `story-canvas review apply`
+- `story-canvas review chapter`
+- `story-canvas review scene`
+- `story-canvas outline propose`
+- `story-canvas outline promote`
+- `story-canvas outline beat-add`
+- `story-canvas outline beat-complete`
+- `story-canvas outline beat-list`
+- `story-canvas outline scene-add`
+- `story-canvas outline scene-list`
+- `story-canvas outline scene-detect`
+- `story-canvas outline scene-update`
+- `story-canvas outline scene-remove`
+- `story-canvas outline detail-init`
+- `story-canvas outline detail-show`
+- `story-canvas projection apply`
+- `story-canvas context refresh|show`
+- `story-canvas entity enrich|review|list|show|graph`
+- `story-canvas style check|constraints|report|repair`
+- `story-canvas illustration prompt|generate|list|config`
+- `story-canvas structure list|apply|show|check|map|scaffold`
+- `story-canvas thread plant|resolve|list|check`
+- `story-canvas foreshadow plant|resolve|list`
+- `story-canvas arc define|milestone|list|check`
+- `story-canvas workflow status|run|advance|reset|export`
+- `story-canvas timeline add/list/check`
+- `story-canvas causality add/list/check`
+- `story-canvas search`
+- `story-canvas consistency check`
+- `story-canvas stats`
+- `story-canvas migrate`
+- `story-canvas export --format json|markdown|txt`
+- `story-canvas export --format spec-outline|spec-characters|spec-global-outline|spec-detail|review-packet`
+- `story-canvas doctor`
 
 ## 仓库结构
 
-- `src/story_harness_cli/`：CLI 实现
+- `src/story_canvas/`：对外 Python 模块与主 CLI 入口包装
+- `src/story_harness_cli/`：当前内部命令、协议、服务实现 owner
 - `adapters/`：Codex、Claude Code 等宿主的 adapter 源码
 - `scripts/install_adapter.py`：把单个宿主 adapter 安装到对应目录
 - `scripts/install_adapters.py`：批量安装多个宿主 adapter
@@ -272,7 +283,7 @@ chapter.md
 - 分层文件协议：正文、提案、审查、投影、上下文
 - 章节分析、建议生成，以及“先审再应用”的显式流程
 - 章节评审、场景评审、风格评审，以及 profile 驱动约束
-- 风格修复指导、插图 prompt、dry-run、真实 OpenAI 文生图 / 图生图请求、多资产落盘与资产状态查看
+- 风格修复指导，以及 provider-backed 的插图 prompt、dry-run、真实 OpenAI 文生图 / 图生图请求、多资产落盘与资产状态查看
 - outline-first gate、beat 跟踪、scene plan 维护、detailed outline 辅助
 - project positioning、story contract、emotional contract、story template、commercial serial blueprint 校验
 - worldbook / foreshadowing / threads / timeline / causality / structure / character arc 跟踪
@@ -286,7 +297,8 @@ chapter.md
 
 下一轮应继续聚焦几个现实短板：
 
-- 在 Web UI 落地前，先提升结构化故事状态的人类审查体验
+- 在早期 UI 并行推进的同时，继续提升结构化故事状态的人类审查体验
+- 把插图资产管理收敛到 Story Canvas 的视觉界面轨道，而不是继续扩大 `v1.0.x` 的纯 CLI 发布面
 - 继续加深 `review` 和 `workflow` 对故事约束的消费，尤其是 worldbook、伏笔回收窗口、动态角色状态
 - 扩充题材模板与工作流模板，避免所有小说都套同一套骨架
 - 稳定 provider 层，至少补一到两个真实可用集成
@@ -312,7 +324,7 @@ uv run python -m unittest discover -s tests
 对一个故事项目执行结构校验：
 
 ```powershell
-uv run story-harness doctor --root .\projects\demo-short-story
+uv run story-canvas doctor --root .\projects\demo-short-story
 ```
 
 安装一个宿主 adapter：
@@ -343,3 +355,4 @@ uv run python scripts/install_adapters.py --workspace <workspace-root> --force
 - 加强 graph、thread、structure、commercial workflow 等 richer schema 的校验
 - 用真实长篇项目验证更复杂的生产流程
 - 在 Python CLI 契约稳定后，再回头评估发行策略
+

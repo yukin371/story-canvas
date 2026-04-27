@@ -39,9 +39,14 @@
 - `DOCUMENT_LIFECYCLE.template.md`
 - `RELEASE_CHECKLIST.template.md`
 - `COMMIT_POLICY.template.md`
+- `pull_request_template.template.md`
 - `git-hooks/commit-msg.template.sh`
 - `git-hooks/pre-commit.template.sh`
 - `workflows/governance.template.yml`
+- `scripts/check_commit_message.template.sh`
+- `scripts/check_commit_messages_range.template.sh`
+- `scripts/check_pull_request_template.template.py`
+- `scripts/check_rule_touchpoints.template.py`
 
 ## 4. 使用约束
 
@@ -67,6 +72,7 @@
 | `DOCUMENT_LIFECYCLE.template.md` | `docs/DOCUMENT_LIFECYCLE.md` |
 | `RELEASE_CHECKLIST.template.md` | `docs/releases/RELEASE_CHECKLIST.md` |
 | `COMMIT_POLICY.template.md` | `docs/COMMIT_POLICY.md` |
+| `pull_request_template.template.md` | `.github/pull_request_template.md` |
 
 ## 6. 为什么还提供 hooks 和 workflow 模板
 
@@ -76,10 +82,25 @@
 
 - 本地 `commit-msg` hook
 - 本地 `pre-commit` hook
+- PR 模板
 - GitHub workflow 治理模板
+- 对应的治理脚本模板
 
 这样仓库可以同时拥有:
 
 - 文档层规则
 - 本地提交前拦截
 - CI 侧兜底检查
+
+## 7. 写作模板补充
+
+除治理模板外，当前仓库也开始补充“写前约束与 prompt 骨架”类模板，位置在 `docs/templates/writing/`：
+
+- `intake-layered.template.md`
+  - 第一阶段立项问答骨架
+- `prompt-skeletons.template.md`
+  - PRD / 大纲 / 章节 / 评审的中文优先 prompt 骨架
+- `genre-overlay.template.md`
+  - 类型层最小模板
+
+这些模板服务 Story Canvas 当前工作流，不引入新的项目状态文件或平行 protocol。

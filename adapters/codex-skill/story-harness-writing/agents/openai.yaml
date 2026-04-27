@@ -1,5 +1,4 @@
 interface:
-  display_name: "Story Harness Writing"
-  short_description: "Codex adapter for Story Harness CLI"
-  default_prompt: "Use $story-harness-writing to operate Story Harness CLI on a structured fiction writing project."
-
+  display_name: "Story Canvas Writing"
+  short_description: "Chinese fiction writing + Story Canvas workflow adapter for Codex"
+  default_prompt: "Use $story-harness-writing to plan, draft, review, and close the loop on a structured Chinese fiction project with the Story Canvas workflow."

@@ -41,3 +41,19 @@ jobs:
           git fetch origin "${{ github.base_ref }}" --depth=1
           chmod +x scripts/check_commit_messages_range.sh
           scripts/check_commit_messages_range.sh "origin/${{ github.base_ref }}..HEAD"
+
+  pull-request-governance:
+    name: Pull Request Governance
+    if: github.event_name == 'pull_request' && !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate pull request body
+        run: python scripts/check_pull_request_template.py --event-path "$GITHUB_EVENT_PATH"

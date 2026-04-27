@@ -1,6 +1,6 @@
 # Protocol Overview
 
-Story Harness CLI uses a file-based protocol to keep long-form writing state explicit and reviewable.
+Story Canvas uses a file-based protocol to keep long-form writing and related visual asset state explicit and reviewable.
 
 The current model separates:
 
@@ -12,3 +12,4 @@ The current model separates:
 
 This separation is the core constraint that keeps AI-assisted writing from mutating canon directly without a decision step.
 
+For image generation, the current persisted state lives in `illustrations.yaml`. The proposed prompt-system extension is documented in [image-prompt-system.md](./image-prompt-system.md).

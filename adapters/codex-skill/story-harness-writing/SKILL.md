@@ -1,73 +1,269 @@
 ---
 name: story-harness-writing
-description: Structured fiction writing adapter for Codex. Use when Codex needs to operate the Story Harness CLI on a long-form writing project with explicit story state, chapter analysis, draft proposals, change requests, projections, and context refresh. Trigger for tasks such as initializing a story project, analyzing a chapter after writing, generating or reviewing change requests, refreshing a context lens, creating outline proposals, or running the Story Harness workflow without a visual editor.
+description: Structured Chinese fiction writing adapter for Codex. Use when Codex needs to plan, draft, revise, and review a long-form Chinese novel with the Story Canvas workflow. This skill combines writing-method guidance with CLI workflow routing, story-state awareness, volume closure, and quality gates.
 ---
 
-# Story Harness Writing
+# Story Canvas Writing
 
 ## Overview
 
-Use this skill as the Codex adapter for the `story-harness-cli` repository.
+Use this skill as the Codex writing adapter for the Story Canvas repository.
 
-The CLI repository is the source of truth:
+The repository remains the source of truth:
 
 ```text
-<story-harness-cli-repo-root>
+<story-canvas-repo-root>
 ```
 
-This skill should stay thin. Its job is to:
+This skill is intentionally still a thin adapter:
 
-1. trigger the right workflow
-2. point Codex at the right files
-3. route execution through `uv run story-harness ...`
+1. it tells Codex how to write
+2. it tells Codex which CLI workflow to run
+3. it does not replace the repository protocol or invent a parallel state system
+
+The closure is:
+
+```text
+external agent -> skill guidance -> story-canvas CLI -> protocol files
+```
+
+Before heavy drafting or review inside this repository, read:
+
+1. `docs/guides/writing-rules.md`
+2. `docs/guides/volume-self-review.md`
+3. `docs/guides/creative-workflow.md`
+
+## Layered Skill Use
+
+Use this skill in two layers, not as one giant writing manual.
+
+### Layer A: Universal Base
+
+Always start with a small base rule set:
+
+1. title promise
+2. protagonist abnormal state
+3. first-volume delivery
+4. scene engine
+5. chapter-level incremental progress
+
+This layer is cross-genre and should be loaded first.
+
+### Layer B: Genre Overlay
+
+Only after genre / archetype / platform is clear, load one primary overlay:
+
+1. male cultivation / web-serial power
+2. female cultivation growth
+3. urban supernatural
+4. light novel romcom
+5. western fantasy light novel
+6. horror-game
+7. historical power
+8. post-apoc scifi
+9. entertainment industry
+
+Do not load multiple genre overlays unless the project genuinely mixes them and the user needs that blend.
+
+### Progressive Disclosure
+
+Reveal guidance in phases:
+
+1. PRD stage:
+   use universal base + a thin genre promise layer
+2. outline stage:
+   add first-volume delivery and chapter loop rules
+3. chapter drafting stage:
+   add scene-engine and beat-increment rules
+4. review stage:
+   add genre-specific high-risk checks
+
+The rule is:
+
+```text
+base rules -> genre overlay -> phase overlay
+```
+
+Do not front-load all layers when the task only needs the first one.
+
+### Chinese-First Prompting
+
+For Chinese fiction projects:
+
+1. keep prompt bodies in Chinese
+2. keep review comments in Chinese
+3. keep rewrite instructions in Chinese
+4. keep examples in Chinese
+
+English may still appear, but only as:
+
+1. internal field aliases
+2. code-facing identifiers
+3. compatibility labels
+
+Do not let English natural-language instructions become the main writing prompt for Chinese prose. That often pushes the output toward translated phrasing or an English reasoning skeleton.
+
+## Core Principles
+
+### Write Like a Novelist, Not a Form Filler
+
+1. Show through action, reaction, and dialogue instead of abstract explanation.
+2. Let conflict drive scenes; each chapter needs movement, pressure, or reversal.
+3. End chapters with a reason to continue, but do not pile up mysteries without staged payoff.
+4. Treat each volume as a small story unit, not just a bucket of chapters.
+
+### Respect Story Truth Over Rigid Outline Execution
+
+Detailed outlines are execution paths, not the highest truth source.
+
+If a scene path conflicts with:
+
+1. already established consequences
+2. current world rules
+3. character state
+4. relationship logic
+5. the current volume's required delivery
+
+then preserve those truths first and adjust the scene path second.
+
+Do not use “character growth” as an excuse to drift aimlessly. If a chapter bends the original path, it must still deliver the chapter and volume responsibility.
+
+### Use the CLI as the Execution Layer
+
+1. Prose and Markdown documents may be edited directly when needed.
+2. Protocol YAML should preferably be created, updated, checked, and exported through `story-canvas` commands.
+3. Do not treat “the agent can directly edit YAML” as the normal workflow.
+4. If no CLI path exists yet and a manual protocol edit is unavoidable, record it as a tooling gap.
+
+## What Good Output Looks Like
+
+### At Chapter Level
+
+Before writing, Codex should know:
+
+1. previous chapter result
+2. current chapter handoff point
+3. current chapter delivery point
+4. active world rules
+5. active character state and relationship pressure
+6. due foreshadows and entity constraints
+
+After writing, Codex should not stop at prose completion. It must loop through analysis, review, revision, and re-check.
+
+### At Volume Level
+
+A finished volume should give:
+
+1. a clear volume question
+2. a staged escalation
+3. at least one meaningful payoff or release
+4. a partial closure that feels like a small story was delivered
+5. a remaining tail for the larger novel
+
+高潮不等于闭环。 If the volume only escalates but does not deliver a small-story closure, it is not done.
+
+## Anti-Patterns To Avoid
+
+### Do Not Write Like This
+
+1. Do not translate outline bullets directly into prose.
+2. Do not keep stacking mysteries just to simulate suspense.
+3. Do not let the entire opening volume stay only in suppression and never in release.
+4. Do not leak chapter/volume/outline/workflow language into prose.
+5. Do not write information the current POV cannot perceive or reasonably infer.
+
+### High-Risk AI Style Habits
+
+Limit repeated use of these expression skeletons:
+
+1. `不是……是……`
+2. `不是……不是……是……`
+3. `不是……更像……`
+4. high-frequency `像……`
+5. `不重/不轻/不偏/不倚`
+6. `真正……的，从来都是……`
+7. half-question dialogue like `还有什么？`
+
+These are not absolutely forbidden, but if they become the chapter’s dominant habit, the text starts sounding synthetic.
+
+Also avoid:
+
+1. abstract reaction ladders
+2. fake-profound phrasing
+3. proposal-document tone
+4. summary-first narration
 
 ## Workflow Decision Tree
 
-### If `story-harness` is not installed or not executable
+### If `story-canvas` is not installed or not executable
 
-Run the repository fallback instead:
+Use the repository fallback:
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli <command> ...
+python -m story_canvas <command> ...
 ```
+
+Legacy compatibility note: `story-harness` and `python -m story_harness_cli` still work, but they are no longer the primary entrypoints.
 
 ### If no story project exists yet
 
-```powershell
-uv run story-harness init --root <project-dir> --title "<title>" --genre "<genre>"
-```
+Use the repository workflow instead of creating an external parallel folder system.
 
-For long-form novels (5万字+), use layered layout to keep spec files organized and save AI context tokens:
+Suggested order:
 
-```powershell
-uv run story-harness init --root <project-dir> --title "<title>" --genre "<genre>" --layout layered
-```
-
-To migrate an existing flat project to layered layout:
+1. create or update `PRD.md`
+2. initialize the project
+3. establish outline and story state through CLI
 
 ```powershell
-uv run story-harness migrate --root <project-dir>
+uv run story-canvas init --root <project-dir> --title "<title>" --genre "<genre>" --layout layered
 ```
+
+For long-form novels, prefer layered layout.
+
+### If the user is still shaping the book
+
+Use a planning-first path:
+
+1. clarify premise, hook, target readers, core experience
+2. clarify volume responsibility
+3. clarify opening-world onboarding and first-volume payoff
+4. only then enter detailed outline and chapter work
+
+Recommended CLI path:
+
+```powershell
+uv run story-canvas brainstorm outline --root <project-dir> --prompt "<idea>"
+uv run story-canvas outline propose --root <project-dir> --mode chapter --chapter-id <chapter-id> --title "<title>" --summary "<summary>" --prompt "<prompt>"
+uv run story-canvas outline promote --root <project-dir> --proposal-id <proposal-id> --chapter-id <chapter-id>
+```
+
+If `PRD.md` is missing, add or update it before heavy drafting.
 
 ### If the user wants a single-chapter writing loop
 
+Run:
+
 ```powershell
-uv run story-harness chapter analyze --root <project-dir> --chapter-id <chapter-id>
-uv run story-harness chapter suggest --root <project-dir> --chapter-id <chapter-id>
-uv run story-harness review apply --root <project-dir> --all-pending --decision accepted --chapter-id <chapter-id>
-uv run story-harness projection apply --root <project-dir> --chapter-id <chapter-id>
-uv run story-harness context refresh --root <project-dir> --chapter-id <chapter-id>
+uv run story-canvas chapter analyze --root <project-dir> --chapter-id <chapter-id>
+uv run story-canvas chapter suggest --root <project-dir> --chapter-id <chapter-id>
+uv run story-canvas review apply --root <project-dir> --all-pending --decision accepted --chapter-id <chapter-id>
+uv run story-canvas projection apply --root <project-dir> --chapter-id <chapter-id>
+uv run story-canvas context refresh --root <project-dir> --chapter-id <chapter-id>
+uv run story-canvas review chapter --root <project-dir> --chapter-id <chapter-id>
+uv run story-canvas review scene --root <project-dir> --chapter-id <chapter-id> --list-scenes
 ```
 
-Use `ignored` or `deferred` instead of `accepted` when the author does not want a suggestion to enter canon.
+If review is weak, revise prose and run the loop again. Do not stop at the first score.
 
-### If the user wants the full writing-and-review loop
+### If the user wants a full volume writing-and-review loop
 
-Run the chapter loop first, then close the loop with review and rewrite:
+Use this path:
 
 ```text
-write or revise chapter prose
+define volume responsibility
+  -> write / revise chapter prose
   -> chapter analyze
   -> chapter suggest
   -> review apply
@@ -75,118 +271,108 @@ write or revise chapter prose
   -> context refresh
   -> review chapter
   -> review scene
-  -> if scores are weak: revise prose / scenePlans
-  -> chapter analyze
-  -> review chapter
-  -> review scene
-  -> export or stop with explicit accepted risk
+  -> revise if weak
+  -> repeat until chapter acceptable
+  -> continue until the whole volume reaches small-story closure
+  -> export volume packet
+  -> AI volume self-review
+  -> targeted revision
+  -> re-check
+  -> hand off to human review
 ```
 
-Do not stop at the first score if the weakest dimensions still contradict the story contract or target style.
+If the user explicitly wants uninterrupted full-run drafting, do not stop mid-volume unless:
+
+1. the user interrupts
+2. the repository workflow blocks
+3. a true contradiction or missing requirement makes continuation unsafe
 
 ### If the user wants foreshadow tracking
 
 ```powershell
-uv run story-harness foreshadow plant --root <project-dir> --description "<伏笔描述>" --chapter-id <chapter-id> --planned-payoff <payoff-chapter-id>
-uv run story-harness foreshadow resolve --root <project-dir> --foreshadow-id <fs-id> --payoff-chapter <chapter-id>
-uv run story-harness foreshadow list --root <project-dir>
-uv run story-harness foreshadow list --root <project-dir> --status planted
+uv run story-canvas foreshadow plant --root <project-dir> --description "<伏笔描述>" --chapter-id <chapter-id> --planned-payoff <payoff-chapter-id>
+uv run story-canvas foreshadow resolve --root <project-dir> --foreshadow-id <fs-id> --payoff-chapter <chapter-id>
+uv run story-canvas foreshadow list --root <project-dir>
 ```
 
-### If the user wants to review spec files (outline, character cards)
+Do not manually edit `foreshadowing.yaml`.
+
+### If the user wants structure review or human-readable review material
 
 ```powershell
-uv run story-harness export --root <project-dir> --format spec-outline --output <path>.md
-uv run story-harness export --root <project-dir> --format spec-characters --output <path>.md
+uv run story-canvas export --root <project-dir> --format spec-outline --output <path>.md
+uv run story-canvas export --root <project-dir> --format spec-characters --output <path>.md
+uv run story-canvas export --root <project-dir> --format markdown --output <path>.md
 ```
 
-These generate human-readable Markdown for outline review and character card review outside the CLI.
-
-### If the user wants structure planning or chapter direction proposals
-
-```powershell
-uv run story-harness outline propose --root <project-dir> --mode chapter --title "<title>" --summary "<summary>" --chapter-id <chapter-id> --prompt "<prompt>" --item "<beat title>::<beat summary>"
-uv run story-harness outline promote --root <project-dir> --proposal-id <proposal-id> --chapter-id <chapter-id>
-uv run story-harness projection apply --root <project-dir> --chapter-id <chapter-id>
-```
-
-### If the user wants to manage detailed outlines
-
-```powershell
-uv run story-harness outline detail-init --root <project-dir> --chapter-id <chapter-id> --direction "<章节方向>"
-uv run story-harness outline detail-show --root <project-dir> --chapter-id <chapter-id>
-```
+Prefer exported review material over raw protocol browsing where possible.
 
 ## Operational Rules
 
-1. Keep `Draft Proposal`, `Change Request`, `Projection`, and chapter prose separate.
-2. Never write canon changes straight into projection files without an explicit decision step.
-3. Treat `chapters/*.md` as author-facing prose and the `*.yaml` files as machine-facing state.
-4. Prefer explicit `@{实体}` mentions in Chinese prose when no entity registry exists yet; keep `@entity` as shorthand for English or clearly delimited mentions.
-5. Use the CLI as the execution layer and keep freeform editing for prose or intentional proposal revisions.
-6. Treat `review chapter` and `review scene` as quality gates, not optional reporting. For commercial serials, also inspect `commercialAlignment` and platform-aware `weightedScores`.
-7. If `scenePlans` exist in `outline.yaml`, use them as canonical scene boundaries before relying on heuristic splits.
-8. In layered projects (`spec/` directory exists), spec files live in `spec/` — do not look for them at root.
-9. Use `foreshadow plant` when planting a setup and `foreshadow resolve` when paying it off. Do not manually edit `foreshadowing.yaml`.
-10. Use `export --format spec-outline / spec-characters` to generate human-readable Markdown for review before or during writing.
+1. Treat `chapters/*.md` as prose and `*.yaml` as machine-facing state.
+2. Prefer repo-native commands for YAML changes.
+3. Use `review chapter` and `review scene` as quality gates, not optional reports.
+4. Read `project.yaml`, `context-lens.yaml`, and the relevant outline before drafting.
+5. Use explicit `@{实体}` for key canon entities in normal narration when appropriate.
+6. Do not mechanically force wrapped tags into quoted aliases or emotional address terms.
+7. If `scenePlans` exist, treat them as canonical scene boundaries before heuristic splits.
+8. If a project uses layered layout, read spec files in `spec/`.
+9. Prefer `chapter create` over directly editing `project.yaml` or `outline.yaml` when moving into a new chapter.
+10. If a CLI path is missing and manual protocol edits are unavoidable, surface that as a tooling gap after the writing pass.
 
 ## Core Files
 
-Read [references/protocol.md](./references/protocol.md) when you need the file layout or state semantics.
+Read [references/protocol.md](./references/protocol.md) for file layout and state semantics.
 
-The most important files (flat layout — files at project root):
+The most important files in practice are:
 
 1. `project.yaml`
-2. `outline.yaml`
-3. `entities.yaml`
-4. `chapters/*.md`
-5. `proposals/draft-proposals.yaml`
-6. `reviews/change-requests.yaml`
+2. `PRD.md` when present
+3. `outline.yaml` or `spec/outline.yaml`
+4. `entities.yaml` or `spec/entities.yaml`
+5. `foreshadowing.yaml` or `spec/foreshadowing.yaml`
+6. `chapters/*.md`
 7. `reviews/story-reviews.yaml`
-8. `projections/projection.yaml`
-9. `projections/context-lens.yaml`
-10. `foreshadowing.yaml`
-
-In layered layout (when `spec/` directory exists), spec-eligible files move to `spec/`:
-
-1. `project.yaml` (stays at root)
-2. `spec/outline.yaml` (thin index; volume details in `spec/outlines/vol-NNN.yaml`)
-3. `spec/entities.yaml`
-4. `spec/timeline.yaml`
-5. `spec/threads.yaml`
-6. `spec/structures.yaml`
-7. `spec/foreshadowing.yaml`
-8. `chapters/*.md` (stays at root)
-9. `proposals/`, `reviews/`, `projections/`, `logs/` (stay at root)
+8. `projections/context-lens.yaml`
+9. `workflow.yaml` when present
 
 ## Recommended Agent Behavior
 
-1. Read `context-lens.yaml` first if it exists.
-2. Read `project.yaml`, especially `positioning` and `storyContract`.
-3. Read `outline.yaml` (or only the relevant volume via `load_outline_for_chapter` in layered projects), and use explicit `scenePlans` if present.
-4. Read the target chapter or outline.
-5. Route execution through `uv run story-harness ...`.
-6. Run `review chapter`.
-7. Run `review scene` on the weakest or most important scene.
-8. If the result is weak, revise prose and re-run analysis + review before stopping.
-9. Summarize accepted, deferred, low-score dimensions, and next-step context after each loop.
-10. In layered layout, context refresh only loads the active volume's outline — saves context window for long novels.
+1. Read repository writing rules first, not just the chapter title.
+2. Read `docs/guides/writing-rules.md` before drafting.
+3. Read `docs/guides/volume-self-review.md` before any volume-level handoff.
+4. Read `context-lens.yaml` first if it exists.
+5. Read `project.yaml`, especially positioning, story contract, and commercial positioning.
+6. Read the relevant outline and current chapter state.
+7. Draft or revise prose.
+8. Route all stateful workflow actions through `uv run story-canvas ...`.
+9. Run review and continue revising until the weakest dimensions no longer contradict the story contract or current volume duty.
+10. Summarize:
+   - accepted strengths
+   - top risks
+   - missing payoff
+   - tooling gaps
+   - next-step context
 
 ## Stop Conditions
 
 You may stop after one pass only when at least one of the following is true:
 
 1. the user explicitly asked for a single pass
-2. `review chapter` and `review scene` are already acceptable for the current target
+2. the current chapter or volume is already acceptable for its target
 3. remaining weaknesses are explicitly called out as accepted risk
 
-If the weakest dimensions are still `needs-revision` or clearly conflict with `storyContract`, continue the loop.
+For full-run volume work, do not stop just because a single chapter was written. Stop only when:
+
+1. the volume reached explicit pause or closure criteria
+2. the user asked to pause
+3. a real blocker prevents safe continuation
 
 ## Validation
 
-Use the CLI repository for validation:
+Use the repository for validation:
 
 ```powershell
-uv run story-harness --help
+uv run story-canvas --help
 uv run python -m unittest discover -s tests
 ```

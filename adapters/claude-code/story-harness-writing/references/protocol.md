@@ -1,6 +1,6 @@
 # Protocol
 
-This Claude Code adapter follows the `story-harness-cli` file protocol.
+This Claude Code adapter follows the Story Canvas file protocol.
 
 ## Flat Layout (default, for short projects < 5万字)
 

@@ -14,7 +14,7 @@
 
 它们不应该只存在于作者脑中，也不应该等到写了几章之后再反推。
 
-在 Story Harness 里，这些信息现在统一落在 `project.yaml` 的三个块中：
+在 Story Canvas 里，这些信息现在统一落在 `project.yaml` 的三个块中：
 
 - `positioning`
 - `storyContract`
@@ -99,13 +99,13 @@
 最小示例：
 
 ```powershell
-uv run story-harness init --root .\demo --title "Fog Harbor" --genre "Mystery"
+uv run story-canvas init --root .\demo --title "Fog Harbor" --genre "Mystery"
 ```
 
 带完整定位信息的示例：
 
 ```powershell
-uv run story-harness init `
+uv run story-canvas init `
   --root .\demo `
   --title "雾港疑案" `
   --genre "奇幻" `

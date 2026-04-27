@@ -107,6 +107,17 @@ for file in $STAGED; do
 done
 
 # ============================================================
+# 5. 规则触点提醒
+# ============================================================
+if command -v python >/dev/null 2>&1; then
+    python scripts/check_rule_touchpoints.py || warn "规则触点提醒执行失败，请手动检查适用规则"
+elif command -v python3 >/dev/null 2>&1; then
+    python3 scripts/check_rule_touchpoints.py || warn "规则触点提醒执行失败，请手动检查适用规则"
+else
+    warn "未找到 python/python3，跳过规则触点提醒"
+fi
+
+# ============================================================
 # 结果
 # ============================================================
 echo ""

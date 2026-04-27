@@ -4,7 +4,7 @@
 
 ## 项目概览
 
-Story Harness CLI — Agent-native 小说创作工作流工具，Python 3.10+，零外部依赖，使用 argparse + JSON-compatible YAML 文件协议。当前处于早期功能积累阶段。
+Story Canvas — Agent-native 故事与视觉工作流工具，Python 3.10+，零外部依赖，使用 argparse + JSON-compatible YAML 文件协议，并开始提供早期单页 UI。当前处于早期功能积累阶段。
 
 ## 工作原则
 
@@ -18,6 +18,9 @@ Story Harness CLI — Agent-native 小说创作工作流工具，Python 3.10+，
 8. 完成任务后必须同步文档，并输出验证结果与残留风险。
 9. 禁止擅自添加 `Co-Authored-By`、`Pair-Programmed-By`、AI 工具签名或类似协作元信息。
 10. 禁止擅自修改协作者、owner、branch protection、ruleset 等仓库设置类配置，除非维护者明确要求。
+11. 仓库级规则优先于抽象工程口号；`clean code`、`SOLID` 只能作为辅助观察角度，不能单独构成改动理由。
+12. 非平凡改动前必须整理“适用规则”清单，明确本次工作实际受哪些入口、owner、不变量、兼容性和验证约束影响。
+13. 提交前或 PR 前必须按“适用规则”回审，不允许只给出泛化风格评价而不落到具体规则。
 
 ## 修改前必读顺序
 
@@ -27,6 +30,33 @@ Story Harness CLI — Agent-native 小说创作工作流工具，Python 3.10+，
 4. `docs/ARCHITECTURE_GUARDRAILS.md`
 5. 目标模块下的 `MODULE.md`
 6. 必要时再读相关 `plan` / `ADR`
+
+## 规则生命周期
+
+### 1. 开发前
+
+- 先整理本次改动的“适用规则”，至少覆盖：
+  - 当前执行入口
+  - 架构护栏 / canonical owner
+  - 目标模块 `MODULE.md` 中的不变量
+  - 已知兼容性约束（CLI 参数、输出结构、schema、文件协议）
+  - 必要时补充 ADR、plan、测试基线
+- 如果规则缺失，不得用抽象原则代替，必须写 `TBD` 并给出确认路径。
+
+### 2. 开发中
+
+- 实现必须优先服从已确认的 rule source、owner 和不变量，而不是先写再回头解释。
+- 遇到规则例外时，要么在本轮同步文档，要么停下确认；禁止默默引入并行真相源、并行规则定义或 undocumented exception。
+- 如果发现“想改是因为不够 clean / 不够 SOLID”，必须先把问题翻译成具体风险：重复实现、边界泄漏、兼容性破坏、测试困难、认知负担过高等。
+
+### 3. PR 前 / 自审时
+
+- 必须按“适用规则”逐条回审：
+  - 有没有越过 canonical owner 或依赖方向
+  - 有没有引入 breaking change 或 undocumented behavior change
+  - 有没有新增重复规则、平行配置、平行真相源
+  - 测试和文档是否与改动同步
+- 评审结论必须引用具体规则或风险，不使用“这不够 clean code / 不够 SOLID”作为直接结论。
 
 ## 关键项目约定
 
@@ -42,6 +72,7 @@ Story Harness CLI — Agent-native 小说创作工作流工具，Python 3.10+，
 目标模块：
 现有 owner：
 影响面：
+适用规则：
 计划改动：
 验证方式：
 需要同步的文档：
@@ -64,6 +95,7 @@ Story Harness CLI — Agent-native 小说创作工作流工具，Python 3.10+，
 - 需要改动 secrets、权限、安全边界
 - 发现仓库已有未解释的大量脏改动
 - 现有文档与代码状态严重冲突，无法推断真实状态
+- 适用规则之间存在冲突，无法判断哪条应优先
 - 需要引入第三方依赖
 
 ## 完成后必须输出

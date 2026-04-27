@@ -1,10 +1,10 @@
-# Story Harness CLI
+﻿# Story Canvas
 
 [English](./README.en.md) | [简体中文](./README.md)
 
-Story Harness CLI is an agent-native fiction workflow tool for long-form narrative writing.
+Story Canvas is an agent-native story and visual workflow project. The current primary command entrypoint is `story-canvas`, with an early single-page UI acting as the visual shell.
 
-It helps AI agents and authors work with structured story state instead of relying on a single giant prompt. The workflow separates prose, proposals, reviews, projection, and local context refresh, so long-form writing can evolve with clearer constraints and less state drift.
+It helps AI agents and authors work with structured story state instead of relying on a single giant prompt. The workflow separates prose, proposals, reviews, projection, local context refresh, and an expanding illustration layer, so long-form writing can evolve with clearer constraints and less state drift.
 
 If you want the canonical end-to-end writing loop first, read [docs/guides/creative-workflow.md](./docs/guides/creative-workflow.md).
 
@@ -15,9 +15,10 @@ This repository currently provides:
 - tracked sample projects under `projects/`
 - smoke-test fixtures and validated story baselines
 - optional provider foundation for external SDK / API integrations
+- provider-backed illustration generation capabilities
 - commercial long-form samples with project-level positioning and serial-writing blueprint
 
-It does not aim to replace a writing UI. Instead, it provides the protocol and workflow core that different skills, editors, and future interfaces can reuse.
+It is not yet a full creative workstation, but it is no longer just a standalone CLI either. The current product surface combines the file protocol, the Python workflow entrypoint, and an early single-page UI; in the short term, the command workflow stays primary while image generation and UI move forward in parallel. See [docs/plans/story-canvas-parallel-roadmap.md](./docs/plans/story-canvas-parallel-roadmap.md).
 
 ## What It Solves
 
@@ -34,7 +35,7 @@ The current writing stack is no longer just `characters + chapters`. It already 
 
 | Capability area | Current status | What is already implemented | Current gap |
 |------|------|------|------|
-| Project scaffold and repo-style layout | Implemented | `init` creates a fixed project skeleton, chapter files, protocol files, projections, reviews, and sample-friendly layout modes | still CLI-first, no visual project bootstrap |
+| Project scaffold and repo-style layout | Implemented | `init` creates a fixed project skeleton, chapter files, protocol files, projections, reviews, and sample-friendly layout modes | initialization still happens through commands; there is no visual project bootstrap yet |
 | Project-level writing contract | Implemented | `project.yaml` stores positioning, story contract, emotional contract, story template, and commercial positioning | still file/protocol oriented rather than a dedicated PRD workspace |
 | Worldbook / entities / foreshadow / threads / timeline | Implemented | explicit state files exist for world constraints, character cards, foreshadow ledger, suspense threads, timeline, and causality | editing experience is still relatively raw without UI |
 | Outline and detailed outline | Implemented | chapter direction, beats, scene plans, detailed outline init/show, and structure scaffolding are available | still depends on CLI commands and manual review |
@@ -42,10 +43,17 @@ The current writing stack is no longer just `characters + chapters`. It already 
 | Drafting support | Partially implemented | prose stays in `chapters/*.md`, while `context refresh` provides local writing context from active characters, world rules, threads, and foreshadows | there is no dedicated editor or desktop drafting UI yet |
 | Post-draft review and iteration loop | Implemented | `chapter analyze -> chapter suggest -> review apply -> projection apply -> context refresh -> review chapter/scene` already forms a closed loop | human review is still less convenient without Web UI |
 | Human-readable export | Implemented | `export` supports clean manuscript output in multiple formats | publishing and polished release packaging are still separate concerns |
-| Human review surface | Partially implemented | the protocol is inspectable and all outputs are persisted as files | review ergonomics are still a known gap before `v1.1` Web UI |
+| Human review surface | Partially implemented | the protocol is inspectable and all outputs are persisted as files | review ergonomics are still a known gap, now moved into an earlier parallel UI track |
 | Template richness and workflow freedom | Partially implemented | structure templates, style profiles, story template fields, and workflow state machine already exist | broader genre templates and freer workflow composition are planned for `v1.2` |
+| Illustration and visual asset flow | Partially implemented | `illustration` commands, provider abstraction, and provider-backed image requests already exist | asset history, parameter reuse, bulk review, and a practical visual surface are still missing |
 
 In short: the repository already has a usable "story engineering core" for constrained writing, review, projection, and export. What it still lacks is mainly interface polish, easier human review, and richer template packs.
+
+Current release-boundary note:
+
+- `v1.0.x` remains anchored on stable story protocol, workflow closure, and sample-backed regression
+- illustration generation and early UI work are no longer fully postponed to `v1.1`; they move in parallel to reduce manual testing cost in fiction workflows
+- `story-canvas` is now the primary CLI command, while `story-harness` stays as a legacy compatibility alias
 
 ## Core Model
 
@@ -63,13 +71,13 @@ Option A: initialize a new project
 
 ```powershell
 uv sync
-uv run story-harness init --root .\demo --title "Fog Harbor" --genre "Mystery"
+uv run story-canvas init --root .\demo --title "Fog Harbor" --genre "Mystery"
 ```
 
 For a real web-serial project, initialize the commercial blueprint at the same time instead of leaving it as afterthought metadata:
 
 ```powershell
-uv run story-harness init `
+uv run story-canvas init `
   --root .\demo `
   --title "夜巡收煞录" `
   --genre "奇幻" `
@@ -93,7 +101,7 @@ uv run story-harness init `
 For a constraint-heavy long-form project, initialize the emotional contract and template policy up front so the later review loop has something concrete to consume:
 
 ```powershell
-uv run story-harness init `
+uv run story-canvas init `
   --root .\demo `
   --title "归墟" `
   --genre "奇幻" `
@@ -128,55 +136,55 @@ This creates the normal project scaffold and also seeds:
 Then edit `demo/chapters/chapter-001.md` and run:
 
 ```powershell
-uv run story-harness chapter analyze --root .\demo --chapter-id chapter-001
-uv run story-harness chapter suggest --root .\demo --chapter-id chapter-001
-uv run story-harness review apply --root .\demo --chapter-id chapter-001 --all-pending --decision accepted
-uv run story-harness projection apply --root .\demo --chapter-id chapter-001
-uv run story-harness context refresh --root .\demo --chapter-id chapter-001
-uv run story-harness review chapter --root .\demo --chapter-id chapter-001
-uv run story-harness outline scene-detect --root .\demo --chapter-id chapter-001
-uv run story-harness review scene --root .\demo --chapter-id chapter-001 --scene-index 1
-uv run story-harness doctor --root .\demo
+uv run story-canvas chapter analyze --root .\demo --chapter-id chapter-001
+uv run story-canvas chapter suggest --root .\demo --chapter-id chapter-001
+uv run story-canvas review apply --root .\demo --chapter-id chapter-001 --all-pending --decision accepted
+uv run story-canvas projection apply --root .\demo --chapter-id chapter-001
+uv run story-canvas context refresh --root .\demo --chapter-id chapter-001
+uv run story-canvas review chapter --root .\demo --chapter-id chapter-001
+uv run story-canvas outline scene-detect --root .\demo --chapter-id chapter-001
+uv run story-canvas review scene --root .\demo --chapter-id chapter-001 --scene-index 1
+uv run story-canvas doctor --root .\demo
 ```
 
 Option B: run the validated short-story baseline
 
 ```powershell
-uv run story-harness doctor --root .\projects\demo-short-story
-uv run story-harness chapter analyze --root .\projects\demo-short-story --chapter-id chapter-001
-uv run story-harness chapter suggest --root .\projects\demo-short-story --chapter-id chapter-001
-uv run story-harness review apply --root .\projects\demo-short-story --chapter-id chapter-001 --all-pending --decision accepted
-uv run story-harness projection apply --root .\projects\demo-short-story --chapter-id chapter-001
-uv run story-harness context refresh --root .\projects\demo-short-story --chapter-id chapter-001
-uv run story-harness review chapter --root .\projects\demo-short-story --chapter-id chapter-001
-uv run story-harness review scene --root .\projects\demo-short-story --chapter-id chapter-001 --scene-index 1
+uv run story-canvas doctor --root .\projects\demo-short-story
+uv run story-canvas chapter analyze --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-canvas chapter suggest --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-canvas review apply --root .\projects\demo-short-story --chapter-id chapter-001 --all-pending --decision accepted
+uv run story-canvas projection apply --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-canvas context refresh --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-canvas review chapter --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-canvas review scene --root .\projects\demo-short-story --chapter-id chapter-001 --scene-index 1
 ```
 
 Option C: run the validated style-driven baseline
 
 ```powershell
-uv run story-harness doctor --root .\projects\demo-light-novel-short
-uv run story-harness chapter analyze --root .\projects\demo-light-novel-short --chapter-id chapter-001
-uv run story-harness review chapter --root .\projects\demo-light-novel-short --chapter-id chapter-001
-uv run story-harness review scene --root .\projects\demo-light-novel-short --chapter-id chapter-001 --scene-index 1
-uv run story-harness export --root .\projects\demo-light-novel-short --format markdown --output .\projects\demo-light-novel-short\manuscript.md
+uv run story-canvas doctor --root .\projects\demo-light-novel-short
+uv run story-canvas chapter analyze --root .\projects\demo-light-novel-short --chapter-id chapter-001
+uv run story-canvas review chapter --root .\projects\demo-light-novel-short --chapter-id chapter-001
+uv run story-canvas review scene --root .\projects\demo-light-novel-short --chapter-id chapter-001 --scene-index 1
+uv run story-canvas export --root .\projects\demo-light-novel-short --format markdown --output .\projects\demo-light-novel-short\manuscript.md
 ```
 
 Option D: run the validated xuanhuan web-serial baseline
 
 ```powershell
-uv run story-harness doctor --root .\projects\demo-xuanhuan-short
-uv run story-harness chapter analyze --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
-uv run story-harness review chapter --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
-uv run story-harness review scene --root .\projects\demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1
-uv run story-harness export --root .\projects\demo-xuanhuan-short --format markdown --output .\projects\demo-xuanhuan-short\manuscript.md
+uv run story-canvas doctor --root .\projects\demo-xuanhuan-short
+uv run story-canvas chapter analyze --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
+uv run story-canvas review chapter --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
+uv run story-canvas review scene --root .\projects\demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1
+uv run story-canvas export --root .\projects\demo-xuanhuan-short --format markdown --output .\projects\demo-xuanhuan-short\manuscript.md
 ```
 
 Repository fallback:
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli chapter analyze --root .\demo --chapter-id chapter-001
+python -m story_canvas chapter analyze --root .\demo --chapter-id chapter-001
 ```
 
 Use `demo-short-story` when you want a genre-neutral regression baseline. Use `demo-light-novel-short` when you want to verify that `subGenre`, `styleTags`, and `targetAudience` survive the review loop. Use `demo-xuanhuan-short` when you want to verify `xuanhuan + web-serial` weighting and short-form progression pacing. For the current sample catalog, see [docs/guides/sample-matrix.md](./docs/guides/sample-matrix.md).
@@ -214,47 +222,48 @@ goal or reasoning
 
 ## Command Overview
 
-- `story-harness init`
-- `story-harness brainstorm character|world|outline`
-- `story-harness chapter analyze`
-- `story-harness chapter suggest`
-- `story-harness review apply`
-- `story-harness review chapter`
-- `story-harness review scene`
-- `story-harness outline propose`
-- `story-harness outline promote`
-- `story-harness outline beat-add`
-- `story-harness outline beat-complete`
-- `story-harness outline beat-list`
-- `story-harness outline scene-add`
-- `story-harness outline scene-list`
-- `story-harness outline scene-detect`
-- `story-harness outline scene-update`
-- `story-harness outline scene-remove`
-- `story-harness outline detail-init`
-- `story-harness outline detail-show`
-- `story-harness projection apply`
-- `story-harness context refresh|show`
-- `story-harness entity enrich|review|list|show|graph`
-- `story-harness style check|constraints|report|repair`
-- `story-harness illustration prompt|generate|list|config`
-- `story-harness structure list|apply|show|check|map|scaffold`
-- `story-harness thread plant|resolve|list|check`
-- `story-harness foreshadow plant|resolve|list`
-- `story-harness arc define|milestone|list|check`
-- `story-harness workflow status|run|advance|reset|export`
-- `story-harness timeline add/list/check`
-- `story-harness causality add/list/check`
-- `story-harness search`
-- `story-harness consistency check`
-- `story-harness stats`
-- `story-harness migrate`
-- `story-harness export --format json|markdown|txt`
-- `story-harness doctor`
+- `story-canvas init`
+- `story-canvas brainstorm character|world|outline`
+- `story-canvas chapter analyze`
+- `story-canvas chapter suggest`
+- `story-canvas review apply`
+- `story-canvas review chapter`
+- `story-canvas review scene`
+- `story-canvas outline propose`
+- `story-canvas outline promote`
+- `story-canvas outline beat-add`
+- `story-canvas outline beat-complete`
+- `story-canvas outline beat-list`
+- `story-canvas outline scene-add`
+- `story-canvas outline scene-list`
+- `story-canvas outline scene-detect`
+- `story-canvas outline scene-update`
+- `story-canvas outline scene-remove`
+- `story-canvas outline detail-init`
+- `story-canvas outline detail-show`
+- `story-canvas projection apply`
+- `story-canvas context refresh|show`
+- `story-canvas entity enrich|review|list|show|graph`
+- `story-canvas style check|constraints|report|repair`
+- `story-canvas illustration prompt|generate|list|config`
+- `story-canvas structure list|apply|show|check|map|scaffold`
+- `story-canvas thread plant|resolve|list|check`
+- `story-canvas foreshadow plant|resolve|list`
+- `story-canvas arc define|milestone|list|check`
+- `story-canvas workflow status|run|advance|reset|export`
+- `story-canvas timeline add/list/check`
+- `story-canvas causality add/list/check`
+- `story-canvas search`
+- `story-canvas consistency check`
+- `story-canvas stats`
+- `story-canvas migrate`
+- `story-canvas export --format json|markdown|txt`
+- `story-canvas doctor`
 
 ## Project Layout
 
-- `src/story_harness_cli/` - CLI implementation
+- `src/story_canvas/` - public Python module and primary CLI entry wrapper
+- `src/story_harness_cli/` - current internal owner for commands, protocol, and service implementation
 - `adapters/` - host-specific adapter sources for Codex, Claude Code, and future hosts
 - `scripts/install_adapter.py` - install a host adapter into Codex or Claude skill directories
 - `scripts/install_adapters.py` - batch-install adapters for multiple hosts
@@ -269,7 +278,7 @@ The current implementation already covers:
 - layered file protocol for prose, proposals, reviews, projections, and context
 - chapter analysis, suggestion generation, and explicit review-then-apply workflow
 - chapter review, scene review, and style review with profile-driven constraints
-- style repair guidance plus illustration prompt, dry-run, real OpenAI text-to-image / image-to-image request flows, multi-asset persistence, and asset-state listing
+- style repair guidance plus provider-backed illustration prompt, dry-run, real OpenAI text-to-image / image-to-image request flows, multi-asset persistence, and asset-state listing
 - outline-first gating, beat tracking, scene plan maintenance, and detailed outline helpers
 - project positioning, story contract, and commercial serial blueprint validation
 - timeline, causality, suspense thread, foreshadow, structure, and character-arc tracking
@@ -283,7 +292,8 @@ The current implementation already covers:
 
 The next round should stay focused on a small set of practical gaps:
 
-- improve human review ergonomics for structured story state before the future Web UI lands
+- improve human review ergonomics for structured story state while the early UI track advances in parallel
+- move illustration asset-management ergonomics into the Story Canvas visual surface instead of widening the `v1.0.x` CLI-only release scope
 - deepen story-constraint consumption in review and workflow, especially worldbook, foreshadow payoff windows, and dynamic character state
 - expand genre/template packs so different novel skeletons do not all depend on the same baseline assumptions
 - stabilize the provider layer with one or two real integrations beyond the current foundation
@@ -309,7 +319,7 @@ uv run python -m unittest discover -s tests
 Run structural validation against a story project:
 
 ```powershell
-uv run story-harness doctor --root .\projects\demo-short-story
+uv run story-canvas doctor --root .\projects\demo-short-story
 ```
 
 Install a host adapter:
@@ -340,3 +350,4 @@ Contributor and release docs:
 - Add deeper schema validation for graph, thread, structure, and commercial workflow semantics
 - Validate richer production workflows against real long-form projects
 - Revisit distribution strategy only after the Python CLI contract is stable
+

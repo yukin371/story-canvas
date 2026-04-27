@@ -7,6 +7,10 @@ story-project/
   entities.yaml
   timeline.yaml
   branches.yaml
+  illustrations.yaml               # optional
+  prompts/                         # optional, proposed prompt-system extension
+    illustration-packs/
+      pack-default.yaml
   chapters/
     chapter-001.md
   proposals/
@@ -29,3 +33,5 @@ All `*.yaml` files currently store JSON-formatted text. This keeps the prototype
 `reviews/story-reviews.yaml` currently stores both `chapterReviews` and `sceneReviews`.
 
 `outline.yaml` 的章节条目可选维护 `scenePlans`，供 `review scene --scene-index` 优先读取显式场景边界。
+
+`illustrations.yaml` 当前保存项目级生图配置与生成历史。提示词系统的提议协议见 `docs/protocol/image-prompt-system.md`；其中 `prompts/illustration-packs/` 是可选的项目内自定义模板资源目录，缺失时应回退 builtin packs。

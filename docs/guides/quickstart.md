@@ -12,13 +12,13 @@ uv sync
 ## 2. Initialize a project
 
 ```powershell
-uv run story-harness init --root .\demo --title "Fog Harbor" --genre "Mystery"
+uv run story-canvas init --root .\demo --title "Fog Harbor" --genre "Mystery"
 ```
 
 如果你准备直接进入严格写作闭环，初始化时就把项目门禁字段一并写上：
 
 ```powershell
-uv run story-harness init `
+uv run story-canvas init `
   --root .\demo `
   --title "Fog Harbor" `
   --genre "Mystery" `
@@ -34,7 +34,7 @@ uv run story-harness init `
 如果你做的是网站连载或商业长篇，不要只填基础定位，建议把 `commercialPositioning` 也在初始化时写上：
 
 ```powershell
-uv run story-harness init `
+uv run story-canvas init `
   --root .\demo `
   --title "夜巡收煞录" `
   --genre "奇幻" `
@@ -61,28 +61,28 @@ uv run story-harness init `
 如果你想直接跑一个仓库内已验证样例，而不是先自己写正文，优先使用 `demo-short-story`：
 
 ```powershell
-uv run story-harness doctor --root .\projects\demo-short-story
-uv run story-harness chapter analyze --root .\projects\demo-short-story --chapter-id chapter-001
-uv run story-harness review chapter --root .\projects\demo-short-story --chapter-id chapter-001
-uv run story-harness review scene --root .\projects\demo-short-story --chapter-id chapter-001 --scene-index 1
+uv run story-canvas doctor --root .\projects\demo-short-story
+uv run story-canvas chapter analyze --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-canvas review chapter --root .\projects\demo-short-story --chapter-id chapter-001
+uv run story-canvas review scene --root .\projects\demo-short-story --chapter-id chapter-001 --scene-index 1
 ```
 
 如果你要验证“类型 / 子类型 / 风格标签 / 目标读者”是否进入评审链路，改用 `demo-light-novel-short`：
 
 ```powershell
-uv run story-harness doctor --root .\projects\demo-light-novel-short
-uv run story-harness chapter analyze --root .\projects\demo-light-novel-short --chapter-id chapter-001
-uv run story-harness review chapter --root .\projects\demo-light-novel-short --chapter-id chapter-001
-uv run story-harness review scene --root .\projects\demo-light-novel-short --chapter-id chapter-001 --scene-index 1
+uv run story-canvas doctor --root .\projects\demo-light-novel-short
+uv run story-canvas chapter analyze --root .\projects\demo-light-novel-short --chapter-id chapter-001
+uv run story-canvas review chapter --root .\projects\demo-light-novel-short --chapter-id chapter-001
+uv run story-canvas review scene --root .\projects\demo-light-novel-short --chapter-id chapter-001 --scene-index 1
 ```
 
 如果你要验证“玄幻 + 网文节奏”的定位层和中短篇升级驱动，改用 `demo-xuanhuan-short`：
 
 ```powershell
-uv run story-harness doctor --root .\projects\demo-xuanhuan-short
-uv run story-harness chapter analyze --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
-uv run story-harness review chapter --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
-uv run story-harness review scene --root .\projects\demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1
+uv run story-canvas doctor --root .\projects\demo-xuanhuan-short
+uv run story-canvas chapter analyze --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
+uv run story-canvas review chapter --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
+uv run story-canvas review scene --root .\projects\demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1
 ```
 
 这三个样例的定位差异与扩展策略，统一以 [样例工程矩阵](./sample-matrix.md) 为准。
@@ -100,27 +100,27 @@ Prefer `@{实体}` in Chinese prose:
 ## 4. Run the chapter loop
 
 ```powershell
-uv run story-harness outline check --root .\demo --chapter-id chapter-001
-uv run story-harness chapter analyze --root .\demo --chapter-id chapter-001
-uv run story-harness chapter suggest --root .\demo --chapter-id chapter-001
-uv run story-harness review apply --root .\demo --chapter-id chapter-001 --all-pending --decision accepted
-uv run story-harness projection apply --root .\demo --chapter-id chapter-001
-uv run story-harness context refresh --root .\demo --chapter-id chapter-001
-uv run story-harness review chapter --root .\demo --chapter-id chapter-001
-uv run story-harness outline scene-detect --root .\demo --chapter-id chapter-001
-uv run story-harness review scene --root .\demo --chapter-id chapter-001 --scene-index 1
-uv run story-harness doctor --root .\demo
+uv run story-canvas outline check --root .\demo --chapter-id chapter-001
+uv run story-canvas chapter analyze --root .\demo --chapter-id chapter-001
+uv run story-canvas chapter suggest --root .\demo --chapter-id chapter-001
+uv run story-canvas review apply --root .\demo --chapter-id chapter-001 --all-pending --decision accepted
+uv run story-canvas projection apply --root .\demo --chapter-id chapter-001
+uv run story-canvas context refresh --root .\demo --chapter-id chapter-001
+uv run story-canvas review chapter --root .\demo --chapter-id chapter-001
+uv run story-canvas outline scene-detect --root .\demo --chapter-id chapter-001
+uv run story-canvas review scene --root .\demo --chapter-id chapter-001 --scene-index 1
+uv run story-canvas doctor --root .\demo
 ```
 
 如果你想先按经典结构把整本书的节拍骨架定下来，而不是直接手写章节方向，可以先跑：
 
 ```powershell
-uv run story-harness structure list --root .\demo
-uv run story-harness structure apply --root .\demo --template three-act
-uv run story-harness structure show --root .\demo
-uv run story-harness structure scaffold --root .\demo
-uv run story-harness outline check --root .\demo
-uv run story-harness structure check --root .\demo
+uv run story-canvas structure list --root .\demo
+uv run story-canvas structure apply --root .\demo --template three-act
+uv run story-canvas structure show --root .\demo
+uv run story-canvas structure scaffold --root .\demo
+uv run story-canvas outline check --root .\demo
+uv run story-canvas structure check --root .\demo
 ```
 
 当前内置模板包含：`three-act`、`five-act`、`hero-journey`、`save-the-cat`。
@@ -134,55 +134,55 @@ uv run story-harness structure check --root .\demo
 如果你在做网站连载，还建议把字数检查放进每轮闭环：
 
 ```powershell
-uv run story-harness stats --root .\demo --min-chapter-words 2000 --target-chapter-words 3000
-uv run story-harness doctor --root .\demo --min-chapter-words 2000 --target-chapter-words 3000
+uv run story-canvas stats --root .\demo --min-chapter-words 2000 --target-chapter-words 3000
+uv run story-canvas doctor --root .\demo --min-chapter-words 2000 --target-chapter-words 3000
 ```
 
-If `story-harness` is not available in your environment yet, use the repository fallback:
+If `story-canvas` is not available in your environment yet, use the repository fallback:
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli outline check --root .\demo --chapter-id chapter-001
-python -m story_harness_cli chapter analyze --root .\demo --chapter-id chapter-001
-python -m story_harness_cli chapter suggest --root .\demo --chapter-id chapter-001
-python -m story_harness_cli review apply --root .\demo --chapter-id chapter-001 --all-pending --decision accepted
-python -m story_harness_cli projection apply --root .\demo --chapter-id chapter-001
-python -m story_harness_cli context refresh --root .\demo --chapter-id chapter-001
-python -m story_harness_cli review chapter --root .\demo --chapter-id chapter-001
-python -m story_harness_cli outline scene-detect --root .\demo --chapter-id chapter-001
-python -m story_harness_cli review scene --root .\demo --chapter-id chapter-001 --scene-index 1
-python -m story_harness_cli doctor --root .\demo
+python -m story_canvas outline check --root .\demo --chapter-id chapter-001
+python -m story_canvas chapter analyze --root .\demo --chapter-id chapter-001
+python -m story_canvas chapter suggest --root .\demo --chapter-id chapter-001
+python -m story_canvas review apply --root .\demo --chapter-id chapter-001 --all-pending --decision accepted
+python -m story_canvas projection apply --root .\demo --chapter-id chapter-001
+python -m story_canvas context refresh --root .\demo --chapter-id chapter-001
+python -m story_canvas review chapter --root .\demo --chapter-id chapter-001
+python -m story_canvas outline scene-detect --root .\demo --chapter-id chapter-001
+python -m story_canvas review scene --root .\demo --chapter-id chapter-001 --scene-index 1
+python -m story_canvas doctor --root .\demo
 ```
 
 Validated sample fallback:
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli doctor --root .\projects\demo-short-story
-python -m story_harness_cli chapter analyze --root .\projects\demo-short-story --chapter-id chapter-001
-python -m story_harness_cli outline check --root .\projects\demo-short-story --chapter-id chapter-001
-python -m story_harness_cli review chapter --root .\projects\demo-short-story --chapter-id chapter-001
-python -m story_harness_cli review scene --root .\projects\demo-short-story --chapter-id chapter-001 --scene-index 1
+python -m story_canvas doctor --root .\projects\demo-short-story
+python -m story_canvas chapter analyze --root .\projects\demo-short-story --chapter-id chapter-001
+python -m story_canvas outline check --root .\projects\demo-short-story --chapter-id chapter-001
+python -m story_canvas review chapter --root .\projects\demo-short-story --chapter-id chapter-001
+python -m story_canvas review scene --root .\projects\demo-short-story --chapter-id chapter-001 --scene-index 1
 ```
 
 Style-driven sample fallback:
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli doctor --root .\projects\demo-light-novel-short
-python -m story_harness_cli chapter analyze --root .\projects\demo-light-novel-short --chapter-id chapter-001
-python -m story_harness_cli review chapter --root .\projects\demo-light-novel-short --chapter-id chapter-001
-python -m story_harness_cli review scene --root .\projects\demo-light-novel-short --chapter-id chapter-001 --scene-index 1
+python -m story_canvas doctor --root .\projects\demo-light-novel-short
+python -m story_canvas chapter analyze --root .\projects\demo-light-novel-short --chapter-id chapter-001
+python -m story_canvas review chapter --root .\projects\demo-light-novel-short --chapter-id chapter-001
+python -m story_canvas review scene --root .\projects\demo-light-novel-short --chapter-id chapter-001 --scene-index 1
 ```
 
 Xuanhuan sample fallback:
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli doctor --root .\projects\demo-xuanhuan-short
-python -m story_harness_cli chapter analyze --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
-python -m story_harness_cli review chapter --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
-python -m story_harness_cli review scene --root .\projects\demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1
+python -m story_canvas doctor --root .\projects\demo-xuanhuan-short
+python -m story_canvas chapter analyze --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
+python -m story_canvas review chapter --root .\projects\demo-xuanhuan-short --chapter-id chapter-001
+python -m story_canvas review scene --root .\projects\demo-xuanhuan-short --chapter-id chapter-001 --scene-index 1
 ```
 
 ## 5. Close The Loop
@@ -211,7 +211,7 @@ Standard close-the-loop sequence:
 ## 7. Validate the project shape
 
 ```powershell
-uv run story-harness doctor --root .\demo
+uv run story-canvas doctor --root .\demo
 ```
 
 Use `--strict` if you want warnings to fail CI or release checks.

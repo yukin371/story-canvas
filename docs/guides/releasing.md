@@ -8,9 +8,9 @@ This repository is currently in a fast-iteration phase. The release process shou
 
 1. Confirm the working tree is clean.
 2. Run `uv sync`.
-3. Run `uv run story-harness --help`.
+3. Run `uv run story-canvas --help`.
 4. Run `uv run python -m unittest discover -s tests`.
-5. Run `uv run story-harness doctor --root .\examples\minimal-project`.
+5. Run `uv run story-canvas doctor --root .\examples\minimal-project`.
 6. If adapters changed, run:
 
 ```powershell
