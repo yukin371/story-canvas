@@ -2,44 +2,96 @@
 
 This directory stores host-specific adapters for the Story Canvas workflow core.
 
-The current adapters are no longer just thin “which command to run” notes.
+Read [ADAPTER_ARCHITECTURE.md](./ADAPTER_ARCHITECTURE.md) first for the current layered design.
 
-`story-harness-writing` intentionally combines:
+## Current Design
 
-1. Chinese fiction writing guidance
-2. Story Canvas workflow routing
-3. protocol-bound execution rules
+Adapters are organized by:
 
-Even after that integration, the adapters must stay thin in one important sense:
-
-- they teach the agent how to write and how to use the CLI
-- they do not become a second source of truth beside the repository protocol
-
-Current rule:
-
-1. the CLI repository owns adapter source
-2. local installed skills are treated as deployed copies
-3. adapters must stay thin and delegate execution to `story-canvas`
+1. host
+2. skill family
+3. internal layer
 
 Current hosts:
 
 1. `codex-skill/`
 2. `claude-code/`
 
-Current adapter families:
+Current skill families:
 
-1. `story-harness-writing`: long-form writing workflow
-2. `story-canvas-imagegen`: illustration batch manifest consumption for WebUI / external agent image generation
+1. `story-harness-brainstorm`
+2. `story-harness-writing`
+3. `story-canvas-imagegen`
 
-Each adapter should explain:
+## Brainstorm Skill Position
 
-1. when to invoke the CLI
-2. which protocol files matter
-3. which commands correspond to the writing loop
-4. what the complete close-the-loop workflow is after scoring
-5. which fallback command path to use when `story-canvas` is unavailable
-6. how to write within the repository's actual story-quality constraints
-7. which actions should prefer repo-native CLI over direct YAML editing
+`story-harness-brainstorm` is the pre-project exploration skill family.
+
+Use it when the user is still exploring:
+
+1. premise candidates
+2. hook directions
+3. protagonist abnormal state
+4. repeatable chapter engine
+5. first-volume promise
+6. one `PRD seed` before `init`
+
+It should stop at:
+
+1. ideation notes
+2. narrowed directions
+3. one usable `PRD seed`
+
+It should not assume a project already exists, and it should not invent project-state files by itself.
+
+## Writing Skill Layers
+
+`story-harness-writing` is no longer treated as a single flat writing manual.
+
+It should be read in layers:
+
+1. universal writing base
+2. workflow gates
+3. genre / tag overlays
+
+The universal layer now covers:
+
+1. prose craft
+2. character engine
+3. chapter planning grain
+4. hook design and payout rhythm
+
+For character-card shaping and chapter/scene planning translation, use:
+
+1. `references/planning-primitives.md`
+
+The top-level `SKILL.md` should stay focused on:
+
+1. trigger conditions
+2. loading order
+3. host-specific execution notes
+4. mandatory workflow gates
+
+Detailed material should live in `references/`.
+
+## Image Skill Position
+
+`story-canvas-imagegen` is a separate skill family, not just an appendix of the writing skill.
+
+It must support two participation modes:
+
+1. CLI-only / external-agent mode
+2. human-assisted `webui-manual` mode
+
+WebUI is optional participation infrastructure. It is not a required dependency for the main workflow and it is not a new source of truth.
+
+## Adapter Invariants
+
+1. the CLI repository owns adapter source
+2. local installed skills are deployed copies
+3. adapters stay thin and delegate execution to `story-canvas`
+4. adapters may integrate writing methodology, but may not introduce a parallel state system
+5. writing quality rules belong to repository guides and repo-owned references, not to host-only folklore
 
 Canonical writing-quality references live in the repository guides:
 
@@ -53,6 +105,7 @@ Install adapters with:
 uv run python scripts/install_adapter.py --host codex --force
 uv run python scripts/install_adapter.py --host claude --workspace <workspace-root> --force
 uv run python scripts/install_adapters.py --workspace <workspace-root> --force
+uv run python scripts/install_adapter.py --host codex --skill-name story-harness-brainstorm --force
 uv run python scripts/install_adapter.py --host codex --skill-name story-canvas-imagegen --force
 ```
 

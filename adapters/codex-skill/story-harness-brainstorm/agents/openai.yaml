@@ -1,0 +1,4 @@
+interface:
+  display_name: "Story Canvas Brainstorm"
+  short_description: "Pre-project fiction ideation and PRD seed discovery"
+  default_prompt: "Use $story-harness-brainstorm for pre-project Chinese fiction exploration: expand story sparks, compare directions, find the protagonist abnormal state and serial loop, and converge on one PRD seed before initializing a Story Canvas project."
