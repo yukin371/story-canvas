@@ -276,6 +276,7 @@ define volume responsibility
   -> continue until the whole volume reaches small-story closure
   -> export volume packet
   -> AI volume self-review
+  -> independent editor pass
   -> targeted revision
   -> re-check
   -> hand off to human review
@@ -286,6 +287,39 @@ If the user explicitly wants uninterrupted full-run drafting, do not stop mid-vo
 1. the user interrupts
 2. the repository workflow blocks
 3. a true contradiction or missing requirement makes continuation unsafe
+
+### Independent Editor Pass
+
+For volume review, do not let the same drafting context both self-review and score itself if the host supports an independent path.
+
+Default requirement:
+
+1. run `review volume-self-template`
+2. create a second pass in a no-context proxy / fresh thread / independent editor channel
+3. let that pass read the volume packet and necessary CLI outputs first, not the earlier self-review conclusion
+4. make it produce its own scores, comments, top problems, and improvement points
+5. only then compare:
+   - what the CLI already detected
+   - what the first self-review noticed
+   - what the independent editor still found
+
+Preferred isolation order:
+
+1. subagent with no prior drafting context
+2. fresh thread
+3. human editor
+4. same agent fallback with explicit disclosure
+
+If the host supports subagents, use one for the independent editor pass.
+
+Minimum evidence bundle for that pass:
+
+1. `review volume-self-template --root <project-dir> --volume-id <volume-id>`
+2. `export --root <project-dir> --format review-packet --volume-id <volume-id>`
+3. `style report --root <project-dir> --volume-id <volume-id>`
+4. targeted `style check` / `review chapter` / `review scene` outputs for cited chapters or scenes
+
+Do not allow `allowHumanReview=true` unless the independent editor pass is attached.
 
 ### If the user wants foreshadow tracking
 
@@ -319,6 +353,11 @@ Prefer exported review material over raw protocol browsing where possible.
 8. If a project uses layered layout, read spec files in `spec/`.
 9. Prefer `chapter create` over directly editing `project.yaml` or `outline.yaml` when moving into a new chapter.
 10. If a CLI path is missing and manual protocol edits are unavoidable, surface that as a tooling gap after the writing pass.
+11. During volume review, every major issue should explain:
+    - why tooling missed it
+    - why self-review missed it
+    - what rule, prompt, or re-check step should be improved
+12. During volume review, record which commands or rule ids already detected the issue whenever possible.
 
 ## Core Files
 

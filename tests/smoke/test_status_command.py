@@ -424,6 +424,20 @@ class StatusCommandSmokeTest(unittest.TestCase):
                             "strongestPoint": "章间承接稳定",
                             "biggestRisk": "世界规则解释仍偏薄",
                         },
+                        "editorPass": {
+                            "completed": True,
+                            "reviewerRole": "editor",
+                            "mode": "independent_agent",
+                            "contextIsolation": "no_context_proxy",
+                            "notes": "独立编辑已完成评分。",
+                        },
+                        "editorAssessment": {
+                            "overallVerdict": "pass",
+                            "summaryComment": "独立编辑认为可进入人工审查。",
+                            "topProblems": ["世界规则解释仍偏薄"],
+                            "improvementPoints": ["补一处世界规则解释"],
+                            "scores": [],
+                        },
                         "scores": [],
                         "issues": [],
                         "closureAssessment": {},
@@ -461,6 +475,9 @@ class StatusCommandSmokeTest(unittest.TestCase):
         self.assertFalse(payload["targetChapter"]["exists"])
         self.assertTrue(payload["reviewStatus"]["volumeSelfReview"]["exists"])
         self.assertEqual(payload["reviewStatus"]["volumeSelfReview"]["closureStatus"], "closed")
+        self.assertTrue(payload["reviewStatus"]["volumeSelfReview"]["editorPassCompleted"])
+        self.assertEqual(payload["reviewStatus"]["volumeSelfReview"]["editorMode"], "independent_agent")
+        self.assertEqual(payload["reviewStatus"]["volumeSelfReview"]["editorVerdict"], "pass")
         self.assertEqual(payload["reviewStatus"]["volumeSelfReview"]["repairCoverageStatus"], "complete")
         self.assertEqual(payload["reviewStatus"]["volumeSelfReview"]["weakDimensionLabels"], [])
         self.assertEqual(payload["reviewStatus"]["volumeSelfReview"]["uncoveredWeakDimensionLabels"], [])
@@ -469,6 +486,9 @@ class StatusCommandSmokeTest(unittest.TestCase):
         self.assertEqual(payload["workflow"]["workflowStatus"], "completed")
         self.assertEqual(payload["workflow"]["projectAdvisories"][0]["ruleId"], "project-prd-incomplete")
         self.assertTrue(payload["workflow"]["volumeSelfReview"]["finalAllowHumanReview"])
+        self.assertTrue(payload["workflow"]["volumeSelfReview"]["editorPassCompleted"])
+        self.assertEqual(payload["workflow"]["volumeSelfReview"]["editorMode"], "independent_agent")
+        self.assertEqual(payload["workflow"]["volumeSelfReview"]["editorVerdict"], "pass")
         self.assertEqual(payload["workflow"]["preflightSummary"]["mentionActionCount"], 0)
 
     def test_status_volume_scope_reports_missing_project_prd_as_advisory(self) -> None:

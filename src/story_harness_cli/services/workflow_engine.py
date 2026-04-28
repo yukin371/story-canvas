@@ -351,6 +351,10 @@ def infer_volume_preflight_workflow(
             "closureStatus": (volume_self_review or {}).get("conclusion", {}).get("closureStatus", ""),
             "declaredAllowHumanReview": (volume_self_review or {}).get("conclusion", {}).get("allowHumanReview"),
             "finalAllowHumanReview": (volume_self_review or {}).get("finalAllowHumanReview"),
+            "editorPassCompleted": (volume_self_review or {}).get("editorPass", {}).get("completed"),
+            "editorMode": (volume_self_review or {}).get("editorPass", {}).get("mode", ""),
+            "editorContextIsolation": (volume_self_review or {}).get("editorPass", {}).get("contextIsolation", ""),
+            "editorVerdict": (volume_self_review or {}).get("editorAssessment", {}).get("overallVerdict", ""),
             "gateFailureCount": len((volume_self_review or {}).get("gateFailures", [])),
             "repairCoverageStatus": (volume_self_review or {}).get("repairCoverage", {}).get("status", ""),
             "weakDimensionLabels": list(
@@ -764,6 +768,19 @@ def _build_volume_human_review_gate(
 
     if gate_failures:
         next_actions: list[str] = []
+        gate_failure_codes = {
+            str(item.get("code", "")).strip()
+            for item in gate_failures
+            if isinstance(item, dict)
+        }
+        if "volume-self-review-editor-pass-incomplete" in gate_failure_codes:
+            next_actions.append(
+                "先补做独立编辑审查；若宿主支持 subagent 或新线程，优先使用无上下文独立通道。"
+            )
+        if "volume-self-review-editor-verdict-blocking" in gate_failure_codes:
+            next_actions.append(
+                "先处理独立编辑判定为 revise/block 的问题，再重新提交卷级自审。"
+            )
         if uncovered_weak_labels:
             next_actions.append(
                 "先把以下弱项明确写进 issues / repairSuggestions 并落实修稿："

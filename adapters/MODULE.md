@@ -24,6 +24,7 @@
 - adapter 不得和仓库真实能力口径冲突
 - adapter 必须说明 canonical workflow，而不是只罗列零散命令
 - adapter 必须说明运行 fallback、关键协议文件、停止条件
+- 对卷级审查，adapter 若宿主支持 subagent / 新线程 / 独立通道，必须优先要求无上下文独立编辑审查，避免同线程自评
 - adapter 可以整合外部写作 skill 的方法论，但不得引入并行真相源或独立状态系统
 - imagegen 类 adapter 也必须消费仓库导出的 batch manifest，并通过 CLI 回录结果，不能自己直接写 `illustrations.yaml`
 

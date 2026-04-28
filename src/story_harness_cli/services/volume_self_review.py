@@ -27,6 +27,25 @@ VOLUME_SELF_REVIEW_CAUSES = (
     "false_positive",
     "accepted_risk",
 )
+VOLUME_SELF_REVIEW_EDITOR_MODES = (
+    "independent_agent",
+    "human_editor",
+    "fresh_thread",
+    "same_agent_fallback",
+)
+VOLUME_SELF_REVIEW_EDITOR_CONTEXTS = (
+    "no_context_proxy",
+    "fresh_thread",
+    "human_manual",
+    "same_thread",
+    "not_available",
+)
+VOLUME_SELF_REVIEW_EDITOR_VERDICTS = (
+    "pass",
+    "revise",
+    "block",
+    "not_provided",
+)
 HUMAN_REVIEW_MINIMUM_SCORES = {
     "volumeClosure": 3,
     "chapterHandoff": 3,
@@ -77,6 +96,11 @@ def normalize_volume_self_review(
         item["dimensionId"]: item["score"]
         for item in normalized_scores
     }
+    editor_pass = _normalize_editor_pass(raw_payload.get("editorPass"))
+    editor_assessment = _normalize_editor_assessment(
+        raw_payload.get("editorAssessment"),
+        completed=editor_pass["completed"],
+    )
     issues = _normalize_issues(raw_payload.get("issues", []))
     repair_suggestions = _normalize_string_list(
         raw_payload.get("repairSuggestions", []),
@@ -114,6 +138,8 @@ def normalize_volume_self_review(
         declared_allow_human_review=declared_allow_human_review,
         delivered=delivered,
         missing=missing,
+        editor_pass=editor_pass,
+        editor_assessment=editor_assessment,
         issues=issues,
         repair_suggestions=repair_suggestions,
     )
@@ -146,6 +172,23 @@ def normalize_volume_self_review(
             {
                 "code": "volume-self-review-declared-blocked",
                 "message": "卷级自审明确判定当前版本暂不建议进入人工审查。",
+            }
+        )
+    if not editor_pass["completed"]:
+        gate_failures.append(
+            {
+                "code": "volume-self-review-editor-pass-incomplete",
+                "message": "独立编辑审查尚未完成，当前版本不应进入人工审查。",
+            }
+        )
+    elif editor_assessment["overallVerdict"] != "pass":
+        gate_failures.append(
+            {
+                "code": "volume-self-review-editor-verdict-blocking",
+                "message": (
+                    "独立编辑审查尚未给出可放行结论，当前 verdict 为 "
+                    f"{editor_assessment['overallVerdict']}。"
+                ),
             }
         )
 
@@ -185,6 +228,8 @@ def normalize_volume_self_review(
                 "conclusion.biggestRisk",
             ),
         },
+        "editorPass": editor_pass,
+        "editorAssessment": editor_assessment,
         "scores": ordered_scores,
         "issues": issues,
         "closureAssessment": {
@@ -224,6 +269,37 @@ def validate_volume_self_review_refs(
     volume_id: str,
 ) -> None:
     chapter_map = chapter_anchor_index.get("chapters", {})
+    for score_index, item in enumerate(normalized_review.get("scores", []), start=1):
+        for ref_index, chapter_ref in enumerate(item.get("chapterRefs", []), start=1):
+            _validate_issue_chapter_ref(
+                str(chapter_ref),
+                field_name=f"scores[{score_index}].chapterRefs[{ref_index}]",
+                chapter_map=chapter_map,
+            )
+        for ref_index, evidence_ref in enumerate(item.get("evidenceRefs", []), start=1):
+            _validate_issue_evidence_ref(
+                str(evidence_ref),
+                field_name=f"scores[{score_index}].evidenceRefs[{ref_index}]",
+                chapter_map=chapter_map,
+                volume_id=volume_id,
+            )
+    for score_index, item in enumerate(
+        normalized_review.get("editorAssessment", {}).get("scores", []),
+        start=1,
+    ):
+        for ref_index, chapter_ref in enumerate(item.get("chapterRefs", []), start=1):
+            _validate_issue_chapter_ref(
+                str(chapter_ref),
+                field_name=f"editorAssessment.scores[{score_index}].chapterRefs[{ref_index}]",
+                chapter_map=chapter_map,
+            )
+        for ref_index, evidence_ref in enumerate(item.get("evidenceRefs", []), start=1):
+            _validate_issue_evidence_ref(
+                str(evidence_ref),
+                field_name=f"editorAssessment.scores[{score_index}].evidenceRefs[{ref_index}]",
+                chapter_map=chapter_map,
+                volume_id=volume_id,
+            )
     for issue_index, item in enumerate(normalized_review.get("issues", []), start=1):
         for ref_index, chapter_ref in enumerate(item.get("chapterRefs", []), start=1):
             _validate_issue_chapter_ref(
@@ -265,6 +341,7 @@ def build_volume_self_review_template(
     chapter_signals = _build_chapter_signals(preflight_payload)
     blocking_signals = _build_blocking_signals(preflight_payload)
     suggested_repairs = _build_suggested_repairs(preflight_payload, blocking_signals)
+    review_evidence = preflight_payload.get("reviewEvidence", {})
     latest_review = latest_review or {}
 
     template = {
@@ -275,11 +352,36 @@ def build_volume_self_review_template(
             "strongestPoint": "待填写",
             "biggestRisk": blocking_signals[0]["message"] if blocking_signals else "待填写",
         },
+        "editorPass": {
+            "completed": False,
+            "reviewerRole": "editor",
+            "mode": "independent_agent",
+            "contextIsolation": "no_context_proxy",
+            "notes": "待填写",
+        },
+        "editorAssessment": {
+            "overallVerdict": "revise",
+            "summaryComment": "待填写",
+            "topProblems": [],
+            "improvementPoints": [],
+            "scores": [
+                {
+                    "dimensionId": dimension_id,
+                    "score": 0,
+                    "conclusion": "待填写",
+                    "chapterRefs": [],
+                    "evidenceRefs": [],
+                }
+                for dimension_id, _ in VOLUME_SELF_REVIEW_DIMENSIONS
+            ],
+        },
         "scores": [
             {
                 "dimensionId": dimension_id,
                 "score": 0,
                 "conclusion": "待填写",
+                "chapterRefs": [],
+                "evidenceRefs": [],
             }
             for dimension_id, _ in VOLUME_SELF_REVIEW_DIMENSIONS
         ],
@@ -302,7 +404,18 @@ def build_volume_self_review_template(
             "volumeStructureCheck": preflight_payload.get("volumeStructureCheck", {}),
             "blockingSignals": blocking_signals,
             "chapterSignals": chapter_signals,
-            "latestPersistedReview": _compact_latest_review(latest_review),
+            "chapterReviewSummaries": review_evidence.get("chapterReviewSummaries", []),
+            "lowSceneReviews": review_evidence.get("lowSceneReviews", []),
+            "styleAggregate": review_evidence.get("styleAggregate", {}),
+            "styleFlaggedChapters": review_evidence.get("styleFlaggedChapters", []),
+            "topRuleJudgements": review_evidence.get("topRuleJudgements", []),
+            "contractAlignmentRisks": review_evidence.get("contractAlignmentRisks", []),
+            "commercialAlignmentRisks": review_evidence.get("commercialAlignmentRisks", []),
+            "reviewPacketRefs": review_evidence.get("reviewPacketRefs", []),
+            "incrementalReviewOnly": {
+                "latestPersistedReview": _compact_latest_review(latest_review),
+                "warning": "独立盲审模式默认不要先读取上一轮自审摘要；只有增量复审才使用这里的上下文。",
+            },
             "evidenceRefExamples": [
                 "chapter-001#scene-1",
                 "chapter-001#paragraph-4",
@@ -310,6 +423,26 @@ def build_volume_self_review_template(
                 "chapter-002#handoff-gap",
                 f"review-packet:{preflight_payload.get('volumeId', '')}:chapter-001",
             ],
+            "independentEditorExpectation": {
+                "requiredRole": "editor",
+                "preferredMode": "independent_agent",
+                "preferredContextIsolation": "no_context_proxy",
+                "fallbackModes": [
+                    "human_editor",
+                    "fresh_thread",
+                    "same_agent_fallback",
+                ],
+                "fallbackContextIsolation": [
+                    "human_manual",
+                    "fresh_thread",
+                    "not_available",
+                ],
+                "checklist": [
+                    "独立编辑评分与 AI 自审评分使用同一套 10 维 rubric。",
+                    "优先使用无上下文代理；若宿主不支持，至少切到新线程或明确记录 fallback。",
+                    "每个主要问题都要补‘为什么工具没报’、‘为什么 AI 自审漏看’、‘怎么优化’。",
+                ],
+            },
             "recommendedCommands": [
                 f"review preflight --root <root> --volume-id {preflight_payload.get('volumeId', '')}",
                 f"workflow status --root <root> --volume-id {preflight_payload.get('volumeId', '')}",
@@ -320,30 +453,39 @@ def build_volume_self_review_template(
     return template
 
 
-def _normalize_scores(raw_scores: Any) -> list[Dict[str, Any]]:
+def _normalize_scores(raw_scores: Any, *, field_name: str = "scores") -> list[Dict[str, Any]]:
     if not isinstance(raw_scores, list):
-        raise ValueError("scores 必须是数组。")
+        raise ValueError(f"{field_name} 必须是数组。")
     normalized_by_id: Dict[str, Dict[str, Any]] = {}
     for index, item in enumerate(raw_scores, start=1):
         if not isinstance(item, dict):
-            raise ValueError(f"scores[{index}] 必须是对象。")
+            raise ValueError(f"{field_name}[{index}] 必须是对象。")
         dimension_id = _require_choice(
             item.get("dimensionId"),
-            f"scores[{index}].dimensionId",
+            f"{field_name}[{index}].dimensionId",
             tuple(VOLUME_SELF_REVIEW_DIMENSION_LABELS.keys()),
         )
         if dimension_id in normalized_by_id:
-            raise ValueError(f"scores 中存在重复维度: {dimension_id}")
+            raise ValueError(f"{field_name} 中存在重复维度: {dimension_id}")
         score = item.get("score")
         if not isinstance(score, int) or isinstance(score, bool) or score < 0 or score > 5:
-            raise ValueError(f"scores[{index}].score 必须是 0..5 的整数。")
+            raise ValueError(f"{field_name}[{index}].score 必须是 0..5 的整数。")
         normalized_by_id[dimension_id] = {
             "dimensionId": dimension_id,
             "label": VOLUME_SELF_REVIEW_DIMENSION_LABELS[dimension_id],
             "score": score,
             "conclusion": _require_non_empty_string(
                 item.get("conclusion"),
-                f"scores[{index}].conclusion",
+                f"{field_name}[{index}].conclusion",
+            ),
+            "chapterRefs": _normalize_string_list(
+                item.get("chapterRefs", []),
+                f"{field_name}[{index}].chapterRefs",
+                allow_empty=True,
+            ),
+            "evidenceRefs": _normalize_evidence_refs(
+                item.get("evidenceRefs", []),
+                f"{field_name}[{index}].evidenceRefs",
             ),
         }
     missing_dimension_ids = [
@@ -353,7 +495,7 @@ def _normalize_scores(raw_scores: Any) -> list[Dict[str, Any]]:
     ]
     if missing_dimension_ids:
         raise ValueError(
-            "scores 缺少必填维度: " + ", ".join(missing_dimension_ids)
+            f"{field_name} 缺少必填维度: " + ", ".join(missing_dimension_ids)
         )
     return list(normalized_by_id.values())
 
@@ -389,9 +531,44 @@ def _normalize_issues(raw_issues: Any) -> list[Dict[str, Any]]:
                     f"issues[{index}].primaryCause",
                     VOLUME_SELF_REVIEW_CAUSES,
                 ),
+                "secondaryCauses": _normalize_choice_list(
+                    item.get("secondaryCauses", []),
+                    f"issues[{index}].secondaryCauses",
+                    VOLUME_SELF_REVIEW_CAUSES,
+                ),
                 "fixAction": _require_non_empty_string(
                     item.get("fixAction"),
                     f"issues[{index}].fixAction",
+                ),
+                "whyToolingMissed": _normalize_optional_string(
+                    item.get("whyToolingMissed"),
+                    f"issues[{index}].whyToolingMissed",
+                    default="未补充：需说明该问题为何没有被现有工具稳定暴露。",
+                ),
+                "whySelfReviewMissed": _normalize_optional_string(
+                    item.get("whySelfReviewMissed"),
+                    f"issues[{index}].whySelfReviewMissed",
+                    default="未补充：需说明 AI 自审为何没有及时注意到该问题。",
+                ),
+                "optimizationAction": _normalize_optional_string(
+                    item.get("optimizationAction"),
+                    f"issues[{index}].optimizationAction",
+                    default="未补充：需说明应补哪条规则、提示或复检流程。",
+                ),
+                "detectedBy": _normalize_string_list(
+                    item.get("detectedBy", []),
+                    f"issues[{index}].detectedBy",
+                    allow_empty=True,
+                ),
+                "ruleIds": _normalize_string_list(
+                    item.get("ruleIds", []),
+                    f"issues[{index}].ruleIds",
+                    allow_empty=True,
+                ),
+                "verificationCommands": _normalize_string_list(
+                    item.get("verificationCommands", []),
+                    f"issues[{index}].verificationCommands",
+                    allow_empty=True,
                 ),
                 "chapterRefs": _normalize_string_list(
                     item.get("chapterRefs", []),
@@ -537,6 +714,30 @@ def _normalize_string_list(raw_value: Any, field_name: str, *, allow_empty: bool
     return values
 
 
+def _normalize_choice_list(raw_value: Any, field_name: str, choices: Iterable[str]) -> list[str]:
+    if raw_value is None:
+        return []
+    if not isinstance(raw_value, list):
+        raise ValueError(f"{field_name} 必须是字符串数组。")
+    values = []
+    for index, item in enumerate(raw_value, start=1):
+        values.append(_require_choice(item, f"{field_name}[{index}]", choices))
+    return values
+
+
+def _normalize_optional_string(raw_value: Any, field_name: str, *, default: str = "") -> str:
+    if raw_value is None:
+        return default
+    if not isinstance(raw_value, str):
+        raise ValueError(f"{field_name} 必须是字符串。")
+    value = raw_value.strip()
+    if not value:
+        return default
+    if value in VOLUME_SELF_REVIEW_PLACEHOLDERS:
+        raise ValueError(f"{field_name} 仍是模板占位值，请先填写真实内容。")
+    return value
+
+
 def _require_dict(raw_value: Any, field_name: str) -> Dict[str, Any]:
     if not isinstance(raw_value, dict):
         raise ValueError(f"{field_name} 必须是对象。")
@@ -572,6 +773,8 @@ def _validate_review_substance(
     declared_allow_human_review: bool,
     delivered: list[str],
     missing: list[str],
+    editor_pass: Dict[str, Any],
+    editor_assessment: Dict[str, Any],
     issues: list[Dict[str, Any]],
     repair_suggestions: list[str],
 ) -> None:
@@ -591,6 +794,22 @@ def _validate_review_substance(
                     "conclusion.allowHumanReview=true 与评分门槛不一致："
                     f"{VOLUME_SELF_REVIEW_DIMENSION_LABELS[dimension_id]} 当前仅 {actual_score}/5。"
                 )
+    if declared_allow_human_review and not editor_pass.get("completed"):
+        raise ValueError(
+            "conclusion.allowHumanReview=true 时，editorPass.completed 必须为 true。"
+        )
+    if declared_allow_human_review and editor_assessment.get("overallVerdict") != "pass":
+        raise ValueError(
+            "conclusion.allowHumanReview=true 时，editorAssessment.overallVerdict 必须为 pass。"
+        )
+    if editor_pass.get("completed") and not editor_assessment.get("scores"):
+        raise ValueError("editorAssessment.scores 不能为空；独立编辑审查必须给出评分。")
+    if editor_pass.get("completed") and not editor_assessment.get("summaryComment"):
+        raise ValueError("editorAssessment.summaryComment 不能为空；独立编辑审查必须给出评语。")
+    if editor_pass.get("completed") and not editor_assessment.get("improvementPoints"):
+        raise ValueError(
+            "editorAssessment.improvementPoints 不能为空；独立编辑审查必须给出改进点。"
+        )
     if closure_status == "closed" and not delivered:
         raise ValueError("closureAssessment.delivered 不能为空；已闭环必须写明本卷实际交付了什么。")
     if closure_status == "not_closed" and not missing:
@@ -615,6 +834,16 @@ def _validate_review_substance(
         labels = [VOLUME_SELF_REVIEW_DIMENSION_LABELS[item] for item in uncovered_weak_dimensions]
         raise ValueError(
             "以下低分维度还没有被 issues / repairSuggestions 明确覆盖："
+            + "、".join(labels)
+        )
+    missing_score_refs = _find_low_score_dimensions_without_refs(
+        normalized_scores,
+        issues=issues,
+    )
+    if missing_score_refs:
+        labels = [VOLUME_SELF_REVIEW_DIMENSION_LABELS[item] for item in missing_score_refs]
+        raise ValueError(
+            "以下低分维度还缺少可核对的章节或证据锚点："
             + "、".join(labels)
         )
 
@@ -731,17 +960,104 @@ def _compact_latest_review(latest_review: Dict[str, Any]) -> Dict[str, Any]:
     if not latest_review:
         return {}
     conclusion = latest_review.get("conclusion", {})
+    editor_pass = latest_review.get("editorPass", {})
+    editor_assessment = latest_review.get("editorAssessment", {})
     score_summary = latest_review.get("scoreSummary", {})
     return {
         "generatedAt": latest_review.get("generatedAt", ""),
         "closureStatus": conclusion.get("closureStatus", ""),
         "declaredAllowHumanReview": conclusion.get("allowHumanReview"),
         "finalAllowHumanReview": latest_review.get("finalAllowHumanReview"),
+        "editorPassCompleted": editor_pass.get("completed"),
+        "editorMode": editor_pass.get("mode", ""),
+        "editorContextIsolation": editor_pass.get("contextIsolation", ""),
+        "editorVerdict": editor_assessment.get("overallVerdict", ""),
         "strongestPoint": conclusion.get("strongestPoint", ""),
         "biggestRisk": conclusion.get("biggestRisk", ""),
         "averageScore": score_summary.get("average"),
         "lowestDimensions": score_summary.get("lowestDimensions", []),
         "topRepairSuggestions": list(latest_review.get("repairSuggestions", []))[:3],
+    }
+
+
+def _normalize_editor_pass(raw_value: Any) -> Dict[str, Any]:
+    if raw_value is None:
+        return {
+            "completed": False,
+            "reviewerRole": "editor",
+            "mode": "same_agent_fallback",
+            "contextIsolation": "same_thread",
+            "notes": "未提供独立编辑审查记录。",
+        }
+    payload = _require_dict(raw_value, "editorPass")
+    return {
+        "completed": _require_bool(
+            payload.get("completed"),
+            "editorPass.completed",
+        ),
+        "reviewerRole": _require_choice(
+            payload.get("reviewerRole"),
+            "editorPass.reviewerRole",
+            ("editor",),
+        ),
+        "mode": _require_choice(
+            payload.get("mode"),
+            "editorPass.mode",
+            VOLUME_SELF_REVIEW_EDITOR_MODES,
+        ),
+        "contextIsolation": _require_choice(
+            payload.get("contextIsolation"),
+            "editorPass.contextIsolation",
+            VOLUME_SELF_REVIEW_EDITOR_CONTEXTS,
+        ),
+        "notes": _normalize_optional_string(
+            payload.get("notes"),
+            "editorPass.notes",
+            default="",
+        ),
+    }
+
+
+def _normalize_editor_assessment(raw_value: Any, *, completed: bool) -> Dict[str, Any]:
+    if raw_value is None:
+        return {
+            "overallVerdict": "not_provided",
+            "summaryComment": "",
+            "topProblems": [],
+            "improvementPoints": [],
+            "scores": [],
+        }
+    payload = _require_dict(raw_value, "editorAssessment")
+    normalized_scores = payload.get("scores")
+    if normalized_scores is None or (not completed and normalized_scores == []):
+        normalized_score_entries: list[Dict[str, Any]] = []
+    else:
+        normalized_score_entries = _normalize_scores(
+            normalized_scores,
+            field_name="editorAssessment.scores",
+        )
+    return {
+        "overallVerdict": _require_choice(
+            payload.get("overallVerdict"),
+            "editorAssessment.overallVerdict",
+            VOLUME_SELF_REVIEW_EDITOR_VERDICTS,
+        ),
+        "summaryComment": _normalize_optional_string(
+            payload.get("summaryComment"),
+            "editorAssessment.summaryComment",
+            default="",
+        ),
+        "topProblems": _normalize_string_list(
+            payload.get("topProblems", []),
+            "editorAssessment.topProblems",
+            allow_empty=not completed,
+        ),
+        "improvementPoints": _normalize_string_list(
+            payload.get("improvementPoints", []),
+            "editorAssessment.improvementPoints",
+            allow_empty=not completed,
+        ),
+        "scores": normalized_score_entries,
     }
 
 
@@ -797,6 +1113,36 @@ def _find_uncovered_weak_dimensions(
         if not _dimension_keywords_hit(dimension_id, issue_texts):
             uncovered.append(dimension_id)
     return uncovered
+
+
+def _find_low_score_dimensions_without_refs(
+    normalized_scores: list[Dict[str, Any]],
+    *,
+    issues: list[Dict[str, Any]],
+) -> list[str]:
+    issue_texts_with_refs: list[str] = []
+    for item in issues:
+        if not _has_any_refs(item):
+            continue
+        issue_texts_with_refs.append(str(item.get("issue", "")))
+        issue_texts_with_refs.append(str(item.get("impact", "")))
+        issue_texts_with_refs.append(str(item.get("fixAction", "")))
+    missing: list[str] = []
+    for item in normalized_scores:
+        dimension_id = str(item.get("dimensionId", ""))
+        score = int(item.get("score", 0) or 0)
+        if score > 2:
+            continue
+        if _has_any_refs(item):
+            continue
+        if _dimension_keywords_hit(dimension_id, issue_texts_with_refs):
+            continue
+        missing.append(dimension_id)
+    return missing
+
+
+def _has_any_refs(item: Dict[str, Any]) -> bool:
+    return bool(item.get("chapterRefs") or item.get("evidenceRefs"))
 
 
 def _dimension_keywords_hit(dimension_id: str, texts: Iterable[str]) -> bool:

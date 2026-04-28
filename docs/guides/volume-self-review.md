@@ -24,10 +24,18 @@ python -m story_harness_cli review volume-self --root <project-root> --volume-id
 
 建议先用 `review volume-self-template` 生成骨架，再回填结论与评分。
 
+卷级自审现在默认包含两个视角：
+
+1. `AI 自审`
+2. `独立编辑审查`
+
+若宿主支持 subagent / 新线程 / 无上下文代理，独立编辑审查应优先走无上下文代理；若不支持，至少要切到 fresh thread，或显式记录 `same_agent_fallback`。
+
 其中 `--input` 文件必须是 JSON-compatible YAML，并遵循下方结构。
 模板中的 `待填写` 只是占位值，原样提交时 CLI 会拒绝写入。
 此外，卷级自审输入不能所有维度都打 `0`；`closed` 必须写明 `delivered`，`not_closed` 必须写明 `missing`。
-如果声明 `allowHumanReview=true`，则最低门槛维度也必须过线；若 `not_closed` 或存在 `0-2` 分弱项，至少要写出一项 `issues`。
+如果声明 `allowHumanReview=true`，则最低门槛维度也必须过线，且独立编辑审查必须已完成并给出 `pass`；若 `not_closed` 或存在 `0-2` 分弱项，至少要写出一项 `issues`。
+当前还要求：若存在 `0-2` 分弱项，则该弱项必须能对齐到可核对的章节或证据锚点。优先写在该维度自己的 `scores[].chapterRefs / evidenceRefs` 上；若对应 `issues[]` 已带可核对锚点，也可满足最小要求。
 当前 CLI 还会对低分维度做最小联动检查：若某个 `0-2` 分维度在 `issues`、`fixAction`、`repairSuggestions` 中完全没有被覆盖，会拒绝写入。
 成功写入后，可通过 `status --volume-id <volume-id>`、`workflow status --volume-id <volume-id>` 或 `export --format review-packet --volume-id <volume-id>` 直接查看 `repairCoverage` 摘要，确认弱项是否真的进入了修复清单。若 `workflow status` 仍提示未覆盖弱项，说明当前 issues / repairSuggestions 还没有把低分项翻译成可执行修稿动作。当前 `workflow status/export --volume-id` 还会附带只读 `changeRequestDrafts`，并尽量带出章节定位与 evidence，可直接作为下一轮修稿任务草案使用。
 
@@ -59,6 +67,16 @@ python -m story_harness_cli review volume-self --root <project-root> --volume-id
 2. 是否存在“把细纲写成正文”的段落。
 3. 是否存在持续加谜、回收不足、对象过多的问题。
 
+这里的“承接”不是要求每章都在第一段机械回顾上一章。
+
+当前更合理的判断口径是：
+
+1. 上一章若留下明确状态变化、追踪压力、关系余波或活跃线程，本章前几段是否给出可感知的后果或因果桥。
+2. 若本章选择冷开场，只要在前几段内自然回接前章负载，也不应机械判成承接失败。
+3. 工具侧 `chapterHandoffSignals` 还会看前章 direction / beat / scene goal 中的关键语义锚点是否在本章开头复现，避免把“用物件、地点、残局自然承接”误报成缺少承接。
+4. 单个弱语义锚点只算辅助证据，不应单独抵消承接告警；需要高置信锚点或多个弱锚点组合。
+5. 真正的风险是：上一章明明留下了负载，本章开头却像直接换了一个执行场景，读者感受不到因果延续。
+
 ### 3.4 角色与冲突
 
 1. 主角与核心角色是否保持连续人格。
@@ -76,6 +94,15 @@ python -m story_harness_cli review volume-self --root <project-root> --volume-id
 1. 是否存在高频 AI 支架句习惯。
 2. 是否存在 POV 越界、元信息泄漏、方案文档腔。
 3. 开篇尤其前几章是否存在手机端段落负担过重的问题。
+
+### 3.7 独立编辑审查
+
+1. 独立编辑必须先给出自己的问题清单，再回看工具输出和 AI 自审结论。
+2. 独立编辑评分与 AI 自审评分使用同一套 10 维 rubric，避免“各自一套标准”。
+3. 每个主要问题都要回答三件事：
+   - 为什么工具没有稳定检出。
+   - 为什么 AI 自审没有注意到。
+   - 下一步该补哪条规则、哪段提示、哪次复检。
 
 ## 4. 评分维度
 
@@ -100,6 +127,8 @@ python -m story_harness_cli review volume-self --root <project-root> --volume-id
 9. 伏笔与回收节奏
 10. 风格与可读性
 
+AI 自审和独立编辑都应使用上面这 10 个维度打分，不要再发明第二套“编辑专用分表”。
+
 ## 5. 缺陷归因
 
 每个主要问题都必须归到以下类别之一：
@@ -112,6 +141,15 @@ python -m story_harness_cli review volume-self --root <project-root> --volume-id
    - 现有 CLI / 导出 / 审查链没有稳定暴露该问题
 
 若一项问题跨多个来源，可以主因 + 次因，但必须指出主因。
+
+除主因外，当前还建议每个问题补齐：
+
+1. `whyToolingMissed`
+2. `whySelfReviewMissed`
+3. `optimizationAction`
+4. `detectedBy`
+5. `ruleIds`
+6. `verificationCommands`
 
 ## 6. 输出模板
 
@@ -138,12 +176,23 @@ python -m story_harness_cli review volume-self --root <project-root> --volume-id
 | 伏笔与回收节奏 | 0-5 | ... |
 | 风格与可读性 | 0-5 | ... |
 
+低分维度建议直接补：
+- `chapterRefs`
+- `evidenceRefs`
+
 ## 3. 主要问题
 1. 问题:
    - 证据:
    - 影响:
    - 归因: `generation_miss` / `self_review_miss` / `tooling_miss`
+   - 次因: `secondaryCauses`
    - 修正动作:
+   - 为什么工具没报: `whyToolingMissed`
+   - 为什么自审漏看: `whySelfReviewMissed`
+   - 规则 / 流程优化: `optimizationAction`
+   - 已由哪些命令 / 审查发现: `detectedBy`
+   - 对应规则 id: `ruleIds`
+   - 复检命令: `verificationCommands`
    - 可选章节定位: `chapterRefs`
    - 可选证据引用: `evidenceRefs`
 
@@ -157,6 +206,17 @@ python -m story_harness_cli review volume-self --root <project-root> --volume-id
 1. 先修什么
 2. 再复检什么
 3. 哪些风险可带入人工审查
+
+## 6. 独立编辑审查
+- 是否完成独立编辑审查: `editorPass.completed`
+- 审查角色: `editor`
+- 审查模式: `independent_agent` / `human_editor` / `fresh_thread` / `same_agent_fallback`
+- 上下文隔离方式: `no_context_proxy` / `fresh_thread` / `human_manual` / `same_thread` / `not_available`
+- 独立编辑结论: `pass` / `revise` / `block`
+- 独立编辑评分: 与上方相同 10 维
+- 独立编辑评语:
+- 独立编辑最主要问题:
+- 独立编辑改进点:
 ```
 
 ## 7. 判定门槛
@@ -167,6 +227,7 @@ python -m story_harness_cli review volume-self --root <project-root> --volume-id
 2. `章间承接` 不低于 `3`
 3. `风格与可读性` 不低于 `3`
 4. 没有未处理的高优先级 POV 越界、元信息泄漏、核心设定未解释问题
+5. 独立编辑审查已完成，且 verdict 为 `pass`
 
 若闭环状态仍为 `not_closed`，即使局部章评不错，也不应进入人工终审。
 
@@ -188,3 +249,21 @@ python -m story_harness_cli review volume-self --root <project-root> --volume-id
 7. 后续 CLI 若新增卷级 gate、卷级 review packet、评分导出，应优先兼容本模板字段。
 8. 在工具正式落地前，人工和 adapter 都按这份模板组织卷级自审输出。
 9. `review volume-self-template` 的 `_templateContext` 现在还会附带 `volumeStructureCheck`，可直接看到当前卷的轻量阶段映射、引入卷 onboarding 风险、伏笔债务和卷尾收束准备度，避免卷审时只看分数不看结构职责。
+10. `_templateContext` 现在还会附带证据型上下文，优先包括：
+   - `chapterReviewSummaries`
+   - `lowSceneReviews`
+   - `styleAggregate`
+   - `styleFlaggedChapters`
+   - `topRuleJudgements`
+   - `contractAlignmentRisks`
+   - `commercialAlignmentRisks`
+   - `reviewPacketRefs`
+   独立编辑应优先基于这些证据切片核对，而不是只看结构摘要。
+11. 当前推荐的固定复检序列是：
+   - `style check --root <root> --chapter-id <chapter-id>`
+   - `review chapter --root <root> --chapter-id <chapter-id>`
+   - `review scene --root <root> --chapter-id <chapter-id> --scene-index <n>`
+   - `style report --root <root> --volume-id <volume-id>`
+   - `review volume-self-template --root <root> --volume-id <volume-id>`
+   - `workflow status --root <root> --volume-id <volume-id>`
+12. 一个问题只有在至少一条命令给出稳定 `ruleId`、显式 issue，或可对齐的 `evidenceRef` 时，才应记为“工具已检出”；否则应写明为什么仍算 `tooling_miss`。

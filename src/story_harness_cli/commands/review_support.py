@@ -5,8 +5,19 @@ from pathlib import Path
 from typing import Any
 
 from story_harness_cli.commands.project_support import build_project_advisories
-from story_harness_cli.protocol import chapter_path
-from story_harness_cli.services import chapter_title, check_consistency
+from story_harness_cli.protocol import (
+    chapter_path,
+    choose_style_profile_name,
+    resolve_review_rule_profile,
+    resolve_style_profile,
+)
+from story_harness_cli.providers import load_style_similarity_scorer
+from story_harness_cli.services import (
+    analyze_style_text,
+    build_style_report,
+    chapter_title,
+    check_consistency,
+)
 from story_harness_cli.services.reference_mentions import (
     build_reference_catalog as svc_build_reference_catalog,
     build_reference_mention_report as svc_build_reference_mention_report,
@@ -878,6 +889,7 @@ def build_review_preflight_payload(
             chapter_preflights.append(entry)
 
         volume_structure_check = _build_volume_structure_check_payload(state, volume, chapter_preflights, summary)
+        review_evidence = _build_volume_review_evidence(root, state, volume)
         return {
             "scope": "volume",
             "volumeId": volume.get("id", ""),
@@ -888,6 +900,7 @@ def build_review_preflight_payload(
             "volumeWorldContext": build_volume_world_context_payload(root, state, volume),
             "volumeStructureCheck": volume_structure_check,
             "chapterPreflights": chapter_preflights,
+            "reviewEvidence": review_evidence,
             "summary": summary,
         }
 
@@ -923,6 +936,232 @@ def build_review_preflight_payload(
             "powerProgressionConflictCount": world_check["summary"]["powerProgressionConflictCount"],
         },
     }
+
+
+def _build_volume_review_evidence(root: Path, state: dict[str, Any], volume: dict[str, Any]) -> dict[str, Any]:
+    chapter_ids = [
+        str(item.get("id", "")).strip()
+        for item in volume.get("chapters", [])
+        if str(item.get("id", "")).strip()
+    ]
+    chapter_reviews = _latest_reviews_by_chapter(
+        state.get("story_reviews", {}).get("chapterReviews", []),
+        chapter_ids=chapter_ids,
+    )
+    scene_reviews = _filter_scene_reviews(
+        state.get("story_reviews", {}).get("sceneReviews", []),
+        chapter_ids=chapter_ids,
+    )
+    style_evidence = _build_volume_style_evidence(
+        root,
+        state,
+        chapter_ids,
+        volume_id=str(volume.get("id", "")),
+    )
+    return {
+        "chapterReviewSummaries": [
+            _compact_chapter_review(item)
+            for item in chapter_reviews
+        ],
+        "lowSceneReviews": [
+            _compact_scene_review(item)
+            for item in _select_low_scene_reviews(scene_reviews)
+        ],
+        "styleAggregate": style_evidence.get("aggregate", {}),
+        "styleFlaggedChapters": style_evidence.get("flaggedChapters", []),
+        "topRuleJudgements": _collect_top_rule_judgements(chapter_reviews, scene_reviews),
+        "contractAlignmentRisks": _collect_unique_risks(chapter_reviews, "contractAlignment"),
+        "commercialAlignmentRisks": _collect_unique_risks(chapter_reviews, "commercialAlignment"),
+        "reviewPacketRefs": [
+            f"review-packet:{volume.get('id', '')}:{chapter_id}"
+            for chapter_id in chapter_ids
+        ],
+    }
+
+
+def _latest_reviews_by_chapter(reviews: list[dict[str, Any]], *, chapter_ids: list[str]) -> list[dict[str, Any]]:
+    chapter_id_set = set(chapter_ids)
+    latest_by_chapter: dict[str, dict[str, Any]] = {}
+    for review in reviews:
+        chapter_id = str(review.get("chapterId", "")).strip()
+        if chapter_id not in chapter_id_set:
+            continue
+        existing = latest_by_chapter.get(chapter_id)
+        generated_at = str(review.get("generatedAt", ""))
+        if existing is None or generated_at >= str(existing.get("generatedAt", "")):
+            latest_by_chapter[chapter_id] = review
+    return [
+        latest_by_chapter[chapter_id]
+        for chapter_id in chapter_ids
+        if chapter_id in latest_by_chapter
+    ]
+
+
+def _filter_scene_reviews(reviews: list[dict[str, Any]], *, chapter_ids: list[str]) -> list[dict[str, Any]]:
+    chapter_id_set = set(chapter_ids)
+    return [
+        item
+        for item in reviews
+        if str(item.get("chapterId", "")).strip() in chapter_id_set
+    ]
+
+
+def _build_volume_style_evidence(
+    root: Path,
+    state: dict[str, Any],
+    chapter_ids: list[str],
+    *,
+    volume_id: str,
+) -> dict[str, Any]:
+    if not chapter_ids:
+        return {"aggregate": {}, "flaggedChapters": []}
+    profile_name = choose_style_profile_name(state.get("project", {}))
+    profile_config, _profile_source = resolve_style_profile(root, profile_name)
+    review_rule_config, review_rule_profile_name, _review_rule_source = resolve_review_rule_profile(root)
+    scorer, source = load_style_similarity_scorer()
+    chapter_reports: list[dict[str, Any]] = []
+    for chapter_id in chapter_ids:
+        chapter_file = chapter_path(root, chapter_id)
+        if not chapter_file.exists():
+            continue
+        volume = find_volume_for_chapter(state, chapter_id)
+        style_report = analyze_style_text(
+            chapter_file.read_text(encoding="utf-8"),
+            opener_similarity_scorer=scorer,
+            repetition_source=source,
+            profile_name=profile_name,
+            profile_config=profile_config,
+            review_rule_profile_name=review_rule_profile_name,
+            review_rule_config=review_rule_config,
+            review_rule_scope={
+                "chapterId": chapter_id,
+                "volumeId": str(volume.get("id", "")),
+                "scenePlanId": "",
+            },
+        )
+        chapter_reports.append(
+            {
+                "chapterId": chapter_id,
+                "styleAnalysis": style_report["styleAnalysis"],
+                "stylePayload": style_report,
+            }
+        )
+    aggregate = build_style_report(chapter_reports, volume_id=volume_id, profile_name=profile_name)
+    summary_by_chapter = {
+        item["chapterId"]: item["stylePayload"].get("styleAnalysis", {}).get("summary", "")
+        for item in chapter_reports
+    }
+    flagged = []
+    for item in aggregate.get("flaggedChapters", []):
+        flagged.append(
+            {
+                "chapterId": item.get("chapterId", ""),
+                "overallScore": item.get("overallScore"),
+                "totalDeduction": item.get("totalDeduction"),
+                "detectedPatterns": item.get("detectedPatterns", []),
+                "summary": summary_by_chapter.get(item.get("chapterId", ""), ""),
+            }
+        )
+    return {
+        "aggregate": aggregate,
+        "flaggedChapters": flagged,
+    }
+
+
+def _compact_chapter_review(review: dict[str, Any]) -> dict[str, Any]:
+    style_analysis = review.get("styleAnalysis", {}).get("styleAnalysis", {})
+    return {
+        "chapterId": review.get("chapterId", ""),
+        "chapterTitle": review.get("chapterTitle", ""),
+        "generatedAt": review.get("generatedAt", ""),
+        "rating": review.get("rating", ""),
+        "totalScore": review.get("scores", {}).get("total"),
+        "weightedTotal": review.get("weightedScores", {}).get("total"),
+        "summary": review.get("summary", ""),
+        "priorityActions": list(review.get("priorityActions", []))[:3],
+        "styleSummary": style_analysis.get("summary", ""),
+        "ruleJudgementIds": [
+            item.get("ruleId", "")
+            for item in review.get("ruleJudgements", [])
+            if item.get("ruleId")
+        ][:5],
+    }
+
+
+def _select_low_scene_reviews(scene_reviews: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    selected = []
+    for review in scene_reviews:
+        total = review.get("scores", {}).get("total")
+        rating = str(review.get("rating", "")).strip().lower()
+        if isinstance(total, (int, float)) and total <= 80:
+            selected.append(review)
+            continue
+        if rating and rating not in {"solid", "strong"}:
+            selected.append(review)
+    selected.sort(
+        key=lambda item: (
+            item.get("scores", {}).get("total", 999),
+            str(item.get("chapterId", "")),
+            int(item.get("sceneRange", {}).get("sceneIndex", 999) or 999),
+        )
+    )
+    return selected[:8]
+
+
+def _compact_scene_review(review: dict[str, Any]) -> dict[str, Any]:
+    scene_range = review.get("sceneRange", {})
+    return {
+        "chapterId": review.get("chapterId", ""),
+        "generatedAt": review.get("generatedAt", ""),
+        "rating": review.get("rating", ""),
+        "totalScore": review.get("scores", {}).get("total"),
+        "summary": review.get("summary", ""),
+        "sceneIndex": scene_range.get("sceneIndex"),
+        "startParagraph": scene_range.get("startParagraph"),
+        "endParagraph": scene_range.get("endParagraph"),
+        "priorityActions": list(review.get("priorityActions", []))[:3],
+    }
+
+
+def _collect_top_rule_judgements(
+    chapter_reviews: list[dict[str, Any]],
+    scene_reviews: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    counts: dict[tuple[str, str], dict[str, Any]] = {}
+    for review in [*chapter_reviews, *scene_reviews]:
+        for item in review.get("ruleJudgements", []):
+            rule_id = str(item.get("ruleId", "")).strip()
+            message = str(item.get("message", "")).strip()
+            key = (rule_id, message)
+            entry = counts.setdefault(
+                key,
+                {
+                    "ruleId": rule_id,
+                    "message": message,
+                    "severity": item.get("severity", ""),
+                    "hits": 0,
+                },
+            )
+            entry["hits"] += 1
+    ranked = sorted(
+        counts.values(),
+        key=lambda item: (-int(item.get("hits", 0)), str(item.get("ruleId", "")), str(item.get("message", ""))),
+    )
+    return ranked[:8]
+
+
+def _collect_unique_risks(chapter_reviews: list[dict[str, Any]], field_name: str) -> list[str]:
+    risks: list[str] = []
+    seen: set[str] = set()
+    for review in chapter_reviews:
+        payload = review.get(field_name, {})
+        for item in payload.get("risks", []):
+            value = str(item).strip()
+            if not value or value in seen:
+                continue
+            seen.add(value)
+            risks.append(value)
+    return risks[:8]
 
 
 def _build_volume_structure_check_payload(

@@ -15,7 +15,7 @@ if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from story_harness_cli.cli import main
-from story_harness_cli.protocol.state import load_project_state
+from story_harness_cli.protocol.state import load_project_state, save_state
 
 
 class ReviewVolumeSelfSmokeTest(unittest.TestCase):
@@ -80,6 +80,31 @@ class ReviewVolumeSelfSmokeTest(unittest.TestCase):
                         "strongestPoint": "章间承接稳定",
                         "biggestRisk": "世界规则解释仍偏薄",
                     },
+                    "editorPass": {
+                        "completed": True,
+                        "reviewerRole": "editor",
+                        "mode": "independent_agent",
+                        "contextIsolation": "no_context_proxy",
+                        "notes": "由无上下文代理独立完成评分与评语。",
+                    },
+                    "editorAssessment": {
+                        "overallVerdict": "pass",
+                        "summaryComment": "独立编辑视角认为本卷已可进入人工审查，但世界规则解释仍需补强。",
+                        "topProblems": ["世界规则解释仍偏薄"],
+                        "improvementPoints": ["补一处制度代价解释", "复检卷尾胜负感"],
+                        "scores": [
+                            {"dimensionId": "volumeClosure", "score": 4, "conclusion": "闭环成立"},
+                            {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "最低可读性已建立"},
+                            {"dimensionId": "worldLogic", "score": 3, "conclusion": "制度逻辑基本成立"},
+                            {"dimensionId": "chapterHandoff", "score": 4, "conclusion": "章间承接自然"},
+                            {"dimensionId": "characterContinuity", "score": 4, "conclusion": "主角反应连续"},
+                            {"dimensionId": "antagonistShaping", "score": 3, "conclusion": "对手动机基本可读"},
+                            {"dimensionId": "conflictEscalation", "score": 4, "conclusion": "冲突逐步抬升"},
+                            {"dimensionId": "payoffDelivery", "score": 3, "conclusion": "阶段性兑现成立"},
+                            {"dimensionId": "foreshadowRhythm", "score": 3, "conclusion": "伏笔密度可控"},
+                            {"dimensionId": "styleReadability", "score": 3, "conclusion": "可读性基本达标"},
+                        ],
+                    },
                     "scores": [
                         {"dimensionId": "volumeClosure", "score": 4, "conclusion": "已形成阶段性闭环"},
                         {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "最低可读性已建立"},
@@ -99,6 +124,10 @@ class ReviewVolumeSelfSmokeTest(unittest.TestCase):
                             "impact": "读者理解成本偏高",
                             "primaryCause": "tooling_miss",
                             "fixAction": "补一处制度代价解释",
+                            "secondaryCauses": ["self_review_miss"],
+                            "whyToolingMissed": "现有工具能报 world onboarding 缺口，但还不能稳定把‘压火制度解释偏薄’收敛成单独问题。",
+                            "whySelfReviewMissed": "自审更关注闭环和节奏，没有逐章核对设定解释责任。",
+                            "optimizationAction": "补制度解释相关规则，并在卷级模板里要求逐条核对 onboarding 责任。",
                             "chapterRefs": ["chapter-001"],
                             "evidenceRefs": [
                                 "chapter-001#paragraph-1",
@@ -148,7 +177,12 @@ class ReviewVolumeSelfSmokeTest(unittest.TestCase):
         self.assertEqual(saved_review["volumeId"], "volume-001")
         self.assertTrue(saved_review["finalAllowHumanReview"])
         self.assertEqual(saved_review["conclusion"]["closureStatus"], "closed")
+        self.assertTrue(saved_review["editorPass"]["completed"])
+        self.assertEqual(saved_review["editorAssessment"]["overallVerdict"], "pass")
         self.assertEqual(saved_review["issues"][0]["chapterRefs"], ["chapter-001"])
+        self.assertEqual(saved_review["issues"][0]["secondaryCauses"], ["self_review_miss"])
+        self.assertIn("制度解释", saved_review["issues"][0]["whyToolingMissed"])
+        self.assertIn("逐条核对", saved_review["issues"][0]["optimizationAction"])
         self.assertEqual(
             saved_review["issues"][0]["evidenceRefs"],
             ["chapter-001#paragraph-1", "review-packet:volume-001:chapter-001"],
@@ -164,6 +198,45 @@ class ReviewVolumeSelfSmokeTest(unittest.TestCase):
             "# 灰里递名\n\n@{岳池}站在高处，看着林舟被押去青云宗压火。\n",
             encoding="utf-8",
         )
+        state = load_project_state(self.temp_dir)
+        state["story_reviews"]["chapterReviews"] = [
+            {
+                "reviewId": "chapter-review-001",
+                "chapterId": "chapter-001",
+                "chapterTitle": "灯尽人未绝",
+                "generatedAt": "2026-04-27T12:00:00+08:00",
+                "summary": "死局已立住，但命灯规则解释还能更清楚。",
+                "rating": "solid",
+                "scores": {"total": 82},
+                "weightedScores": {"total": 83.2},
+                "priorityActions": ["补足命灯规则解释", "强化章末追读问题"],
+                "styleAnalysis": {
+                    "styleAnalysis": {
+                        "summary": "检测到1项AI风格特征：段落均质。扣1分。"
+                    }
+                },
+                "ruleJudgements": [{"ruleId": "chapter-handoff-weak", "severity": "medium"}],
+                "contractAlignment": {"risks": ["残灯真相推进还偏保守"]},
+                "commercialAlignment": {"risks": ["章末钩子还可以更狠"]},
+            }
+        ]
+        state["story_reviews"]["sceneReviews"] = [
+            {
+                "reviewId": "scene-review-001",
+                "chapterId": "chapter-001",
+                "generatedAt": "2026-04-27T12:03:00+08:00",
+                "summary": "场景推进明确，但伏笔兑现点还不够狠。",
+                "rating": "solid",
+                "scores": {"total": 78},
+                "priorityActions": ["补一个更明确的后续兑现点"],
+                "sceneRange": {
+                    "sceneIndex": 1,
+                    "startParagraph": 1,
+                    "endParagraph": 1,
+                },
+            }
+        ]
+        save_state(self.temp_dir, state)
         out_dir = self.temp_dir / "templates"
         out_dir.mkdir(exist_ok=True)
 
@@ -187,15 +260,32 @@ class ReviewVolumeSelfSmokeTest(unittest.TestCase):
         template = payload["template"]
         self.assertEqual(template["conclusion"]["closureStatus"], "not_closed")
         self.assertFalse(template["conclusion"]["allowHumanReview"])
+        self.assertEqual(template["editorPass"]["mode"], "independent_agent")
+        self.assertEqual(template["editorPass"]["contextIsolation"], "no_context_proxy")
+        self.assertEqual(template["editorAssessment"]["overallVerdict"], "revise")
+        self.assertEqual(len(template["editorAssessment"]["scores"]), 10)
         self.assertEqual(len(template["scores"]), 10)
         self.assertIn("_templateContext", template)
         self.assertEqual(template["_templateContext"]["volumeId"], "volume-001")
         self.assertEqual(template["_templateContext"]["projectAdvisories"][0]["ruleId"], "project-prd-incomplete")
         self.assertEqual(len(template["_templateContext"]["chapterSignals"]), 2)
+        self.assertEqual(len(template["_templateContext"]["chapterReviewSummaries"]), 1)
+        self.assertEqual(template["_templateContext"]["chapterReviewSummaries"][0]["chapterId"], "chapter-001")
+        self.assertEqual(len(template["_templateContext"]["lowSceneReviews"]), 1)
+        self.assertEqual(template["_templateContext"]["lowSceneReviews"][0]["sceneIndex"], 1)
+        self.assertEqual(template["_templateContext"]["styleAggregate"]["volumeId"], "volume-001")
+        self.assertEqual(template["_templateContext"]["styleAggregate"]["chapterCount"], 2)
+        self.assertIn("review-packet:volume-001:chapter-001", template["_templateContext"]["reviewPacketRefs"])
+        self.assertIn("残灯真相推进还偏保守", template["_templateContext"]["contractAlignmentRisks"])
+        self.assertIn("章末钩子还可以更狠", template["_templateContext"]["commercialAlignmentRisks"])
         self.assertGreater(template["_templateContext"]["preflightSummary"]["mentionActionCount"], 0)
         self.assertTrue(template["repairSuggestions"])
         self.assertEqual(template["_templateContext"]["volumeStructureCheck"]["role"], "intro-volume")
         self.assertTrue(template["_templateContext"]["volumeStructureCheck"]["checklist"])
+        self.assertEqual(
+            template["_templateContext"]["independentEditorExpectation"]["preferredMode"],
+            "independent_agent",
+        )
         self.assertIn("chapter-001#scene-1", template["_templateContext"]["evidenceRefExamples"])
 
     def test_review_volume_self_template_carries_missing_project_prd_advisory(self) -> None:
@@ -424,6 +514,73 @@ class ReviewVolumeSelfSmokeTest(unittest.TestCase):
                 )
         self.assertIn("allowHumanReview=true 与评分门槛不一致", str(exc_info.exception))
 
+    def test_review_volume_self_rejects_human_review_yes_without_completed_editor_pass(self) -> None:
+        self._init_volume_project()
+        input_path = self.temp_dir / "volume-self-review-input.yaml"
+        input_path.write_text(
+            json.dumps(
+                {
+                    "generatedAt": "2026-04-27T10:45:00+08:00",
+                    "conclusion": {
+                        "closureStatus": "closed",
+                        "allowHumanReview": True,
+                        "strongestPoint": "基本闭环已成立",
+                        "biggestRisk": "独立编辑审查尚未完成",
+                    },
+                    "scores": [
+                        {"dimensionId": "volumeClosure", "score": 4, "conclusion": "阶段性闭环成立"},
+                        {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "最低可读性成立"},
+                        {"dimensionId": "worldLogic", "score": 3, "conclusion": "世界逻辑基本成立"},
+                        {"dimensionId": "chapterHandoff", "score": 3, "conclusion": "章间承接可用"},
+                        {"dimensionId": "characterContinuity", "score": 3, "conclusion": "角色基本连续"},
+                        {"dimensionId": "antagonistShaping", "score": 3, "conclusion": "对手基本成立"},
+                        {"dimensionId": "conflictEscalation", "score": 3, "conclusion": "冲突抬升可用"},
+                        {"dimensionId": "payoffDelivery", "score": 3, "conclusion": "有阶段性交付"},
+                        {"dimensionId": "foreshadowRhythm", "score": 3, "conclusion": "伏笔节奏可控"},
+                        {"dimensionId": "styleReadability", "score": 3, "conclusion": "风格可读"},
+                    ],
+                    "issues": [
+                        {
+                            "issue": "独立编辑审查尚未完成",
+                            "evidence": ["当前只有同线程自审，没有独立评分结果"],
+                            "impact": "人工审查前缺少独立编辑视角",
+                            "primaryCause": "self_review_miss",
+                            "fixAction": "补做独立编辑审查",
+                        }
+                    ],
+                    "closureAssessment": {
+                        "mainProblem": "当前版本是否具备进入人工审查的独立编辑背书",
+                        "delivered": ["卷级闭环基本成立"],
+                        "missing": [],
+                        "reasoning": "主闭环已成立，但缺少独立编辑审查，不应进入人工审查。",
+                    },
+                    "repairSuggestions": ["启用无上下文代理补做独立编辑评分"],
+                    "acceptedRisks": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            with self.assertRaises(SystemExit) as exc_info:
+                main(
+                    [
+                        "review",
+                        "volume-self",
+                        "--root",
+                        str(self.temp_dir),
+                        "--volume-id",
+                        "volume-001",
+                        "--input",
+                        str(input_path),
+                    ]
+                )
+        self.assertIn("editorPass.completed 必须为 true", str(exc_info.exception))
+
     def test_review_volume_self_rejects_not_closed_without_issues(self) -> None:
         self._init_volume_project()
         input_path = self.temp_dir / "volume-self-review-input.yaml"
@@ -549,6 +706,73 @@ class ReviewVolumeSelfSmokeTest(unittest.TestCase):
                     ]
                 )
         self.assertIn("低分维度还没有被 issues / repairSuggestions 明确覆盖", str(exc_info.exception))
+
+    def test_review_volume_self_rejects_low_score_without_verifiable_refs(self) -> None:
+        self._init_volume_project()
+        input_path = self.temp_dir / "volume-self-review-input.yaml"
+        input_path.write_text(
+            json.dumps(
+                {
+                    "generatedAt": "2026-04-27T11:05:00+08:00",
+                    "conclusion": {
+                        "closureStatus": "not_closed",
+                        "allowHumanReview": False,
+                        "strongestPoint": "至少已经完成一轮问题归纳",
+                        "biggestRisk": "低分项没有给出可核对锚点",
+                    },
+                    "scores": [
+                        {"dimensionId": "volumeClosure", "score": 3, "conclusion": "整体可读"},
+                        {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "开篇基本可读"},
+                        {"dimensionId": "worldLogic", "score": 3, "conclusion": "世界规则基本成立"},
+                        {"dimensionId": "chapterHandoff", "score": 2, "conclusion": "章间承接仍偏弱"},
+                        {"dimensionId": "characterContinuity", "score": 4, "conclusion": "角色连续"},
+                        {"dimensionId": "antagonistShaping", "score": 3, "conclusion": "对手成立"},
+                        {"dimensionId": "conflictEscalation", "score": 3, "conclusion": "冲突可用"},
+                        {"dimensionId": "payoffDelivery", "score": 3, "conclusion": "兑现可用"},
+                        {"dimensionId": "foreshadowRhythm", "score": 3, "conclusion": "伏笔节奏可控"},
+                        {"dimensionId": "styleReadability", "score": 3, "conclusion": "风格可读"},
+                    ],
+                    "issues": [
+                        {
+                            "issue": "章间承接仍偏弱",
+                            "evidence": ["第二章开头没有接住第一章余波"],
+                            "impact": "读者会感到跳转过快",
+                            "primaryCause": "generation_miss",
+                            "fixAction": "补一段承接上一章余波的过渡",
+                        }
+                    ],
+                    "closureAssessment": {
+                        "mainProblem": "卷内承接仍需补强",
+                        "delivered": [],
+                        "missing": ["关键过渡还没补齐"],
+                        "reasoning": "虽然已经指出问题，但当前还没有可核对的章节锚点。",
+                    },
+                    "repairSuggestions": ["补一段承接上一章余波的过渡"],
+                    "acceptedRisks": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            with self.assertRaises(SystemExit) as exc_info:
+                main(
+                    [
+                        "review",
+                        "volume-self",
+                        "--root",
+                        str(self.temp_dir),
+                        "--volume-id",
+                        "volume-001",
+                        "--input",
+                        str(input_path),
+                    ]
+                )
+        self.assertIn("低分维度还缺少可核对的章节或证据锚点", str(exc_info.exception))
 
     def test_review_volume_self_rejects_malformed_evidence_refs(self) -> None:
         self._init_volume_project()

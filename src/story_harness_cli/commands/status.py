@@ -487,6 +487,10 @@ def _build_volume_self_review_summary(state: dict[str, Any], volume_id: str | No
             "closureStatus": "",
             "declaredAllowHumanReview": None,
             "finalAllowHumanReview": None,
+            "editorPassCompleted": None,
+            "editorMode": "",
+            "editorContextIsolation": "",
+            "editorVerdict": "",
             "strongestPoint": "",
             "biggestRisk": "",
             "averageScore": None,
@@ -506,6 +510,10 @@ def _build_volume_self_review_summary(state: dict[str, Any], volume_id: str | No
             "closureStatus": "",
             "declaredAllowHumanReview": None,
             "finalAllowHumanReview": None,
+            "editorPassCompleted": None,
+            "editorMode": "",
+            "editorContextIsolation": "",
+            "editorVerdict": "",
             "strongestPoint": "",
             "biggestRisk": "",
             "averageScore": None,
@@ -517,6 +525,8 @@ def _build_volume_self_review_summary(state: dict[str, Any], volume_id: str | No
             "topRepairSuggestions": [],
         }
     conclusion = review.get("conclusion", {})
+    editor_pass = review.get("editorPass", {})
+    editor_assessment = review.get("editorAssessment", {})
     score_summary = review.get("scoreSummary", {})
     repair_coverage = review.get("repairCoverage", {})
     return {
@@ -526,6 +536,10 @@ def _build_volume_self_review_summary(state: dict[str, Any], volume_id: str | No
         "closureStatus": conclusion.get("closureStatus", ""),
         "declaredAllowHumanReview": conclusion.get("allowHumanReview"),
         "finalAllowHumanReview": review.get("finalAllowHumanReview"),
+        "editorPassCompleted": editor_pass.get("completed"),
+        "editorMode": editor_pass.get("mode", ""),
+        "editorContextIsolation": editor_pass.get("contextIsolation", ""),
+        "editorVerdict": editor_assessment.get("overallVerdict", ""),
         "strongestPoint": conclusion.get("strongestPoint", ""),
         "biggestRisk": conclusion.get("biggestRisk", ""),
         "averageScore": score_summary.get("average"),

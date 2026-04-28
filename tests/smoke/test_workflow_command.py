@@ -255,6 +255,35 @@ class WorkflowCommandSmokeTest(unittest.TestCase):
                         "strongestPoint": "承接稳定",
                         "biggestRisk": "世界解释仍可继续补强",
                     },
+                    "editorPass": {
+                        "completed": allow_human_review,
+                        "reviewerRole": "editor",
+                        "mode": "independent_agent" if allow_human_review else "same_agent_fallback",
+                        "contextIsolation": "no_context_proxy" if allow_human_review else "same_thread",
+                        "notes": "workflow smoke test",
+                    },
+                    "editorAssessment": {
+                        "overallVerdict": "pass" if allow_human_review else "revise",
+                        "summaryComment": "独立编辑已完成卷级判断。" if allow_human_review else "",
+                        "topProblems": ["世界解释仍偏少"] if allow_human_review else [],
+                        "improvementPoints": ["补一段制度代价解释"] if allow_human_review else [],
+                        "scores": (
+                            [
+                                {"dimensionId": "volumeClosure", "score": 4, "conclusion": "小闭环已成立"},
+                                {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "基本可读"},
+                                {"dimensionId": "worldLogic", "score": 3, "conclusion": "底层逻辑可接受"},
+                                {"dimensionId": "chapterHandoff", "score": chapter_handoff_score, "conclusion": "章间承接稳定"},
+                                {"dimensionId": "characterContinuity", "score": 4, "conclusion": "角色连续"},
+                                {"dimensionId": "antagonistShaping", "score": 3, "conclusion": "对手基本成立"},
+                                {"dimensionId": "conflictEscalation", "score": 4, "conclusion": "冲突抬升正常"},
+                                {"dimensionId": "payoffDelivery", "score": 3, "conclusion": "兑现成立"},
+                                {"dimensionId": "foreshadowRhythm", "score": 3, "conclusion": "伏笔节奏可控"},
+                                {"dimensionId": "styleReadability", "score": 3, "conclusion": "风格可读"},
+                            ]
+                            if allow_human_review
+                            else []
+                        ),
+                    },
                     "scores": [
                         {"dimensionId": "volumeClosure", "score": 4, "conclusion": "小闭环已成立"},
                         {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "基本可读"},
@@ -595,11 +624,37 @@ class WorkflowCommandSmokeTest(unittest.TestCase):
         self.assertEqual(payload["workflowStatus"], "completed")
         self.assertTrue(payload["volumeSelfReview"]["present"])
         self.assertTrue(payload["volumeSelfReview"]["finalAllowHumanReview"])
+        self.assertTrue(payload["volumeSelfReview"]["editorPassCompleted"])
+        self.assertEqual(payload["volumeSelfReview"]["editorMode"], "independent_agent")
+        self.assertEqual(payload["volumeSelfReview"]["editorContextIsolation"], "no_context_proxy")
+        self.assertEqual(payload["volumeSelfReview"]["editorVerdict"], "pass")
         self.assertEqual(payload["volumeSelfReview"]["repairCoverageStatus"], "complete")
         self.assertEqual(payload["volumeSelfReview"]["weakDimensionLabels"], [])
         self.assertEqual(payload["volumeSelfReview"]["uncoveredWeakDimensionLabels"], [])
         self.assertEqual(payload["currentGateDecision"]["status"], "ready")
         self.assertEqual(payload["changeRequestDrafts"], [])
+
+    def test_workflow_volume_scope_blocks_missing_independent_editor_pass(self) -> None:
+        self._prepare_clean_volume_project()
+        self._write_volume_self_review(allow_human_review=False)
+
+        exit_code, payload = self._run_json(
+            ["workflow", "status", "--root", str(self.temp_dir), "--volume-id", "volume-001"]
+        )
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["currentStage"], "human_review_ready")
+        self.assertEqual(payload["workflowStatus"], "in_progress")
+        self.assertFalse(payload["volumeSelfReview"]["finalAllowHumanReview"])
+        self.assertFalse(payload["volumeSelfReview"]["editorPassCompleted"])
+        self.assertEqual(payload["volumeSelfReview"]["editorMode"], "same_agent_fallback")
+        self.assertEqual(payload["volumeSelfReview"]["editorVerdict"], "revise")
+        self.assertIn(
+            "volume-self-review-editor-pass-incomplete",
+            payload["currentGateDecision"]["blockingRules"],
+        )
+        self.assertTrue(
+            any("独立编辑审查" in item for item in payload["currentGateDecision"]["notes"])
+        )
 
     def test_workflow_volume_scope_blocks_incomplete_repair_coverage(self) -> None:
         self._prepare_clean_volume_project()
