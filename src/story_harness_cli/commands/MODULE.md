@@ -1,6 +1,6 @@
 # Commands 模块说明
 
-> 最后更新: 2026-04-25
+> 最后更新: 2026-04-28
 > 状态: 当前有效模块文档
 
 ## 1. 模块职责
@@ -77,8 +77,8 @@
 - `export review-packet` 现还会带出章节/卷级 mention hygiene 摘要，明确哪些引用仍待补 `@{}`、哪些包裹引用仍待建档，方便人工审查时直接定位工具闭环缺口
 - `export` 现支持 `--volume-id`，可按卷导出 `txt/json/markdown`，并支持卷级 `review-packet`；目录输出时默认使用卷标题命名，如 `第一卷.md`、`第一卷-review-packet.md`
 - 卷级 `export review-packet --volume-id` 当前还会带出卷级自审的 `repairCoverage` 摘要，明确弱项覆盖状态与未覆盖弱项，减少人工审查前再反查原始 YAML
-- `illustration prompt` / `illustration generate` / `illustration batch-export` / `illustration batch-record` / `illustration export` / `illustration list` / `illustration config` / `illustration pack-migrate` / `illustration pack-export` 这组插图命令，负责编排 prompt pack/template/modifier/commercialMode 解析、文生图/图生图/重绘 provider 请求、batch manifest 导出/回录、临时资产导出、项目级 prompt pack 迁移，以及 `illustrations.yaml` 配置读写
-- `illustration prompt` / `illustration generate` 当前还负责最小 batch task 编排：支持 `batch.count` 的同模板重复生成，并把 `batch.count / variantStrategy` 写入 dry-run 输出与生成历史，避免 UI 或脚本自行发明平行批量协议
+- `illustration prompt` / `illustration generate` / `illustration batch-export` / `illustration batch-record` / `illustration export` / `illustration list` / `illustration config` / `illustration pack-migrate` / `illustration pack-export` 这组插图命令，负责编排 prompt pack/template/modifier/commercialMode 解析、文生图/图生图/重绘 provider 请求、batch manifest 导出/回录、临时资产导出、项目级 prompt pack 迁移，以及 `illustrations.yaml` 配置读写；当前 `chapter / entity / temporary` 三类目标都支持首批 use-case 模板矩阵
+- `illustration prompt` / `illustration generate` 当前还负责最小 batch task 编排：支持 `batch.count` 的同模板重复生成，并把 `batch.count / variantStrategy` 写入 dry-run 输出与生成历史，避免 UI 或脚本自行发明平行批量协议；`--use-case` 不再只服务临时图，chapter/entity 也可显式指定 `character-sheet`、`cover-poster`、`duel-scene`、`manga-page` 等用途
 - `illustration batch-export` 当前是批量插画的 canonical 导出入口：把 project state + prompt pack 展开成 manifest，并显式区分 `webui-manual` / `external-agent` 两种交付模式
 - `illustration pack-migrate` 当前是项目级 prompt pack 资源迁移的 canonical 入口：只处理 `prompts/illustration-packs/*.yaml`，把 legacy 模板重写成当前 canonical 模板格式，不回写历史 `generated[].promptSnapshot`
 - `illustration pack-export` 当前是 builtin/default pack 项目化的 canonical 入口：把当前选中的 builtin 或显式指定 pack 克隆到 `prompts/illustration-packs/*.yaml`，供后续本地编辑、迁移和重新设为默认 pack，避免 UI / agent 直接手抄系统模板形成平行真相源
@@ -148,6 +148,7 @@
 - `illustration batch-record` 要求 manifest 中声明的 `outputFiles[]` 已经落盘；若文件缺失会直接失败，而不是静默跳过
 - `illustration generate` / `batch-export` 当前会按 target type 自动选路径：`chapter` 进入 `assets/illustrations/chapters/<chapter-id>/`，`entity` 进入 `assets/illustrations/entities/<entity-id>/`，`temporary` 进入 `tmp/illustrations/staging/<temp-label>/`
 - `illustration prompt/generate` 当前支持 `--temp-label`，用于不绑定具体小说章节/角色的临时图任务；默认命名仍由系统给出，自定义命名继续走 `--output-name`
+- `illustration prompt/generate --use-case` 当前会统一走首批 use-case 矩阵解析；若当前 pack 没有专用模板，会沿同类 fallback 选模板，而不是误退到 pack 第一条模板
 - 本地 UI API 的 `/api/illustration/dry-run` 与 `/api/illustration/generate` 也应保持与 CLI 相同的 payload / provider request / 落盘行为，避免维护平行实现
 - `illustration generate --mode image-to-image` 至少需要一张 `--input-image`
 - `illustration generate --mode inpaint` 当前复用 edit request，但额外要求 `--mask`

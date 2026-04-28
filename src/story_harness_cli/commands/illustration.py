@@ -37,6 +37,24 @@ from story_harness_cli.services import (
 )
 from story_harness_cli.utils import now_iso, stable_hash
 
+ILLUSTRATION_USE_CASE_CHOICES = [
+    "character",
+    "character-sheet",
+    "chapter-scene",
+    "cover-concept",
+    "cover-poster",
+    "ensemble-key-visual",
+    "duel-scene",
+    "chase-escape",
+    "comic-relief",
+    "promo",
+    "product",
+    "prop-relic",
+    "creature-sheet",
+    "manga-panel",
+    "manga-page",
+]
+
 
 def _illustrations_path(root: Path) -> Path:
     return resolve_state_path(root, "illustrations")
@@ -103,6 +121,7 @@ def _build_payload(root: Path, state: dict[str, Any], args) -> dict[str, Any]:
         payload = build_entity_illustration_payload(
             state,
             entity=entity,
+            use_case=str(getattr(args, "use_case", "") or "character").strip() or "character",
             mode=mode,
             prompt_pack=prompt_resolution["pack"],
             pack_ref=prompt_resolution["packRef"],
@@ -150,6 +169,7 @@ def _build_payload(root: Path, state: dict[str, Any], args) -> dict[str, Any]:
         chapter_id=chapter_id,
         chapter_title=_resolve_chapter_title(state, chapter_id),
         chapter_text=chapter_file.read_text(encoding="utf-8"),
+        use_case=str(getattr(args, "use_case", "") or "chapter-scene").strip() or "chapter-scene",
         mode=mode,
         prompt_pack=prompt_resolution["pack"],
         pack_ref=prompt_resolution["packRef"],
@@ -844,7 +864,7 @@ def register_illustration_commands(subparsers) -> None:
     prompt_target.add_argument("--entity-id")
     prompt_target.add_argument("--temp-label")
     prompt_parser.add_argument("--mode", required=True, choices=["text-to-image", "image-to-image", "inpaint"])
-    prompt_parser.add_argument("--use-case", choices=["character", "chapter-scene", "cover-concept", "promo", "product"], default="promo")
+    prompt_parser.add_argument("--use-case", choices=ILLUSTRATION_USE_CASE_CHOICES)
     prompt_parser.add_argument("--subject")
     prompt_parser.add_argument("--input-image", action="append")
     prompt_parser.add_argument("--mask")
@@ -864,7 +884,7 @@ def register_illustration_commands(subparsers) -> None:
     generate_target.add_argument("--entity-id")
     generate_target.add_argument("--temp-label")
     generate_parser.add_argument("--mode", required=True, choices=["text-to-image", "image-to-image", "inpaint"])
-    generate_parser.add_argument("--use-case", choices=["character", "chapter-scene", "cover-concept", "promo", "product"], default="promo")
+    generate_parser.add_argument("--use-case", choices=ILLUSTRATION_USE_CASE_CHOICES)
     generate_parser.add_argument("--subject")
     generate_parser.add_argument("--input-image", action="append")
     generate_parser.add_argument("--mask")

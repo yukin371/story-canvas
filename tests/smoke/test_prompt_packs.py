@@ -33,6 +33,31 @@ class PromptPackProtocolSmokeTest(unittest.TestCase):
     def tearDown(self) -> None:
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
+    def test_builtin_prompt_pack_exposes_first_batch_template_matrix(self) -> None:
+        packs = load_available_prompt_packs(self.temp_dir)
+        default_pack = next(pack for pack in packs if pack["id"] == "story-canvas/default")
+        light_novel_pack = next(pack for pack in packs if pack["id"] == "story-canvas/light-novel")
+        web_serial_pack = next(pack for pack in packs if pack["id"] == "story-canvas/web-serial")
+
+        default_template_ids = {item["id"] for item in default_pack["templates"]}
+        light_novel_template_ids = {item["id"] for item in light_novel_pack["templates"]}
+        web_serial_template_ids = {item["id"] for item in web_serial_pack["templates"]}
+
+        self.assertIn("cover-poster-standard", default_template_ids)
+        self.assertIn("character-sheet-standard", default_template_ids)
+        self.assertIn("duel-scene-standard", default_template_ids)
+        self.assertIn("manga-page-standard", default_template_ids)
+        self.assertIn("cover-poster", default_pack["lexicon"]["subjectPhrases"])
+        self.assertIn("manga-panel", default_pack["lexicon"]["detailPhrases"])
+
+        self.assertIn("character-sheet-standard", light_novel_template_ids)
+        self.assertIn("comic-relief-standard", light_novel_template_ids)
+        self.assertIn("manga-page-standard", light_novel_template_ids)
+
+        self.assertIn("cover-poster-standard", web_serial_template_ids)
+        self.assertIn("ensemble-key-visual-standard", web_serial_template_ids)
+        self.assertIn("chase-escape-standard", web_serial_template_ids)
+
     def test_load_available_prompt_packs_normalizes_project_pack(self) -> None:
         raw_pack = {
             "label": "Noir Pack",
@@ -106,6 +131,32 @@ class PromptPackProtocolSmokeTest(unittest.TestCase):
         self.assertEqual(project_pack["lexicon"]["subjectPhrases"]["chapter-scene"], ["巷口对峙", "湿冷压迫感"])
         self.assertEqual(project_pack["policies"]["negativePolicies"][0]["label"], "safe-default")
         self.assertEqual(project_pack["policies"]["commercialPolicies"][0]["mode"], "personal")
+
+    def test_project_pack_legacy_cover_and_product_use_cases_inherit_family_default_templates(self) -> None:
+        raw_pack = {
+            "label": "Legacy Family Pack",
+            "templates": [
+                {
+                    "id": "cover-legacy",
+                    "useCase": "cover-concept",
+                    "promptTemplate": "",
+                },
+                {
+                    "id": "product-legacy",
+                    "useCase": "product",
+                    "promptTemplate": "",
+                },
+            ],
+        }
+        pack_path = self.packs_dir / "legacy-family.yaml"
+        pack_path.write_text(json.dumps(raw_pack, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+        packs = load_available_prompt_packs(self.temp_dir)
+        project_pack = next(pack for pack in packs if pack["id"] == "project/legacy-family")
+        templates = {item["useCase"]: item for item in project_pack["templates"]}
+
+        self.assertIn("整张海报的叙事轮廓", templates["cover-concept"]["promptTemplate"])
+        self.assertIn("材质、年代和象征意味", templates["product"]["promptTemplate"])
 
     def test_resolve_prompt_pack_prefers_explicit_project_pack_and_summary_keeps_policy_meta(self) -> None:
         raw_pack = {

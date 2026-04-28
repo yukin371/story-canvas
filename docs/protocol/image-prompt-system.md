@@ -1,8 +1,8 @@
 # Image Prompt System Protocol
 
-> 最后更新: 2026-04-27
-> 状态: 提议中（协议设计，尚未完整实现）
-> 关联: `docs/roadmap.md`, `docs/plans/2026-04-27-lightweight-image-workbench-prd.md`
+> 最后更新: 2026-04-28
+> 状态: 部分已实现（首批模板矩阵已落地）
+> 关联: `docs/roadmap.md`, `docs/plans/2026-04-28-illustration-template-matrix.md`
 
 ## 1. 目标
 
@@ -31,6 +31,7 @@
 
 - 用户默认不直接编辑完整 prompt
 - 系统先选择模板，再接受用户追加描述
+- 系统按 `小说类型 pack × 用途 template × modifier` 展开，而不是维护一个万能 prompt
 
 ### 2.3 快照可复现
 
@@ -96,7 +97,10 @@ story-project/
     },
     "defaultTemplateByUseCase": {
       "character": "character-standard",
+      "character-sheet": "character-sheet-standard",
       "chapter-scene": "scene-standard",
+      "cover-poster": "cover-poster-standard",
+      "duel-scene": "duel-scene-standard",
       "promo": "promo-standard"
     },
     "defaultModifierRefs": [],
@@ -130,6 +134,7 @@ story-project/
 - `promptPack` 可保留为旧字段兼容层
 - 新实现优先消费 `promptSystem`
 - 读旧项目时可把 `promptPack.name/version` 映射到 `promptSystem.defaultPack`
+- `cover-concept` 与 `product` 继续保留为兼容 use-case，但模板解析会优先走同类 fallback，而不是退成任意第一条模板
 
 ## 5. Prompt Pack 资源协议
 
@@ -209,6 +214,7 @@ story-project/
 
 - 所有字段均可选，缺失时回退到 pack 内建最小词库或 service 层默认短语
 - `subjectPhrases` / `detailPhrases` 通常按 `useCase` 分组
+- 同一题材 pack 可以只细化自己关心的 use-case；未覆盖的 use-case 允许沿同类 fallback 链复用词库
 - `modePhrases` 按 `mode` 分组
 - `commercialPhrases` 按 `commercialMode` 分组
 - `negativePhrases` 可选，供未来把负向短语也从 policy 文本里拆出来；当前不是必需字段
@@ -244,10 +250,28 @@ story-project/
 ### 6.3 `useCase` 枚举
 
 - `character`
+- `character-sheet`
 - `chapter-scene`
 - `cover-concept`
+- `cover-poster`
+- `ensemble-key-visual`
+- `duel-scene`
+- `chase-escape`
+- `comic-relief`
 - `promo`
 - `product`
+- `prop-relic`
+- `creature-sheet`
+- `manga-panel`
+- `manga-page`
+
+并非每个 pack 都必须为每个 use-case 提供专用模板。当前解析器会优先做同类 fallback，避免“没配专用模板时误退到 pack 第一条模板”：
+
+- `cover-concept -> cover-poster -> promo`
+- `character-sheet -> character`
+- `duel-scene -> chapter-scene`
+- `product -> prop-relic -> promo -> character`
+- `manga-page -> manga-panel -> chapter-scene -> promo`
 
 ### 6.4 `complexity` 枚举
 

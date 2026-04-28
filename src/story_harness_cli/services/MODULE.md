@@ -1,6 +1,6 @@
 # Services 模块说明
 
-> 最后更新: 2026-04-25
+> 最后更新: 2026-04-28
 > 状态: 当前有效模块文档
 
 ## 1. 模块职责
@@ -24,8 +24,8 @@
 - `outline_guard.py`: 章节大纲前置检查，判断是否具备项目定位 / 故事契约 + direction / beats / scenePlans 进入写作或细化
 - `story_review.py`: 章节回顾评分、一幕评审、类型/平台加权评分、评论、改稿建议、契约对齐与商业连载对齐检查，并开始消费情绪契约、揭露偏好、模板关注点、伏笔窗口、世界规则、角色动态状态，以及 style/consistency 护栏信号；对高置信“方案文档腔”会进入 `priorityActions` 与 `contractAlignment.risks`；chapter 级 review 现还会消费章节承接摘要，对“上一章结果 -> 本章开头承接偏弱”输出 `chapterHandoffSignals`、`priorityActions`、`contractAlignment.risks` 与 `chapterHandoffWeak` rule judgement；chapter/scene 共用的 `projectContext`、`priorityActions` 与对齐后处理已收敛到共享 helper，避免两条评审路径长期并行漂移
 - `style_detector.py`: AI 风格启发式检测与约束生成；允许通过外部注入 scorer 增强句式近似判断，但默认保持 builtin fallback，并支持基于 profile 的术语观察词、重复白名单、词级阈值、题材语域失真词表、叙事支架复用检测，以及连续 `目标：/风险：/约束：/时间窗口：` 这类结构化方案块识别；`planBlockPolicy` 可对标签白名单与命中阈值做题材级放宽；当前还内建了中文高频 AI 句式簇（`不是……是……`、`不像……更像……`、`真正……从来都是……` / `还有什么？`）、移动端段落可读性信号，以及 `clusteredAIPhrasing` 聚合层，用于把多项轻度 AI 句式/可读性问题收敛成统一风险；同时会消费 `review_rule_detector.py` 返回的规则信号，把 `review-rules.yaml` 驱动的检测结果并入 `patternResults/judgements`
-- `illustration_prompting.py`: chapter / entity 插图 prompt 构造、template/modifier/policy/lexicon 解析后的 prompt snapshot 组装、目标元数据整理与 dry-run request 组装；当前 entity prompt 优先抽取角色卡外貌/视觉锚点，chapter prompt 则避免直接注入章节正文摘要，并把模板从标签式拼接收敛成更自然的美术 brief
-- `illustration_prompting.py`: 当前还支持 freeform / temporary 目标 payload；当图片不绑定具体章节或角色时，仍走相同 pack/template 展开，但 target type 会标记为 `temporary`
+- `illustration_prompting.py`: chapter / entity 插图 prompt 构造、template/modifier/policy/lexicon 解析后的 prompt snapshot 组装、目标元数据整理与 dry-run request 组装；当前 entity prompt 优先抽取角色卡外貌/视觉锚点，chapter prompt 则避免直接注入章节正文摘要，并把模板从标签式拼接收敛成更自然的美术 brief；chapter / entity / temporary 当前都可显式选择首批 use-case 矩阵
+- `illustration_prompting.py`: 当前还支持 freeform / temporary 目标 payload；当图片不绑定具体章节或角色时，仍走相同 pack/template 展开，但 target type 会标记为 `temporary`；pack 没有专用模板时，服务层会按同类 use-case fallback 解析模板与词库
 - `illustration_batching.py`: batch spec 归一化、delivery mode 约束、batch manifest summary，以及 `webui-manual` / `external-agent` 的纯说明载荷组装
 - `reference_mentions.py`: 章节内结构化引用 mention 的纯分析，负责已建档引用目录、已包裹/未包裹/未建档分组、plain mention 的确定性 tag replacement 候选，以及最小 related context
 - `workflow_engine.py`: workflow 状态机纯函数，负责阶段推断、状态 hydration/build、gate 决策推进、reset 与导出快照
@@ -124,6 +124,7 @@
 - 一幕级 `contractAlignment` 复用了章节级契约思想，但阈值更偏向“局部兑现/局部钩子”，不等同于整章判断
 - `story_review.py` 现在还会输出 `storyConstraintSignals`，用于暴露当前章评审实际消费到的情绪契约、世界规则、到窗伏笔和角色状态切片
 - `story_review.py` 现在还会在 chapter review 中输出 `chapterHandoffSignals`，用于暴露“上一章结果 -> 本章起点”的承接风险；它是软规则，误报应优先通过真实样例回灌，而不是继续硬编码更重的剧情证明器
+- `chapterHandoffSignals` 当前只在存在明确前章负载时触发：前章需要留下角色状态变化、活跃线程或章节方向负载；检测会同时看角色/状态/线程锚点与前章 direction / beat / scene goal 的语义锚点，开头前两段没有接住但前四段内自然回接，会记录 `delayedBridge=true` 并避免误报，不要求每章开头机械复述上一章
 - `story_review.py` 现在还会在 chapter review 中输出 `consistencySignals`，用于暴露高频特殊术语复用、设定候选和设定冲突
 - `story_review.py` 现在还会通过 `consistencySignals.unintroducedNameReveals` 暴露“先匿名描写、后突兀报姓名”这类认知边界问题
 - `story_review.py` 现在还会通过 `consistencySignals.capabilityTaskRisks` 暴露“低修为角色直接承担高风险任务但缺少例外说明”这类设定合理性问题
@@ -147,6 +148,7 @@
 - `illustration_prompting.py` 当前会优先消费 `profile.appearance/visual/look`、`seed.appearance/visual` 与当前外在状态作为角色图 prompt 基线；若角色卡没有这些字段，才回退到 summary
 - `illustration_prompting.py` 的 chapter-scene prompt 当前不再直接拼接章节正文 excerpt，避免 prompt 过长和把正文误当作最终生图说明
 - `illustration_prompting.py` 当前会优先把 modifier 转成自然短句，再和 pack 的 `lexicon` 一起渲染进模板；兼容旧模板时仍保留 `styleModifiers/userExtraPrompt/commercialPrompt` 这组旧 placeholder
+- `illustration_prompting.py` 当前按 use-case 家族解析 subject / guardrail / lexicon；即使 pack 只定义了 `chapter-scene`，`duel-scene`、`chase-escape`、`manga-panel` 也应优先沿同类模板 fallback，而不是退成不相关模板
 - `evaluate_project_story_gate` 的用途是把“先确定市场定位和故事承诺，再拆章节”变成硬门禁，而不是 review 阶段的软建议
 - workflow 的 `currentStage` 口径是“第一个未满足 inferred 条件的 gate”，不是“所有前置 gate 都必须先人工 accept 才算通过”
 - `advance_workflow_progress` 只允许对当前 gate 执行 `accept`；若 inferred 条件未满足，会直接拒绝推进

@@ -99,6 +99,31 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
         self.assertIn("lexiconSnapshot", payload["promptSnapshot"])
         self.assertNotIn("visual direction:", payload["promptText"])
 
+    def test_illustration_prompt_for_entity_supports_character_sheet_use_case(self) -> None:
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(
+                [
+                    "illustration",
+                    "prompt",
+                    "--root",
+                    str(self.temp_dir),
+                    "--entity-id",
+                    "char-linzhou",
+                    "--use-case",
+                    "character-sheet",
+                    "--mode",
+                    "text-to-image",
+                ]
+            )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["targetType"], "entity")
+        self.assertEqual(payload["useCase"], "character-sheet")
+        self.assertEqual(payload["templateId"], "character-sheet-standard")
+        self.assertIn("完整人设立绘", payload["promptSnapshot"]["resolvedPrompt"])
+
     def test_illustration_prompt_for_chapter_image_to_image(self) -> None:
         reference = self.temp_dir / "reference.png"
         reference.write_bytes(b"fake-image")
@@ -124,6 +149,31 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
         self.assertEqual(payload["targetType"], "chapter")
         self.assertEqual(payload["mode"], "image-to-image")
         self.assertEqual(len(payload["inputImages"]), 1)
+
+    def test_illustration_prompt_for_chapter_supports_cover_poster_use_case(self) -> None:
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(
+                [
+                    "illustration",
+                    "prompt",
+                    "--root",
+                    str(self.temp_dir),
+                    "--chapter-id",
+                    "chapter-001",
+                    "--use-case",
+                    "cover-poster",
+                    "--mode",
+                    "text-to-image",
+                ]
+            )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["targetType"], "chapter")
+        self.assertEqual(payload["useCase"], "cover-poster")
+        self.assertEqual(payload["templateId"], "cover-poster-standard")
+        self.assertIn("巨大轮廓主视觉", payload["promptSnapshot"]["resolvedPrompt"])
 
     def test_illustration_config_persists_and_list_reads(self) -> None:
         buffer = StringIO()
@@ -637,6 +687,33 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
         self.assertIn("强调巷口对视", payload["promptSnapshot"]["resolvedPrompt"])
         self.assertNotIn("visual direction:", payload["promptSnapshot"]["resolvedPrompt"])
         self.assertNotIn("user direction:", payload["promptSnapshot"]["resolvedPrompt"])
+
+    def test_illustration_prompt_use_case_falls_back_to_same_family_template(self) -> None:
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(
+                [
+                    "illustration",
+                    "prompt",
+                    "--root",
+                    str(self.temp_dir),
+                    "--chapter-id",
+                    "chapter-001",
+                    "--prompt-pack",
+                    "light-novel",
+                    "--use-case",
+                    "duel-scene",
+                    "--mode",
+                    "text-to-image",
+                ]
+            )
+
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["useCase"], "duel-scene")
+        self.assertEqual(payload["templateId"], "scene-standard")
+        self.assertIn("情绪最亮的一拍", payload["promptSnapshot"]["resolvedPrompt"])
 
     def test_illustration_generate_image_to_image_real_path_persists_record(self) -> None:
         reference = self.temp_dir / "reference.png"
