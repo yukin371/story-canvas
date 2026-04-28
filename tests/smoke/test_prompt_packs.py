@@ -14,7 +14,9 @@ if str(SRC_ROOT) not in sys.path:
 
 from story_harness_cli.protocol.prompt_packs import (
     default_pack_ref_from_name,
+    export_prompt_pack_document,
     load_available_prompt_packs,
+    migrate_project_prompt_pack_documents,
     resolve_prompt_pack,
     save_prompt_pack_document,
     serialize_prompt_pack_document,
@@ -57,6 +59,14 @@ class PromptPackProtocolSmokeTest(unittest.TestCase):
                     "label": "duplicate",
                 },
             ],
+            "lexicon": {
+                "subjectPhrases": {
+                    "chapter-scene": ["巷口对峙", "湿冷压迫感"],
+                },
+                "detailPhrases": {
+                    "chapter-scene": ["地面积水和硬边阴影"],
+                },
+            },
             "policies": {
                 "negativePolicies": [
                     {
@@ -89,8 +99,11 @@ class PromptPackProtocolSmokeTest(unittest.TestCase):
         self.assertEqual(project_pack["templates"][0]["mode"], "text-to-image")
         self.assertEqual(project_pack["templates"][0]["complexity"], "standard")
         self.assertEqual(project_pack["templates"][0]["packId"], "project/custom-noir")
+        self.assertIn("{subjectPhrases}", project_pack["templates"][0]["promptTemplate"])
+        self.assertNotIn("{userExtraPrompt}", project_pack["templates"][0]["promptTemplate"])
         self.assertEqual(len(project_pack["modifierGroups"]), 1)
         self.assertEqual(project_pack["modifierGroups"][0]["group"], "style")
+        self.assertEqual(project_pack["lexicon"]["subjectPhrases"]["chapter-scene"], ["巷口对峙", "湿冷压迫感"])
         self.assertEqual(project_pack["policies"]["negativePolicies"][0]["label"], "safe-default")
         self.assertEqual(project_pack["policies"]["commercialPolicies"][0]["mode"], "personal")
 
@@ -138,6 +151,8 @@ class PromptPackProtocolSmokeTest(unittest.TestCase):
         self.assertEqual(resolution["packRef"]["packId"], "project/storm-promo")
         self.assertEqual(resolution["packName"], "storm-promo")
         self.assertEqual(summary["source"], "project")
+        self.assertIn("{commercialDirection}", resolution["pack"]["templates"][0]["promptTemplate"])
+        self.assertNotIn("{commercialPrompt}", resolution["pack"]["templates"][0]["promptTemplate"])
         self.assertEqual(summary["commercialPolicies"][0]["id"], "commercial-default")
         self.assertEqual(
             summary["commercialPolicies"][0]["restrictions"],
@@ -165,6 +180,11 @@ class PromptPackProtocolSmokeTest(unittest.TestCase):
                         "promptFragment": "hard shadow",
                     }
                 ],
+                "lexicon": {
+                    "subjectPhrases": {
+                        "chapter-scene": ["巷口对峙", "旧城冷调"],
+                    }
+                },
                 "policies": {
                     "commercialPolicies": [
                         {
@@ -184,11 +204,16 @@ class PromptPackProtocolSmokeTest(unittest.TestCase):
         self.assertEqual(saved["source"], "project")
         self.assertEqual(saved["sourceFile"], str(saved_path))
         self.assertTrue(saved_document["writable"])
-        self.assertEqual(saved_document["templates"][0]["promptTemplate"], "{subject}\nnoir alley\n{userExtraPrompt}")
+        self.assertEqual(saved_document["lexicon"]["subjectPhrases"]["chapter-scene"], ["巷口对峙", "旧城冷调"])
+        self.assertIn("画面气质靠近noir alley。", saved_document["templates"][0]["promptTemplate"])
+        self.assertIn("{subjectPhrases}", saved_document["templates"][0]["promptTemplate"])
+        self.assertNotIn("{userExtraPrompt}", saved_document["templates"][0]["promptTemplate"])
 
         on_disk = json.loads(saved_path.read_text(encoding="utf-8"))
         self.assertNotIn("source", on_disk)
         self.assertEqual(on_disk["templates"][0]["id"], "scene-standard")
+        self.assertEqual(on_disk["lexicon"]["subjectPhrases"]["chapter-scene"], ["巷口对峙", "旧城冷调"])
+        self.assertIn("{subjectPhrases}", on_disk["templates"][0]["promptTemplate"])
         self.assertEqual(on_disk["modifierGroups"][0]["promptFragment"], "hard shadow")
 
     def test_save_prompt_pack_document_rejects_builtin_pack_id(self) -> None:
@@ -201,6 +226,65 @@ class PromptPackProtocolSmokeTest(unittest.TestCase):
                 },
                 file_name="illegal-override",
             )
+
+    def test_migrate_project_prompt_pack_documents_rewrites_legacy_templates(self) -> None:
+        pack_path = self.packs_dir / "legacy-pack.yaml"
+        pack_path.write_text(
+            json.dumps(
+                {
+                    "label": "Legacy Pack",
+                    "templates": [
+                        {
+                            "id": "scene-standard",
+                            "useCase": "chapter-scene",
+                            "promptTemplate": "{subject}\nvisual direction: noir alley\n{userExtraPrompt}",
+                        }
+                    ],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        dry_run_payload = migrate_project_prompt_pack_documents(self.temp_dir, dry_run=True)
+        self.assertEqual(dry_run_payload["packCount"], 1)
+        self.assertEqual(dry_run_payload["changedCount"], 1)
+        self.assertEqual(dry_run_payload["writtenCount"], 0)
+
+        on_disk_before = json.loads(pack_path.read_text(encoding="utf-8"))
+        self.assertEqual(on_disk_before["templates"][0]["promptTemplate"], "{subject}\nvisual direction: noir alley\n{userExtraPrompt}")
+
+        write_payload = migrate_project_prompt_pack_documents(self.temp_dir, dry_run=False)
+        self.assertEqual(write_payload["changedCount"], 1)
+        self.assertEqual(write_payload["writtenCount"], 1)
+
+        on_disk_after = json.loads(pack_path.read_text(encoding="utf-8"))
+        self.assertIn("{subjectPhrases}", on_disk_after["templates"][0]["promptTemplate"])
+        self.assertIn("画面气质靠近noir alley。", on_disk_after["templates"][0]["promptTemplate"])
+        self.assertNotIn("{userExtraPrompt}", on_disk_after["templates"][0]["promptTemplate"])
+
+    def test_export_prompt_pack_document_clones_builtin_pack_to_project_scope(self) -> None:
+        saved = export_prompt_pack_document(
+            self.temp_dir,
+            {
+                "promptSystem": {
+                    "defaultPack": default_pack_ref_from_name("light-novel"),
+                }
+            },
+            requested_pack_name="light-novel",
+            file_name="project-light-novel",
+        )
+
+        self.assertEqual(saved["source"], "project")
+        self.assertEqual(saved["id"], "project/project-light-novel")
+        self.assertEqual(saved["label"], "Light Novel Pack")
+        self.assertTrue(str(saved["sourceFile"]).endswith("project-light-novel.yaml"))
+
+        on_disk = json.loads((self.packs_dir / "project-light-novel.yaml").read_text(encoding="utf-8"))
+        self.assertEqual(on_disk["label"], "Light Novel Pack")
+        self.assertIn("{subjectPhrases}", on_disk["templates"][0]["promptTemplate"])
 
 
 if __name__ == "__main__":

@@ -16,7 +16,7 @@ PACK_ALIAS_TO_ID = {
 BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
     {
         "id": "story-canvas/default",
-        "version": "1.0",
+        "version": "1.1",
         "label": "Default Narrative Pack",
         "description": "基础叙事型模板包，适合角色设定图和章节场景图。",
         "supports": {
@@ -30,7 +30,7 @@ BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
                 "useCase": "character",
                 "complexity": "standard",
                 "mode": "text-to-image",
-                "promptTemplate": "{subject}\nvisual direction: polished narrative illustration, readable silhouette\n{styleModifiers}\nuser direction: {userExtraPrompt}\ncommercial direction: {commercialPrompt}",
+                "promptTemplate": "{subject}\n先把{subjectPhrases}立住，再把{detailPhrases}交代清楚。\n{modeHint}\n{stylePrompt}\n{userDirection}\n{commercialDirection}",
                 "defaultNegativePolicyRef": "default-safe",
                 "defaultCommercialPolicyRef": "personal-default",
             },
@@ -40,7 +40,7 @@ BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
                 "useCase": "character",
                 "complexity": "standard",
                 "mode": "image-to-image",
-                "promptTemplate": "{subject}\nkeep character identity and costume continuity\n{styleModifiers}\nuser direction: {userExtraPrompt}\ncommercial direction: {commercialPrompt}",
+                "promptTemplate": "{subject}\n保留既有人设与服装连续性，把{subjectPhrases}和{detailPhrases}再收紧一些。\n{modeHint}\n{stylePrompt}\n{userDirection}\n{commercialDirection}",
                 "defaultNegativePolicyRef": "default-safe",
                 "defaultCommercialPolicyRef": "personal-default",
             },
@@ -50,7 +50,7 @@ BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
                 "useCase": "chapter-scene",
                 "complexity": "standard",
                 "mode": "text-to-image",
-                "promptTemplate": "{subject}\nvisual direction: cinematic scene illustration, strong focal action, readable environment\n{styleModifiers}\nuser direction: {userExtraPrompt}\ncommercial direction: {commercialPrompt}",
+                "promptTemplate": "{subject}\n重点抓住{subjectPhrases}，把{detailPhrases}处理得清楚、可信、能直接落图。\n{modeHint}\n{stylePrompt}\n{userDirection}\n{commercialDirection}",
                 "defaultNegativePolicyRef": "default-safe",
                 "defaultCommercialPolicyRef": "personal-default",
             },
@@ -60,7 +60,7 @@ BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
                 "useCase": "chapter-scene",
                 "complexity": "standard",
                 "mode": "image-to-image",
-                "promptTemplate": "{subject}\npreserve scene continuity and existing visual anchors\n{styleModifiers}\nuser direction: {userExtraPrompt}\ncommercial direction: {commercialPrompt}",
+                "promptTemplate": "{subject}\n沿用已有场景锚点，把{subjectPhrases}和{detailPhrases}压得更集中。\n{modeHint}\n{stylePrompt}\n{userDirection}\n{commercialDirection}",
                 "defaultNegativePolicyRef": "default-safe",
                 "defaultCommercialPolicyRef": "personal-default",
             },
@@ -70,17 +70,37 @@ BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
                 "useCase": "promo",
                 "complexity": "detailed",
                 "mode": "text-to-image",
-                "promptTemplate": "{subject}\nvisual direction: market-facing poster illustration, strong composition, clean typography-safe space\n{styleModifiers}\nuser direction: {userExtraPrompt}\ncommercial direction: {commercialPrompt}",
+                "promptTemplate": "{subject}\n先把{subjectPhrases}打出来，再把{detailPhrases}和画面节奏收干净。\n{modeHint}\n{stylePrompt}\n{userDirection}\n{commercialDirection}",
                 "defaultNegativePolicyRef": "default-safe",
                 "defaultCommercialPolicyRef": "commercial-default",
             },
         ],
+        "lexicon": {
+            "subjectPhrases": {
+                "character": ["人物辨识度", "稳定的外貌记忆点", "服装轮廓和配色关系"],
+                "chapter-scene": ["人物关系和动作焦点", "最有戏的一拍", "可读的空间层次"],
+                "promo": ["单张海报的第一眼冲击", "主卖点", "标题区留白"],
+            },
+            "detailPhrases": {
+                "character": ["面部特征、发型和服饰材质", "职业气质与姿态习惯"],
+                "chapter-scene": ["光源方向、关键道具与环境质感", "前后景层次和情绪温度"],
+                "promo": ["远近层次、主辅视觉节奏和交付整洁度"],
+            },
+            "modePhrases": {
+                "text-to-image": ["不要写成分镜指令，直接给出能落图的画面印象。"],
+                "image-to-image": ["以输入图的身份和结构为底，只调整镜头、质感和氛围。"],
+                "inpaint": ["只修补指定区域，让新内容和原图边缘自然衔接。"],
+            },
+            "commercialPhrases": {
+                "commercial": ["成片保持干净利落，避免影射现成品牌、Logo 和受保护角色元素。"],
+            },
+        },
         "modifierGroups": [
             {
                 "id": "style-cinematic",
                 "group": "style",
                 "label": "电影感",
-                "promptFragment": "cinematic framing, layered depth, dramatic atmosphere",
+                "promptFragment": "电影感构图、分层景深、压住但不闷的戏剧氛围",
                 "negativeFragment": "",
                 "commercialTags": [],
             },
@@ -88,7 +108,7 @@ BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
                 "id": "lighting-night",
                 "group": "lighting",
                 "label": "夜景",
-                "promptFragment": "night lighting, wet reflections, practical light sources",
+                "promptFragment": "夜景光源、湿润反光和带来叙事感的实景照明",
                 "negativeFragment": "",
                 "commercialTags": [],
             },
@@ -96,7 +116,7 @@ BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
                 "id": "composition-portrait",
                 "group": "composition",
                 "label": "角色近景",
-                "promptFragment": "portrait-focused composition, clear face read, chest-up framing",
+                "promptFragment": "偏角色近景的构图、清楚的面部读感和半身取景",
                 "negativeFragment": "",
                 "commercialTags": [],
             },
@@ -121,7 +141,7 @@ BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
                     "id": "commercial-default",
                     "label": "商用默认",
                     "mode": "commercial",
-                    "extraPrompt": "clean deliverable, commercially usable presentation, avoid trademarked elements",
+                    "extraPrompt": "成片保持干净利落，避免影射现成品牌、Logo 和受保护角色元素。",
                     "restrictions": ["no-logo-imitation"],
                 },
             ],
@@ -129,7 +149,7 @@ BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
     },
     {
         "id": "story-canvas/light-novel",
-        "version": "1.0",
+        "version": "1.1",
         "label": "Light Novel Pack",
         "description": "偏轻小说与角色驱动场景的模板包。",
         "supports": {
@@ -143,7 +163,7 @@ BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
                 "useCase": "character",
                 "complexity": "standard",
                 "mode": "text-to-image",
-                "promptTemplate": "{subject}\nvisual direction: anime character illustration, expressive pose, clean line art\n{styleModifiers}\nuser direction: {userExtraPrompt}\ncommercial direction: {commercialPrompt}",
+                "promptTemplate": "{subject}\n先把{subjectPhrases}立住，再把{detailPhrases}画得轻盈、清楚、适合长期连载复用。\n{modeHint}\n{stylePrompt}\n{userDirection}\n{commercialDirection}",
                 "defaultNegativePolicyRef": "default-safe",
                 "defaultCommercialPolicyRef": "personal-default",
             },
@@ -153,17 +173,31 @@ BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
                 "useCase": "chapter-scene",
                 "complexity": "standard",
                 "mode": "text-to-image",
-                "promptTemplate": "{subject}\nvisual direction: anime key visual, bright focal characters, readable emotional beat\n{styleModifiers}\nuser direction: {userExtraPrompt}\ncommercial direction: {commercialPrompt}",
+                "promptTemplate": "{subject}\n重点抓住{subjectPhrases}，把{detailPhrases}处理成轻小说 key visual 那种清亮、好读的状态。\n{modeHint}\n{stylePrompt}\n{userDirection}\n{commercialDirection}",
                 "defaultNegativePolicyRef": "default-safe",
                 "defaultCommercialPolicyRef": "personal-default",
             },
         ],
+        "lexicon": {
+            "subjectPhrases": {
+                "character": ["清楚的人物记忆点", "轻快但稳定的人设识别", "表情与姿态的可爱张力"],
+                "chapter-scene": ["情绪最亮的一拍", "角色之间的互动焦点", "干净的环境分层"],
+            },
+            "detailPhrases": {
+                "character": ["发型、制服或配饰的区分度", "线条轻盈但不单薄的服装层次"],
+                "chapter-scene": ["清亮光影、前景点缀和角色表情读感"],
+            },
+            "modePhrases": {
+                "text-to-image": ["避免堆太多术语，先把角色和情绪的第一印象画准。"],
+                "image-to-image": ["保留输入图的人设基础，只微调气氛、配色和镜头表现。"],
+            },
+        },
         "modifierGroups": [
             {
                 "id": "style-anime",
                 "group": "style",
                 "label": "动漫",
-                "promptFragment": "anime illustration, clean line art, expressive face",
+                "promptFragment": "清爽线稿、鲜明表情和偏轻小说的角色表现力",
                 "negativeFragment": "",
                 "commercialTags": [],
             },
@@ -171,7 +205,7 @@ BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
                 "id": "lighting-soft",
                 "group": "lighting",
                 "label": "柔光",
-                "promptFragment": "soft lighting, gentle highlights, readable skin tones",
+                "promptFragment": "柔和光线、轻亮高光和舒服的肤色层次",
                 "negativeFragment": "",
                 "commercialTags": [],
             },
@@ -197,7 +231,7 @@ BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
     },
     {
         "id": "story-canvas/web-serial",
-        "version": "1.0",
+        "version": "1.1",
         "label": "Web Serial Pack",
         "description": "偏商业连载、强钩子、强戏剧场面的模板包。",
         "supports": {
@@ -211,7 +245,7 @@ BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
                 "useCase": "chapter-scene",
                 "complexity": "detailed",
                 "mode": "text-to-image",
-                "promptTemplate": "{subject}\nvisual direction: commercial web-serial key art, strong hook moment, high-contrast atmosphere\n{styleModifiers}\nuser direction: {userExtraPrompt}\ncommercial direction: {commercialPrompt}",
+                "promptTemplate": "{subject}\n先把{subjectPhrases}打出来，再把{detailPhrases}往高潮时刻和商业可读性上压。\n{modeHint}\n{stylePrompt}\n{userDirection}\n{commercialDirection}",
                 "defaultNegativePolicyRef": "default-safe",
                 "defaultCommercialPolicyRef": "commercial-default",
             },
@@ -221,17 +255,35 @@ BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
                 "useCase": "promo",
                 "complexity": "detailed",
                 "mode": "text-to-image",
-                "promptTemplate": "{subject}\nvisual direction: striking serial promo illustration, strong branding space, immediate hook read\n{styleModifiers}\nuser direction: {userExtraPrompt}\ncommercial direction: {commercialPrompt}",
+                "promptTemplate": "{subject}\n先把{subjectPhrases}冲出来，再把{detailPhrases}处理成一眼能读懂的宣传图节奏。\n{modeHint}\n{stylePrompt}\n{userDirection}\n{commercialDirection}",
                 "defaultNegativePolicyRef": "default-safe",
                 "defaultCommercialPolicyRef": "commercial-default",
             },
         ],
+        "lexicon": {
+            "subjectPhrases": {
+                "chapter-scene": ["钩子最强的冲突瞬间", "主角处境反差", "一眼能读懂的动作重心"],
+                "promo": ["最能拉点击的视觉钩子", "高对比主卖点", "适合标题压字的留白"],
+            },
+            "detailPhrases": {
+                "chapter-scene": ["环境压迫感、关键特效和人物受力关系", "前后景层次与危险气味"],
+                "promo": ["主辅元素节奏、爆点信息和商业交付整洁度"],
+            },
+            "modePhrases": {
+                "text-to-image": ["避免平均用力，优先把最抓人的那一下打准。"],
+                "image-to-image": ["沿用输入图主体关系，把光影、张力和高潮信息再往前推一步。"],
+                "inpaint": ["局部补强时只放大关键冲突，不破坏原有阅读方向。"],
+            },
+            "commercialPhrases": {
+                "commercial": ["交付上保持钩子明确、元素干净，并避开现成 IP 的视觉影射。"],
+            },
+        },
         "modifierGroups": [
             {
                 "id": "lighting-neon-night",
                 "group": "lighting",
                 "label": "霓虹夜景",
-                "promptFragment": "neon accents, rain reflections, high-contrast night lighting",
+                "promptFragment": "霓虹点色、雨夜反光和高对比夜景照明",
                 "negativeFragment": "",
                 "commercialTags": [],
             },
@@ -239,7 +291,7 @@ BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
                 "id": "camera-action",
                 "group": "camera",
                 "label": "动作镜头",
-                "promptFragment": "dynamic angle, motion energy, foreground-background separation",
+                "promptFragment": "动态机位、动作冲势和清楚的前后景分离",
                 "negativeFragment": "",
                 "commercialTags": [],
             },
@@ -257,7 +309,7 @@ BUILTIN_PROMPT_PACKS: List[Dict[str, Any]] = [
                     "id": "commercial-default",
                     "label": "商用默认",
                     "mode": "commercial",
-                    "extraPrompt": "clean deliverable, commercially safe presentation, avoid trademarked motifs",
+                    "extraPrompt": "交付上保持钩子明确、元素干净，并避开现成 IP 的视觉影射。",
                     "restrictions": ["no-logo-imitation"],
                 }
             ],
@@ -308,6 +360,7 @@ def summarize_prompt_pack(pack: Dict[str, Any]) -> Dict[str, Any]:
         "source": pack.get("source", ""),
         "sourceFile": pack.get("sourceFile", ""),
         "supports": pack.get("supports", {}),
+        "lexicon": deepcopy(pack.get("lexicon", {})),
         "templates": [
             {
                 "id": template.get("id", ""),
@@ -360,6 +413,7 @@ def serialize_prompt_pack_document(pack: Dict[str, Any], *, include_runtime_meta
         "label": pack.get("label", ""),
         "description": pack.get("description", ""),
         "supports": deepcopy(pack.get("supports", {})),
+        "lexicon": deepcopy(pack.get("lexicon", {})),
         "templates": [
             {
                 "id": template.get("id", ""),
@@ -433,6 +487,73 @@ def save_prompt_pack_document(root: Path, raw_pack: Dict[str, Any], *, file_name
         raise ValueError("prompt pack 至少需要可推导的 id、label 或文件名")
     dump_json_compatible_yaml(pack_path, serialize_prompt_pack_document(normalized, include_runtime_meta=False))
     return normalized
+
+
+def migrate_project_prompt_pack_documents(root: Path, *, dry_run: bool = False) -> Dict[str, Any]:
+    packs_dir = root.resolve() / "prompts" / "illustration-packs"
+    results: List[Dict[str, Any]] = []
+    if not packs_dir.exists():
+        return {
+            "root": str(root.resolve()),
+            "packsDir": str(packs_dir),
+            "dryRun": dry_run,
+            "packCount": 0,
+            "changedCount": 0,
+            "writtenCount": 0,
+            "results": results,
+        }
+
+    for path in sorted(packs_dir.glob("*.yaml")):
+        raw = load_json_compatible_yaml(path, {})
+        if not isinstance(raw, dict):
+            continue
+        normalized = _normalize_prompt_pack(
+            raw,
+            source="project",
+            source_file=path,
+            fallback_pack_id=_derive_project_pack_id(path),
+        )
+        serialized = serialize_prompt_pack_document(normalized, include_runtime_meta=False)
+        changed = raw != serialized
+        if changed and not dry_run:
+            dump_json_compatible_yaml(path, serialized)
+        results.append(
+            {
+                "path": str(path),
+                "packId": str(normalized.get("id") or ""),
+                "label": str(normalized.get("label") or ""),
+                "changed": changed,
+                "written": changed and not dry_run,
+                "templateCount": len(normalized.get("templates", [])),
+                "modifierCount": len(normalized.get("modifierGroups", [])),
+            }
+        )
+
+    return {
+        "root": str(root.resolve()),
+        "packsDir": str(packs_dir),
+        "dryRun": dry_run,
+        "packCount": len(results),
+        "changedCount": sum(1 for item in results if item["changed"]),
+        "writtenCount": sum(1 for item in results if item["written"]),
+        "results": results,
+    }
+
+
+def export_prompt_pack_document(
+    root: Path,
+    illustrations_state: Dict[str, Any],
+    *,
+    requested_pack_name: str = "",
+    file_name: str = "",
+) -> Dict[str, Any]:
+    resolution = resolve_prompt_pack(root, illustrations_state, requested_pack_name)
+    raw_document = serialize_prompt_pack_document(resolution["pack"], include_runtime_meta=False)
+    raw_document["id"] = ""
+    export_name = str(file_name or resolution.get("packName") or "").strip()
+    if not export_name:
+        export_name = prompt_pack_name_from_ref({"packId": resolution["packRef"].get("packId", "")}) or "custom-pack"
+    return save_prompt_pack_document(root, raw_document, file_name=export_name)
 
 
 def resolve_prompt_pack(root: Path, illustrations_state: Dict[str, Any], requested_pack_name: str = "") -> Dict[str, Any]:
@@ -568,6 +689,7 @@ def _normalize_prompt_pack(
     description = str(raw_pack.get("description") or "").strip()
     templates = _normalize_templates(raw_pack.get("templates"), pack_id)
     modifier_groups = _normalize_modifier_groups(raw_pack.get("modifierGroups"))
+    lexicon = _normalize_lexicon(raw_pack.get("lexicon"))
     policies = _normalize_policies(raw_pack.get("policies"))
     supports = _normalize_supports(raw_pack.get("supports"), templates)
     label = str(raw_pack.get("label") or prompt_pack_name_from_ref({"packId": pack_id}) or pack_id).strip()
@@ -578,6 +700,7 @@ def _normalize_prompt_pack(
         "description": description,
         "source": source,
         "supports": supports,
+        "lexicon": lexicon,
         "templates": templates,
         "modifierGroups": modifier_groups,
         "policies": policies,
@@ -602,7 +725,10 @@ def _normalize_templates(raw_templates: Any, pack_id: str) -> List[Dict[str, Any
         seen_ids.add(template_id)
         mode = str(raw.get("mode") or "text-to-image").strip() or "text-to-image"
         complexity = str(raw.get("complexity") or "standard").strip() or "standard"
-        prompt_template = str(raw.get("promptTemplate") or "{subject}\n{styleModifiers}\n{userExtraPrompt}").strip()
+        prompt_template = _normalize_prompt_template(
+            str(raw.get("promptTemplate") or "").strip(),
+            use_case=use_case,
+        )
         templates.append(
             {
                 "id": template_id,
@@ -617,6 +743,88 @@ def _normalize_templates(raw_templates: Any, pack_id: str) -> List[Dict[str, Any
             }
         )
     return templates
+
+
+def _normalize_prompt_template(prompt_template: str, *, use_case: str) -> str:
+    normalized = str(prompt_template or "").strip()
+    if not normalized:
+        return _default_prompt_template(use_case)
+    if any(
+        token in normalized
+        for token in (
+            "{subjectPhrases}",
+            "{detailPhrases}",
+            "{modeHint}",
+            "{stylePrompt}",
+            "{userDirection}",
+            "{commercialDirection}",
+        )
+    ):
+        return normalized
+    if _is_legacy_prompt_template(normalized):
+        return _migrate_legacy_prompt_template(normalized, use_case=use_case)
+    return normalized
+
+
+def _default_prompt_template(use_case: str) -> str:
+    templates = {
+        "character": "{subject}\n先把{subjectPhrases}立住，再把{detailPhrases}交代清楚。\n{modeHint}\n{stylePrompt}\n{userDirection}\n{commercialDirection}",
+        "chapter-scene": "{subject}\n重点抓住{subjectPhrases}，把{detailPhrases}处理得清楚、可信、能直接落图。\n{modeHint}\n{stylePrompt}\n{userDirection}\n{commercialDirection}",
+        "promo": "{subject}\n先把{subjectPhrases}打出来，再把{detailPhrases}和画面节奏收干净。\n{modeHint}\n{stylePrompt}\n{userDirection}\n{commercialDirection}",
+    }
+    return templates.get(
+        use_case,
+        "{subject}\n先把{subjectPhrases}和{detailPhrases}交代清楚。\n{modeHint}\n{stylePrompt}\n{userDirection}\n{commercialDirection}",
+    )
+
+
+def _is_legacy_prompt_template(prompt_template: str) -> bool:
+    legacy_markers = (
+        "{styleModifiers}",
+        "{userExtraPrompt}",
+        "{commercialPrompt}",
+        "visual direction:",
+        "user direction:",
+        "commercial direction:",
+    )
+    return any(marker in prompt_template for marker in legacy_markers)
+
+
+def _migrate_legacy_prompt_template(prompt_template: str, *, use_case: str) -> str:
+    stripped_lines = [line.strip() for line in prompt_template.splitlines() if line.strip()]
+    if not stripped_lines:
+        return _default_prompt_template(use_case)
+    leading_line = stripped_lines[0] if stripped_lines else "{subject}"
+    if "{subject}" not in leading_line:
+        leading_line = "{subject}"
+    carry_lines: List[str] = []
+    for line in stripped_lines[1:]:
+        if any(
+            marker in line
+            for marker in ("{styleModifiers}", "{userExtraPrompt}", "{commercialPrompt}")
+        ):
+            continue
+        normalized = line
+        for prefix in ("visual direction:", "user direction:", "commercial direction:"):
+            if normalized.lower().startswith(prefix):
+                normalized = normalized[len(prefix):].strip()
+        if normalized:
+            carry_lines.append(normalized)
+    migrated_lines = [leading_line]
+    migrated_style_line = _build_migrated_style_line(carry_lines)
+    if migrated_style_line:
+        migrated_lines.append(migrated_style_line)
+    migrated_lines.extend(_default_prompt_template(use_case).splitlines()[1:])
+    return "\n".join(line for line in migrated_lines if line.strip())
+
+
+def _build_migrated_style_line(carry_lines: List[str]) -> str:
+    if not carry_lines:
+        return ""
+    joined = "；".join(dict.fromkeys(carry_lines))
+    if joined[-1] in "。！？!?.":
+        return joined
+    return f"画面气质靠近{joined}。"
 
 
 def _normalize_modifier_groups(raw_modifiers: Any) -> List[Dict[str, Any]]:
@@ -646,6 +854,53 @@ def _normalize_modifier_groups(raw_modifiers: Any) -> List[Dict[str, Any]]:
             }
         )
     return modifiers
+
+
+def _normalize_lexicon(raw_lexicon: Any) -> Dict[str, Dict[str, List[str]]]:
+    lexicon = raw_lexicon if isinstance(raw_lexicon, dict) else {}
+    normalized = {
+        "subjectPhrases": _normalize_phrase_map(lexicon.get("subjectPhrases")),
+        "detailPhrases": _normalize_phrase_map(lexicon.get("detailPhrases")),
+        "modePhrases": _normalize_phrase_map(lexicon.get("modePhrases")),
+        "commercialPhrases": _normalize_phrase_map(lexicon.get("commercialPhrases")),
+        "negativePhrases": _normalize_phrase_map(lexicon.get("negativePhrases")),
+    }
+    return {
+        key: value
+        for key, value in normalized.items()
+        if value
+    }
+
+
+def _normalize_phrase_map(raw_value: Any) -> Dict[str, List[str]]:
+    if isinstance(raw_value, (str, list)):
+        phrases = _normalize_phrase_list(raw_value)
+        return {"common": phrases} if phrases else {}
+    if not isinstance(raw_value, dict):
+        return {}
+    result: Dict[str, List[str]] = {}
+    for key, value in raw_value.items():
+        normalized_key = str(key or "").strip()
+        if not normalized_key:
+            continue
+        phrases = _normalize_phrase_list(value)
+        if phrases:
+            result[normalized_key] = phrases
+    return result
+
+
+def _normalize_phrase_list(raw_value: Any) -> List[str]:
+    values: List[str] = []
+    if isinstance(raw_value, str):
+        candidate = raw_value.strip()
+        if candidate:
+            values.append(candidate)
+    elif isinstance(raw_value, list):
+        for item in raw_value:
+            candidate = str(item or "").strip()
+            if candidate and candidate not in values:
+                values.append(candidate)
+    return values
 
 
 def _normalize_policies(raw_policies: Any) -> Dict[str, List[Dict[str, Any]]]:

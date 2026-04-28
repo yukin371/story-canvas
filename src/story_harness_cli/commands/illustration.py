@@ -15,7 +15,9 @@ from story_harness_cli.protocol import (
     chapter_path,
     default_illustration_batch_manifest_path,
     ensure_project_root,
+    export_prompt_pack_document,
     load_available_prompt_packs,
+    migrate_project_prompt_pack_documents,
     load_project_state,
     resolve_prompt_pack,
     resolve_state_path,
@@ -467,6 +469,40 @@ def command_illustration_config(args) -> int:
     return 0
 
 
+def command_illustration_pack_migrate(args) -> int:
+    root = Path(args.root).resolve()
+    ensure_project_root(root)
+    payload = migrate_project_prompt_pack_documents(root, dry_run=bool(args.dry_run))
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    return 0
+
+
+def command_illustration_pack_export(args) -> int:
+    root = Path(args.root).resolve()
+    ensure_project_root(root)
+    state = load_project_state(root)
+    saved_pack = export_prompt_pack_document(
+        root,
+        state.get("illustrations", {}),
+        requested_pack_name=str(args.prompt_pack or "").strip(),
+        file_name=str(args.file_name or "").strip(),
+    )
+    if bool(args.set_as_default):
+        saved_summary = summarize_prompt_pack(saved_pack)
+        next_pack_name = str(saved_summary.get("name") or saved_pack.get("id") or "").strip()
+        if next_pack_name:
+            update_illustration_config(root, set_prompt_pack=next_pack_name)
+            state = load_project_state(root)
+    payload = build_illustration_config_payload(root, state)
+    payload["exported"] = True
+    payload["exportedPack"] = {
+        "summary": summarize_prompt_pack(saved_pack),
+        "document": saved_pack,
+    }
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    return 0
+
+
 def export_illustration_batch_manifest(args) -> dict[str, Any]:
     root = Path(args.root).resolve()
     ensure_project_root(root)
@@ -886,3 +922,15 @@ def register_illustration_commands(subparsers) -> None:
     config_parser.add_argument("--set-batch-delivery-mode", choices=["webui-manual", "external-agent"])
     config_parser.add_argument("--set-external-agent-skill")
     config_parser.set_defaults(func=command_illustration_config)
+
+    pack_migrate_parser = illustration_subparsers.add_parser("pack-migrate", help="Migrate project prompt packs to canonical templates")
+    pack_migrate_parser.add_argument("--root", required=True)
+    pack_migrate_parser.add_argument("--dry-run", action="store_true")
+    pack_migrate_parser.set_defaults(func=command_illustration_pack_migrate)
+
+    pack_export_parser = illustration_subparsers.add_parser("pack-export", help="Export a builtin or selected prompt pack into the project")
+    pack_export_parser.add_argument("--root", required=True)
+    pack_export_parser.add_argument("--prompt-pack")
+    pack_export_parser.add_argument("--file-name")
+    pack_export_parser.add_argument("--set-as-default", action="store_true")
+    pack_export_parser.set_defaults(func=command_illustration_pack_export)

@@ -26,7 +26,7 @@
 - `illustrations.yaml`: 插图配置与生成记录文件（可缺省，缺失时回退 schema 默认值）
 - `illustrations.yaml`: 插图配置与生成记录文件（可缺省，缺失时回退 schema 默认值）；当前还承载 `promptSystem` 默认 pack / template / modifier / commercialMode，以及 `batchSystem.defaultDeliveryMode/externalAgentSkill`
 - `protocol/illustration_batches.py`: 插画 batch manifest 默认目录与默认文件名约定，避免 commands / adapter / UI 各自发明导出路径
-- `prompt_packs.py`: builtin prompt pack 真相源、项目级 `prompts/illustration-packs/*.yaml` 加载，以及旧版 `promptPack` 到新版 `promptSystem.defaultPack` 的兼容映射辅助；当前还负责 pack/template/modifier/policy 的最小规范化、坏条目过滤、来源元数据补齐，以及用户 pack 文档的序列化/保存
+- `prompt_packs.py`: builtin prompt pack 真相源、项目级 `prompts/illustration-packs/*.yaml` 加载，以及旧版 `promptPack` 到新版 `promptSystem.defaultPack` 的兼容映射辅助；当前还负责 pack/template/modifier/policy/lexicon 的最小规范化、坏条目过滤、来源元数据补齐，以及用户 pack 文档的序列化/保存/导出
 - `_sync_outline()`: volumes → flat chapters 自动同步
 
 ## 3. Must Not Own
@@ -43,7 +43,7 @@
 - `protocol/review_rules.py`: review rule profile 的 builtin 默认值、项目级 `review-rules.yaml` 加载与白名单豁免归一化；当前承载规则启停列表与 `ruleId + scope + allowWhen + reason` 结构化豁免
 - `protocol/schema.py`: `default_project_state`
 - `protocol/prompt_packs.py`: builtin prompt packs、项目自定义 pack 加载与 pack summary / resolution
-- `protocol/prompt_packs.py`: builtin prompt packs、项目自定义 pack 加载与 pack summary / resolution；同时负责把前端回传的用户模板保存到 `prompts/illustration-packs/`
+- `protocol/prompt_packs.py`: builtin prompt packs、项目自定义 pack 加载与 pack summary / resolution；同时负责把前端回传的用户模板保存到 `prompts/illustration-packs/`、把 builtin/default pack 导出到项目作用域，并对可选 `lexicon.subjectPhrases/detailPhrases/modePhrases/commercialPhrases/negativePhrases` 做最小规范化
 - `protocol/illustration_batches.py`: batch manifest 导出路径约定
 - `protocol/state.py`: `_sync_outline`, re-exports
 
@@ -79,8 +79,10 @@
 - `illustrations.yaml` 当前保存的是配置、主图路径和资产元数据摘要，不等于图片二进制资产本身；图片文件仍存放在 `assets/illustrations/`
 - batch manifest 本身不是长期状态真相源；它是由 CLI 基于 project state + prompt pack 解析出来的派生产物，真正历史仍回录到 `illustrations.yaml`
 - `prompt_packs.py` 当前优先级为：显式指定 pack > `promptSystem.defaultPack` > builtin `default`；项目自定义 pack 与 builtin pack 允许并存，但 pack 文件本身仍必须是 JSON-compatible YAML
-- `prompt_packs.py` 当前会为 project pack 补最小规范化：缺失 `id` 时按文件名派生 `project/<slug>`，缺失 `version` 时回填 `project`，并过滤缺少关键字段的 template / modifier / policy 条目
+- `prompt_packs.py` 当前会为 project pack 补最小规范化：缺失 `id` 时按文件名派生 `project/<slug>`，缺失 `version` 时回填 `project`，并过滤缺少关键字段的 template / modifier / policy 条目；`lexicon` 缺失或坏结构时必须安全回退为空，而不是让 pack 整体失效
+- `prompt_packs.py` 当前还会把常见 legacy prompt template（如 `visual direction:` / `user direction:` / `commercial direction:` 和旧 placeholder）迁到新 placeholder 风格；该迁移只作用于模板资源层，不回写历史生成记录
 - 用户自定义 pack 只能落在 `prompts/illustration-packs/`；协议层保存 helper 不允许直接复用 builtin pack id 覆盖系统模板
+- builtin/default pack 若需要项目内定制，必须先经协议层 export helper 克隆到 project scope，再编辑或迁移；不能直接改 builtin 真相源，也不能回写历史 `generated[].promptSnapshot`
 
 ## 8. 测试方式
 

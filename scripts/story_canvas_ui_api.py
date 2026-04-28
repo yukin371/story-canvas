@@ -32,8 +32,10 @@ from story_harness_cli.commands.illustration_support import decorate_generated_e
 from story_harness_cli.protocol import (
     chapter_path,
     ensure_project_root,
+    export_prompt_pack_document,
     load_available_prompt_packs,
     load_project_state,
+    migrate_project_prompt_pack_documents,
     resolve_prompt_pack,
     resolve_state_path,
     save_prompt_pack_document,
@@ -1126,6 +1128,39 @@ def _save_prompt_pack_request(body: dict[str, Any]) -> dict[str, Any]:
     return payload
 
 
+def _migrate_prompt_packs_request(body: dict[str, Any]) -> dict[str, Any]:
+    root_value = str(body.get("root", "")).strip()
+    root = _coerce_project_root(root_value) if root_value else None
+    library_root, scope = _resolve_prompt_pack_scope(root)
+    migration = migrate_project_prompt_pack_documents(library_root, dry_run=bool(body.get("dryRun")))
+    payload = _build_prompt_pack_library_response(root)
+    payload["migration"] = migration
+    payload["scope"] = scope
+    return payload
+
+
+def _export_prompt_pack_request(body: dict[str, Any]) -> dict[str, Any]:
+    root_value = str(body.get("root", "")).strip()
+    root = _coerce_project_root(root_value) if root_value else None
+    library_root, scope = _resolve_prompt_pack_scope(root)
+    state = load_project_state(library_root)
+    saved_pack = export_prompt_pack_document(
+        library_root,
+        state.get("illustrations", {}),
+        requested_pack_name=str(body.get("promptPackName", "")).strip(),
+        file_name=str(body.get("fileName", "")).strip(),
+    )
+    if scope == "project" and bool(body.get("setAsDefault")):
+        saved_summary = summarize_prompt_pack(saved_pack)
+        next_pack_name = str(saved_summary.get("name") or saved_pack.get("id") or "").strip()
+        if next_pack_name:
+            update_illustration_config(library_root, set_prompt_pack=next_pack_name)
+    payload = _build_prompt_pack_library_response(root)
+    payload["exported"] = True
+    payload["exportedPack"] = serialize_prompt_pack_document(saved_pack)
+    return payload
+
+
 def _build_illustration_args(body: dict[str, Any]) -> SimpleNamespace:
     root = _coerce_project_root(str(body.get("root", "")))
     return SimpleNamespace(
@@ -1552,6 +1587,30 @@ class StoryCanvasApiHandler(BaseHTTPRequestHandler):
             try:
                 body = _load_json_request(self)
                 payload = _save_prompt_pack_request(body)
+            except json.JSONDecodeError:
+                _json_response(self, {"error": "Invalid JSON body"}, HTTPStatus.BAD_REQUEST)
+                return
+            except (Exception, SystemExit) as exc:
+                _json_response(self, {"error": str(exc)}, HTTPStatus.BAD_REQUEST)
+                return
+            _json_response(self, payload)
+            return
+        if parsed.path == "/api/prompt-packs/migrate":
+            try:
+                body = _load_json_request(self)
+                payload = _migrate_prompt_packs_request(body)
+            except json.JSONDecodeError:
+                _json_response(self, {"error": "Invalid JSON body"}, HTTPStatus.BAD_REQUEST)
+                return
+            except (Exception, SystemExit) as exc:
+                _json_response(self, {"error": str(exc)}, HTTPStatus.BAD_REQUEST)
+                return
+            _json_response(self, payload)
+            return
+        if parsed.path == "/api/prompt-packs/export":
+            try:
+                body = _load_json_request(self)
+                payload = _export_prompt_pack_request(body)
             except json.JSONDecodeError:
                 _json_response(self, {"error": "Invalid JSON body"}, HTTPStatus.BAD_REQUEST)
                 return

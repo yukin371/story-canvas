@@ -19,12 +19,13 @@
 - `review preflight` 现负责章节 / 卷级只读预检聚合：把 mention hygiene、伏笔到窗 / 逾期、世界 onboarding / 势力与战力风险收敛成一个 AI 自审入口，减少在卷级闭环前来回手拼多个命令输出
 - `review preflight` 当前还会带出顶层 `projectAdvisories`；首个 advisory 为缺少 `PRD.md`，让 AI 在常规预检入口就能看到项目立项文档缺口
 - `review preflight --volume-id` 当前还会附带 `volumeStructureCheck`，用轻量阶段映射和检查项暴露卷级结构明示度、引入卷 onboarding、伏笔债务和卷尾收束准备度，先服务 AI 自审与人工审查
-- `review volume-self-template` 现负责 repo-native 的卷级 AI 自审模板生成：基于卷级 `review preflight` 输出模板骨架、当前卷风险摘要、逐章信号和建议修补方向，减少 AI/作者手拼输入文件
+- `review volume-self-template` 现负责 repo-native 的卷级 AI 自审模板生成：基于卷级 `review preflight` 输出模板骨架、当前卷风险摘要、逐章信号、已持久化 chapter/scene review 摘要、卷级 style 风险摘要、独立编辑审查要求和建议修补方向，减少 AI/作者手拼输入文件
 - `review volume-self-template` 当前还会把 `projectAdvisories` 写入模板 `_templateContext`，让 AI 自审时同步看到项目级立项缺口
-- `review volume-self` 现负责 repo-native 的卷级 AI 自审结果写入：从外部结构化输入读取卷级闭环结论、评分、归因和修正建议，落盘到 `reviews/story-reviews.yaml`，避免继续手改该状态文件
+- `review volume-self` 现负责 repo-native 的卷级 AI 自审结果写入：从外部结构化输入读取卷级闭环结论、评分、归因、独立编辑审查结果和修正建议，落盘到 `reviews/story-reviews.yaml`，避免继续手改该状态文件
 - `review volume-self` 当前还会显式拒绝模板占位值（如 `待填写`），避免把未完成的自审草稿写入真相层
 - `review volume-self` 当前还会做最小健康检查：不接受所有维度都为 `0` 的空白评分；`closed` 必须写出 `delivered`，`not_closed` 必须写出 `missing`
-- `review volume-self` 当前还会做最小一致性检查：`allowHumanReview=true` 时最低门槛维度必须过线；`not_closed` 或存在 `0-2` 分弱项时至少要写出一项 `issues`
+- `review volume-self` 当前还会做最小一致性检查：`allowHumanReview=true` 时最低门槛维度必须过线，且独立编辑审查必须完成并给出放行 verdict；`not_closed` 或存在 `0-2` 分弱项时至少要写出一项 `issues`
+- `review volume-self` 当前还会校验低分维度的最小证据锚点：`scores[].chapterRefs/evidenceRefs` 若为空，则至少要在带 ref 的 `issues[]` 中能追到对应弱项，避免只给低分不留可核对证据
 - `review volume-self` 当前还会对 `0-2` 分弱项做最小联动检查：若对应问题或修复动作里完全没提到该弱项方向，会拒绝写入，避免“分数和问题清单各说各话”
 - `review volume-self` 当前还会基于当前卷章节正文与 `scenePlans` 校验 `issues.chapterRefs/evidenceRefs`：至少会验证 `chapter-xxx#paragraph-n` 与 `chapter-xxx#scene-n` 是否真的存在，减少写入空锚点
 - `review volume-self` 当前还会在 command 层额外构建章节级 `semanticAnchors`，首批支持 `chapter-xxx#world-rule-onboarding` 与 `chapter-xxx#handoff-gap`，只有当前卷里真实存在对应 world onboarding / chapter handoff 信号时才允许写入
@@ -57,7 +58,7 @@
 - `world list` / `world add` / `world mention-adopt` / `world progression-add` / `world progression-stage-add` 现负责 repo-native 的 worldbook 浏览与显式写入，覆盖 `worldRules`、`factions`、`locations`、`artifacts`、`mysteries` 与最小 `powerProgressions` 维护，并支持把章节中的缺失 mention 显式采纳进 `worldbook`，减少 AI 直接改 `worldbook.yaml`
 - `world check` 现负责核心概念 onboarding 与世界尺度审查编排：输出 `storyTemplate.modulePolicy` 下的世界模块缺口、当前章/当前卷涉及的势力/地点/物品/谜团上下文、早期世界规则缺失提示、势力建档薄弱项，以及复用一致性引擎的高风险任务/战力突破冲突信号
 - `style check` / `style constraints` / `style report` / `style repair` 这组风格治理命令，以及 optional scorer 的 command-side 装配
-- `style check` / `style constraints` / `style report` / `style repair` 这组风格治理命令，以及 `style-profiles.yaml` 中 pattern / 术语词典 / 白名单 / 题材语域词表的 command-side 装配；未显式传 `--profile` 时会按项目定位自动选 profile；当前还会装配 `review-rules.yaml` 的 resolved profile，并把章节/卷/scene scope 透传给服务层规则检测；章节输出现会直接暴露中文高频 AI 句式簇与 `paragraphReadability` 等新风格信号
+- `style check` / `style constraints` / `style report` / `style repair` 这组风格治理命令，以及 `style-profiles.yaml` 中 pattern / 术语词典 / 白名单 / 题材语域词表的 command-side 装配；未显式传 `--profile` 时会按项目定位自动选 profile；当前还会装配 `review-rules.yaml` 的 resolved profile，并把章节/卷/scene scope 透传给服务层规则检测；章节输出现会直接暴露中文高频 AI 句式簇、`paragraphReadability` 与 `clusteredAIPhrasing` 等新风格信号
 - `style check` / `consistency check` / `review chapter` / `review scene` 现已开始对外暴露统一规则 judgement 结果，作为后续统一规则引擎协议的 Phase 1 兼容输出；其中 chapter review 还会暴露 `chapterHandoffSignals`
 - `status` 现负责 repo-native 状态浏览编排：默认聚合项目概览、当前卷/章、context lens、最近 chapter / scene review、style 摘要、persisted consistency check、章节级 mention hygiene 摘要与 workflow gate；传 `--volume-id` 时则切到卷级视角，输出卷摘要、最新卷级 AI 自审摘要与卷级 gate，减少真实写作时直接翻 `project.yaml` / `outline.yaml` / `story-reviews.yaml` / `context-lens.yaml`
 - `status` 当前还会在 `project.projectAdvisories` 与 `workflow.projectAdvisories` 暴露项目级只读提示；既会提示缺少 `PRD.md`，也会提示 `PRD.md` 是否仍停留在 bootstrap/TBD 占位状态，便于 UI / agent 在总览页直接看到立项文档缺口；同时 `project.reviewRuleConfig` 会暴露 `review-rules.yaml` 的 active/resolved profile 与豁免数量
@@ -76,9 +77,11 @@
 - `export review-packet` 现还会带出章节/卷级 mention hygiene 摘要，明确哪些引用仍待补 `@{}`、哪些包裹引用仍待建档，方便人工审查时直接定位工具闭环缺口
 - `export` 现支持 `--volume-id`，可按卷导出 `txt/json/markdown`，并支持卷级 `review-packet`；目录输出时默认使用卷标题命名，如 `第一卷.md`、`第一卷-review-packet.md`
 - 卷级 `export review-packet --volume-id` 当前还会带出卷级自审的 `repairCoverage` 摘要，明确弱项覆盖状态与未覆盖弱项，减少人工审查前再反查原始 YAML
-- `illustration prompt` / `illustration generate` / `illustration batch-export` / `illustration batch-record` / `illustration export` / `illustration list` / `illustration config` 这组插图命令，负责编排 prompt pack/template/modifier/commercialMode 解析、文生图/图生图/重绘 provider 请求、batch manifest 导出/回录、临时资产导出，以及 `illustrations.yaml` 配置读写
+- `illustration prompt` / `illustration generate` / `illustration batch-export` / `illustration batch-record` / `illustration export` / `illustration list` / `illustration config` / `illustration pack-migrate` / `illustration pack-export` 这组插图命令，负责编排 prompt pack/template/modifier/commercialMode 解析、文生图/图生图/重绘 provider 请求、batch manifest 导出/回录、临时资产导出、项目级 prompt pack 迁移，以及 `illustrations.yaml` 配置读写
 - `illustration prompt` / `illustration generate` 当前还负责最小 batch task 编排：支持 `batch.count` 的同模板重复生成，并把 `batch.count / variantStrategy` 写入 dry-run 输出与生成历史，避免 UI 或脚本自行发明平行批量协议
 - `illustration batch-export` 当前是批量插画的 canonical 导出入口：把 project state + prompt pack 展开成 manifest，并显式区分 `webui-manual` / `external-agent` 两种交付模式
+- `illustration pack-migrate` 当前是项目级 prompt pack 资源迁移的 canonical 入口：只处理 `prompts/illustration-packs/*.yaml`，把 legacy 模板重写成当前 canonical 模板格式，不回写历史 `generated[].promptSnapshot`
+- `illustration pack-export` 当前是 builtin/default pack 项目化的 canonical 入口：把当前选中的 builtin 或显式指定 pack 克隆到 `prompts/illustration-packs/*.yaml`，供后续本地编辑、迁移和重新设为默认 pack，避免 UI / agent 直接手抄系统模板形成平行真相源
 - `illustration batch-record` 当前只负责把 manifest 约定路径下的现存图片资产回录到 `illustrations.yaml`；WebUI 或外部 agent 不得直接修改状态文件
 - `illustration export` 当前负责把已生成或已回录的资产导出到目标目录，主要服务临时暂存图的转存，而不是重新生成
 - 本地 UI API 若需要触发插画 dry-run 或真实 generate，应复用 `commands/illustration.py` 的命令侧 helper；插画请求组装、provider request 构造和落盘写入仍由命令层 owner

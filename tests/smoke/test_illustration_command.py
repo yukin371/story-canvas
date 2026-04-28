@@ -96,6 +96,8 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
         self.assertEqual(payload["targetType"], "entity")
         self.assertEqual(payload["mode"], "text-to-image")
         self.assertIn("林舟", payload["promptText"])
+        self.assertIn("lexiconSnapshot", payload["promptSnapshot"])
+        self.assertNotIn("visual direction:", payload["promptText"])
 
     def test_illustration_prompt_for_chapter_image_to_image(self) -> None:
         reference = self.temp_dir / "reference.png"
@@ -191,6 +193,97 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
         self.assertEqual(payload["batchSystem"]["defaultDeliveryMode"], "external-agent")
         self.assertEqual(payload["batchSystem"]["externalAgentSkill"], "story-canvas-imagegen-agent")
 
+    def test_illustration_pack_migrate_rewrites_project_pack(self) -> None:
+        packs_dir = self.temp_dir / "prompts" / "illustration-packs"
+        packs_dir.mkdir(parents=True, exist_ok=True)
+        pack_path = packs_dir / "legacy-pack.yaml"
+        pack_path.write_text(
+            json.dumps(
+                {
+                    "label": "Legacy Pack",
+                    "templates": [
+                        {
+                            "id": "scene-standard",
+                            "useCase": "chapter-scene",
+                            "promptTemplate": "{subject}\nvisual direction: fog harbor\n{userExtraPrompt}",
+                        }
+                    ],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(
+                [
+                    "illustration",
+                    "pack-migrate",
+                    "--root",
+                    str(self.temp_dir),
+                    "--dry-run",
+                ]
+            )
+        dry_run_payload = json.loads(buffer.getvalue())
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(dry_run_payload["changedCount"], 1)
+        self.assertEqual(dry_run_payload["writtenCount"], 0)
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(
+                [
+                    "illustration",
+                    "pack-migrate",
+                    "--root",
+                    str(self.temp_dir),
+                ]
+            )
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["changedCount"], 1)
+        self.assertEqual(payload["writtenCount"], 1)
+
+        migrated = json.loads(pack_path.read_text(encoding="utf-8"))
+        self.assertIn("{subjectPhrases}", migrated["templates"][0]["promptTemplate"])
+        self.assertIn("画面气质靠近fog harbor。", migrated["templates"][0]["promptTemplate"])
+
+    def test_illustration_pack_export_clones_pack_and_can_set_default(self) -> None:
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(
+                [
+                    "illustration",
+                    "pack-export",
+                    "--root",
+                    str(self.temp_dir),
+                    "--prompt-pack",
+                    "light-novel",
+                    "--file-name",
+                    "custom-light",
+                    "--set-as-default",
+                ]
+            )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertTrue(payload["exported"])
+        self.assertEqual(payload["exportedPack"]["summary"]["id"], "project/custom-light")
+        self.assertEqual(payload["exportedPack"]["document"]["id"], "project/custom-light")
+        self.assertEqual(payload["promptSystem"]["defaultPack"]["packId"], "project/custom-light")
+
+        illustrations_state = json.loads((self.temp_dir / "illustrations.yaml").read_text(encoding="utf-8"))
+        self.assertEqual(illustrations_state["promptPack"]["name"], "custom-light")
+        self.assertEqual(illustrations_state["promptSystem"]["defaultPack"]["packId"], "project/custom-light")
+
+        exported_path = self.temp_dir / "prompts" / "illustration-packs" / "custom-light.yaml"
+        self.assertTrue(exported_path.exists())
+        exported_pack = json.loads(exported_path.read_text(encoding="utf-8"))
+        self.assertIn("{subjectPhrases}", exported_pack["templates"][0]["promptTemplate"])
+
     def test_illustration_generate_dry_run_outputs_provider_request(self) -> None:
         buffer = StringIO()
         with redirect_stdout(buffer):
@@ -228,6 +321,9 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
         self.assertEqual(payload["promptSnapshot"]["modifierRefs"], ["style-cinematic"])
         self.assertEqual(payload["policySnapshot"]["commercialMode"], "commercial")
         self.assertIn("雨夜港口", payload["promptSnapshot"]["resolvedPrompt"])
+        self.assertTrue(payload["promptSnapshot"]["lexiconSnapshot"]["subjectPhrases"])
+        self.assertNotIn("user direction:", payload["promptSnapshot"]["resolvedPrompt"])
+        self.assertNotIn("commercial direction:", payload["promptSnapshot"]["resolvedPrompt"])
 
     def test_illustration_generate_dry_run_supports_batch_count(self) -> None:
         buffer = StringIO()
@@ -539,6 +635,8 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
         self.assertEqual(payload["modifierRefs"], ["lighting-harsh"])
         self.assertIn("noir alley", payload["promptText"])
         self.assertIn("强调巷口对视", payload["promptSnapshot"]["resolvedPrompt"])
+        self.assertNotIn("visual direction:", payload["promptSnapshot"]["resolvedPrompt"])
+        self.assertNotIn("user direction:", payload["promptSnapshot"]["resolvedPrompt"])
 
     def test_illustration_generate_image_to_image_real_path_persists_record(self) -> None:
         reference = self.temp_dir / "reference.png"
@@ -1008,8 +1106,81 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
 
         library = api_module._build_prompt_pack_library_response(self.temp_dir)
         saved_pack = next(item for item in library["userPacks"] if item["id"] == "project/ui-custom-pack")
-        self.assertEqual(saved_pack["templates"][0]["promptTemplate"], "{subject}\nui scene\n{userExtraPrompt}")
+        self.assertIn("画面气质靠近ui scene。", saved_pack["templates"][0]["promptTemplate"])
+        self.assertIn("{subjectPhrases}", saved_pack["templates"][0]["promptTemplate"])
         self.assertEqual(saved_pack["modifierGroups"][0]["promptFragment"], "cold palette, restrained contrast")
+
+    def test_story_canvas_ui_api_prompt_pack_migrate_endpoint_reports_changes(self) -> None:
+        api_module = _load_story_canvas_ui_api_module()
+        packs_dir = self.temp_dir / "prompts" / "illustration-packs"
+        packs_dir.mkdir(parents=True, exist_ok=True)
+        pack_path = packs_dir / "legacy-pack.yaml"
+        pack_path.write_text(
+            json.dumps(
+                {
+                    "label": "Legacy Pack",
+                    "templates": [
+                        {
+                            "id": "scene-standard",
+                            "useCase": "chapter-scene",
+                            "promptTemplate": "{subject}\nvisual direction: river dock\n{userExtraPrompt}",
+                        }
+                    ],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        dry_run_payload = api_module._migrate_prompt_packs_request(
+            {
+                "root": str(self.temp_dir),
+                "dryRun": True,
+            }
+        )
+        self.assertEqual(dry_run_payload["migration"]["changedCount"], 1)
+        self.assertEqual(dry_run_payload["migration"]["writtenCount"], 0)
+
+        payload = api_module._migrate_prompt_packs_request(
+            {
+                "root": str(self.temp_dir),
+            }
+        )
+        self.assertEqual(payload["migration"]["changedCount"], 1)
+        self.assertEqual(payload["migration"]["writtenCount"], 1)
+
+        migrated = json.loads(pack_path.read_text(encoding="utf-8"))
+        self.assertIn("{subjectPhrases}", migrated["templates"][0]["promptTemplate"])
+        self.assertIn("画面气质靠近river dock。", migrated["templates"][0]["promptTemplate"])
+
+    def test_story_canvas_ui_api_prompt_pack_export_endpoint_exports_and_sets_default(self) -> None:
+        api_module = _load_story_canvas_ui_api_module()
+
+        payload = api_module._export_prompt_pack_request(
+            {
+                "root": str(self.temp_dir),
+                "promptPackName": "default",
+                "fileName": "ui-export-pack",
+                "setAsDefault": True,
+            }
+        )
+
+        self.assertTrue(payload["exported"])
+        self.assertEqual(payload["scope"], "project")
+        self.assertEqual(payload["exportedPack"]["id"], "project/ui-export-pack")
+        self.assertTrue(payload["exportedPack"]["sourceFile"].endswith("ui-export-pack.yaml"))
+        self.assertTrue(any(item["id"] == "project/ui-export-pack" for item in payload["userPacks"]))
+
+        illustrations_state = json.loads((self.temp_dir / "illustrations.yaml").read_text(encoding="utf-8"))
+        self.assertEqual(illustrations_state["promptPack"]["name"], "ui-export-pack")
+        self.assertEqual(illustrations_state["promptSystem"]["defaultPack"]["packId"], "project/ui-export-pack")
+
+        exported_path = self.temp_dir / "prompts" / "illustration-packs" / "ui-export-pack.yaml"
+        self.assertTrue(exported_path.exists())
+        exported_pack = json.loads(exported_path.read_text(encoding="utf-8"))
+        self.assertIn("{subjectPhrases}", exported_pack["templates"][0]["promptTemplate"])
 
 
 if __name__ == "__main__":

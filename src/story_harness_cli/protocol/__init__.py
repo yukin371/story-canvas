@@ -9,7 +9,9 @@ from .files import (
 )
 from .illustration_batches import default_illustration_batch_manifest_path, illustration_batch_manifest_dir
 from .prompt_packs import (
+    export_prompt_pack_document,
     load_available_prompt_packs,
+    migrate_project_prompt_pack_documents,
     resolve_prompt_pack,
     save_prompt_pack_document,
     serialize_prompt_pack_document,
@@ -35,6 +37,7 @@ __all__ = [
     "default_illustration_batch_manifest_path",
     "detect_layout",
     "ensure_project_root",
+    "export_prompt_pack_document",
     "get_default_review_rule_profiles",
     "get_default_review_rules_config",
     "illustration_batch_manifest_dir",
@@ -43,6 +46,7 @@ __all__ = [
     "load_outline_for_chapter",
     "load_available_prompt_packs",
     "load_project_state",
+    "migrate_project_prompt_pack_documents",
     "merge_review_rules_with_defaults",
     "resolve_review_rule_profile",
     "resolve_review_rule_profile_name",

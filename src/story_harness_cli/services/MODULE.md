@@ -23,8 +23,8 @@
 - `context_lens.py`: 写作上下文构建（活跃角色/关系 + 情绪契约 + 题材模板 + 世界约束 + 线索/伏笔切片），并产出 `previous/current/next chapter` 承接摘要与可延续的角色变化 / 线程信号
 - `outline_guard.py`: 章节大纲前置检查，判断是否具备项目定位 / 故事契约 + direction / beats / scenePlans 进入写作或细化
 - `story_review.py`: 章节回顾评分、一幕评审、类型/平台加权评分、评论、改稿建议、契约对齐与商业连载对齐检查，并开始消费情绪契约、揭露偏好、模板关注点、伏笔窗口、世界规则、角色动态状态，以及 style/consistency 护栏信号；对高置信“方案文档腔”会进入 `priorityActions` 与 `contractAlignment.risks`；chapter 级 review 现还会消费章节承接摘要，对“上一章结果 -> 本章开头承接偏弱”输出 `chapterHandoffSignals`、`priorityActions`、`contractAlignment.risks` 与 `chapterHandoffWeak` rule judgement；chapter/scene 共用的 `projectContext`、`priorityActions` 与对齐后处理已收敛到共享 helper，避免两条评审路径长期并行漂移
-- `style_detector.py`: AI 风格启发式检测与约束生成；允许通过外部注入 scorer 增强句式近似判断，但默认保持 builtin fallback，并支持基于 profile 的术语观察词、重复白名单、词级阈值、题材语域失真词表、叙事支架复用检测，以及连续 `目标：/风险：/约束：/时间窗口：` 这类结构化方案块识别；`planBlockPolicy` 可对标签白名单与命中阈值做题材级放宽；当前还内建了中文高频 AI 句式簇（`不是……是……`、`不像……更像……`、`真正……从来都是……` / `还有什么？`）与移动端段落可读性信号；同时会消费 `review_rule_detector.py` 返回的规则信号，把 `review-rules.yaml` 驱动的检测结果并入 `patternResults/judgements`
-- `illustration_prompting.py`: chapter / entity 插图 prompt 构造、template/modifier/policy 解析后的 prompt snapshot 组装、目标元数据整理与 dry-run request 组装；当前 entity prompt 优先抽取角色卡外貌/视觉锚点，chapter prompt 则避免直接注入章节正文摘要
+- `style_detector.py`: AI 风格启发式检测与约束生成；允许通过外部注入 scorer 增强句式近似判断，但默认保持 builtin fallback，并支持基于 profile 的术语观察词、重复白名单、词级阈值、题材语域失真词表、叙事支架复用检测，以及连续 `目标：/风险：/约束：/时间窗口：` 这类结构化方案块识别；`planBlockPolicy` 可对标签白名单与命中阈值做题材级放宽；当前还内建了中文高频 AI 句式簇（`不是……是……`、`不像……更像……`、`真正……从来都是……` / `还有什么？`）、移动端段落可读性信号，以及 `clusteredAIPhrasing` 聚合层，用于把多项轻度 AI 句式/可读性问题收敛成统一风险；同时会消费 `review_rule_detector.py` 返回的规则信号，把 `review-rules.yaml` 驱动的检测结果并入 `patternResults/judgements`
+- `illustration_prompting.py`: chapter / entity 插图 prompt 构造、template/modifier/policy/lexicon 解析后的 prompt snapshot 组装、目标元数据整理与 dry-run request 组装；当前 entity prompt 优先抽取角色卡外貌/视觉锚点，chapter prompt 则避免直接注入章节正文摘要，并把模板从标签式拼接收敛成更自然的美术 brief
 - `illustration_prompting.py`: 当前还支持 freeform / temporary 目标 payload；当图片不绑定具体章节或角色时，仍走相同 pack/template 展开，但 target type 会标记为 `temporary`
 - `illustration_batching.py`: batch spec 归一化、delivery mode 约束、batch manifest summary，以及 `webui-manual` / `external-agent` 的纯说明载荷组装
 - `reference_mentions.py`: 章节内结构化引用 mention 的纯分析，负责已建档引用目录、已包裹/未包裹/未建档分组、plain mention 的确定性 tag replacement 候选，以及最小 related context
@@ -35,11 +35,12 @@
 - `workflow_engine.py` 的卷级摘要当前还会直接透出 `volumeStructureCheck`，把 preflight 已有的卷级结构检查提升到 workflow 顶层，避免 UI / agent 只能从嵌套 preflight 中取值
 - `workflow_engine.py` 在卷级 `human_review_ready` gate 中，当前还会把 `repairCoverage.uncoveredWeakDimensionLabels` 视为显式阻塞，并把这些弱项翻译成更具体的 `nextActions`
 - `workflow_engine.py` 当前还会为卷级当前 gate 生成只读 `changeRequestDrafts`：工具侧阻塞会转成带 `chapterId/evidence` 的修复草案，卷级自审阻塞会转成修稿动作草案；当卷级自审尚未生成时，还会把 `volumeStructureCheck` 中的 `risk/missing` 检查项转成结构修补草案，供 UI/agent 直接消费而不必二次解析 `nextActions`
-- `volume_self_review.py`: 卷级 AI 自审的纯校验与归一化，负责固定评分维度、缺陷归因和人工审查门槛判断，并提供最近一次卷级自审结果读取 helper
-- `volume_self_review.py` 生成模板时当前还会透传 command 层卷级预检中的 `volumeStructureCheck`，让 AI 自审能直接对照卷级阶段映射与结构检查稿
+- `volume_self_review.py`: 卷级 AI 自审的纯校验与归一化，负责固定评分维度、缺陷归因、独立编辑审查元数据、问题级工具/自审漏检解释，以及人工审查门槛判断，并提供最近一次卷级自审结果读取 helper
+- `volume_self_review.py` 生成模板时当前还会透传 command 层卷级预检中的 `volumeStructureCheck`、chapter/scene/style 证据摘要，并显式提示独立编辑审查模式 / 上下文隔离要求，让 AI 自审能直接对照卷级阶段映射与结构检查稿
 - `volume_self_review.py` 现还负责拦截模板占位值，避免未填写完成的卷级自审草稿被写入 `story_reviews`
 - `volume_self_review.py` 现还会做最小有效性检查，拒绝“全部 0 分”或与闭环结论不匹配的空白 `delivered/missing`
-- `volume_self_review.py` 现还会做最小一致性检查，避免“声明可人工审查但门槛未过”或“未闭环却没有主要问题清单”这类自相矛盾输入
+- `volume_self_review.py` 现还会做最小一致性检查，避免“声明可人工审查但门槛未过”“独立编辑审查未完成却想放行”或“未闭环却没有主要问题清单”这类自相矛盾输入
+- `volume_self_review.py` 当前还要求 `0-2` 分弱项必须能对齐到可核对的章节或证据锚点，优先通过 `scores[].chapterRefs/evidenceRefs`，否则至少要在带 ref 的 `issues[]` 中能追到对应问题
 - `volume_self_review.py` 现还会用轻量关键词做低分维度覆盖检查，避免 `issues/fixAction/repairSuggestions` 与最弱项完全脱节
 - `volume_self_review.py` 现还会归一化 `repairCoverage` 摘要，输出弱项列表、未覆盖弱项和 coverage status，供 `status/export` 直接消费
 - `volume_self_review.py` 的 `issues` 现还兼容可选 `chapterRefs/evidenceRefs`，用于把卷级问题直接锚到章节或外部审查证据
@@ -85,8 +86,8 @@
 - `export_workflow_payload(workflow_progress, inferred)`: 输出面向 CLI 的 workflow 快照载荷
 - `build_style_repair_prompt(chapter_text, style_report, chapter_id)`: 基于 styleAnalysis 生成可直接喂给模型的精修 prompt
 - `build_style_change_request_drafts(chapter_id, style_report)`: 把风格问题转成 change-request 风格草案
-- `build_chapter_illustration_payload(...)`: 生成章节插图 payload，当前会输出 `promptSnapshot/policySnapshot/templateId/modifierRefs/commercialMode`
-- `build_entity_illustration_payload(...)`: 生成人物设定图 payload，当前会输出 `promptSnapshot/policySnapshot/templateId/modifierRefs/commercialMode`
+- `build_chapter_illustration_payload(...)`: 生成章节插图 payload，当前会输出 `promptSnapshot/policySnapshot/templateId/modifierRefs/commercialMode`，以及可复现的 `promptSnapshot.lexiconSnapshot`
+- `build_entity_illustration_payload(...)`: 生成人物设定图 payload，当前会输出 `promptSnapshot/policySnapshot/templateId/modifierRefs/commercialMode`，以及可复现的 `promptSnapshot.lexiconSnapshot`
 - `build_freeform_illustration_payload(...)`: 生成临时图 / 非小说归属图 payload，当前会输出 `targetType=temporary` 与 `useCase`
 - `normalize_illustration_batch_spec(raw_spec)`: 归一化批量插画 spec，保证 jobs/defaults 最小结构和 target 约束
 - `build_batch_delivery_payload(...)`: 基于 resolved payload 生成 `webui-manual` 或 `external-agent` 的纯说明块
@@ -135,7 +136,7 @@
 - `story_review.py` 对 `storyTemplate.reviewFocus` 和 `emotionalContract.revealPreference` 的消费仍是启发式提示，不应被误读成严格剧情证明器
 - `style_detector.py` 的特殊术语复用检测默认是启发式；若项目存在刻意反复强化的母题，应该放进 `style-profiles.yaml -> termPolicy.allowRepeated`
 - `style_detector.py` 的题材语域失真检测依赖 `style-profiles.yaml -> registerPolicy`；玄幻这类题材的现代项目管理语汇应优先通过 profile 管理，而不是硬编码在 review 层
-- `style_detector.py` 的中文高频 AI 句式簇当前仍是启发式密度检测；它们更适合作为“频率过高的风格风险”而不是单句一票否决
+- `style_detector.py` 的中文高频 AI 句式簇当前仍是启发式密度检测；它们更适合作为“频率过高的风格风险”而不是单句一票否决；`clusteredAIPhrasing` 也只是聚合风险，不等于句句都必须重写
 - `style_detector.py` 的 `paragraphReadability` 当前按移动端阅读做偏保守的长段检测；命中不代表段落绝对错误，但会拉低样例的章节评级基线
 - `style_detector.py` 的“前世的记忆 / 前世的经验”这类问题不走纯词典匹配，而是通过 `framePolicy` + 结构启发式识别重复叙事支架
 - `style_detector.py` 的“方案文档腔”当前只抓高置信标签式块；必须出现同一连续块内至少 3 个标签命中且不少于 2 种标签，避免把普通说明句误判成清单口吻；若题材本就允许结构化术语，应优先通过 `style-profiles.yaml -> planBlockPolicy` 放宽
@@ -145,6 +146,7 @@
 - `illustration_batching.py` 只负责 spec / delivery 的纯归一化和说明组装，不负责读写 manifest 文件，也不负责资产回录
 - `illustration_prompting.py` 当前会优先消费 `profile.appearance/visual/look`、`seed.appearance/visual` 与当前外在状态作为角色图 prompt 基线；若角色卡没有这些字段，才回退到 summary
 - `illustration_prompting.py` 的 chapter-scene prompt 当前不再直接拼接章节正文 excerpt，避免 prompt 过长和把正文误当作最终生图说明
+- `illustration_prompting.py` 当前会优先把 modifier 转成自然短句，再和 pack 的 `lexicon` 一起渲染进模板；兼容旧模板时仍保留 `styleModifiers/userExtraPrompt/commercialPrompt` 这组旧 placeholder
 - `evaluate_project_story_gate` 的用途是把“先确定市场定位和故事承诺，再拆章节”变成硬门禁，而不是 review 阶段的软建议
 - workflow 的 `currentStage` 口径是“第一个未满足 inferred 条件的 gate”，不是“所有前置 gate 都必须先人工 accept 才算通过”
 - `advance_workflow_progress` 只允许对当前 gate 执行 `accept`；若 inferred 条件未满足，会直接拒绝推进

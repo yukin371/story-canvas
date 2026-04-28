@@ -60,6 +60,7 @@ story-project/
 - `illustrations.yaml` 继续作为项目级配置与任务历史的真相源
 - `prompts/illustration-packs/*.yaml` 是项目内可选 pack 资源
 - 若项目目录下没有自定义 pack，必须回退 builtin packs
+- 若要在项目内定制 builtin/default pack，应先通过 `illustration pack-export` 或 UI 对应导出入口复制到项目作用域，再编辑该副本
 
 ### 3.2 当前兼容策略
 
@@ -146,6 +147,7 @@ story-project/
     "modes": ["text-to-image", "image-to-image", "inpaint"],
     "commercial": true
   },
+  "lexicon": {},
   "templates": [],
   "modifierGroups": [],
   "policies": {}
@@ -164,12 +166,54 @@ story-project/
   - 简短说明
 - `supports`
   - 支持的模式与商业能力
+- `lexicon`
+  - 可选词库层，承载自然化 prompt 所需的短语集合
 - `templates`
   - 模板列表
 - `modifierGroups`
   - 修饰器分组
 - `policies`
   - 负向、安全、商业约束
+
+### 5.3 `lexicon` 协议
+
+目标：
+
+- 把“常用视觉表达”从 `promptTemplate` 和命令层文本里抽出来，避免模板越写越像硬编码字符串
+- 让角色设定图、章节场景图、宣传图共享一套可回溯、可替换的短语词库
+- 降低 `visual direction:` / `user direction:` 这类标签式 prompt 的 AI 感
+
+建议结构：
+
+```json
+{
+  "subjectPhrases": {
+    "character": ["人物辨识度", "稳定的外貌记忆点"],
+    "chapter-scene": ["人物关系和动作焦点", "可读的空间层次"]
+  },
+  "detailPhrases": {
+    "character": ["面部特征、发型和服饰材质"],
+    "chapter-scene": ["光源方向、关键道具与环境质感"]
+  },
+  "modePhrases": {
+    "text-to-image": ["不要写成分镜指令，直接给出能落图的画面印象。"],
+    "image-to-image": ["以输入图的身份和结构为底，只调整镜头、质感和氛围。"]
+  },
+  "commercialPhrases": {
+    "commercial": ["成片保持干净利落，避免影射现成品牌、Logo 和受保护角色元素。"]
+  }
+}
+```
+
+说明：
+
+- 所有字段均可选，缺失时回退到 pack 内建最小词库或 service 层默认短语
+- `subjectPhrases` / `detailPhrases` 通常按 `useCase` 分组
+- `modePhrases` 按 `mode` 分组
+- `commercialPhrases` 按 `commercialMode` 分组
+- `negativePhrases` 可选，供未来把负向短语也从 policy 文本里拆出来；当前不是必需字段
+- 旧 pack 如果仍使用 `visual direction:`、`user direction:`、`{userExtraPrompt}`、`{commercialPrompt}` 这类旧模板写法，协议层加载与保存时会自动迁移到新 placeholder 风格；历史生成记录中的 `promptSnapshot` 不在本轮自动回写
+- 推荐闭环为：导出 builtin/default pack 到项目目录 → 本地编辑模板/词库 → 必要时运行 `illustration pack-migrate` 统一到 canonical 模板 → 在 `illustrations.yaml.promptSystem.defaultPack` 中切回导出的 project pack
 
 ## 6. Template 协议
 
@@ -182,7 +226,7 @@ story-project/
   "useCase": "character",
   "complexity": "standard",
   "mode": "text-to-image",
-  "promptTemplate": "{subject}\n{styleModifiers}\n{userExtraPrompt}",
+  "promptTemplate": "{subject}\n先把{subjectPhrases}立住，再把{detailPhrases}交代清楚。\n{modeHint}\n{stylePrompt}\n{userDirection}\n{commercialDirection}",
   "defaultNegativePolicyRef": "default-safe",
   "defaultCommercialPolicyRef": "personal-default"
 }
@@ -221,6 +265,8 @@ story-project/
 
 - `batch` 不是独立 mode，而是生成任务参数
 - `inpaint` 对应重绘 / 局部重绘
+- 新模板可以使用更自然的 placeholder，例如 `subjectPhrases`、`detailPhrases`、`modeHint`、`stylePrompt`、`userDirection`、`commercialDirection`
+- 旧模板中的 `styleModifiers`、`userExtraPrompt`、`commercialPrompt` 仍保留兼容
 
 ## 7. Modifier 协议
 

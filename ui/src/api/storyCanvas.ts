@@ -349,6 +349,25 @@ export type PromptPackLibraryResponse = {
   availablePromptPacks: NonNullable<ProjectSummary["illustrationConfig"]["availablePromptPacks"]>;
   saved?: boolean;
   savedPack?: PromptPackDocument;
+  exported?: boolean;
+  exportedPack?: PromptPackDocument;
+  migration?: {
+    root: string;
+    packsDir: string;
+    dryRun: boolean;
+    packCount: number;
+    changedCount: number;
+    writtenCount: number;
+    results: Array<{
+      path: string;
+      packId: string;
+      label: string;
+      changed: boolean;
+      written: boolean;
+      templateCount: number;
+      modifierCount: number;
+    }>;
+  };
 };
 
 export type SavePromptPackRequest = {
@@ -356,6 +375,18 @@ export type SavePromptPackRequest = {
   fileName?: string;
   setAsDefault?: boolean;
   pack: PromptPackDocument;
+};
+
+export type MigratePromptPackRequest = {
+  root?: string;
+  dryRun?: boolean;
+};
+
+export type ExportPromptPackRequest = {
+  root?: string;
+  promptPackName?: string;
+  fileName?: string;
+  setAsDefault?: boolean;
 };
 
 export type WorkbenchSettingsUpdate = {
@@ -521,6 +552,26 @@ export async function fetchPromptPackLibrary(root?: string): Promise<PromptPackL
 
 export async function savePromptPack(body: SavePromptPackRequest): Promise<PromptPackLibraryResponse> {
   return fetchJson<PromptPackLibraryResponse>("/api/prompt-packs", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+}
+
+export async function migratePromptPacks(body: MigratePromptPackRequest): Promise<PromptPackLibraryResponse> {
+  return fetchJson<PromptPackLibraryResponse>("/api/prompt-packs/migrate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+}
+
+export async function exportPromptPack(body: ExportPromptPackRequest): Promise<PromptPackLibraryResponse> {
+  return fetchJson<PromptPackLibraryResponse>("/api/prompt-packs/export", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
