@@ -317,6 +317,9 @@
                 <t-form-item label="模板">
                   <t-select v-model="templateId" :options="templateOptions" size="small" />
                 </t-form-item>
+                <t-form-item label="文字设计">
+                  <t-select v-model="textDesignMode" :options="ILLUSTRATION_TEXT_DESIGN_OPTIONS" size="small" />
+                </t-form-item>
               </div>
 
               <div class="detail-actions compact-actions">
@@ -472,16 +475,11 @@
                   </div>
                 </section>
 
-                <section class="workspace-block">
+                <section v-if="textDesignMode === 'designed'" class="workspace-block">
                   <div class="workspace-block-head">
-                    <strong class="workspace-block-title">文字设计</strong>
-                    <span class="workspace-plain-meta">可切到纯绘图，也可让模型同时设计标题与简介排版</span>
+                    <strong class="workspace-block-title">文字排版</strong>
                   </div>
-                  <div class="workspace-inline-field">
-                    <label>模式</label>
-                    <t-select v-model="textDesignMode" :options="ILLUSTRATION_TEXT_DESIGN_OPTIONS" />
-                  </div>
-                  <div v-if="textDesignMode === 'designed'" class="prompt-block-grid">
+                  <div class="prompt-block-grid">
                     <div class="prompt-field">
                       <div class="prompt-field-head">
                         <label>标题</label>
@@ -629,272 +627,39 @@
       </section>
     </div>
 
-    <FloatingCard
-      v-if="workspaceMode === 'illustration'"
+    <PromptPackEditorDrawer
+      v-if="workspaceMode === 'illustration' && showAdvancedTemplateEditor"
       v-model:visible="showAdvancedTemplateEditor"
-      title="模板管理"
-      :width="640"
-    >
-      <div class="template-editor-dialog-body">
-        <div class="template-editor-dialog-toolbar">
-          <span class="workspace-plain-meta">{{ promptPackDraftStateLabel }}</span>
-          <div class="template-editor-actions">
-            <button class="template-editor-link" type="button" @click="startNewPromptPackDraft">新建模板包</button>
-            <button class="template-editor-link" type="button" @click="startDraftFromSelectedPack">
-              {{ currentPackSourceLabel === "系统模板" ? "复制当前系统模板" : "编辑当前用户模板" }}
-            </button>
-          </div>
-        </div>
-        <div v-if="promptPackDraft" class="template-editor-stack">
-          <div class="template-editor-grid">
-            <div class="workspace-inline-field">
-              <label>模板包名称</label>
-              <t-input v-model="promptPackDraft.label" placeholder="例如：项目角色模板" />
-            </div>
-            <div class="workspace-inline-field">
-              <label>文件名</label>
-              <t-input v-model="promptPackDraftFileName" placeholder="例如：project-character-pack" />
-            </div>
-            <div class="workspace-inline-field template-editor-wide">
-              <label>说明</label>
-              <t-input v-model="promptPackDraft.description" placeholder="简短说明这个模板包适合什么场景。" />
-            </div>
-          </div>
-          <label v-if="summary" class="template-editor-checkbox">
-            <input v-model="promptPackSetAsDefault" type="checkbox" />
-            <span>保存后设为当前项目默认模板包</span>
-          </label>
-          <div class="template-editor-section">
-            <div class="template-editor-subhead">
-              <strong>模板条目</strong>
-              <button class="template-editor-link" type="button" @click="addPromptPackDraftTemplate">添加模板</button>
-            </div>
-            <div class="template-item-list">
-              <button
-                v-for="item in promptPackDraft.templates"
-                :key="`${item.id || 'draft'}-${item.useCase}-${item.mode}-${item.label}`"
-                type="button"
-                class="template-item-button"
-                :class="{ 'is-active': item === promptPackDraftTemplate }"
-                @click="promptPackDraftTemplateId = item.id"
-              >
-                {{ item.label || item.id || "未命名模板" }}
-              </button>
-            </div>
-            <div v-if="promptPackDraftTemplate" class="template-editor-grid">
-              <div class="workspace-inline-field">
-                <label>模板 ID</label>
-                <t-input v-model="promptPackDraftTemplate.id" placeholder="scene-standard" />
-              </div>
-              <div class="workspace-inline-field">
-                <label>显示名称</label>
-                <t-input v-model="promptPackDraftTemplate.label" placeholder="章节场景图" />
-              </div>
-              <div class="workspace-inline-field">
-                <label>用途</label>
-                <t-select v-model="promptPackDraftTemplate.useCase" :options="ILLUSTRATION_KNOWN_USE_CASE_OPTIONS" />
-              </div>
-              <div class="workspace-inline-field">
-                <label>模式</label>
-                <t-select
-                  v-model="promptPackDraftTemplate.mode"
-                  :options="[
-                    { label: '文生图', value: 'text-to-image' },
-                    { label: '图生图', value: 'image-to-image' },
-                    { label: '重绘', value: 'inpaint' },
-                  ]"
-                />
-              </div>
-              <div class="workspace-inline-field">
-                <label>默认负向策略</label>
-                <t-select
-                  v-model="promptPackDraftTemplate.defaultNegativePolicyRef"
-                  :options="promptPackDraftNegativePolicyOptions"
-                  clearable
-                  placeholder="可留空"
-                />
-              </div>
-              <div class="workspace-inline-field">
-                <label>默认商用策略</label>
-                <t-select
-                  v-model="promptPackDraftTemplate.defaultCommercialPolicyRef"
-                  :options="promptPackDraftCommercialPolicyOptions"
-                  clearable
-                  placeholder="可留空"
-                />
-              </div>
-              <div class="workspace-inline-field template-editor-wide">
-                <label>模板正文</label>
-                <t-textarea
-                  v-model="promptPackDraftTemplate.promptTemplate"
-                  :autosize="{ minRows: 6, maxRows: 10 }"
-                  placeholder="{subject}&#10;{styleModifiers}&#10;{userExtraPrompt}"
-                />
-              </div>
-            </div>
-            <div class="template-editor-actions">
-              <button
-                v-if="promptPackDraftTemplate"
-                class="template-editor-link danger"
-                type="button"
-                @click="removePromptPackDraftTemplate(promptPackDraftTemplate)"
-              >
-                删除当前模板
-              </button>
-            </div>
-          </div>
-          <div class="template-editor-section">
-            <div class="template-editor-subhead">
-              <strong>修饰词</strong>
-              <button class="template-editor-link" type="button" @click="addPromptPackDraftModifier">添加修饰词</button>
-            </div>
-            <div v-if="promptPackDraft.modifierGroups.length === 0" class="workspace-plain-meta">当前模板包还没有修饰词。</div>
-            <div v-else class="modifier-editor-list">
-              <div
-                v-for="(item, index) in promptPackDraft.modifierGroups"
-                :key="`${item.id || 'modifier'}-${index}`"
-                class="modifier-editor-row"
-              >
-                <div class="workspace-inline-field">
-                  <label>ID</label>
-                  <t-input v-model="item.id" placeholder="style-cinematic" />
-                </div>
-                <div class="workspace-inline-field">
-                  <label>名称</label>
-                  <t-input v-model="item.label" placeholder="电影感" />
-                </div>
-                <div class="workspace-inline-field">
-                  <label>分组</label>
-                  <t-input v-model="item.group" placeholder="style" />
-                </div>
-                <div class="workspace-inline-field modifier-editor-wide">
-                  <label>正向片段</label>
-                  <t-textarea
-                    v-model="item.promptFragment"
-                    :autosize="{ minRows: 2, maxRows: 4 }"
-                    placeholder="cinematic framing, layered depth"
-                  />
-                </div>
-                <div class="workspace-inline-field modifier-editor-wide">
-                  <label>负向片段</label>
-                  <t-textarea
-                    v-model="item.negativeFragment"
-                    :autosize="{ minRows: 2, maxRows: 4 }"
-                    placeholder="可留空"
-                  />
-                </div>
-                <button class="template-editor-link danger" type="button" @click="removePromptPackDraftModifier(index)">
-                  删除
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="template-editor-section">
-            <div class="template-editor-subhead">
-              <strong>负向策略</strong>
-              <button class="template-editor-link" type="button" @click="addPromptPackDraftNegativePolicy">添加负向策略</button>
-            </div>
-            <div v-if="promptPackDraft.policies.negativePolicies.length === 0" class="workspace-plain-meta">当前模板包还没有负向策略。</div>
-            <div v-else class="modifier-editor-list">
-              <div
-                v-for="(item, index) in promptPackDraft.policies.negativePolicies"
-                :key="`${item.id || 'negative'}-${index}`"
-                class="modifier-editor-row"
-              >
-                <div class="workspace-inline-field">
-                  <label>ID</label>
-                  <t-input v-model="item.id" placeholder="default-safe" />
-                </div>
-                <div class="workspace-inline-field">
-                  <label>名称</label>
-                  <t-input v-model="item.label" placeholder="默认负向" />
-                </div>
-                <div class="workspace-inline-field modifier-editor-wide">
-                  <label>负向提示词</label>
-                  <t-textarea
-                    v-model="item.negativePrompt"
-                    :autosize="{ minRows: 3, maxRows: 6 }"
-                    placeholder="blurry, low quality, broken anatomy"
-                  />
-                </div>
-                <button class="template-editor-link danger" type="button" @click="removePromptPackDraftNegativePolicy(index)">
-                  删除
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="template-editor-section">
-            <div class="template-editor-subhead">
-              <strong>商用策略</strong>
-              <button class="template-editor-link" type="button" @click="addPromptPackDraftCommercialPolicy">添加商用策略</button>
-            </div>
-            <div v-if="promptPackDraft.policies.commercialPolicies.length === 0" class="workspace-plain-meta">当前模板包还没有商用策略。</div>
-            <div v-else class="modifier-editor-list">
-              <div
-                v-for="(item, index) in promptPackDraft.policies.commercialPolicies"
-                :key="`${item.id || 'commercial'}-${index}`"
-                class="modifier-editor-row"
-              >
-                <div class="workspace-inline-field">
-                  <label>ID</label>
-                  <t-input v-model="item.id" placeholder="commercial-default" />
-                </div>
-                <div class="workspace-inline-field">
-                  <label>名称</label>
-                  <t-input v-model="item.label" placeholder="商用默认" />
-                </div>
-                <div class="workspace-inline-field">
-                  <label>模式</label>
-                  <t-select
-                    v-model="item.mode"
-                    :options="[
-                      { label: '个人', value: 'personal' },
-                      { label: '商用', value: 'commercial' },
-                    ]"
-                  />
-                </div>
-                <div class="workspace-inline-field modifier-editor-wide">
-                  <label>附加提示词</label>
-                  <t-textarea
-                    v-model="item.extraPrompt"
-                    :autosize="{ minRows: 2, maxRows: 4 }"
-                    placeholder="brand-safe presentation"
-                  />
-                </div>
-                <div class="workspace-inline-field modifier-editor-wide">
-                  <label>限制词</label>
-                  <t-input
-                    :model-value="(item.restrictions || []).join(', ')"
-                    placeholder="用逗号分隔，例如：no-logo-imitation, no-trademark-style-copy"
-                    @update:model-value="
-                      item.restrictions = String($event || '')
-                        .split(',')
-                        .map((value) => value.trim())
-                        .filter(Boolean)
-                    "
-                  />
-                </div>
-                <button class="template-editor-link danger" type="button" @click="removePromptPackDraftCommercialPolicy(index)">
-                  删除
-                </button>
-              </div>
-            </div>
-          </div>
-          <p v-if="promptPackLibraryError" class="inline-error">{{ promptPackLibraryError }}</p>
-          <div class="detail-actions compact-actions">
-            <t-button variant="outline" :disabled="savingPromptPackLibrary" @click="resetPromptPackDraft">重置</t-button>
-            <t-button theme="primary" :loading="savingPromptPackLibrary" @click="handleSavePromptPackDraft">
-              保存用户模板
-            </t-button>
-          </div>
-        </div>
-      </div>
-    </FloatingCard>
+      v-model:file-name="promptPackDraftFileName"
+      v-model:set-as-default="promptPackSetAsDefault"
+      v-model:template-id="promptPackDraftTemplateId"
+      :summary-exists="Boolean(summary)"
+      :prompt-pack-draft-state-label="promptPackDraftStateLabel"
+      :current-pack-source-label="currentPackSourceLabel"
+      :prompt-pack-draft="promptPackDraft"
+      :prompt-pack-draft-template="promptPackDraftTemplate"
+      :prompt-pack-draft-negative-policy-options="promptPackDraftNegativePolicyOptions"
+      :prompt-pack-draft-commercial-policy-options="promptPackDraftCommercialPolicyOptions"
+      :prompt-pack-library-error="promptPackLibraryError"
+      :saving-prompt-pack-library="savingPromptPackLibrary"
+      @new-pack="startNewPromptPackDraft"
+      @copy-current="startDraftFromSelectedPack"
+      @add-template="addPromptPackDraftTemplate"
+      @remove-template="removePromptPackDraftTemplate"
+      @add-modifier="addPromptPackDraftModifier"
+      @remove-modifier="removePromptPackDraftModifier"
+      @add-negative-policy="addPromptPackDraftNegativePolicy"
+      @remove-negative-policy="removePromptPackDraftNegativePolicy"
+      @add-commercial-policy="addPromptPackDraftCommercialPolicy"
+      @remove-commercial-policy="removePromptPackDraftCommercialPolicy"
+      @reset="resetPromptPackDraft"
+      @save="handleSavePromptPackDraft"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
+import { computed, defineAsyncComponent, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
 
 import {
   buildWorkbenchAssetUrl,
@@ -949,6 +714,8 @@ import {
   TTextarea,
 } from "@/tdesign/forms";
 import { TTable } from "@/tdesign/table";
+
+const PromptPackEditorDrawer = defineAsyncComponent(() => import("@/components/PromptPackEditorDrawer.vue"));
 
 type ActionItem = {
   title: string;
