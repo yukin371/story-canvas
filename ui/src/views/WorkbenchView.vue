@@ -311,23 +311,11 @@
                 <t-form-item label="模板包">
                   <t-select v-model="promptPack" :options="promptPackOptions" size="small" />
                 </t-form-item>
+                <t-form-item label="用途">
+                  <t-select v-model="useCase" :options="useCaseOptions" size="small" />
+                </t-form-item>
                 <t-form-item label="模板">
                   <t-select v-model="templateId" :options="templateOptions" size="small" />
-                </t-form-item>
-                <t-form-item label="商用">
-                  <t-select v-model="commercialMode" :options="commercialModeOptions" size="small" />
-                </t-form-item>
-                <t-form-item label="模型">
-                  <t-select v-model="responseModel" :options="responseModelOptions" size="small" />
-                </t-form-item>
-                <t-form-item label="尺寸">
-                  <t-select v-model="size" :options="sizeOptions" size="small" />
-                </t-form-item>
-                <t-form-item label="质量">
-                  <t-select v-model="quality" :options="qualityOptions" size="small" />
-                </t-form-item>
-                <t-form-item label="批量">
-                  <t-input-number v-model="batchCount" :min="1" :max="8" size="small" />
                 </t-form-item>
               </div>
 
@@ -428,40 +416,7 @@
             <div class="illustration-editor-layout">
               <div class="illustration-form illustration-form-main illustration-template-workspace">
                 <section class="workspace-block">
-                  <div class="workspace-plain-meta">当前模板：{{ currentPackSourceLabel }} / {{ currentPackLabel }}</div>
-                  <div class="template-source-stack">
-                    <div v-for="group in promptPackSourceGroups" :key="group.key" class="template-source-group">
-                      <span class="template-source-label">{{ group.label }}</span>
-                      <div class="template-pack-row">
-                        <button
-                          v-for="pack in group.packs"
-                          :key="pack.id"
-                          type="button"
-                          class="template-pack-button"
-                          :class="{ 'is-active': pack.name === promptPack }"
-                          @click="promptPack = pack.name"
-                        >
-                          {{ pack.label }}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="template-panel-grid">
-                    <div class="template-panel">
-                      <span class="template-panel-label">模板</span>
-                      <div class="template-item-list">
-                        <button
-                          v-for="item in templateOptions"
-                          :key="item.value"
-                          type="button"
-                          class="template-item-button"
-                          :class="{ 'is-active': item.value === templateId }"
-                          @click="templateId = String(item.value)"
-                        >
-                          {{ item.label }}
-                        </button>
-                      </div>
-                    </div>
+                <div class="template-panel-grid">
                     <div class="template-panel">
                       <span class="template-panel-label">修饰词</span>
                       <div class="modifier-token-list">
@@ -477,272 +432,12 @@
                         </button>
                       </div>
                     </div>
+                    <div class="template-panel">
+                      <div class="modifier-token-list">
+                        <button class="template-editor-link" type="button" @click="showAdvancedTemplateEditor = true">管理模板</button>
+                      </div>
+                    </div>
                   </div>
-                  <details class="template-editor-shell" :open="showAdvancedTemplateEditor" @toggle="showAdvancedTemplateEditor = ($event.currentTarget as HTMLDetailsElement).open">
-                    <summary class="template-editor-head">
-                      <span class="template-panel-label">高级模板编辑</span>
-                      <div class="template-editor-actions">
-                        <button class="template-editor-link" type="button" @click.prevent="startNewPromptPackDraft">新建</button>
-                        <button class="template-editor-link" type="button" @click.prevent="startDraftFromSelectedPack">
-                          {{ currentPackSourceLabel === "系统模板" ? "复制当前系统模板" : "编辑当前用户模板" }}
-                        </button>
-                      </div>
-                    </summary>
-                    <div class="template-editor-meta">
-                      <span>{{ loadingPromptPackLibrary ? "正在读取模板库…" : promptPackLibraryDir || "未发现用户模板目录" }}</span>
-                      <span>{{ promptPackDraftStateLabel }}</span>
-                    </div>
-                    <div v-if="promptPackDraft" class="template-editor-stack">
-                      <div class="template-editor-grid">
-                        <div class="workspace-inline-field">
-                          <label>模板包名称</label>
-                          <t-input v-model="promptPackDraft.label" placeholder="例如：项目角色模板" />
-                        </div>
-                        <div class="workspace-inline-field">
-                          <label>文件名</label>
-                          <t-input v-model="promptPackDraftFileName" placeholder="例如：project-character-pack" />
-                        </div>
-                        <div class="workspace-inline-field template-editor-wide">
-                          <label>说明</label>
-                          <t-input v-model="promptPackDraft.description" placeholder="简短说明这个模板包适合什么场景。" />
-                        </div>
-                      </div>
-                      <label v-if="summary" class="template-editor-checkbox">
-                        <input v-model="promptPackSetAsDefault" type="checkbox" />
-                        <span>保存后设为当前项目默认模板包</span>
-                      </label>
-                      <div class="template-editor-section">
-                        <div class="template-editor-subhead">
-                          <strong>模板条目</strong>
-                          <button class="template-editor-link" type="button" @click="addPromptPackDraftTemplate">添加模板</button>
-                        </div>
-                        <div class="template-item-list">
-                          <button
-                            v-for="item in promptPackDraft.templates"
-                            :key="`${item.id || 'draft'}-${item.useCase}-${item.mode}-${item.label}`"
-                            type="button"
-                            class="template-item-button"
-                            :class="{ 'is-active': item === promptPackDraftTemplate }"
-                            @click="promptPackDraftTemplateId = item.id"
-                          >
-                            {{ item.label || item.id || "未命名模板" }}
-                          </button>
-                        </div>
-                        <div v-if="promptPackDraftTemplate" class="template-editor-grid">
-                          <div class="workspace-inline-field">
-                            <label>模板 ID</label>
-                            <t-input v-model="promptPackDraftTemplate.id" placeholder="scene-standard" />
-                          </div>
-                          <div class="workspace-inline-field">
-                            <label>显示名称</label>
-                            <t-input v-model="promptPackDraftTemplate.label" placeholder="章节场景图" />
-                          </div>
-                          <div class="workspace-inline-field">
-                            <label>用途</label>
-                            <t-select
-                              v-model="promptPackDraftTemplate.useCase"
-                              :options="[
-                                { label: '角色', value: 'character' },
-                                { label: '章节场景', value: 'chapter-scene' },
-                                { label: '宣传', value: 'promo' },
-                              ]"
-                            />
-                          </div>
-                          <div class="workspace-inline-field">
-                            <label>模式</label>
-                            <t-select
-                              v-model="promptPackDraftTemplate.mode"
-                              :options="[
-                                { label: '文生图', value: 'text-to-image' },
-                                { label: '图生图', value: 'image-to-image' },
-                                { label: '重绘', value: 'inpaint' },
-                              ]"
-                            />
-                          </div>
-                          <div class="workspace-inline-field">
-                            <label>默认负向策略</label>
-                            <t-select
-                              v-model="promptPackDraftTemplate.defaultNegativePolicyRef"
-                              :options="promptPackDraftNegativePolicyOptions"
-                              clearable
-                              placeholder="可留空"
-                            />
-                          </div>
-                          <div class="workspace-inline-field">
-                            <label>默认商用策略</label>
-                            <t-select
-                              v-model="promptPackDraftTemplate.defaultCommercialPolicyRef"
-                              :options="promptPackDraftCommercialPolicyOptions"
-                              clearable
-                              placeholder="可留空"
-                            />
-                          </div>
-                          <div class="workspace-inline-field template-editor-wide">
-                            <label>模板正文</label>
-                            <t-textarea
-                              v-model="promptPackDraftTemplate.promptTemplate"
-                              :autosize="{ minRows: 6, maxRows: 10 }"
-                              placeholder="{subject}&#10;{styleModifiers}&#10;{userExtraPrompt}"
-                            />
-                          </div>
-                        </div>
-                        <div class="template-editor-actions">
-                          <button
-                            v-if="promptPackDraftTemplate"
-                            class="template-editor-link danger"
-                            type="button"
-                            @click="removePromptPackDraftTemplate(promptPackDraftTemplate)"
-                          >
-                            删除当前模板
-                          </button>
-                        </div>
-                      </div>
-                      <div class="template-editor-section">
-                        <div class="template-editor-subhead">
-                          <strong>修饰词</strong>
-                          <button class="template-editor-link" type="button" @click="addPromptPackDraftModifier">添加修饰词</button>
-                        </div>
-                        <div v-if="promptPackDraft.modifierGroups.length === 0" class="workspace-plain-meta">当前模板包还没有修饰词。</div>
-                        <div v-else class="modifier-editor-list">
-                          <div
-                            v-for="(item, index) in promptPackDraft.modifierGroups"
-                            :key="`${item.id || 'modifier'}-${index}`"
-                            class="modifier-editor-row"
-                          >
-                            <div class="workspace-inline-field">
-                              <label>ID</label>
-                              <t-input v-model="item.id" placeholder="style-cinematic" />
-                            </div>
-                            <div class="workspace-inline-field">
-                              <label>名称</label>
-                              <t-input v-model="item.label" placeholder="电影感" />
-                            </div>
-                            <div class="workspace-inline-field">
-                              <label>分组</label>
-                              <t-input v-model="item.group" placeholder="style" />
-                            </div>
-                            <div class="workspace-inline-field modifier-editor-wide">
-                              <label>正向片段</label>
-                              <t-textarea
-                                v-model="item.promptFragment"
-                                :autosize="{ minRows: 2, maxRows: 4 }"
-                                placeholder="cinematic framing, layered depth"
-                              />
-                            </div>
-                            <div class="workspace-inline-field modifier-editor-wide">
-                              <label>负向片段</label>
-                              <t-textarea
-                                v-model="item.negativeFragment"
-                                :autosize="{ minRows: 2, maxRows: 4 }"
-                                placeholder="可留空"
-                              />
-                            </div>
-                            <button class="template-editor-link danger" type="button" @click="removePromptPackDraftModifier(index)">
-                              删除
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="template-editor-section">
-                        <div class="template-editor-subhead">
-                          <strong>负向策略</strong>
-                          <button class="template-editor-link" type="button" @click="addPromptPackDraftNegativePolicy">添加负向策略</button>
-                        </div>
-                        <div v-if="promptPackDraft.policies.negativePolicies.length === 0" class="workspace-plain-meta">当前模板包还没有负向策略。</div>
-                        <div v-else class="modifier-editor-list">
-                          <div
-                            v-for="(item, index) in promptPackDraft.policies.negativePolicies"
-                            :key="`${item.id || 'negative'}-${index}`"
-                            class="modifier-editor-row"
-                          >
-                            <div class="workspace-inline-field">
-                              <label>ID</label>
-                              <t-input v-model="item.id" placeholder="default-safe" />
-                            </div>
-                            <div class="workspace-inline-field">
-                              <label>名称</label>
-                              <t-input v-model="item.label" placeholder="默认负向" />
-                            </div>
-                            <div class="workspace-inline-field modifier-editor-wide">
-                              <label>负向提示词</label>
-                              <t-textarea
-                                v-model="item.negativePrompt"
-                                :autosize="{ minRows: 3, maxRows: 6 }"
-                                placeholder="blurry, low quality, broken anatomy"
-                              />
-                            </div>
-                            <button class="template-editor-link danger" type="button" @click="removePromptPackDraftNegativePolicy(index)">
-                              删除
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="template-editor-section">
-                        <div class="template-editor-subhead">
-                          <strong>商用策略</strong>
-                          <button class="template-editor-link" type="button" @click="addPromptPackDraftCommercialPolicy">添加商用策略</button>
-                        </div>
-                        <div v-if="promptPackDraft.policies.commercialPolicies.length === 0" class="workspace-plain-meta">当前模板包还没有商用策略。</div>
-                        <div v-else class="modifier-editor-list">
-                          <div
-                            v-for="(item, index) in promptPackDraft.policies.commercialPolicies"
-                            :key="`${item.id || 'commercial'}-${index}`"
-                            class="modifier-editor-row"
-                          >
-                            <div class="workspace-inline-field">
-                              <label>ID</label>
-                              <t-input v-model="item.id" placeholder="commercial-default" />
-                            </div>
-                            <div class="workspace-inline-field">
-                              <label>名称</label>
-                              <t-input v-model="item.label" placeholder="商用默认" />
-                            </div>
-                            <div class="workspace-inline-field">
-                              <label>模式</label>
-                              <t-select
-                                v-model="item.mode"
-                                :options="[
-                                  { label: '个人', value: 'personal' },
-                                  { label: '商用', value: 'commercial' },
-                                ]"
-                              />
-                            </div>
-                            <div class="workspace-inline-field modifier-editor-wide">
-                              <label>附加提示词</label>
-                              <t-textarea
-                                v-model="item.extraPrompt"
-                                :autosize="{ minRows: 2, maxRows: 4 }"
-                                placeholder="brand-safe presentation"
-                              />
-                            </div>
-                            <div class="workspace-inline-field modifier-editor-wide">
-                              <label>限制词</label>
-                              <t-input
-                                :model-value="(item.restrictions || []).join(', ')"
-                                placeholder="用逗号分隔，例如：no-logo-imitation, no-trademark-style-copy"
-                                @update:model-value="
-                                  item.restrictions = String($event || '')
-                                    .split(',')
-                                    .map((value) => value.trim())
-                                    .filter(Boolean)
-                                "
-                              />
-                            </div>
-                            <button class="template-editor-link danger" type="button" @click="removePromptPackDraftCommercialPolicy(index)">
-                              删除
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <p v-if="promptPackLibraryError" class="inline-error">{{ promptPackLibraryError }}</p>
-                      <div class="detail-actions compact-actions">
-                        <t-button variant="outline" :disabled="savingPromptPackLibrary" @click="resetPromptPackDraft">重置</t-button>
-                        <t-button theme="primary" :loading="savingPromptPackLibrary" @click="handleSavePromptPackDraft">
-                          保存用户模板
-                        </t-button>
-                      </div>
-                    </div>
-                  </details>
                 </section>
 
                 <section class="workspace-block">
@@ -773,6 +468,47 @@
                         :autosize="{ minRows: 5, maxRows: 7 }"
                         placeholder="例如：low quality, blurry, broken anatomy"
                       />
+                    </div>
+                  </div>
+                </section>
+
+                <section class="workspace-block">
+                  <div class="workspace-block-head">
+                    <strong class="workspace-block-title">文字设计</strong>
+                    <span class="workspace-plain-meta">可切到纯绘图，也可让模型同时设计标题与简介排版</span>
+                  </div>
+                  <div class="workspace-inline-field">
+                    <label>模式</label>
+                    <t-select v-model="textDesignMode" :options="ILLUSTRATION_TEXT_DESIGN_OPTIONS" />
+                  </div>
+                  <div v-if="textDesignMode === 'designed'" class="prompt-block-grid">
+                    <div class="prompt-field">
+                      <div class="prompt-field-head">
+                        <label>标题</label>
+                      </div>
+                      <t-input v-model="titleText" placeholder="可留空，例如：明灯照骨" />
+                    </div>
+                    <div class="prompt-field">
+                      <div class="prompt-field-head">
+                        <label>副标题</label>
+                      </div>
+                      <t-input v-model="subtitleText" placeholder="可留空，例如：卷一 · 雾港裂痕" />
+                    </div>
+                    <div class="prompt-field">
+                      <div class="prompt-field-head">
+                        <label>介绍</label>
+                      </div>
+                      <t-textarea
+                        v-model="bodyText"
+                        :autosize="{ minRows: 3, maxRows: 5 }"
+                        placeholder="可留空，例如：一个被命案撕开的雨夜港城。"
+                      />
+                    </div>
+                    <div class="prompt-field">
+                      <div class="prompt-field-head">
+                        <label>字体气质</label>
+                      </div>
+                      <t-input v-model="fontStyleHint" placeholder="例如：墨明风题字、民国报刊字、冷峻无衬线" />
                     </div>
                   </div>
                 </section>
@@ -892,6 +628,268 @@
         </WorkbenchPaneCard>
       </section>
     </div>
+
+    <FloatingCard
+      v-if="workspaceMode === 'illustration'"
+      v-model:visible="showAdvancedTemplateEditor"
+      title="模板管理"
+      :width="640"
+    >
+      <div class="template-editor-dialog-body">
+        <div class="template-editor-dialog-toolbar">
+          <span class="workspace-plain-meta">{{ promptPackDraftStateLabel }}</span>
+          <div class="template-editor-actions">
+            <button class="template-editor-link" type="button" @click="startNewPromptPackDraft">新建模板包</button>
+            <button class="template-editor-link" type="button" @click="startDraftFromSelectedPack">
+              {{ currentPackSourceLabel === "系统模板" ? "复制当前系统模板" : "编辑当前用户模板" }}
+            </button>
+          </div>
+        </div>
+        <div v-if="promptPackDraft" class="template-editor-stack">
+          <div class="template-editor-grid">
+            <div class="workspace-inline-field">
+              <label>模板包名称</label>
+              <t-input v-model="promptPackDraft.label" placeholder="例如：项目角色模板" />
+            </div>
+            <div class="workspace-inline-field">
+              <label>文件名</label>
+              <t-input v-model="promptPackDraftFileName" placeholder="例如：project-character-pack" />
+            </div>
+            <div class="workspace-inline-field template-editor-wide">
+              <label>说明</label>
+              <t-input v-model="promptPackDraft.description" placeholder="简短说明这个模板包适合什么场景。" />
+            </div>
+          </div>
+          <label v-if="summary" class="template-editor-checkbox">
+            <input v-model="promptPackSetAsDefault" type="checkbox" />
+            <span>保存后设为当前项目默认模板包</span>
+          </label>
+          <div class="template-editor-section">
+            <div class="template-editor-subhead">
+              <strong>模板条目</strong>
+              <button class="template-editor-link" type="button" @click="addPromptPackDraftTemplate">添加模板</button>
+            </div>
+            <div class="template-item-list">
+              <button
+                v-for="item in promptPackDraft.templates"
+                :key="`${item.id || 'draft'}-${item.useCase}-${item.mode}-${item.label}`"
+                type="button"
+                class="template-item-button"
+                :class="{ 'is-active': item === promptPackDraftTemplate }"
+                @click="promptPackDraftTemplateId = item.id"
+              >
+                {{ item.label || item.id || "未命名模板" }}
+              </button>
+            </div>
+            <div v-if="promptPackDraftTemplate" class="template-editor-grid">
+              <div class="workspace-inline-field">
+                <label>模板 ID</label>
+                <t-input v-model="promptPackDraftTemplate.id" placeholder="scene-standard" />
+              </div>
+              <div class="workspace-inline-field">
+                <label>显示名称</label>
+                <t-input v-model="promptPackDraftTemplate.label" placeholder="章节场景图" />
+              </div>
+              <div class="workspace-inline-field">
+                <label>用途</label>
+                <t-select v-model="promptPackDraftTemplate.useCase" :options="ILLUSTRATION_KNOWN_USE_CASE_OPTIONS" />
+              </div>
+              <div class="workspace-inline-field">
+                <label>模式</label>
+                <t-select
+                  v-model="promptPackDraftTemplate.mode"
+                  :options="[
+                    { label: '文生图', value: 'text-to-image' },
+                    { label: '图生图', value: 'image-to-image' },
+                    { label: '重绘', value: 'inpaint' },
+                  ]"
+                />
+              </div>
+              <div class="workspace-inline-field">
+                <label>默认负向策略</label>
+                <t-select
+                  v-model="promptPackDraftTemplate.defaultNegativePolicyRef"
+                  :options="promptPackDraftNegativePolicyOptions"
+                  clearable
+                  placeholder="可留空"
+                />
+              </div>
+              <div class="workspace-inline-field">
+                <label>默认商用策略</label>
+                <t-select
+                  v-model="promptPackDraftTemplate.defaultCommercialPolicyRef"
+                  :options="promptPackDraftCommercialPolicyOptions"
+                  clearable
+                  placeholder="可留空"
+                />
+              </div>
+              <div class="workspace-inline-field template-editor-wide">
+                <label>模板正文</label>
+                <t-textarea
+                  v-model="promptPackDraftTemplate.promptTemplate"
+                  :autosize="{ minRows: 6, maxRows: 10 }"
+                  placeholder="{subject}&#10;{styleModifiers}&#10;{userExtraPrompt}"
+                />
+              </div>
+            </div>
+            <div class="template-editor-actions">
+              <button
+                v-if="promptPackDraftTemplate"
+                class="template-editor-link danger"
+                type="button"
+                @click="removePromptPackDraftTemplate(promptPackDraftTemplate)"
+              >
+                删除当前模板
+              </button>
+            </div>
+          </div>
+          <div class="template-editor-section">
+            <div class="template-editor-subhead">
+              <strong>修饰词</strong>
+              <button class="template-editor-link" type="button" @click="addPromptPackDraftModifier">添加修饰词</button>
+            </div>
+            <div v-if="promptPackDraft.modifierGroups.length === 0" class="workspace-plain-meta">当前模板包还没有修饰词。</div>
+            <div v-else class="modifier-editor-list">
+              <div
+                v-for="(item, index) in promptPackDraft.modifierGroups"
+                :key="`${item.id || 'modifier'}-${index}`"
+                class="modifier-editor-row"
+              >
+                <div class="workspace-inline-field">
+                  <label>ID</label>
+                  <t-input v-model="item.id" placeholder="style-cinematic" />
+                </div>
+                <div class="workspace-inline-field">
+                  <label>名称</label>
+                  <t-input v-model="item.label" placeholder="电影感" />
+                </div>
+                <div class="workspace-inline-field">
+                  <label>分组</label>
+                  <t-input v-model="item.group" placeholder="style" />
+                </div>
+                <div class="workspace-inline-field modifier-editor-wide">
+                  <label>正向片段</label>
+                  <t-textarea
+                    v-model="item.promptFragment"
+                    :autosize="{ minRows: 2, maxRows: 4 }"
+                    placeholder="cinematic framing, layered depth"
+                  />
+                </div>
+                <div class="workspace-inline-field modifier-editor-wide">
+                  <label>负向片段</label>
+                  <t-textarea
+                    v-model="item.negativeFragment"
+                    :autosize="{ minRows: 2, maxRows: 4 }"
+                    placeholder="可留空"
+                  />
+                </div>
+                <button class="template-editor-link danger" type="button" @click="removePromptPackDraftModifier(index)">
+                  删除
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="template-editor-section">
+            <div class="template-editor-subhead">
+              <strong>负向策略</strong>
+              <button class="template-editor-link" type="button" @click="addPromptPackDraftNegativePolicy">添加负向策略</button>
+            </div>
+            <div v-if="promptPackDraft.policies.negativePolicies.length === 0" class="workspace-plain-meta">当前模板包还没有负向策略。</div>
+            <div v-else class="modifier-editor-list">
+              <div
+                v-for="(item, index) in promptPackDraft.policies.negativePolicies"
+                :key="`${item.id || 'negative'}-${index}`"
+                class="modifier-editor-row"
+              >
+                <div class="workspace-inline-field">
+                  <label>ID</label>
+                  <t-input v-model="item.id" placeholder="default-safe" />
+                </div>
+                <div class="workspace-inline-field">
+                  <label>名称</label>
+                  <t-input v-model="item.label" placeholder="默认负向" />
+                </div>
+                <div class="workspace-inline-field modifier-editor-wide">
+                  <label>负向提示词</label>
+                  <t-textarea
+                    v-model="item.negativePrompt"
+                    :autosize="{ minRows: 3, maxRows: 6 }"
+                    placeholder="blurry, low quality, broken anatomy"
+                  />
+                </div>
+                <button class="template-editor-link danger" type="button" @click="removePromptPackDraftNegativePolicy(index)">
+                  删除
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="template-editor-section">
+            <div class="template-editor-subhead">
+              <strong>商用策略</strong>
+              <button class="template-editor-link" type="button" @click="addPromptPackDraftCommercialPolicy">添加商用策略</button>
+            </div>
+            <div v-if="promptPackDraft.policies.commercialPolicies.length === 0" class="workspace-plain-meta">当前模板包还没有商用策略。</div>
+            <div v-else class="modifier-editor-list">
+              <div
+                v-for="(item, index) in promptPackDraft.policies.commercialPolicies"
+                :key="`${item.id || 'commercial'}-${index}`"
+                class="modifier-editor-row"
+              >
+                <div class="workspace-inline-field">
+                  <label>ID</label>
+                  <t-input v-model="item.id" placeholder="commercial-default" />
+                </div>
+                <div class="workspace-inline-field">
+                  <label>名称</label>
+                  <t-input v-model="item.label" placeholder="商用默认" />
+                </div>
+                <div class="workspace-inline-field">
+                  <label>模式</label>
+                  <t-select
+                    v-model="item.mode"
+                    :options="[
+                      { label: '个人', value: 'personal' },
+                      { label: '商用', value: 'commercial' },
+                    ]"
+                  />
+                </div>
+                <div class="workspace-inline-field modifier-editor-wide">
+                  <label>附加提示词</label>
+                  <t-textarea
+                    v-model="item.extraPrompt"
+                    :autosize="{ minRows: 2, maxRows: 4 }"
+                    placeholder="brand-safe presentation"
+                  />
+                </div>
+                <div class="workspace-inline-field modifier-editor-wide">
+                  <label>限制词</label>
+                  <t-input
+                    :model-value="(item.restrictions || []).join(', ')"
+                    placeholder="用逗号分隔，例如：no-logo-imitation, no-trademark-style-copy"
+                    @update:model-value="
+                      item.restrictions = String($event || '')
+                        .split(',')
+                        .map((value) => value.trim())
+                        .filter(Boolean)
+                    "
+                  />
+                </div>
+                <button class="template-editor-link danger" type="button" @click="removePromptPackDraftCommercialPolicy(index)">
+                  删除
+                </button>
+              </div>
+            </div>
+          </div>
+          <p v-if="promptPackLibraryError" class="inline-error">{{ promptPackLibraryError }}</p>
+          <div class="detail-actions compact-actions">
+            <t-button variant="outline" :disabled="savingPromptPackLibrary" @click="resetPromptPackDraft">重置</t-button>
+            <t-button theme="primary" :loading="savingPromptPackLibrary" @click="handleSavePromptPackDraft">
+              保存用户模板
+            </t-button>
+          </div>
+        </div>
+      </div>
+    </FloatingCard>
   </div>
 </template>
 
@@ -905,7 +903,14 @@ import {
   dryRunIllustration,
   dryRunIllustrationForm,
   fetchPromptPackLibrary,
+  getIllustrationDefaultUseCase,
+  getIllustrationTemplateOptions,
+  getIllustrationUseCaseOptions,
+  ILLUSTRATION_TEXT_DESIGN_OPTIONS,
   importProject,
+  ILLUSTRATION_KNOWN_USE_CASE_OPTIONS,
+  pickIllustrationTemplateId,
+  pickIllustrationUseCase,
   selectProjectFolder,
   savePromptPack,
   type ChapterRecord,
@@ -913,6 +918,9 @@ import {
   type IllustrationDryRunResult,
   type IllustrationGenerateResult,
   type IllustrationRecord,
+  type IllustrationTargetType,
+  type IllustrationTextDesignMode,
+  type IllustrationTemplateSummary,
   type PromptPackCommercialPolicyDocument,
   type PromptPackDocument,
   type PromptPackLibraryResponse,
@@ -925,7 +933,22 @@ import {
 } from "@/api/storyCanvas";
 import WorkbenchPaneCard from "@/components/WorkbenchPaneCard.vue";
 import WorkbenchSidebarCard from "@/components/WorkbenchSidebarCard.vue";
+import FloatingCard from "@/components/FloatingCard.vue";
 import { useWorkspace } from "@/composables/useWorkspace";
+import { TCard, TTag } from "@/tdesign/display";
+import {
+  TButton,
+  TForm,
+  TFormItem,
+  TInput,
+  TInputNumber,
+  TRadioButton,
+  TRadioGroup,
+  TSelect,
+  TSwitch,
+  TTextarea,
+} from "@/tdesign/forms";
+import { TTable } from "@/tdesign/table";
 
 type ActionItem = {
   title: string;
@@ -947,14 +970,7 @@ type IllustrationHistoryRow = {
   raw: IllustrationRecord;
 };
 
-type PromptPackTemplateOption = {
-  id: string;
-  label: string;
-  useCase: string;
-  mode: string;
-  complexity: string;
-  defaultNegativePolicyRef?: string;
-};
+type PromptPackTemplateOption = IllustrationTemplateSummary;
 
 type PromptModifierOption = {
   id: string;
@@ -1031,6 +1047,12 @@ const mode = ref<"text-to-image" | "image-to-image" | "inpaint">("text-to-image"
 const targetType = ref<"chapter" | "entity">("chapter");
 const targetId = ref("");
 const manualTargetName = ref("");
+const useCase = ref(getIllustrationDefaultUseCase(targetType.value));
+const textDesignMode = ref<IllustrationTextDesignMode>("none");
+const titleText = ref("");
+const subtitleText = ref("");
+const bodyText = ref("");
+const fontStyleHint = ref("");
 const promptPack = ref("default");
 const templateId = ref("");
 const modifierRefs = ref<string[]>([]);
@@ -1243,15 +1265,8 @@ const promptPackOptions = computed(() =>
     value: item.name,
   }))
 );
-const templateOptions = computed(() => {
-  const useCase = targetType.value === "entity" ? "character" : "chapter-scene";
-  return packTemplates.value
-    .filter((item) => item.useCase === useCase && item.mode === mode.value)
-    .map((item) => ({
-      label: item.label,
-      value: item.id,
-    }));
-});
+const useCaseOptions = computed(() => getIllustrationUseCaseOptions(packTemplates.value, targetType.value, mode.value));
+const templateOptions = computed(() => getIllustrationTemplateOptions(packTemplates.value, mode.value, useCase.value));
 
 const currentTemplateLabel = computed(() => {
   return templateOptions.value.find((item) => item.value === templateId.value)?.label || templateId.value || "-";
@@ -1604,9 +1619,9 @@ function slugifyPromptPackFileName(value: string): string {
   return (
     value
       .trim()
-      .toLowerCase()
       .replace(/[\\/]+/g, "-")
-      .replace(/[^a-z0-9-]+/g, "-")
+      .replace(/[<>:"|?*\u0000-\u001f]+/g, "-")
+      .replace(/\s+/g, "-")
       .replace(/-{2,}/g, "-")
       .replace(/^-+|-+$/g, "") || "custom-pack"
   );
@@ -1621,7 +1636,7 @@ function basePromptPackFileName(pack: PromptPackDocument | null): string {
   return slugifyPromptPackFileName(String(pack?.name || pack?.label || pack?.id || "custom-pack"));
 }
 
-function createDraftTemplate(useCase = targetType.value === "entity" ? "character" : "chapter-scene"): PromptPackTemplateDocument {
+function createDraftTemplate(useCase = getIllustrationDefaultUseCase(targetType.value)): PromptPackTemplateDocument {
   const draftId = `draft-${useCase}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
   return {
     id: draftId,
@@ -1708,7 +1723,7 @@ async function refreshPromptPackLibrary(root = summary.value?.project.root || ""
 }
 
 function startNewPromptPackDraft() {
-  applyPromptPackDraft(createEmptyPromptPackDraft(), "new", `custom-${targetType.value}-${mode.value}`);
+  applyPromptPackDraft(createEmptyPromptPackDraft(), "new", `自定义-${targetType.value === "entity" ? "角色" : "场景"}-${mode.value}`);
 }
 
 function startDraftFromSelectedPack() {
@@ -1894,12 +1909,17 @@ function syncFromProject() {
   responseModel.value = config.responseModel || "gpt-5.4";
   size.value = config.defaultSize || "1024x1024";
   quality.value = config.quality || "auto";
-  batchCount.value = 1;
+  batchCount.value = parseInt(config.defaultBatchCount || "1", 10) || 1;
   outputName.value = "";
   promptPack.value = config.promptPackName || "default";
   commercialMode.value = config.commercialMode || "personal";
   modifierRefs.value = [...(config.defaultModifierRefs || [])];
   mode.value = "text-to-image";
+  textDesignMode.value = "none";
+  titleText.value = "";
+  subtitleText.value = "";
+  bodyText.value = "";
+  fontStyleHint.value = "";
   clearInputImageSelection();
   clearMaskSelection();
   inputImagePath.value = "";
@@ -1923,13 +1943,18 @@ function syncFromProject() {
     manualTargetName.value = targetType.value === "entity" ? "自由角色" : "自由场景";
   }
 
-  const useCase = targetType.value === "entity" ? "character" : "chapter-scene";
+  useCase.value = pickIllustrationUseCase(
+    packTemplates.value,
+    targetType.value,
+    mode.value,
+    getIllustrationDefaultUseCase(targetType.value)
+  );
   const nextTemplate =
-    (config.defaultTemplateByUseCase?.[useCase] || "") &&
-    packTemplates.value.some((item) => item.id === config.defaultTemplateByUseCase?.[useCase])
-      ? String(config.defaultTemplateByUseCase?.[useCase] || "")
+    (config.defaultTemplateByUseCase?.[useCase.value] || "") &&
+    packTemplates.value.some((item) => item.id === config.defaultTemplateByUseCase?.[useCase.value])
+      ? String(config.defaultTemplateByUseCase?.[useCase.value] || "")
       : "";
-  templateId.value = nextTemplate;
+  templateId.value = pickIllustrationTemplateId(packTemplates.value, mode.value, useCase.value, nextTemplate);
   applySuggestedPrompt(true);
   applySuggestedNegativePrompt(true);
 }
@@ -1956,6 +1981,12 @@ function buildIllustrationRequest() {
     root: boundRoot || undefined,
     mode: mode.value,
     targetType: targetType.value,
+    useCase: useCase.value || undefined,
+    textDesignMode: textDesignMode.value,
+    titleText: textDesignMode.value === "designed" ? titleText.value.trim() || undefined : undefined,
+    subtitleText: textDesignMode.value === "designed" ? subtitleText.value.trim() || undefined : undefined,
+    bodyText: textDesignMode.value === "designed" ? bodyText.value.trim() || undefined : undefined,
+    fontStyleHint: textDesignMode.value === "designed" ? fontStyleHint.value.trim() || undefined : undefined,
     manualTargetName: isFreeMode ? manualTargetName.value.trim() : undefined,
     chapterId: !isFreeMode && targetType.value === "chapter" ? targetId.value : undefined,
     entityId: !isFreeMode && targetType.value === "entity" ? targetId.value : undefined,
@@ -1991,6 +2022,21 @@ function buildIllustrationFormData() {
   if (request.manualTargetName) {
     body.append("manualTargetName", request.manualTargetName);
   }
+  if (request.textDesignMode) {
+    body.append("textDesignMode", request.textDesignMode);
+  }
+  if (request.titleText) {
+    body.append("titleText", request.titleText);
+  }
+  if (request.subtitleText) {
+    body.append("subtitleText", request.subtitleText);
+  }
+  if (request.bodyText) {
+    body.append("bodyText", request.bodyText);
+  }
+  if (request.fontStyleHint) {
+    body.append("fontStyleHint", request.fontStyleHint);
+  }
   body.append("mode", request.mode);
   if (request.chapterId) {
     body.append("chapterId", request.chapterId);
@@ -2007,6 +2053,9 @@ function buildIllustrationFormData() {
   }
   if (request.promptPack) {
     body.append("promptPack", request.promptPack);
+  }
+  if (request.useCase) {
+    body.append("useCase", request.useCase);
   }
   if (request.templateId) {
     body.append("templateId", request.templateId);
@@ -2054,13 +2103,21 @@ function buildIllustrationFormData() {
 
 function applyHistoryItem(item: IllustrationRecord) {
   workspaceMode.value = "illustration";
-  targetType.value = item.targetRef?.type === "entity" || item.entityId ? "entity" : "chapter";
+  const nextTargetType = item.targetRef?.type === "entity" || item.entityId ? "entity" : "chapter";
+  const nextPromptPack = resolveHistoryPromptPack(item) || promptPack.value;
+  targetType.value = nextTargetType;
   targetId.value = item.targetRef?.targetId || item.chapterId || item.entityId || "";
   mode.value = item.mode === "image-to-image" || item.mode === "inpaint" ? item.mode : "text-to-image";
-  promptPack.value = resolveHistoryPromptPack(item) || promptPack.value;
+  promptPack.value = nextPromptPack;
+  useCase.value = resolveHistoryUseCase(item, nextPromptPack, nextTargetType);
   templateId.value = item.templateId || item.promptSnapshot?.templateRef || "";
   modifierRefs.value = [...(item.promptSnapshot?.modifierRefs || item.modifierRefs || [])];
   commercialMode.value = item.commercialMode || item.policySnapshot?.commercialMode || "personal";
+  textDesignMode.value = item.promptSnapshot?.textDesign?.mode === "designed" ? "designed" : "none";
+  titleText.value = item.promptSnapshot?.textDesign?.titleText || "";
+  subtitleText.value = item.promptSnapshot?.textDesign?.subtitleText || "";
+  bodyText.value = item.promptSnapshot?.textDesign?.bodyText || "";
+  fontStyleHint.value = item.promptSnapshot?.textDesign?.fontStyleHint || "";
   batchCount.value = item.batch?.count || 1;
   outputName.value = item.filePath?.split(/[\\/]/).pop() || "";
   positivePrompt.value = item.promptSnapshot?.userExtraPrompt || item.promptText || "";
@@ -2084,6 +2141,21 @@ function resolveHistoryPromptPack(item: IllustrationRecord): string {
   }
   const match = availablePromptPacks.value.find((pack) => pack.id === packId || pack.name === packId);
   return match?.name || "";
+}
+
+function resolveHistoryUseCase(item: IllustrationRecord, packName: string, target: IllustrationTargetType): string {
+  if (item.useCase) {
+    return item.useCase;
+  }
+  const templateRef = item.templateId || item.promptSnapshot?.templateRef || "";
+  if (templateRef) {
+    const pack = availablePromptPacks.value.find((entry) => entry.name === packName);
+    const matchedTemplate = pack?.templates.find((template) => template.id === templateRef);
+    if (matchedTemplate?.useCase) {
+      return matchedTemplate.useCase;
+    }
+  }
+  return getIllustrationDefaultUseCase(target);
 }
 
 function toggleModifier(modifierId: string) {
@@ -2319,16 +2391,20 @@ watch(
 );
 
 watch(
-  () => [promptPack.value, targetType.value, mode.value, selectedPromptPack.value?.name || ""] as const,
-  ([, kind, currentMode]) => {
-    const useCase = kind === "entity" ? "character" : "chapter-scene";
-    const options = packTemplates.value.filter((item) => item.useCase === useCase && item.mode === currentMode);
-    if (!options.some((item) => item.id === templateId.value)) {
-      templateId.value = options[0]?.id || "";
+  () => [packTemplates.value, targetType.value, mode.value, useCase.value] as const,
+  ([templates, kind, currentMode, currentUseCase]) => {
+    const nextUseCase = pickIllustrationUseCase(templates, kind, currentMode, currentUseCase);
+    if (nextUseCase !== useCase.value) {
+      useCase.value = nextUseCase;
+      return;
+    }
+    const nextTemplateId = pickIllustrationTemplateId(templates, currentMode, nextUseCase, templateId.value);
+    if (nextTemplateId !== templateId.value) {
+      templateId.value = nextTemplateId;
     }
     modifierRefs.value = modifierRefs.value.filter((item) => modifierOptions.value.some((option) => option.id === item));
   },
-  { immediate: true }
+  { immediate: true, deep: true }
 );
 
 watch(
@@ -2379,11 +2455,6 @@ watch(
       sidebarGroupOpen.reviewEntities = false;
       sidebarGroupOpen.reviewReference = false;
       sidebarGroupOpen.illustrationHistory = false;
-      showAdvancedTemplateEditor.value = false;
-      return;
-    }
-    if (!isTabletLayout.value) {
-      showAdvancedTemplateEditor.value = true;
     }
   },
   { immediate: true }
@@ -3100,7 +3171,6 @@ function formatValue(value: unknown): string {
   gap: 12px;
 }
 
-.template-editor-shell,
 .template-editor-stack,
 .template-editor-section,
 .modifier-editor-list {
@@ -3108,39 +3178,30 @@ function formatValue(value: unknown): string {
   gap: 10px;
 }
 
-.template-editor-shell {
-  padding-top: 8px;
-  border-top: 1px solid rgba(31, 35, 41, 0.06);
+.template-editor-dialog-body {
+  display: grid;
+  gap: 12px;
+  max-height: 70vh;
+  overflow: auto;
 }
 
-.template-editor-head,
-.template-editor-subhead,
-.template-editor-actions,
-.template-editor-meta {
+.template-editor-dialog-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
 }
 
-.template-editor-head,
+.template-editor-subhead,
+.template-editor-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 .template-editor-subhead {
   align-items: flex-start;
-}
-
-.template-editor-head {
-  cursor: pointer;
-  list-style: none;
-}
-
-.template-editor-head::-webkit-details-marker {
-  display: none;
-}
-
-.template-editor-meta {
-  flex-wrap: wrap;
-  color: var(--muted);
-  font-size: 12px;
 }
 
 .template-editor-grid,

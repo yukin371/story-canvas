@@ -57,9 +57,8 @@
                 </t-form-item>
                 <t-form-item label="Key">
                   <t-input
-                    :model-value="item.apiKey"
-                    type="password"
-                    placeholder="sk-..."
+                    :model-value="item.apiKey || item.maskedKey"
+                    :placeholder="item.hasApiKey ? '' : 'sk-...'"
                     @update:model-value="handleProviderKeyInput(item.id, String($event ?? ''))"
                   />
                 </t-form-item>
@@ -95,15 +94,57 @@
         </p>
       </div>
     </WorkbenchPaneCard>
+
+    <WorkbenchPaneCard title="生图默认值" class="settings-pane">
+      <div class="settings-pane-body">
+        <p class="detail-copy">
+          生图时未手动指定时，自动使用以下默认值。修改后需点击保存。
+        </p>
+
+        <t-form layout="inline" class="defaults-form">
+          <div class="defaults-grid">
+            <t-form-item label="模型">
+              <t-select v-model="defaultsDraft.defaultModel" :options="modelOptions" />
+            </t-form-item>
+            <t-form-item label="尺寸">
+              <t-select v-model="defaultsDraft.defaultSize" :options="sizeOptions" />
+            </t-form-item>
+            <t-form-item label="质量">
+              <t-select v-model="defaultsDraft.defaultQuality" :options="qualityOptions" />
+            </t-form-item>
+            <t-form-item label="商用">
+              <t-select v-model="defaultsDraft.defaultCommercialMode" :options="commercialOptions" />
+            </t-form-item>
+            <t-form-item label="批量">
+              <t-input-number v-model="defaultsDraft.defaultBatchCount" :min="1" :max="8" theme="normal" />
+            </t-form-item>
+            <div class="defaults-save">
+              <t-button theme="primary" :loading="savingSettings" @click="handleSaveDefaults">
+                保存
+              </t-button>
+            </div>
+          </div>
+        </t-form>
+      </div>
+    </WorkbenchPaneCard>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 
 import type { LocalProviderProfile } from "@/api/storyCanvas";
 import WorkbenchPaneCard from "@/components/WorkbenchPaneCard.vue";
 import { useWorkspace } from "@/composables/useWorkspace";
+import {
+  TButton,
+  TForm,
+  TFormItem,
+  TInput,
+  TInputNumber,
+  TSelect,
+  TSwitch,
+} from "@/tdesign/forms";
 
 type ProviderDraft = {
   id: string;
@@ -112,6 +153,8 @@ type ProviderDraft = {
   enabled: boolean;
   priority: number;
   apiKey: string;
+  maskedKey: string;
+  hasApiKey: boolean;
   clearApiKey: boolean;
 };
 
@@ -128,6 +171,36 @@ const dropTargetId = ref("");
 const providerDrafts = ref<ProviderDraft[]>([]);
 const providerSeed = ref(1);
 
+const defaultsDraft = reactive({
+  defaultModel: "gpt-5.4",
+  defaultSize: "1024x1024",
+  defaultQuality: "high",
+  defaultCommercialMode: "personal",
+  defaultBatchCount: 1,
+});
+
+const modelOptions = [
+  { label: "GPT-5.4", value: "gpt-5.4" },
+  { label: "GPT-5.5", value: "gpt-5.5" },
+];
+
+const sizeOptions = [
+  { label: "1024 × 1024", value: "1024x1024" },
+  { label: "1536 × 1024 (横)", value: "1536x1024" },
+  { label: "1024 × 1536 (竖)", value: "1024x1536" },
+];
+
+const qualityOptions = [
+  { label: "自动", value: "auto" },
+  { label: "中等", value: "medium" },
+  { label: "高", value: "high" },
+];
+
+const commercialOptions = [
+  { label: "个人", value: "personal" },
+  { label: "商用", value: "commercial" },
+];
+
 const configFile = computed(() => settings.value?.local.configFile || "-");
 
 function buildProviderDraft(profile?: LocalProviderProfile): ProviderDraft {
@@ -138,7 +211,9 @@ function buildProviderDraft(profile?: LocalProviderProfile): ProviderDraft {
       baseUrl: profile.baseUrl,
       enabled: profile.enabled,
       priority: profile.priority,
-      apiKey: profile.apiKey,
+      apiKey: "",
+      maskedKey: profile.maskedKey || "",
+      hasApiKey: profile.hasApiKey,
       clearApiKey: false,
     };
   }
@@ -151,6 +226,8 @@ function buildProviderDraft(profile?: LocalProviderProfile): ProviderDraft {
     enabled: true,
     priority: providerDrafts.value.length + 1,
     apiKey: "",
+    maskedKey: "",
+    hasApiKey: false,
     clearApiKey: false,
   };
 }
@@ -166,6 +243,8 @@ function handleProviderKeyInput(id: string, value: string) {
       ? {
           ...item,
           apiKey: value,
+          maskedKey: value ? "" : item.maskedKey,
+          hasApiKey: !!(value || item.maskedKey),
           clearApiKey: false,
         }
       : item
@@ -178,6 +257,8 @@ function clearProviderKey(id: string) {
       ? {
           ...item,
           apiKey: "",
+          maskedKey: "",
+          hasApiKey: false,
           clearApiKey: true,
         }
       : item
@@ -260,9 +341,20 @@ async function handleSaveProviders() {
       baseUrl: item.baseUrl.trim(),
       enabled: item.enabled,
       priority: item.priority,
-      apiKey: item.apiKey.trim(),
+      apiKey: item.apiKey ? item.apiKey.trim() : undefined,
       clearApiKey: item.clearApiKey,
     })),
+  });
+}
+
+async function handleSaveDefaults() {
+  await workspace.persistSettings({
+    root: selectedRoot.value || undefined,
+    defaultModel: defaultsDraft.defaultModel,
+    defaultSize: defaultsDraft.defaultSize,
+    defaultQuality: defaultsDraft.defaultQuality,
+    defaultCommercialMode: defaultsDraft.defaultCommercialMode,
+    defaultBatchCount: String(defaultsDraft.defaultBatchCount),
   });
 }
 
@@ -270,6 +362,15 @@ function syncFromSettings() {
   const profiles = settings.value?.local.providers || [];
   providerSeed.value = profiles.length + 1;
   providerDrafts.value = profiles.length > 0 ? profiles.map((item) => buildProviderDraft(item)) : [buildProviderDraft()];
+
+  const local = settings.value?.local;
+  if (local) {
+    defaultsDraft.defaultModel = local.defaultModel || "gpt-5.4";
+    defaultsDraft.defaultSize = local.defaultSize || "1024x1024";
+    defaultsDraft.defaultQuality = local.defaultQuality || "high";
+    defaultsDraft.defaultCommercialMode = local.defaultCommercialMode || "personal";
+    defaultsDraft.defaultBatchCount = parseInt(local.defaultBatchCount || "1", 10) || 1;
+  }
 }
 
 watch(
@@ -438,6 +539,29 @@ watch(
   word-break: break-word;
 }
 
+.defaults-form {
+  overflow: visible;
+  padding-right: 0;
+}
+
+.defaults-grid {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(80px, 1fr) minmax(60px, 0.6fr) 72px;
+  gap: 8px;
+  align-items: end;
+}
+
+.defaults-save {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  min-height: 100%;
+}
+
+.defaults-save :deep(.t-button) {
+  width: 100%;
+}
+
 @media (max-width: 1180px) {
   .settings-shell {
     grid-template-columns: 1fr;
@@ -454,6 +578,10 @@ watch(
 
 @media (max-width: 768px) {
   .form-grid-provider-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .defaults-grid {
     grid-template-columns: 1fr 1fr;
   }
 

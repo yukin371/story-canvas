@@ -186,6 +186,12 @@ def _build_illustration_body_from_form(
     body: dict[str, Any] = {
         "root": str(root) if root is not None else "",
         "targetType": _coerce_form_value(form, "targetType") or None,
+        "useCase": _coerce_form_value(form, "useCase") or None,
+        "textDesignMode": _coerce_form_value(form, "textDesignMode") or None,
+        "titleText": _coerce_form_value(form, "titleText") or None,
+        "subtitleText": _coerce_form_value(form, "subtitleText") or None,
+        "bodyText": _coerce_form_value(form, "bodyText") or None,
+        "fontStyleHint": _coerce_form_value(form, "fontStyleHint") or None,
         "manualTargetName": _coerce_form_value(form, "manualTargetName") or None,
         "mode": _coerce_form_value(form, "mode", "text-to-image"),
         "chapterId": _coerce_form_value(form, "chapterId") or None,
@@ -797,12 +803,22 @@ def _build_project_list_payload() -> dict[str, Any]:
     }
 
 
+ILLUSTRATION_DEFAULTS: dict[str, str] = {
+    "defaultModel": "gpt-5.4",
+    "defaultSize": "1024x1024",
+    "defaultQuality": "high",
+    "defaultCommercialMode": "personal",
+    "defaultBatchCount": "1",
+}
+
+
 def _default_workbench_settings() -> dict[str, Any]:
     return {
         "illustration": {
             "apiKey": "",
             "baseUrl": "",
             "providers": [],
+            **ILLUSTRATION_DEFAULTS,
         }
     }
 
@@ -980,6 +996,7 @@ def _apply_provider_profile(body: dict[str, Any], provider: dict[str, Any]) -> d
 
 def _build_settings_response(root: Path | None = None) -> dict[str, Any]:
     settings = _load_workbench_settings()
+    illustration = settings.get("illustration", {})
     provider_summaries = _provider_summaries(settings)
     local_profiles = _runtime_provider_profiles(settings)
     env_api_key = resolve_api_key("")
@@ -1016,20 +1033,26 @@ def _build_settings_response(root: Path | None = None) -> dict[str, Any]:
             "configFile": str(WORKBENCH_SETTINGS_FILE),
             "providers": provider_summaries,
             "fallbackCount": max(len(local_profiles) - 1, 0),
+            "defaultModel": illustration.get("defaultModel") or ILLUSTRATION_DEFAULTS["defaultModel"],
+            "defaultSize": illustration.get("defaultSize") or ILLUSTRATION_DEFAULTS["defaultSize"],
+            "defaultQuality": illustration.get("defaultQuality") or ILLUSTRATION_DEFAULTS["defaultQuality"],
+            "defaultCommercialMode": illustration.get("defaultCommercialMode") or ILLUSTRATION_DEFAULTS["defaultCommercialMode"],
+            "defaultBatchCount": illustration.get("defaultBatchCount") or ILLUSTRATION_DEFAULTS["defaultBatchCount"],
         },
         "workspaceIllustration": {
             "adapterName": "openai",
-            "responseModel": "gpt-5.4",
+            "responseModel": illustration.get("defaultModel") or ILLUSTRATION_DEFAULTS["defaultModel"],
             "imageModel": "gpt-image-2",
-            "defaultSize": "1024x1024",
-            "quality": "high",
+            "defaultSize": illustration.get("defaultSize") or ILLUSTRATION_DEFAULTS["defaultSize"],
+            "quality": illustration.get("defaultQuality") or ILLUSTRATION_DEFAULTS["defaultQuality"],
             "baseUrl": str((local_profiles[0].get("baseUrl", "") if local_profiles else "") or ""),
             "promptPackName": "default",
             "promptPackDir": str(workspace_root / "prompts" / "illustration-packs"),
-            "commercialMode": "personal",
+            "commercialMode": illustration.get("defaultCommercialMode") or ILLUSTRATION_DEFAULTS["defaultCommercialMode"],
             "defaultTemplateByUseCase": {},
             "defaultModifierRefs": [],
             "availablePromptPacks": workspace_packs,
+            "defaultBatchCount": illustration.get("defaultBatchCount") or ILLUSTRATION_DEFAULTS["defaultBatchCount"],
         },
         "project": project_payload,
         "capabilities": {
@@ -1040,9 +1063,9 @@ def _build_settings_response(root: Path | None = None) -> dict[str, Any]:
 
 def _save_settings_request(body: dict[str, Any]) -> dict[str, Any]:
     settings = _load_workbench_settings()
+    illustration = settings.setdefault("illustration", {})
     if "providers" in body:
         _write_provider_profiles(settings, body.get("providers"))
-        _save_workbench_settings(settings)
     elif "apiKey" in body or "localBaseUrl" in body:
         legacy_api_key = str(body.get("apiKey", "")).strip() if "apiKey" in body else ""
         legacy_base_url = str(body.get("localBaseUrl", "")).strip() if "localBaseUrl" in body else ""
@@ -1061,7 +1084,12 @@ def _save_settings_request(body: dict[str, Any]) -> dict[str, Any]:
             if legacy_api_key or legacy_base_url
             else [],
         )
-        _save_workbench_settings(settings)
+
+    for key in ("defaultModel", "defaultSize", "defaultQuality", "defaultCommercialMode", "defaultBatchCount"):
+        if key in body and str(body[key]).strip():
+            illustration[key] = str(body[key]).strip()
+
+    _save_workbench_settings(settings)
 
     root_value = str(body.get("root", "")).strip()
     root = _coerce_project_root(root_value) if root_value else None
@@ -1167,6 +1195,12 @@ def _build_illustration_args(body: dict[str, Any]) -> SimpleNamespace:
         root=str(root),
         chapter_id=body.get("chapterId"),
         entity_id=body.get("entityId"),
+        use_case=body.get("useCase") or "",
+        text_design_mode=body.get("textDesignMode") or "",
+        title_text=body.get("titleText") or "",
+        subtitle_text=body.get("subtitleText") or "",
+        body_text=body.get("bodyText") or "",
+        font_style_hint=body.get("fontStyleHint") or "",
         mode=body.get("mode", "text-to-image"),
         input_image=body.get("inputImages") or [],
         mask=body.get("maskPath") or "",

@@ -32,6 +32,7 @@ export type IllustrationRecord = {
   id?: string;
   type?: string;
   mode?: string;
+  useCase?: string;
   chapterId?: string | null;
   entityId?: string | null;
   promptText?: string;
@@ -66,6 +67,14 @@ export type IllustrationRecord = {
     modifierRefs?: string[];
     userExtraPrompt?: string;
     resolvedPrompt?: string;
+    textDesign?: {
+      mode?: IllustrationTextDesignMode;
+      titleText?: string;
+      subtitleText?: string;
+      bodyText?: string;
+      fontStyleHint?: string;
+      promptHint?: string;
+    };
   };
   policySnapshot?: {
     negativePolicyRef?: string;
@@ -168,6 +177,7 @@ export type ProjectSummary = {
     promptPackVersion?: string;
     promptPackDir?: string;
     commercialMode?: "personal" | "commercial";
+    defaultBatchCount?: string;
     defaultTemplateByUseCase?: Record<string, string>;
     defaultModifierRefs?: string[];
     availablePromptPacks?: Array<{
@@ -216,6 +226,12 @@ export type IllustrationDryRunRequest = {
   root?: string;
   mode: "text-to-image" | "image-to-image" | "inpaint";
   targetType?: "entity" | "chapter";
+  useCase?: string;
+  textDesignMode?: IllustrationTextDesignMode;
+  titleText?: string;
+  subtitleText?: string;
+  bodyText?: string;
+  fontStyleHint?: string;
   manualTargetName?: string;
   chapterId?: string;
   entityId?: string;
@@ -258,6 +274,151 @@ export type IllustrationGenerateResult = {
   summary?: ProjectSummary | null;
 };
 
+export type IllustrationTargetType = "entity" | "chapter";
+export type IllustrationTextDesignMode = "none" | "designed";
+
+export type IllustrationTemplateSummary = {
+  id: string;
+  label: string;
+  useCase: string;
+  mode: string;
+  complexity: string;
+  defaultNegativePolicyRef?: string;
+  defaultCommercialPolicyRef?: string;
+};
+
+export const ILLUSTRATION_USE_CASE_LABELS: Record<string, string> = {
+  character: "角色",
+  "character-sheet": "人物设定图",
+  "chapter-scene": "章节场景",
+  "cover-concept": "封面概念",
+  "cover-poster": "收藏版海报",
+  "ensemble-key-visual": "群像主视觉",
+  "duel-scene": "角色对决",
+  "chase-escape": "追逐逃脱",
+  "comic-relief": "轻松搞笑图",
+  promo: "宣传图",
+  product: "产品图",
+  "prop-relic": "道具遗物图",
+  "creature-sheet": "生物设定图",
+  "manga-panel": "漫画单格",
+  "manga-page": "漫画分镜页",
+};
+
+const ILLUSTRATION_USE_CASES_BY_TARGET: Record<IllustrationTargetType, string[]> = {
+  entity: [
+    "character",
+    "character-sheet",
+    "cover-concept",
+    "cover-poster",
+    "comic-relief",
+    "promo",
+    "product",
+    "prop-relic",
+    "creature-sheet",
+    "manga-panel",
+  ],
+  chapter: [
+    "chapter-scene",
+    "cover-concept",
+    "cover-poster",
+    "ensemble-key-visual",
+    "duel-scene",
+    "chase-escape",
+    "comic-relief",
+    "promo",
+    "product",
+    "prop-relic",
+    "creature-sheet",
+    "manga-panel",
+    "manga-page",
+  ],
+};
+
+export const ILLUSTRATION_KNOWN_USE_CASE_OPTIONS = Object.entries(ILLUSTRATION_USE_CASE_LABELS).map(([value, label]) => ({
+  label,
+  value,
+}));
+
+export const ILLUSTRATION_TEXT_DESIGN_OPTIONS: Array<{ label: string; value: IllustrationTextDesignMode }> = [
+  { label: "纯绘图", value: "none" },
+  { label: "文字设计", value: "designed" },
+];
+
+export function getIllustrationUseCaseLabel(useCase: string): string {
+  return ILLUSTRATION_USE_CASE_LABELS[useCase] || useCase || "未命名用途";
+}
+
+export function getIllustrationDefaultUseCase(targetType: IllustrationTargetType): string {
+  return targetType === "entity" ? "character" : "chapter-scene";
+}
+
+export function getCompatibleIllustrationUseCases(targetType: IllustrationTargetType): string[] {
+  return [...ILLUSTRATION_USE_CASES_BY_TARGET[targetType]];
+}
+
+export function getIllustrationUseCaseOptions(
+  templates: IllustrationTemplateSummary[],
+  targetType: IllustrationTargetType,
+  mode: IllustrationDryRunRequest["mode"]
+): Array<{ label: string; value: string }> {
+  const allowed = new Set(getCompatibleIllustrationUseCases(targetType));
+  const seen = new Set<string>();
+  return templates
+    .filter((item) => item.mode === mode && allowed.has(item.useCase))
+    .filter((item) => {
+      if (seen.has(item.useCase)) {
+        return false;
+      }
+      seen.add(item.useCase);
+      return true;
+    })
+    .map((item) => ({
+      label: getIllustrationUseCaseLabel(item.useCase),
+      value: item.useCase,
+    }));
+}
+
+export function pickIllustrationUseCase(
+  templates: IllustrationTemplateSummary[],
+  targetType: IllustrationTargetType,
+  mode: IllustrationDryRunRequest["mode"],
+  preferredUseCase?: string
+): string {
+  const options = getIllustrationUseCaseOptions(templates, targetType, mode);
+  if (preferredUseCase && options.some((item) => item.value === preferredUseCase)) {
+    return preferredUseCase;
+  }
+  const defaultUseCase = getIllustrationDefaultUseCase(targetType);
+  return options.find((item) => item.value === defaultUseCase)?.value || options[0]?.value || defaultUseCase;
+}
+
+export function getIllustrationTemplateOptions(
+  templates: IllustrationTemplateSummary[],
+  mode: IllustrationDryRunRequest["mode"],
+  useCase: string
+): Array<{ label: string; value: string }> {
+  return templates
+    .filter((item) => item.useCase === useCase && item.mode === mode)
+    .map((item) => ({
+      label: item.label,
+      value: item.id,
+    }));
+}
+
+export function pickIllustrationTemplateId(
+  templates: IllustrationTemplateSummary[],
+  mode: IllustrationDryRunRequest["mode"],
+  useCase: string,
+  preferredTemplateId?: string
+): string {
+  const options = getIllustrationTemplateOptions(templates, mode, useCase);
+  if (preferredTemplateId && options.some((item) => item.value === preferredTemplateId)) {
+    return preferredTemplateId;
+  }
+  return options[0]?.value || "";
+}
+
 export type LocalProviderProfile = {
   id: string;
   label: string;
@@ -277,6 +438,11 @@ export type WorkbenchSettings = {
     configFile: string;
     providers: LocalProviderProfile[];
     fallbackCount: number;
+    defaultModel: string;
+    defaultSize: string;
+    defaultQuality: string;
+    defaultCommercialMode: string;
+    defaultBatchCount: string;
   };
   workspaceIllustration: {
     adapterName: string;
@@ -288,6 +454,7 @@ export type WorkbenchSettings = {
     promptPackName: string;
     promptPackDir?: string;
     commercialMode: "personal" | "commercial";
+    defaultBatchCount?: string;
     defaultTemplateByUseCase?: Record<string, string>;
     defaultModifierRefs?: string[];
     availablePromptPacks?: Array<{
@@ -408,6 +575,10 @@ export type WorkbenchSettingsUpdate = {
   baseUrl?: string;
   promptPackName?: string;
   commercialMode?: "personal" | "commercial";
+  defaultModel?: string;
+  defaultQuality?: string;
+  defaultCommercialMode?: string;
+  defaultBatchCount?: string;
 };
 
 export type CreateProjectRequest = {
