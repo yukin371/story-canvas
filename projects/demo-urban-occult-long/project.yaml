@@ -30,6 +30,21 @@
     "endingContract": "卷一完成从临时夜巡到正式执牌人的跃迁，并确认父亲失踪与旧城隍案有关",
     "paceContract": "中快节奏"
   },
+  "emotionalContract": {
+    "coreEmotions": [],
+    "chapterEmotionFloor": [],
+    "forbiddenEmotions": [],
+    "revealPreference": {
+      "defaultMode": "",
+      "allowDirectExplainAtClimax": false
+    }
+  },
+  "storyTemplate": {
+    "id": "",
+    "label": "",
+    "modulePolicy": {},
+    "reviewFocus": []
+  },
   "commercialPositioning": {
     "premise": "殡仪馆夜班接运员意外继承父亲留下的城隍夜巡差事，在一座现代都市里处理民俗异案、追查旧城隍印失窃案，并一步步摸到失踪父亲留下的真相。",
     "hookLine": "夜班接尸人抬到一具不该入库的空棺，当晚就被迫接过城隍夜巡牌，从送尸打工人变成处理都市异案的临时阴差。",

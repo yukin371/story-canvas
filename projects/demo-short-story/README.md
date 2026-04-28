@@ -1,6 +1,6 @@
 # demo-short-story
 
-用于验证 Story Harness CLI 在“短篇完整项目”上的两类能力：
+用于验证 Story Canvas 工作流在“短篇完整项目”上的两类能力：
 
 - 生成与回顾质量
 - 端到端功能链路
@@ -42,27 +42,27 @@
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli doctor --root projects/demo-short-story
-python -m story_harness_cli chapter analyze --root projects/demo-short-story --chapter-id chapter-001
-python -m story_harness_cli chapter suggest --root projects/demo-short-story --chapter-id chapter-001
-python -m story_harness_cli review apply --root projects/demo-short-story --chapter-id chapter-001 --all-pending --decision accepted
-python -m story_harness_cli projection apply --root projects/demo-short-story --chapter-id chapter-001
-python -m story_harness_cli context refresh --root projects/demo-short-story --chapter-id chapter-001
-python -m story_harness_cli review chapter --root projects/demo-short-story --chapter-id chapter-001
-python -m story_harness_cli review scene --root projects/demo-short-story --chapter-id chapter-001 --scene-index 1
-python -m story_harness_cli export --root projects/demo-short-story --format markdown --output projects/demo-short-story/manuscript.md
+python -m story_canvas doctor --root projects/demo-short-story
+python -m story_canvas chapter analyze --root projects/demo-short-story --chapter-id chapter-001
+python -m story_canvas chapter suggest --root projects/demo-short-story --chapter-id chapter-001
+python -m story_canvas review apply --root projects/demo-short-story --chapter-id chapter-001 --all-pending --decision accepted
+python -m story_canvas projection apply --root projects/demo-short-story --chapter-id chapter-001
+python -m story_canvas context refresh --root projects/demo-short-story --chapter-id chapter-001
+python -m story_canvas review chapter --root projects/demo-short-story --chapter-id chapter-001
+python -m story_canvas review scene --root projects/demo-short-story --chapter-id chapter-001 --scene-index 1
+python -m story_canvas export --root projects/demo-short-story --format markdown --output projects/demo-short-story/manuscript.md
 ```
 
 ## 全量回归命令
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli doctor --root projects/demo-short-story
+python -m story_canvas doctor --root projects/demo-short-story
 
 foreach ($chapter in 'chapter-001', 'chapter-002', 'chapter-003') {
-  python -m story_harness_cli chapter analyze --root projects/demo-short-story --chapter-id $chapter
-  python -m story_harness_cli review chapter --root projects/demo-short-story --chapter-id $chapter
-  python -m story_harness_cli context refresh --root projects/demo-short-story --chapter-id $chapter
+  python -m story_canvas chapter analyze --root projects/demo-short-story --chapter-id $chapter
+  python -m story_canvas review chapter --root projects/demo-short-story --chapter-id $chapter
+  python -m story_canvas context refresh --root projects/demo-short-story --chapter-id $chapter
 }
 
 foreach ($pair in @(
@@ -70,12 +70,12 @@ foreach ($pair in @(
   @('chapter-002', 1), @('chapter-002', 2),
   @('chapter-003', 1), @('chapter-003', 2)
 )) {
-  python -m story_harness_cli review scene --root projects/demo-short-story --chapter-id $pair[0] --scene-index $pair[1]
+  python -m story_canvas review scene --root projects/demo-short-story --chapter-id $pair[0] --scene-index $pair[1]
 }
 
-python -m story_harness_cli review apply --root projects/demo-short-story --chapter-id chapter-001 --all-pending --decision accepted
-python -m story_harness_cli projection apply --root projects/demo-short-story --chapter-id chapter-001
-python -m story_harness_cli export --root projects/demo-short-story --format markdown --output projects/demo-short-story/manuscript.md
+python -m story_canvas review apply --root projects/demo-short-story --chapter-id chapter-001 --all-pending --decision accepted
+python -m story_canvas projection apply --root projects/demo-short-story --chapter-id chapter-001
+python -m story_canvas export --root projects/demo-short-story --format markdown --output projects/demo-short-story/manuscript.md
 ```
 
 ## 自动化回归入口

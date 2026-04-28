@@ -35,7 +35,7 @@
 
 - 现有样例已经覆盖通用短篇、西幻轻小说短篇和玄幻短篇，但还缺一个更接近真实商业连载的长篇样例
 - “都市玄幻 + 民俗志怪 + 职业线”适合做 `2-3` 章一个单元案，同时又能稳定抬主线
-- 这种结构更适合验证 Story Harness 的 `scenePlans`、连续性评审、伏笔管理和上下文刷新
+- 这种结构更适合验证 Story Canvas 工作流下的 `scenePlans`、连续性评审、伏笔管理和上下文刷新
 
 ## 当前样例范围
 
@@ -90,16 +90,16 @@
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli doctor --root projects/demo-urban-occult-long
-python -m story_harness_cli chapter analyze --root projects/demo-urban-occult-long --chapter-id chapter-012
-python -m story_harness_cli review chapter --root projects/demo-urban-occult-long --chapter-id chapter-012
-python -m story_harness_cli review scene --root projects/demo-urban-occult-long --chapter-id chapter-012 --scene-index 2
-python -m story_harness_cli review scene --root projects/demo-urban-occult-long --chapter-id chapter-012 --scene-index 3
-python -m story_harness_cli chapter suggest --root projects/demo-urban-occult-long --chapter-id chapter-012
-python -m story_harness_cli review apply --root projects/demo-urban-occult-long --chapter-id chapter-012 --all-pending --decision accepted
-python -m story_harness_cli projection apply --root projects/demo-urban-occult-long --chapter-id chapter-012
-python -m story_harness_cli context refresh --root projects/demo-urban-occult-long --chapter-id chapter-012
-python -m story_harness_cli export --root projects/demo-urban-occult-long --format markdown --output projects/demo-urban-occult-long/manuscript.md
+python -m story_canvas doctor --root projects/demo-urban-occult-long
+python -m story_canvas chapter analyze --root projects/demo-urban-occult-long --chapter-id chapter-012
+python -m story_canvas review chapter --root projects/demo-urban-occult-long --chapter-id chapter-012
+python -m story_canvas review scene --root projects/demo-urban-occult-long --chapter-id chapter-012 --scene-index 2
+python -m story_canvas review scene --root projects/demo-urban-occult-long --chapter-id chapter-012 --scene-index 3
+python -m story_canvas chapter suggest --root projects/demo-urban-occult-long --chapter-id chapter-012
+python -m story_canvas review apply --root projects/demo-urban-occult-long --chapter-id chapter-012 --all-pending --decision accepted
+python -m story_canvas projection apply --root projects/demo-urban-occult-long --chapter-id chapter-012
+python -m story_canvas context refresh --root projects/demo-urban-occult-long --chapter-id chapter-012
+python -m story_canvas export --root projects/demo-urban-occult-long --format markdown --output projects/demo-urban-occult-long/manuscript.md
 python -m unittest tests.smoke.test_demo_urban_occult_long_sample -v
 ```
 

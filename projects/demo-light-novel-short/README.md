@@ -1,6 +1,6 @@
 # demo-light-novel-short
 
-用于验证 Story Harness CLI 在“风格驱动短篇样例”上的两类能力：
+用于验证 Story Canvas 工作流在“风格驱动短篇样例”上的两类能力：
 
 - 定位层里的 `subGenre + styleTags + targetAudience`
 - 端到端评审链路是否会保留并输出这些风格信号
@@ -35,11 +35,11 @@
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m story_harness_cli doctor --root projects/demo-light-novel-short
-python -m story_harness_cli chapter analyze --root projects/demo-light-novel-short --chapter-id chapter-001
-python -m story_harness_cli review chapter --root projects/demo-light-novel-short --chapter-id chapter-001
-python -m story_harness_cli review scene --root projects/demo-light-novel-short --chapter-id chapter-001 --scene-index 1
-python -m story_harness_cli export --root projects/demo-light-novel-short --format markdown --output projects/demo-light-novel-short/manuscript.md
+python -m story_canvas doctor --root projects/demo-light-novel-short
+python -m story_canvas chapter analyze --root projects/demo-light-novel-short --chapter-id chapter-001
+python -m story_canvas review chapter --root projects/demo-light-novel-short --chapter-id chapter-001
+python -m story_canvas review scene --root projects/demo-light-novel-short --chapter-id chapter-001 --scene-index 1
+python -m story_canvas export --root projects/demo-light-novel-short --format markdown --output projects/demo-light-novel-short/manuscript.md
 ```
 
 ## 自动化回归入口

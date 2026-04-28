@@ -1,6 +1,7 @@
 {
   "rubricVersion": "chapter-review-v1",
   "sceneRubricVersion": "scene-review-v1",
+  "volumeSelfReviewRubricVersion": "volume-self-review-v1",
   "chapterReviews": [
     {
       "reviewId": "chapter-review-553611b7e2",
@@ -6124,13 +6125,13 @@
       "reviewId": "chapter-review-ea8f9477b9",
       "fingerprint": "chapter-review-v1:chapter-002:fcedf12acc755af6",
       "rubricVersion": "chapter-review-v1",
-      "generatedAt": "2026-04-25T20:04:56+08:00",
+      "generatedAt": "2026-04-28T13:43:10+08:00",
       "chapterId": "chapter-002",
       "chapterTitle": "空棺敲门",
-      "summary": "结合分析结果和正文信号，本章总分 82/100。当前强项在场景清晰度，最需要补强的是冲突张力。",
+      "summary": "结合分析结果和正文信号，本章总分 79/100。当前强项在场景清晰度，最需要补强的是表达控制。",
       "rating": "solid",
       "scores": {
-        "total": 82,
+        "total": 79,
         "maxScore": 100,
         "dimensions": [
           {
@@ -6188,18 +6189,19 @@
           {
             "id": "proseControl",
             "label": "表达控制",
-            "score": 14,
+            "score": 11,
             "maxScore": 20,
-            "comment": "基础节奏可读，但 AI 风格信号额外扣了 1 分。",
+            "comment": "基础节奏可读，但 AI 风格信号额外扣了 4 分。",
             "signals": [
               "平均段长 165",
               "长段落 7 段",
               "对话段 14 段",
-              "风格额外扣分 1"
+              "风格额外扣分 4"
             ],
             "suggestions": [
               "拆分过长段落，把动作、信息和情绪分开承载，节奏会更稳。",
-              "段落长度过于均匀，可调整长短交替制造节奏感"
+              "段落长度过于均匀，可调整长短交替制造节奏感",
+              "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
             ]
           }
         ]
@@ -6264,7 +6266,7 @@
             "delta": -5
           }
         ],
-        "total": 82.75,
+        "total": 82.0,
         "maxScore": 100,
         "rating": "solid",
         "breakdown": [
@@ -6299,9 +6301,9 @@
           {
             "id": "proseControl",
             "label": "表达控制",
-            "rawScore": 14,
+            "rawScore": 11,
             "weight": 5,
-            "contribution": 3.5
+            "contribution": 2.75
           }
         ]
       },
@@ -6312,7 +6314,8 @@
       ],
       "priorityActions": [
         "拆分过长段落，把动作、信息和情绪分开承载，节奏会更稳。",
-        "段落长度过于均匀，可调整长短交替制造节奏感"
+        "段落长度过于均匀，可调整长短交替制造节奏感",
+        "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
       ],
       "textMetrics": {
         "wordCount": 3289,
@@ -6332,6 +6335,14 @@
         "activeEntityCount": 5,
         "snapshotCandidateCount": 1,
         "relationCandidateCount": 0,
+        "settingCandidateCount": 0,
+        "settingConflictCount": 0,
+        "unintroducedNameRevealCount": 0,
+        "capabilityTaskRiskCount": 0,
+        "powerProgressionConflictCount": 0,
+        "wrappedEntityCount": 5,
+        "wrappedEntityMissingCount": 0,
+        "chapterHandoffRiskCount": 0,
         "sceneEntityNames": [
           "周祈安",
           "沈观澜",
@@ -6340,11 +6351,52 @@
           "杜魁"
         ]
       },
+      "chapterHandoffSignals": {
+        "detected": false,
+        "severity": "none",
+        "loadStrength": 1,
+        "openingAnchorScore": 0,
+        "earlyAnchorScore": 1,
+        "delayedBridge": false,
+        "previousChapterId": "chapter-001",
+        "previousChapterTitle": "夜班接尸",
+        "currentDirection": "借空棺敲门案追出杜魁与旧城隍巷夜债名单，让主角确认父亲留下的线索正被人利用。",
+        "nextChapterTitle": "城隍借火",
+        "openingEntityAnchors": [],
+        "openingStateAnchors": [],
+        "openingThreadAnchors": [],
+        "openingContextAnchors": [],
+        "earlyEntityAnchors": [],
+        "earlyStateAnchors": [],
+        "earlyThreadAnchors": [],
+        "earlyContextAnchors": [],
+        "openingContinuityHits": 0,
+        "earlyContinuityHits": 2,
+        "closingHookHits": 0,
+        "loadSummary": [
+          "前章方向：通过女尸、冷柜敲门和沈观澜上门，把周祈安从殡仪馆夜班拉进城隍夜巡"
+        ],
+        "openingAnchorSummary": [],
+        "earlyAnchorSummary": [
+          "连续性词命中：2"
+        ],
+        "gapReasons": [
+          "前章负载较轻，未触发承接风险"
+        ],
+        "suggestion": "",
+        "evidence": [
+          "前章负载：前章方向：通过女尸、冷柜敲门和沈观澜上门，把周祈安从殡仪馆夜班拉进城隍夜巡",
+          "开章前两段：未命中实体、状态、线程或连续性锚点",
+          "开章原文：旧城隍巷在南明市早就不算地图上的正式街道了。白天"
+        ]
+      },
       "styleAnalysis": {
         "profile": "web-serial-zh",
+        "reviewRuleProfile": "default",
+        "reviewRuleEnabledRules": [],
         "styleAnalysis": {
-          "overallScore": 19,
-          "totalDeduction": 1,
+          "overallScore": 16,
+          "totalDeduction": 4,
           "patternResults": [
             {
               "id": "simileDensity",
@@ -6396,6 +6448,42 @@
               "suggestion": ""
             },
             {
+              "id": "contrastFlipPattern",
+              "label": "翻转句式",
+              "detected": false,
+              "count": 2,
+              "perThousand": 0.6,
+              "threshold": 1.2,
+              "severity": "none",
+              "evidence": [
+                "不是命，是账",
+                "不是单纯借火，是借牌开庙门"
+              ],
+              "suggestion": ""
+            },
+            {
+              "id": "analogicalPivotPattern",
+              "label": "类比翻转句",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "templateCatchphrasePattern",
+              "label": "模板化口癖",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
               "id": "sensoryVariety",
               "label": "感官单一",
               "detected": false,
@@ -6418,6 +6506,21 @@
               "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感"
             },
             {
+              "id": "paragraphReadability",
+              "label": "段落可读性",
+              "detected": true,
+              "count": 21,
+              "perThousand": 0,
+              "threshold": 90,
+              "severity": "high",
+              "evidence": [
+                "第1段约168字：旧城隍巷在南明市早就不算地图上的正式街道了。白天它夹在商场后街和...",
+                "第2段约162字：“空棺敲门，讨的不是命，是账。”沈观澜站在巷口把伞收了，伞骨内侧...",
+                "第3段约204字：周祈安把运尸车往阴影里又推了半步，本能先看了一眼车上的接运封条。..."
+              ],
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+            },
+            {
               "id": "sentenceRepetition",
               "label": "句式重复",
               "detected": false,
@@ -6427,6 +6530,61 @@
               "severity": "none",
               "evidence": [],
               "source": "builtin",
+              "suggestion": ""
+            },
+            {
+              "id": "specialTermRepetition",
+              "label": "特殊术语复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "narrativeFrameRepetition",
+              "label": "叙事支架复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "registerDrift",
+              "label": "题材语域失真",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "structuredPlanBlock",
+              "label": "方案文档腔",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "clusteredAIPhrasing",
+              "label": "AI句群叠加",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
               "suggestion": ""
             }
           ],
@@ -6445,29 +6603,195 @@
             "isUniform": true,
             "score": 1
           },
+          "paragraphReadability": {
+            "detected": true,
+            "severity": "high",
+            "count": 21,
+            "threshold": 90,
+            "veryLongThreshold": 150,
+            "maxLength": 204,
+            "evidence": [
+              "第1段约168字：旧城隍巷在南明市早就不算地图上的正式街道了。白天它夹在商场后街和...",
+              "第2段约162字：“空棺敲门，讨的不是命，是账。”沈观澜站在巷口把伞收了，伞骨内侧...",
+              "第3段约204字：周祈安把运尸车往阴影里又推了半步，本能先看了一眼车上的接运封条。..."
+            ],
+            "overlongParagraphs": [
+              {
+                "paragraphIndex": 1,
+                "length": 168,
+                "snippet": "旧城隍巷在南明市早就不算地图上的正式街道了。白天它夹在商场后街和..."
+              },
+              {
+                "paragraphIndex": 2,
+                "length": 162,
+                "snippet": "“空棺敲门，讨的不是命，是账。”沈观澜站在巷口把伞收了，伞骨内侧..."
+              },
+              {
+                "paragraphIndex": 3,
+                "length": 204,
+                "snippet": "周祈安把运尸车往阴影里又推了半步，本能先看了一眼车上的接运封条。..."
+              },
+              {
+                "paragraphIndex": 4,
+                "length": 165,
+                "snippet": "空棺又往前碰了一下，棺盖内侧突然滑出一条湿透的红绸，正好缠到运尸..."
+              },
+              {
+                "paragraphIndex": 5,
+                "length": 126,
+                "snippet": "他们把女尸暂时送进巷尾一间废弃香烛铺。门一关上，屋里立刻只剩纸灰..."
+              }
+            ]
+          },
           "sentenceRepetition": {
             "repeatedStructures": [],
             "hasRepetition": false,
             "score": 3,
             "source": "builtin"
           },
+          "specialTermRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topTerms": []
+          },
+          "narrativeFrameRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topFrames": []
+          },
+          "registerDrift": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedCategories": [],
+            "suggestion": ""
+          },
+          "structuredPlanBlock": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedLabels": [],
+            "suggestion": ""
+          },
+          "clusteredAIPhrasing": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "threshold": 3,
+            "signalScore": 1,
+            "signalIds": [
+              "paragraphReadability"
+            ],
+            "evidence": [],
+            "suggestion": ""
+          },
+          "metaLeakage": {},
           "sources": {
             "sentenceRepetition": "builtin"
           },
-          "summary": "检测到1项AI风格特征：段落均质。扣1分。",
+          "judgements": [
+            {
+              "ruleId": "paragraphUniformity",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到段落均质问题。",
+              "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+              "evidence": [],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style"
+              ]
+            },
+            {
+              "ruleId": "paragraphReadability",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "high",
+              "status": "triggered",
+              "message": "检测到段落可读性问题，例如 第1段约168字：旧城隍巷在南明市早就不算地图上的正式街道了。白天它夹在商场后街和...。",
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+              "evidence": [
+                "第1段约168字：旧城隍巷在南明市早就不算地图上的正式街道了。白天它夹在商场后街和...",
+                "第2段约162字：“空棺敲门，讨的不是命，是账。”沈观澜站在巷口把伞收了，伞骨内侧...",
+                "第3段约204字：周祈安把运尸车往阴影里又推了半步，本能先看了一眼车上的接运封条。..."
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style",
+                "readability",
+                "mobile-reading"
+              ]
+            }
+          ],
+          "summary": "检测到2项AI风格特征：段落均质、段落可读性。扣4分。",
           "suggestions": [
-            "段落长度过于均匀，可调整长短交替制造节奏感"
+            "段落长度过于均匀，可调整长短交替制造节奏感",
+            "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
           ]
         },
+        "judgements": [
+          {
+            "ruleId": "paragraphUniformity",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到段落均质问题。",
+            "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+            "evidence": [],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style"
+            ]
+          },
+          {
+            "ruleId": "paragraphReadability",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "high",
+            "status": "triggered",
+            "message": "检测到段落可读性问题，例如 第1段约168字：旧城隍巷在南明市早就不算地图上的正式街道了。白天它夹在商场后街和...。",
+            "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+            "evidence": [
+              "第1段约168字：旧城隍巷在南明市早就不算地图上的正式街道了。白天它夹在商场后街和...",
+              "第2段约162字：“空棺敲门，讨的不是命，是账。”沈观澜站在巷口把伞收了，伞骨内侧...",
+              "第3段约204字：周祈安把运尸车往阴影里又推了半步，本能先看了一眼车上的接运封条。..."
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style",
+              "readability",
+              "mobile-reading"
+            ]
+          }
+        ],
         "constraints": [
-          "段落长度过于均匀，可调整长短交替制造节奏感"
+          "段落长度过于均匀，可调整长短交替制造节奏感",
+          "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
         ],
         "textMetrics": {
           "wordCount": 3289,
           "paragraphCount": 22,
           "averageParagraphLength": 165
         },
-        "profileSource": "builtin"
+        "profileSource": "builtin",
+        "reviewRuleProfileSource": "builtin"
       },
       "projectContext": {
         "genre": "奇幻",
@@ -6498,6 +6822,21 @@
           "endingContract": "卷一完成从临时夜巡到正式执牌人的跃迁，并确认父亲失踪与旧城隍案有关",
           "paceContract": "中快节奏"
         },
+        "emotionalContract": {
+          "coreEmotions": [],
+          "chapterEmotionFloor": [],
+          "forbiddenEmotions": [],
+          "revealPreference": {
+            "defaultMode": "",
+            "allowDirectExplainAtClimax": false
+          }
+        },
+        "storyTemplate": {
+          "id": "",
+          "label": "",
+          "modulePolicy": {},
+          "reviewFocus": []
+        },
         "commercialPositioning": {
           "premise": "殡仪馆夜班接运员意外继承父亲留下的城隍夜巡差事，在一座现代都市里处理民俗异案、追查旧城隍印失窃案，并一步步摸到失踪父亲留下的真相。",
           "hookLine": "夜班接尸人抬到一具不该入库的空棺，当晚就被迫接过城隍夜巡牌，从送尸打工人变成处理都市异案的临时阴差。",
@@ -6519,6 +6858,240 @@
           "chapterWordTarget": 3000
         }
       },
+      "storyConstraintSignals": {
+        "emotionalContract": {
+          "coreEmotions": [],
+          "chapterEmotionFloor": [],
+          "forbiddenEmotions": []
+        },
+        "worldRules": [],
+        "dueForeshadows": [],
+        "trackedEntities": [],
+        "chapterHandoff": {
+          "previousChapter": {
+            "id": "chapter-001",
+            "title": "夜班接尸",
+            "direction": "通过女尸、冷柜敲门和沈观澜上门，把周祈安从殡仪馆夜班拉进城隍夜巡。",
+            "beatHints": [
+              "女尸异常入库并喊出周敬庵的名字",
+              "冷柜敲门把父亲旧事重新拖回眼前",
+              "沈观澜逼周祈安接下第一趟夜巡"
+            ],
+            "sceneGoals": [
+              "周祈安在殡仪馆夜班接到带旧规矩的女尸。",
+              "冷柜异响和父亲旧警告同时逼近。",
+              "女尸吐出残页，沈观澜把周祈安拉上夜巡线。"
+            ]
+          },
+          "currentChapter": {
+            "id": "chapter-002",
+            "title": "空棺敲门",
+            "direction": "借空棺敲门案追出杜魁与旧城隍巷夜债名单，让主角确认父亲留下的线索正被人利用。",
+            "beatHints": [
+              "空棺沿旧巷挨门点债",
+              "三人在旧香烛铺和棺材铺里翻出夜债补录",
+              "残印和父亲编号一起把下一站抛出来"
+            ],
+            "sceneGoals": [
+              "旧城隍巷的空棺敲门把整条巷子的夜债翻了出来。",
+              "三人沿着棺钉和香灰翻进棺材铺，找到补录名单。",
+              "纸人抢账失败，残印和周敬庵编号指向下一案。"
+            ]
+          },
+          "nextChapter": {
+            "id": "chapter-003",
+            "title": "城隍借火",
+            "direction": "在废庙借火的夜里截住杜魁和残印，让周祈安第一次正式拿到临时夜巡牌。",
+            "beatHints": [
+              "废庙布控等待杜魁借火",
+              "周祈安在纸人与残印之间硬顶上去",
+              "杜魁逃走但残印到手，临牌正式下发"
+            ],
+            "sceneGoals": [
+              "沈观澜带队在废庙外布控，等杜魁借旧城隍余火。",
+              "纸人列阵、杜魁借火，周祈安硬抢残印。",
+              "杜魁逃离后，周祈安拿到临时夜巡牌并被派往下一案。"
+            ]
+          },
+          "carryOverEntityChanges": [],
+          "activeThreadLabels": []
+        }
+      },
+      "wrappedEntitySignals": {
+        "count": 5,
+        "wrappedNames": [
+          "周敬庵",
+          "周祈安",
+          "杜魁",
+          "沈观澜",
+          "白小刀"
+        ],
+        "covered": [
+          {
+            "name": "周敬庵",
+            "kind": "character",
+            "id": "entity-father",
+            "source": "entities"
+          },
+          {
+            "name": "周祈安",
+            "kind": "character",
+            "id": "entity-zhou-qian",
+            "source": "entities"
+          },
+          {
+            "name": "杜魁",
+            "kind": "character",
+            "id": "entity-du",
+            "source": "entities"
+          },
+          {
+            "name": "沈观澜",
+            "kind": "character",
+            "id": "entity-shen",
+            "source": "entities"
+          },
+          {
+            "name": "白小刀",
+            "kind": "character",
+            "id": "entity-bai",
+            "source": "entities"
+          }
+        ],
+        "missing": []
+      },
+      "consistencySignals": {
+        "specialTermRepetition": {
+          "detected": false,
+          "severity": "none",
+          "evidence": [],
+          "suggestion": ""
+        },
+        "settingCandidates": [],
+        "settingConflicts": [],
+        "unintroducedNameReveals": [],
+        "capabilityTaskRisks": [],
+        "powerProgressionConflicts": []
+      },
+      "ruleJudgements": [
+        {
+          "ruleId": "paragraphUniformity",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到段落均质问题。",
+          "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002"
+          },
+          "payload": {},
+          "tags": [
+            "style"
+          ]
+        },
+        {
+          "ruleId": "paragraphReadability",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "high",
+          "status": "triggered",
+          "message": "检测到段落可读性问题，例如 第1段约168字：旧城隍巷在南明市早就不算地图上的正式街道了。白天它夹在商场后街和...。",
+          "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+          "evidence": [
+            "第1段约168字：旧城隍巷在南明市早就不算地图上的正式街道了。白天它夹在商场后街和...",
+            "第2段约162字：“空棺敲门，讨的不是命，是账。”沈观澜站在巷口把伞收了，伞骨内侧...",
+            "第3段约204字：周祈安把运尸车往阴影里又推了半步，本能先看了一眼车上的接运封条。..."
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-002"
+          },
+          "payload": {},
+          "tags": [
+            "style",
+            "readability",
+            "mobile-reading"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "角色出现但弧线未发展，可能遗漏弧线推进机会",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002"
+          },
+          "payload": {
+            "entityId": "entity-zhou-qian",
+            "summary": "周祈安 在 chapter-002 出现但无弧线里程碑",
+            "status": "info",
+            "note": "角色出现但弧线未发展，可能遗漏弧线推进机会",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "角色出现但弧线未发展，可能遗漏弧线推进机会",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002"
+          },
+          "payload": {
+            "entityId": "entity-shen",
+            "summary": "沈观澜 在 chapter-002 出现但无弧线里程碑",
+            "status": "info",
+            "note": "角色出现但弧线未发展，可能遗漏弧线推进机会",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "角色出现但弧线未发展，可能遗漏弧线推进机会",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002"
+          },
+          "payload": {
+            "entityId": "entity-father",
+            "summary": "周敬庵 在 chapter-002 出现但无弧线里程碑",
+            "status": "info",
+            "note": "角色出现但弧线未发展，可能遗漏弧线推进机会",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        }
+      ],
       "contractAlignment": {
         "status": "aligned",
         "matched": [
@@ -6529,7 +7102,8 @@
           "已记录节奏承诺：中快节奏。",
           "核心承诺“每2到3章解决一个单元异案并抬升主线认知”目前仅记录，尚未接入自动判定。",
           "核心承诺“职业流程必须持续制造冲突、线索和代价”目前仅记录，尚未接入自动判定。",
-          "核心承诺“每章结尾保留一个足以支撑连载追读的钩子”目前仅记录，尚未接入自动判定。"
+          "核心承诺“每章结尾保留一个足以支撑连载追读的钩子”目前仅记录，尚未接入自动判定。",
+          "本章共有 5 个已包裹实体引用，其中 5 个已能对齐到角色卡或世界设定。"
         ]
       },
       "commercialAlignment": {
@@ -19659,5 +20233,6 @@
         }
       ]
     }
-  ]
+  ],
+  "volumeSelfReviews": []
 }
