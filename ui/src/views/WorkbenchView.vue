@@ -673,7 +673,6 @@ import {
   getIllustrationUseCaseOptions,
   ILLUSTRATION_TEXT_DESIGN_OPTIONS,
   importProject,
-  ILLUSTRATION_KNOWN_USE_CASE_OPTIONS,
   pickIllustrationTemplateId,
   pickIllustrationUseCase,
   selectProjectFolder,
@@ -698,7 +697,6 @@ import {
 } from "@/api/storyCanvas";
 import WorkbenchPaneCard from "@/components/WorkbenchPaneCard.vue";
 import WorkbenchSidebarCard from "@/components/WorkbenchSidebarCard.vue";
-import FloatingCard from "@/components/FloatingCard.vue";
 import { useWorkspace } from "@/composables/useWorkspace";
 import { TCard, TTag } from "@/tdesign/display";
 import {
@@ -2395,6 +2393,8 @@ function formatValue(value: unknown): string {
 }
 
 .workspace-parameter-grid :deep(.t-form__label) {
+  display: flex;
+  align-items: center;
   padding-right: 0;
   color: var(--muted);
   font-size: 12px;
