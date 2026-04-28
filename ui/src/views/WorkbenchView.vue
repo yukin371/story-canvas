@@ -278,7 +278,7 @@
               <div v-if="illustrationSetupWarning" class="settings-warning-card">
                 <strong>生图配置未完成</strong>
                 <p>{{ illustrationSetupWarning }}</p>
-                <t-button variant="text" size="small" theme="primary" @click="emit('open-settings')">去设置</t-button>
+                <t-button size="small" theme="primary" @click="emit('open-settings')">去设置</t-button>
               </div>
             </div>
           </template>
