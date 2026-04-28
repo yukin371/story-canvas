@@ -228,6 +228,24 @@ class StyleDetectorTests(unittest.TestCase):
         self.assertIn("第1段", "".join(pattern["evidence"]))
         self.assertTrue(any(item["ruleId"] == "paragraphReadability" for item in result["judgements"]))
 
+    def test_detect_ai_style_flags_clustered_ai_phrasing(self) -> None:
+        paragraphs = [
+            "那不是犹豫，是多年压下去的旧火重新顶了上来。这不是侥幸，不是误打误撞，是他早就留在袖里的后手。",
+            "那不像试探，更像有人故意把门缝留给他。这不是风声。更像旧灯室深处有人轻轻拨了一下灯芯。真正值钱的，从来都是这盏灯现在指着的地方。",
+            "岳怀川压低声音问了一句：“还有什么？”",
+            "沈照沿着废灯棚外那条狭窄的灰沟慢慢往前挪，脚下每一块松动的砖都像会突然塌下去，他一边盯着风里晃动的残灯，一边还得分神去记那些被夜色吞没的脚印、火痕和断裂木梁的位置，整个人绷得像一根被拉到快断的旧弦。",
+            "岳怀川跟在后面，同样没有开口，只是把呼吸压得更轻，可他眼角的余光始终在扫四周那些被烟熏黑的墙角、塌陷的梁柱和半埋在灰里的旧灯座，像是生怕下一瞬又有什么被人从黑暗里轻轻拨动，让他们前面所有的判断都变成了更深一层的误导。",
+        ]
+        clean_text = "".join(paragraphs)
+
+        result = detect_ai_style(paragraphs, clean_text)
+        pattern = next(item for item in result["patternResults"] if item["id"] == "clusteredAIPhrasing")
+
+        self.assertTrue(pattern["detected"])
+        self.assertGreaterEqual(pattern["count"], 3)
+        self.assertTrue(any("翻转句" in item or "模板化口癖" in item for item in pattern["evidence"]))
+        self.assertTrue(any(item["ruleId"] == "clusteredAIPhrasing" for item in result["judgements"]))
+
     def test_detect_ai_style_uses_builtin_repetition_fallback(self) -> None:
         paragraphs = [
             "他慢慢走进屋里，手指还按在门框上。",

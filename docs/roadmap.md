@@ -83,6 +83,7 @@
 - 当前进度:
   - `review-rules.yaml` 已进入真实检测链，`metaLeakage` 与 `povOverreach` 已可在 `style/review` 中统一输出 judgement，并支持白名单式豁免
   - 首批中文高频 AI 风格规则已落到 `style` 主链：`contrastFlipPattern`、`analogicalPivotPattern`、`templateCatchphrasePattern`、`paragraphReadability`
+  - `clusteredAIPhrasing` 已接入 `style/review` 主链，可把多项轻度 AI 句式与可读性信号聚成统一风险，减少“单项都不重但整体 AI 味偏高”的漏报
   - 新规则已接入 `style check`、`review chapter`、`review scene` 与样例回归，不再只停留在人工口头约束
   - 长篇样例基线已开始受新规则影响，说明“AI 味控制”已从提示信号进入真实质量门槛
 - 验收标志:

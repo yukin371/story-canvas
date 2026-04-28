@@ -624,11 +624,237 @@ class ReviewChapterSmokeTest(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertEqual(payload["analysisSignals"]["chapterHandoffRiskCount"], 1)
         self.assertTrue(payload["chapterHandoffSignals"]["detected"])
+        self.assertGreaterEqual(payload["chapterHandoffSignals"]["loadStrength"], 2)
+        self.assertFalse(payload["chapterHandoffSignals"]["delayedBridge"])
+        self.assertTrue(payload["chapterHandoffSignals"]["loadSummary"])
+        self.assertTrue(payload["chapterHandoffSignals"]["gapReasons"])
+        self.assertTrue(any("前章负载" in item for item in payload["chapterHandoffSignals"]["evidence"]))
+        self.assertTrue(any("开章前两段" in item for item in payload["chapterHandoffSignals"]["evidence"]))
         self.assertEqual(payload["storyConstraintSignals"]["chapterHandoff"]["previousChapter"]["id"], "chapter-001")
-        self.assertTrue(any("上一章" in item or "细纲" in item for item in payload["priorityActions"]))
+        self.assertTrue(any("前两段" in item or "上一章" in item for item in payload["priorityActions"]))
         self.assertTrue(any(item["ruleId"] == "chapterHandoffWeak" for item in payload["ruleJudgements"]))
         alignment_text = payload["contractAlignment"]["matched"] + payload["contractAlignment"]["risks"] + payload["contractAlignment"]["notes"]
         self.assertTrue(any("自然续写" in item or "切场" in item for item in alignment_text))
+
+    def test_review_chapter_allows_delayed_handoff_bridge_within_early_paragraphs(self) -> None:
+        (self.temp_dir / "outline.yaml").write_text(
+            json.dumps(
+                {
+                    "chapters": [
+                        {
+                            "id": "chapter-001",
+                            "title": "仓库惊变",
+                            "status": "draft",
+                            "direction": "林舟在仓库冲突后确认自己被盯上。",
+                        },
+                        {
+                            "id": "chapter-002",
+                            "title": "追踪余波",
+                            "status": "draft",
+                            "direction": "主角白天先去集市，再确认前夜留下的追踪风险。",
+                        },
+                    ],
+                    "chapterDirections": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "entities.yaml").write_text(
+            json.dumps(
+                {
+                    "entities": [
+                        {
+                            "id": "char-linzhou",
+                            "name": "林舟",
+                            "type": "character",
+                            "state": {"statusTags": ["肩伤", "被盯上"]},
+                            "changeLog": [
+                                {
+                                    "id": "chg-001",
+                                    "chapterId": "chapter-001",
+                                    "field": "state.statusTags",
+                                    "reason": "仓库冲突后确认自己被盯上",
+                                }
+                            ],
+                        }
+                    ],
+                    "enrichmentProposals": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "threads.yaml").write_text(
+            json.dumps(
+                {
+                    "threads": [
+                        {
+                            "id": "thread-night-watch",
+                            "label": "守夜人暗线",
+                            "status": "active",
+                            "relatedEntities": ["char-linzhou"],
+                            "relatedChapters": ["chapter-001", "chapter-002"],
+                        }
+                    ]
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
+        chapter_path = self.temp_dir / "chapters" / "chapter-002.md"
+        chapter_path.write_text(
+            "# 第二章\n\n"
+            "清晨的集市已经热闹起来，卖药的、卖鱼的、吆喝的声音混在一起。\n\n"
+            "他先压着步子穿过人群，没有急着回想前夜。\n\n"
+            "直到肩伤被人群撞得一麻，他才再次想起昨夜仓库冲突后留下的守夜人追踪风险。\n\n"
+            "于是他临时改了主意，决定先顺着那道靴印去查，而不是立刻回住处。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-002"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["analysisSignals"]["chapterHandoffRiskCount"], 0)
+        self.assertFalse(payload["chapterHandoffSignals"]["detected"])
+        self.assertTrue(payload["chapterHandoffSignals"]["delayedBridge"])
+        self.assertGreaterEqual(payload["chapterHandoffSignals"]["earlyAnchorScore"], 2)
+        self.assertTrue(payload["chapterHandoffSignals"]["earlyAnchorSummary"])
+        self.assertTrue(any("自然回接" in item for item in payload["chapterHandoffSignals"]["gapReasons"]))
+        self.assertFalse(any(item["ruleId"] == "chapterHandoffWeak" for item in payload["ruleJudgements"]))
+
+    def test_review_chapter_treats_previous_scene_anchor_as_natural_handoff(self) -> None:
+        (self.temp_dir / "outline.yaml").write_text(
+            json.dumps(
+                {
+                    "chapters": [
+                        {
+                            "id": "chapter-001",
+                            "title": "灰匣脱身",
+                            "status": "draft",
+                            "direction": "林舟从灰背乙四那层假匣后脱身，守夜人暗线追到东三匣。",
+                            "beatHints": ["灰背乙四假匣被拆开，追兵顺着东三匣继续压近。"],
+                        },
+                        {
+                            "id": "chapter-002",
+                            "title": "东三余波",
+                            "status": "draft",
+                            "direction": "林舟赶到东三匣，分清上一章亮起的姓笔在认谁。",
+                        },
+                    ],
+                    "chapterDirections": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "threads.yaml").write_text(
+            json.dumps(
+                {
+                    "threads": [
+                        {
+                            "id": "thread-night-watch",
+                            "label": "守夜人暗线",
+                            "status": "active",
+                            "relatedChapters": ["chapter-001", "chapter-002"],
+                        }
+                    ]
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
+        chapter_path = self.temp_dir / "chapters" / "chapter-002.md"
+        chapter_path.write_text(
+            "# 第二章\n\n"
+            "从灰背乙四那层假匣后头抢出来时，林舟耳后还沾着冷灰，东三匣里那一笔已经先亮了。\n\n"
+            "他没有停下喘气，只把手按在匣沿，先确认追兵有没有顺着旧廊追来。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-002"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertFalse(payload["chapterHandoffSignals"]["detected"])
+        self.assertGreaterEqual(payload["chapterHandoffSignals"]["openingAnchorScore"], 2)
+        self.assertTrue(payload["chapterHandoffSignals"]["openingContextAnchors"])
+        self.assertTrue(any("前章语义锚点" in item for item in payload["chapterHandoffSignals"]["openingAnchorSummary"]))
+        self.assertFalse(any(item["ruleId"] == "chapterHandoffWeak" for item in payload["ruleJudgements"]))
+
+    def test_review_chapter_does_not_clear_handoff_on_single_weak_context_overlap(self) -> None:
+        (self.temp_dir / "outline.yaml").write_text(
+            json.dumps(
+                {
+                    "chapters": [
+                        {
+                            "id": "chapter-001",
+                            "title": "仓库惊变",
+                            "status": "draft",
+                            "direction": "林舟在仓库冲突后确认自己被盯上，追踪暗线继续压近。",
+                        },
+                        {
+                            "id": "chapter-002",
+                            "title": "集市岔路",
+                            "status": "draft",
+                            "direction": "林舟去集市打听旧案。",
+                        },
+                    ],
+                    "chapterDirections": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "threads.yaml").write_text(
+            json.dumps(
+                {
+                    "threads": [
+                        {
+                            "id": "thread-trace",
+                            "label": "追踪暗线",
+                            "status": "active",
+                            "relatedChapters": ["chapter-001", "chapter-002"],
+                        }
+                    ]
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
+        chapter_path = self.temp_dir / "chapters" / "chapter-002.md"
+        chapter_path.write_text(
+            "# 第二章\n\n"
+            "清晨的集市人声嘈杂，茶摊上有人闲聊昨夜仓库冲突这种事，林舟却只顾着打听旧案。\n\n"
+            "他买了碗热汤，绕开人群去问铺主，开场没有接住被盯上或那股压力。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-002"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertTrue(payload["chapterHandoffSignals"]["detected"])
+        self.assertLess(payload["chapterHandoffSignals"]["openingAnchorScore"], 2)
+        self.assertTrue(payload["chapterHandoffSignals"]["openingContextAnchors"])
+        self.assertTrue(any(item["ruleId"] == "chapterHandoffWeak" for item in payload["ruleJudgements"]))
 
     def test_review_chapter_emits_meta_leakage_rule_judgement(self) -> None:
         (self.temp_dir / "review-rules.yaml").write_text(
@@ -727,8 +953,12 @@ class ReviewChapterSmokeTest(unittest.TestCase):
         self.assertIn("analogicalPivotPattern", pattern_ids)
         self.assertIn("templateCatchphrasePattern", pattern_ids)
         self.assertIn("paragraphReadability", pattern_ids)
+        self.assertIn("clusteredAIPhrasing", pattern_ids)
         self.assertTrue(any(item["ruleId"] == "contrastFlipPattern" for item in payload["ruleJudgements"]))
         self.assertTrue(any(item["ruleId"] == "paragraphReadability" for item in payload["ruleJudgements"]))
+        self.assertTrue(any(item["ruleId"] == "clusteredAIPhrasing" for item in payload["ruleJudgements"]))
+        self.assertTrue(any("AI 句式" in item or "翻转句" in item for item in payload["priorityActions"]))
+        self.assertTrue(any("整体读感容易偏模板化" in item for item in payload["contractAlignment"]["risks"]))
 
 
 if __name__ == "__main__":

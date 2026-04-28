@@ -95,6 +95,32 @@ FORESHADOWING_PAYOFF_KEYWORDS = (
     "这意味着",
 )
 HOOK_KEYWORDS = ("秘密", "真相", "代价", "危险", "账本", "背叛", "是谁", "为什么")
+HANDOFF_OPENING_PARAGRAPH_LIMIT = 4
+HANDOFF_CONTEXT_ANCHOR_LIMIT = 5
+HANDOFF_CONTEXT_ANCHOR_STOPWORDS = {
+    "上一章",
+    "下一章",
+    "当前章",
+    "本章",
+    "章中",
+    "章尾",
+    "承接",
+    "末尾",
+    "必须",
+    "已经",
+    "没有",
+    "自己",
+    "他们",
+    "第一",
+    "第二",
+    "第三",
+    "这条",
+    "那条",
+}
+HANDOFF_CONTEXT_ANCHOR_BAD_BOUNDARY_CHARS = set("的一了是有在和与把被从到时后前里中上下来去向让给为以将已正再先只仍才层道条个种这那")
+HANDOFF_CONTEXT_ANCHOR_STRONG_CHARS = set("甲乙丙丁戊己庚辛壬癸子丑寅卯辰巳午未申酉戌亥零〇一二三四五六七八九十百千万0123456789")
+HANDOFF_CONTEXT_ANCHOR_NOUN_CHARS = set("灯匣仓廊火册账牌印门巷尸棺符页笔名灰扣缝槽线案刀剑井桥阵庙铺楼阁塔碑卷")
+HANDOFF_CONTEXT_ANCHOR_NOUN_SUFFIXES = ("女人", "追兵", "名单", "账本", "残页", "旧案", "暗线")
 
 CHAPTER_REVIEW_RUBRIC = [
     {"id": "plotMomentum", "label": "情节推进", "maxScore": MAX_DIMENSION_SCORE, "focus": "这一章是否产生了明确推进或落点"},
@@ -1612,13 +1638,20 @@ def _build_chapter_handoff_signals(
 
     clean_paragraphs = paragraphs_from_text(strip_entity_tags(chapter_text))
     opening_text = "\n\n".join(clean_paragraphs[:2])
+    early_text = "\n\n".join(clean_paragraphs[:HANDOFF_OPENING_PARAGRAPH_LIMIT])
     closing_text = "\n\n".join(clean_paragraphs[-2:])
     opening_entity_names = [
         item.get("name")
         for item in carry_over_changes
         if isinstance(item, dict) and item.get("name") and item.get("name") in opening_text
     ]
+    early_entity_names = [
+        item.get("name")
+        for item in carry_over_changes
+        if isinstance(item, dict) and item.get("name") and item.get("name") in early_text
+    ]
     opening_state_tags = []
+    early_state_tags = []
     for item in carry_over_changes:
         if not isinstance(item, dict):
             continue
@@ -1626,17 +1659,46 @@ def _build_chapter_handoff_signals(
         for tag in state_tags:
             if isinstance(tag, str) and tag and len(tag) <= 12 and tag in opening_text and tag not in opening_state_tags:
                 opening_state_tags.append(tag)
+            if isinstance(tag, str) and tag and len(tag) <= 12 and tag in early_text and tag not in early_state_tags:
+                early_state_tags.append(tag)
     opening_thread_hits = [label for label in active_thread_labels if label in opening_text]
+    early_thread_hits = [label for label in active_thread_labels if label in early_text]
+    opening_context_anchors = _extract_handoff_context_anchors(previous_chapter, opening_text)
+    early_context_anchors = _extract_handoff_context_anchors(previous_chapter, early_text)
     continuity_hits = _count_keyword_hits(opening_text, SCENE_CONTINUITY_KEYWORDS)
+    early_continuity_hits = _count_keyword_hits(early_text, SCENE_CONTINUITY_KEYWORDS)
     closing_hook_hits = _count_keyword_hits(closing_text, HOOK_KEYWORDS)
+    has_carry_over_changes = bool(carry_over_changes)
+    has_thread_load = bool(active_thread_labels)
+    has_direction_load = bool(previous_chapter.get("direction", ""))
     has_previous_load = bool(previous_chapter.get("id")) and bool(
-        carry_over_changes or active_thread_labels or previous_chapter.get("direction", "")
+        has_carry_over_changes or has_thread_load or has_direction_load
     )
-    anchor_score = min(len(opening_entity_names), 1) + min(len(opening_state_tags), 1) + min(len(opening_thread_hits), 1)
+    load_strength = (
+        (2 if has_carry_over_changes else 0)
+        + (1 if has_thread_load else 0)
+        + (1 if has_direction_load else 0)
+    )
+    anchor_score = (
+        min(len(opening_entity_names), 1)
+        + min(len(opening_state_tags), 1)
+        + min(len(opening_thread_hits), 1)
+        + _score_handoff_context_anchors(opening_context_anchors)
+    )
     if continuity_hits >= 1:
         anchor_score += 1
+    early_anchor_score = (
+        min(len(early_entity_names), 1)
+        + min(len(early_state_tags), 1)
+        + min(len(early_thread_hits), 1)
+        + _score_handoff_context_anchors(early_context_anchors)
+    )
+    if early_continuity_hits >= 1:
+        early_anchor_score += 1
     opening_bridged = anchor_score >= 2
-    detected = has_previous_load and not opening_bridged
+    early_bridged = early_anchor_score >= 2
+    delayed_bridge = not opening_bridged and early_bridged
+    detected = has_previous_load and load_strength >= 2 and not opening_bridged and not delayed_bridge
 
     previous_title = previous_chapter.get("title") or previous_chapter.get("id") or "上一章"
     focus_hint = (
@@ -1650,19 +1712,73 @@ def _build_chapter_handoff_signals(
     suggestion = ""
     if detected:
         direction_suffix = f"，再推进“{current_direction[:18]}”" if current_direction else ""
-        suggestion = f"开章先接住上一章《{previous_title}》留下的{focus_hint}{direction_suffix}，避免像直接执行细纲。"
+        if has_carry_over_changes:
+            missing_focus = focus_hint
+            suggestion = f"开章前两段先让《{previous_title}》留下的{missing_focus}产生一个可感知后果{direction_suffix}。"
+        elif has_thread_load:
+            suggestion = f"开章前两段先点回《{previous_title}》延续的线索或关系压力{direction_suffix}。"
+        else:
+            suggestion = f"开章前两段先给出《{previous_title}》到本章目标的因果桥{direction_suffix}。"
+
+    load_summary = _build_handoff_load_summary(
+        carry_over_changes=carry_over_changes,
+        active_thread_labels=active_thread_labels,
+        previous_chapter=previous_chapter,
+    )
+    opening_summary = _build_handoff_anchor_summary(
+        entity_names=opening_entity_names,
+        state_tags=opening_state_tags,
+        thread_hits=opening_thread_hits,
+        context_anchor_hits=opening_context_anchors,
+        continuity_hits=continuity_hits,
+    )
+    early_summary = _build_handoff_anchor_summary(
+        entity_names=early_entity_names,
+        state_tags=early_state_tags,
+        thread_hits=early_thread_hits,
+        context_anchor_hits=early_context_anchors,
+        continuity_hits=early_continuity_hits,
+    )
+    gap_reasons = []
+    if detected:
+        if has_carry_over_changes and not (opening_entity_names or opening_state_tags):
+            gap_reasons.append("开章前两段没有承接前章角色状态变化")
+        if has_thread_load and not opening_thread_hits:
+            gap_reasons.append("开章前两段没有点回前章延续线程")
+        if has_direction_load and not opening_context_anchors:
+            gap_reasons.append("开章前两段没有复用前章方向或场景目标中的关键锚点")
+        if continuity_hits == 0:
+            gap_reasons.append("开章前两段缺少明显因果/时间延续词")
+        if not gap_reasons:
+            gap_reasons.append("开章前两段承接锚点不足")
+    elif delayed_bridge:
+        gap_reasons.append(f"前两段承接偏弱，但前 {HANDOFF_OPENING_PARAGRAPH_LIMIT} 段内已自然回接")
+    elif opening_bridged:
+        gap_reasons.append("开章前两段已有承接锚点")
+    elif not has_previous_load:
+        gap_reasons.append("上一章没有足够明确的承接负载")
+    else:
+        gap_reasons.append("前章负载较轻，未触发承接风险")
 
     evidence = []
-    if previous_title:
-        evidence.append(f"上一章：{previous_title}")
-    if current_direction:
-        evidence.append(f"本章方向：{current_direction[:24]}")
+    if load_summary:
+        evidence.append("前章负载：" + "；".join(load_summary[:2]))
+    if opening_summary:
+        evidence.append("开章前两段：" + "；".join(opening_summary[:2]))
+    else:
+        evidence.append("开章前两段：未命中实体、状态、线程或连续性锚点")
+    if delayed_bridge and early_summary:
+        evidence.append(f"前 {HANDOFF_OPENING_PARAGRAPH_LIMIT} 段回接：" + "；".join(early_summary[:2]))
     if clean_paragraphs:
-        evidence.append(f"开章：{clean_paragraphs[0][:24]}")
+        evidence.append(f"开章原文：{clean_paragraphs[0][:24]}")
 
     return {
         "detected": detected,
         "severity": "warning" if detected else "none",
+        "loadStrength": load_strength,
+        "openingAnchorScore": anchor_score,
+        "earlyAnchorScore": early_anchor_score,
+        "delayedBridge": delayed_bridge,
         "previousChapterId": previous_chapter.get("id", ""),
         "previousChapterTitle": previous_title,
         "currentDirection": current_direction,
@@ -1670,11 +1786,170 @@ def _build_chapter_handoff_signals(
         "openingEntityAnchors": opening_entity_names[:3],
         "openingStateAnchors": opening_state_tags[:3],
         "openingThreadAnchors": opening_thread_hits[:3],
+        "openingContextAnchors": opening_context_anchors[:3],
+        "earlyEntityAnchors": early_entity_names[:3],
+        "earlyStateAnchors": early_state_tags[:3],
+        "earlyThreadAnchors": early_thread_hits[:3],
+        "earlyContextAnchors": early_context_anchors[:3],
         "openingContinuityHits": continuity_hits,
+        "earlyContinuityHits": early_continuity_hits,
         "closingHookHits": closing_hook_hits,
+        "loadSummary": load_summary,
+        "openingAnchorSummary": opening_summary,
+        "earlyAnchorSummary": early_summary,
+        "gapReasons": gap_reasons,
         "suggestion": suggestion,
-        "evidence": evidence[:3],
+        "evidence": evidence[:4],
     }
+
+
+def _build_handoff_load_summary(
+    *,
+    carry_over_changes: list[Any],
+    active_thread_labels: list[str],
+    previous_chapter: Dict[str, Any],
+) -> list[str]:
+    summary: list[str] = []
+    for item in carry_over_changes[:3]:
+        if not isinstance(item, dict):
+            continue
+        name = str(item.get("name", "")).strip()
+        state_tags = [
+            str(tag).strip()
+            for tag in item.get("stateTags", [])
+            if isinstance(tag, str) and str(tag).strip()
+        ]
+        reason = str(item.get("reason", "")).strip()
+        if name and state_tags:
+            summary.append(f"{name} 状态：{'/'.join(state_tags[:3])}")
+        elif name and reason:
+            summary.append(f"{name} 变化：{reason[:24]}")
+        elif name:
+            summary.append(f"{name} 有前章变化")
+    if active_thread_labels:
+        summary.append("延续线程：" + " / ".join(active_thread_labels[:3]))
+    previous_direction = str(previous_chapter.get("direction", "")).strip()
+    if previous_direction:
+        summary.append(f"前章方向：{previous_direction[:32]}")
+    return summary[:5]
+
+
+def _build_handoff_anchor_summary(
+    *,
+    entity_names: list[str],
+    state_tags: list[str],
+    thread_hits: list[str],
+    context_anchor_hits: list[str],
+    continuity_hits: int,
+) -> list[str]:
+    summary: list[str] = []
+    if entity_names:
+        summary.append("实体锚点：" + " / ".join(entity_names[:3]))
+    if state_tags:
+        summary.append("状态锚点：" + " / ".join(state_tags[:3]))
+    if thread_hits:
+        summary.append("线程锚点：" + " / ".join(thread_hits[:3]))
+    if context_anchor_hits:
+        summary.append("前章语义锚点：" + " / ".join(context_anchor_hits[:3]))
+    if continuity_hits:
+        summary.append(f"连续性词命中：{continuity_hits}")
+    return summary
+
+
+def _extract_handoff_context_anchors(previous_chapter: Dict[str, Any], target_text: str) -> list[str]:
+    if not previous_chapter or not target_text:
+        return []
+    source_parts = [
+        previous_chapter.get("title", ""),
+        previous_chapter.get("direction", ""),
+        *_string_list(previous_chapter.get("beatHints", [])),
+        *_string_list(previous_chapter.get("sceneGoals", [])),
+    ]
+    source_text = strip_entity_tags("\n".join(str(item) for item in source_parts if item))
+    if not source_text:
+        return []
+
+    candidates: set[str] = set()
+    for quoted in re.findall(r"[“\"'「『]([^”\"'」』]{2,12})[”\"'」』]", source_text):
+        cleaned = _normalize_handoff_anchor(quoted)
+        if _is_valid_handoff_anchor(cleaned):
+            candidates.add(cleaned)
+
+    normalized_source = _normalize_handoff_anchor(source_text)
+    for length in (8, 7, 6, 5, 4):
+        for idx in range(0, max(len(normalized_source) - length + 1, 0)):
+            candidate = normalized_source[idx : idx + length]
+            if _is_valid_handoff_anchor(candidate) and _handoff_anchor_weight(candidate) >= 2:
+                candidates.add(candidate)
+
+    matched = [item for item in candidates if item and item in target_text]
+    matched.sort(key=lambda item: (-_handoff_anchor_weight(item), -len(item), item))
+    compact: list[str] = []
+    for item in matched:
+        if any(item in existing or existing in item for existing in compact):
+            continue
+        compact.append(item)
+        if len(compact) >= HANDOFF_CONTEXT_ANCHOR_LIMIT:
+            break
+    return compact
+
+
+def _score_handoff_context_anchors(anchor_hits: list[str]) -> int:
+    if any(_handoff_anchor_weight(item) >= 3 for item in anchor_hits):
+        return 2
+    if len(anchor_hits) >= 2 and sum(_handoff_anchor_weight(item) for item in anchor_hits[:3]) >= 4:
+        return 2
+    if anchor_hits:
+        return 1
+    return 0
+
+
+def _handoff_anchor_weight(anchor: str) -> int:
+    if re.search(r"[A-Za-z0-9]", anchor):
+        return 3
+    if any(char in anchor for char in HANDOFF_CONTEXT_ANCHOR_STRONG_CHARS):
+        return 3
+    if len(anchor) >= 5 and _has_handoff_anchor_noun_signal(anchor):
+        return 3
+    if len(anchor) >= 4 and _has_handoff_anchor_noun_signal(anchor):
+        return 2
+    return 1
+
+
+def _normalize_handoff_anchor(text: str) -> str:
+    return re.sub(r"[^\u4e00-\u9fffA-Za-z0-9]", "", text or "")
+
+
+def _is_valid_handoff_anchor(anchor: str) -> bool:
+    if len(anchor) < 4:
+        return False
+    if anchor[0] in HANDOFF_CONTEXT_ANCHOR_BAD_BOUNDARY_CHARS:
+        return False
+    if anchor[-1] in HANDOFF_CONTEXT_ANCHOR_BAD_BOUNDARY_CHARS:
+        return False
+    if anchor in HANDOFF_CONTEXT_ANCHOR_STOPWORDS:
+        return False
+    if any(stop in anchor for stop in HANDOFF_CONTEXT_ANCHOR_STOPWORDS):
+        return False
+    if re.fullmatch(r"第[一二三四五六七八九十百千万零〇两0-9]+", anchor):
+        return False
+    if not _has_handoff_anchor_noun_signal(anchor) and not any(
+        char in anchor for char in HANDOFF_CONTEXT_ANCHOR_STRONG_CHARS
+    ):
+        return False
+    return True
+
+
+def _has_handoff_anchor_noun_signal(anchor: str) -> bool:
+    return any(char in anchor for char in HANDOFF_CONTEXT_ANCHOR_NOUN_CHARS) or any(
+        anchor.endswith(suffix) or suffix in anchor for suffix in HANDOFF_CONTEXT_ANCHOR_NOUN_SUFFIXES
+    )
+
+
+def _string_list(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [item for item in value if isinstance(item, str) and item.strip()]
 
 
 def _chapter_number(chapter_ref: str) -> int | None:
@@ -2043,6 +2318,9 @@ def _apply_consistency_signals_to_alignment(
 def _style_priority_actions(style_report: Dict[str, Any]) -> List[str]:
     style_analysis = style_report.get("styleAnalysis", {}) if isinstance(style_report, dict) else {}
     actions: List[str] = []
+    clustered_ai_phrasing = style_analysis.get("clusteredAIPhrasing", {})
+    if clustered_ai_phrasing.get("detected") and clustered_ai_phrasing.get("suggestion"):
+        actions.append(clustered_ai_phrasing["suggestion"])
     register_drift = style_analysis.get("registerDrift", {})
     if register_drift.get("detected") and register_drift.get("suggestion"):
         actions.append(register_drift["suggestion"])
@@ -2071,14 +2349,23 @@ def _apply_style_signals_to_alignment(
     style_report: Dict[str, Any],
 ) -> None:
     style_analysis = style_report.get("styleAnalysis", {}) if isinstance(style_report, dict) else {}
+    clustered_ai_phrasing = style_analysis.get("clusteredAIPhrasing", {})
     register_drift = style_analysis.get("registerDrift", {})
     structured_plan_block = style_analysis.get("structuredPlanBlock", {})
-    if not register_drift.get("detected") and not structured_plan_block.get("detected"):
+    if (
+        not clustered_ai_phrasing.get("detected")
+        and not register_drift.get("detected")
+        and not structured_plan_block.get("detected")
+    ):
         narrative_frames = style_analysis.get("narrativeFrameRepetition", {})
         if not narrative_frames.get("detected"):
             return
 
     risks = contract_alignment.setdefault("risks", [])
+    if clustered_ai_phrasing.get("detected"):
+        evidence = clustered_ai_phrasing.get("evidence", [])
+        evidence_suffix = f"，例如 {evidence[0]}" if evidence else ""
+        risks.append(f"检测到多组轻度 AI 句式与可读性问题叠加{evidence_suffix}，整体读感容易偏模板化。")
     if register_drift.get("detected"):
         evidence = register_drift.get("evidence", [])
         evidence_suffix = f"，例如 {evidence[0]}" if evidence else ""

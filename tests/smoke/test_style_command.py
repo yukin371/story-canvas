@@ -360,15 +360,18 @@ class StyleCommandSmokeTest(unittest.TestCase):
         analogical = next(item for item in payload["styleAnalysis"]["patternResults"] if item["id"] == "analogicalPivotPattern")
         catchphrase = next(item for item in payload["styleAnalysis"]["patternResults"] if item["id"] == "templateCatchphrasePattern")
         readability = next(item for item in payload["styleAnalysis"]["patternResults"] if item["id"] == "paragraphReadability")
+        clustered = next(item for item in payload["styleAnalysis"]["patternResults"] if item["id"] == "clusteredAIPhrasing")
 
         self.assertTrue(contrast["detected"])
         self.assertTrue(analogical["detected"])
         self.assertTrue(catchphrase["detected"])
         self.assertTrue(readability["detected"])
+        self.assertTrue(clustered["detected"])
         self.assertTrue(any(item["ruleId"] == "contrastFlipPattern" for item in payload["judgements"]))
         self.assertTrue(any(item["ruleId"] == "analogicalPivotPattern" for item in payload["judgements"]))
         self.assertTrue(any(item["ruleId"] == "templateCatchphrasePattern" for item in payload["judgements"]))
         self.assertTrue(any(item["ruleId"] == "paragraphReadability" for item in payload["judgements"]))
+        self.assertTrue(any(item["ruleId"] == "clusteredAIPhrasing" for item in payload["judgements"]))
 
 
 if __name__ == "__main__":

@@ -36,6 +36,26 @@ PLAN_BLOCK_LABELS = (
     "时间窗口",
     "优先级",
 )
+AI_CLUSTER_PRIMARY_RULE_IDS = {
+    "simileDensity",
+    "hedgeAdverbs",
+    "tellingEmotion",
+    "formulaicTransition",
+    "contrastFlipPattern",
+    "analogicalPivotPattern",
+    "templateCatchphrasePattern",
+    "narrativeFrameRepetition",
+}
+AI_CLUSTER_SUPPORT_RULE_IDS = {
+    "paragraphReadability",
+    "sentenceRepetition",
+}
+AI_CLUSTER_ANCHOR_RULE_IDS = {
+    "contrastFlipPattern",
+    "analogicalPivotPattern",
+    "templateCatchphrasePattern",
+    "narrativeFrameRepetition",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -267,6 +287,12 @@ def detect_ai_style(
         total_deduction += 3 if structured_plan_block["severity"] == "high" else 2
     results.append(_structured_plan_block_result(structured_plan_block))
 
+    # Aggregate several light AI-phrasing signals into one reviewable risk.
+    clustered_ai_phrasing = _detect_clustered_ai_phrasing(results)
+    if clustered_ai_phrasing["detected"]:
+        total_deduction += _deduction_for_severity(clustered_ai_phrasing["severity"])
+    results.append(_clustered_ai_phrasing_result(clustered_ai_phrasing))
+
     # Cap total deduction at 6
     total_deduction = min(total_deduction, 6)
 
@@ -287,6 +313,7 @@ def detect_ai_style(
         "narrativeFrameRepetition": narrative_frames,
         "registerDrift": register_drift,
         "structuredPlanBlock": structured_plan_block,
+        "clusteredAIPhrasing": clustered_ai_phrasing,
         "metaLeakage": meta_leakage,
         "sources": {
             "sentenceRepetition": repetition["source"],
@@ -951,6 +978,76 @@ def _detect_narrative_frame_repetition(text: str, profile_config: Dict[str, Any]
     }
 
 
+def _detect_clustered_ai_phrasing(pattern_results: List[Dict[str, Any]]) -> Dict[str, Any]:
+    primary_hits: List[Dict[str, Any]] = []
+    support_hits: List[Dict[str, Any]] = []
+    signal_score = 0
+
+    for item in pattern_results:
+        if not item.get("detected"):
+            continue
+        rule_id = str(item.get("id", ""))
+        severity = str(item.get("severity", "none"))
+        weight = _deduction_for_severity(severity)
+        if rule_id in AI_CLUSTER_PRIMARY_RULE_IDS:
+            primary_hits.append(item)
+            signal_score += max(weight, 1)
+        elif rule_id in AI_CLUSTER_SUPPORT_RULE_IDS and weight > 0:
+            support_hits.append(item)
+            signal_score += 1
+
+    primary_ids = sorted({str(item.get("id", "")) for item in primary_hits if item.get("id")})
+    support_ids = sorted({str(item.get("id", "")) for item in support_hits if item.get("id")})
+    anchor_ids = sorted(rule_id for rule_id in primary_ids if rule_id in AI_CLUSTER_ANCHOR_RULE_IDS)
+    signal_count = len(primary_ids) + len(support_ids)
+
+    severity = "none"
+    if len(primary_ids) >= 2:
+        if signal_score >= 7 or (len(anchor_ids) >= 2 and signal_count >= 4):
+            severity = "high"
+        elif signal_score >= 5 or (anchor_ids and signal_count >= 3):
+            severity = "medium"
+        elif signal_score >= 4 and signal_count >= 3:
+            severity = "low"
+
+    if severity == "none":
+        return {
+            "detected": False,
+            "severity": "none",
+            "count": 0,
+            "threshold": 3,
+            "signalScore": signal_score,
+            "signalIds": primary_ids + support_ids,
+            "evidence": [],
+            "suggestion": "",
+        }
+
+    evidence: List[str] = []
+    for item in primary_hits + support_hits:
+        label = str(item.get("label", item.get("id", "风格信号")))
+        snippets = list(item.get("evidence", []))
+        if snippets:
+            evidence.append(f"{label}：{snippets[0]}")
+        else:
+            evidence.append(label)
+    deduped_evidence: List[str] = []
+    for item in evidence:
+        if item not in deduped_evidence:
+            deduped_evidence.append(item)
+
+    return {
+        "detected": True,
+        "severity": severity,
+        "count": signal_count,
+        "threshold": 3,
+        "signalScore": signal_score,
+        "signalIds": primary_ids + support_ids,
+        "anchorIds": anchor_ids,
+        "evidence": deduped_evidence[:4],
+        "suggestion": "多组轻度 AI 句式和阅读负担已经叠加，优先删减翻转句、追问式套话与抽象情绪句，把表达改成可见动作、结果和更短的推进段落。",
+    }
+
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -1103,6 +1200,21 @@ def _structured_plan_block_result(structured_plan_block: Dict[str, Any]) -> Dict
     }
 
 
+def _clustered_ai_phrasing_result(clustered_ai_phrasing: Dict[str, Any]) -> Dict[str, Any]:
+    suggestion = clustered_ai_phrasing.get("suggestion", "") if clustered_ai_phrasing.get("detected") else ""
+    return {
+        "id": "clusteredAIPhrasing",
+        "label": "AI句群叠加",
+        "detected": clustered_ai_phrasing.get("detected", False),
+        "count": clustered_ai_phrasing.get("count", 0),
+        "perThousand": 0,
+        "threshold": clustered_ai_phrasing.get("threshold", 3),
+        "severity": clustered_ai_phrasing.get("severity", "none"),
+        "evidence": clustered_ai_phrasing.get("evidence", []),
+        "suggestion": suggestion,
+    }
+
+
 def _narrative_frame_result(narrative_frames: Dict[str, Any]) -> Dict[str, Any]:
     suggestion = ""
     top_frames = narrative_frames.get("topFrames", [])
@@ -1149,6 +1261,7 @@ def _empty_result() -> Dict[str, Any]:
         "narrativeFrameRepetition": {},
         "registerDrift": {},
         "structuredPlanBlock": {},
+        "clusteredAIPhrasing": {},
         "metaLeakage": {},
         "judgements": [],
         "summary": "文本过短，跳过风格检测",
@@ -1188,6 +1301,7 @@ def _build_short_text_result(
         "narrativeFrameRepetition": {},
         "registerDrift": {},
         "structuredPlanBlock": {},
+        "clusteredAIPhrasing": {},
         "metaLeakage": meta_leakage,
         "judgements": _build_style_judgements(pattern_results, {}, review_rule_config),
         "summary": summary,

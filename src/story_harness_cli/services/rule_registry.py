@@ -53,6 +53,13 @@ RULE_REGISTRY: Dict[str, Dict[str, Any]] = {
         "severity": "medium",
         "tags": ["style", "ai-phrasing", "dialogue"],
     },
+    "clusteredAIPhrasing": {
+        "source": "core",
+        "scope": "chapter",
+        "kind": "style",
+        "severity": "medium",
+        "tags": ["style", "ai-phrasing", "aggregate"],
+    },
     "sensoryVariety": {
         "source": "core",
         "scope": "chapter",

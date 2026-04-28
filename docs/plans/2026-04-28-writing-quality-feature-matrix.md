@@ -44,7 +44,7 @@
 | `不是……是……` 高频翻转 | 句子反复用解释式翻转代替具体表演，读感强 AI | `writing-rules 9.2` 已列为高频风险 | `style_detector` 只抓 `simileDensity`、`narrativeFrameRepetition`、`structuredPlanBlock` 等相邻信号 | 无专门 pattern id，无法在 style/review 中稳定点名 | 新增 `contrastFlipPattern`，统计 `不是A，是B`、`不是A，不是B，是C` | `services/style_detector.py`；消费方 `story_review.py`、`style repair` | 正文句子、标点切句结果、可选 profile 阈值 | `patternResults[]` + `judgements[]` + 修文建议 | `P0` | `Phase 3D` |
 | `不是……更像……`、`不像……更像……` | 高频用“换个说法”的抽象递进句，缺少动作或结果 | `writing-rules 9.2/9.3` | 仅被 `narrativeFrameRepetition` 间接覆盖一小部分 | 句型本身未被识别，复用频率不可量化 | 新增 `analogicalPivotPattern`，识别“不是/不像/更像”组合翻转 | `services/style_detector.py` | 正文句级 regex、相邻短句组合 | `patternResults[]` + `constraints[]` | `P0` | `Phase 3D` |
 | `真正……的，从来都是……`、`还有什么？`、模板化追问 | 容易形成故作深沉、追问式口癖，削弱人物口吻差异 | `writing-rules 9.2` | 目前没有口癖级 detector | 无法区分“偶尔合理使用”与“频率统治正文” | 新增 `templateCatchphrasePattern`，对高风险口癖按每千字与重复句次计分 | `services/style_detector.py`；可选 `style-profiles.yaml` 白名单 | 正文句子、对白句、角色对白分布 | `patternResults[]`；对白类 evidence 需保留上下文 | `P1` | `Phase 3D` |
-| “像……”连发、抽象递进与弱物理反馈 | 单章并非一条句式问题，而是整组风格习惯问题 | `writing-rules 9.1-9.3` | 已有 `simileDensity`、`narrativeFrameRepetition`、`tellingEmotion`、`hedgeAdverbs` | 缺少“句群合并判定”，导致单项都不重但整体 AI 味仍高 | 增加 `clusteredAIPhrasing` 汇总层，把多个轻度 pattern 合并成一个 review 风险 | `services/style_detector.py` + `services/story_review.py` | 现有 patternResults 聚合、章节字数、连续命中段落 | `summary`、`priorityActions`、`ruleJudgements` | `P1` | `Phase 3D` |
+| “像……”连发、抽象递进与弱物理反馈 | 单章并非一条句式问题，而是整组风格习惯问题 | `writing-rules 9.1-9.3` | 已有 `simileDensity`、`narrativeFrameRepetition`、`tellingEmotion`、`hedgeAdverbs`，并已补 `clusteredAIPhrasing` 聚合层 | 已能把多个轻度 pattern 合并成一个 review 风险，但还没进一步收敛成卷级热区/密度摘要 | 继续扩展 `clusteredAIPhrasing` 到卷级汇总与热区定位 | `services/style_detector.py` + `services/story_review.py` | 现有 patternResults 聚合、章节字数、连续命中段落 | `summary`、`priorityActions`、`ruleJudgements` | `P1` | `Phase 3D` |
 | POV 越界 | 当前视角人物不可能看到背后落灰、敌方动作、远处细节 | `writing-rules 8.1/8.2` 已明确禁止 | 目前只有 `chapterHandoff`、一致性、世界检查等相邻能力 | 没有 POV 检测入口，也没有 evidence 结构 | 新增 `povOverreach` 检测：识别“背后/身后/远处/另一侧”等不可见方位 + 缺少转身/观察动作；识别敌方视角硬切 | 检测 owner `services/story_review.py` 或新建轻量 `services/pov_detector.py`；输出仍归 review/style 统一语义层 | 章节正文、可选 chapter POV 配置、方位词、感知动词、动作桥接词 | `ruleJudgements[]`、`priorityActions`、`consistencySignals` 或 `styleAnalysis.extensions` | `P0` | `Phase 3A` |
 | 正文元信息泄漏 | 角色直接知道“第三章”“这一卷”“提纲”“流程”这类作者侧信息 | `writing-rules 8.3/8.4` | 当前没有显式 detector | 无法阻止“章节/卷/大纲/作者”类穿帮文本进入 review 阻塞项 | 新增 `metaLeakage` 检测，首批最高优先抓 `第X章` / `这一卷` / `上一章` 这类正文层穿帮，再扩到 `提纲`、`剧情`、`读者`、`作者`、`流程` | `services/style_detector.py` 或 `services/story_review.py` | 正文句子、meta 词表、引号场景过滤 | `patternResults[]` + 高严重度 `judgements[]` | `P0` | `Phase 3A` |
 | 特殊题材需要合法越例 | 主角本身是作者、正文存在“小说中的小说”、角色在讨论章节结构时，不能被一刀切误判 | 规则层目前只有“默认禁止”，没有项目级豁免协议 | `style-profiles.yaml` 只支持术语/阈值级例外，不适合跨 review/gate 豁免 | 没有统一豁免，后续 detector 越多，误报只能靠硬编码回避 | 新增项目级 `rule exemption whitelist`，按 `ruleId + scope + allowedContext` 白名单豁免，而不是黑名单放行 | 建议新建 `protocol/review_rules.py`，commands/services 统一读取 | 项目配置、章节/卷/scene scope、允许短语、允许场景标签、说明理由 | 检测结果附 `exempted=true`、`exemptionReason`；doctor/status 可显示当前活跃豁免 | `P0` | `Phase 0 / Phase 3` |
@@ -162,9 +162,8 @@
 在第一批稳定后补：
 
 1. `templateCatchphrasePattern`
-2. `clusteredAIPhrasing`
-3. `payoffDeliverySignals`
-4. `firstVolumeClosure`
+2. `payoffDeliverySignals`
+3. `firstVolumeClosure`
 
 原因：
 

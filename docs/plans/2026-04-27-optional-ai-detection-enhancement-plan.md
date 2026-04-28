@@ -320,6 +320,9 @@
   - `analogicalPivotPattern`
   - `templateCatchphrasePattern`
   - `paragraphReadability`
+- 已补 `clusteredAIPhrasing` 聚合信号：
+  - 会把多项轻度 AI 句式/可读性问题合并成统一 style risk
+  - 已接入 `styleAnalysis.patternResults`、`judgements`、`review priorityActions`、`contractAlignment.risks`
 - 新规则已接入：
   - `style check`
   - `review chapter`
@@ -341,7 +344,6 @@
 
 ### 13.3 当前未完成
 
-- 尚未落地更高一层的 `clusteredAIPhrasing` 聚合信号。
 - 句式规则目前仍是启发式正则 + 密度阈值，还没有引入 optional similarity/backend 增强。
 - 还未把外部来源矩阵里的 `Vale / textlint` optional adapter 真正实现进 `providers/`。
 - 还没有把这些新规则显式转成卷级汇总信号，例如：
@@ -354,6 +356,6 @@
 1. 继续收敛中文高频 AI 句式规则：
    - 减少误报
    - 扩充漏报样式
-2. 补 `clusteredAIPhrasing`，把多个轻度命中聚成更高价值的卷级风险。
+2. 把 `clusteredAIPhrasing` 继续向卷级汇总推进，补“高风险段落热区 / 首卷 AI 风格密度摘要”。
 3. 评估是否引入 `Vale` 或 `textlint` 作为 optional backend，而不是直接上黑盒 authorship detector。
 4. 再考虑实验性 `SeqXGPT / Binoculars` 热区信号是否值得挂到 `styleAnalysis.extensions.experimental`。
