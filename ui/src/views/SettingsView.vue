@@ -4,21 +4,6 @@
       <div class="settings-pane-body">
         <p v-if="settingsError" class="inline-error">{{ settingsError }}</p>
 
-        <div class="settings-meta-grid">
-          <div class="fact-item">
-            <span>状态</span>
-            <strong>{{ credentialStatusLabel }}</strong>
-          </div>
-          <div class="fact-item">
-            <span>来源</span>
-            <strong>{{ credentialSourceLabel }}</strong>
-          </div>
-          <div class="fact-item">
-            <span>回退</span>
-            <strong>{{ fallbackStatusLabel }}</strong>
-          </div>
-        </div>
-
         <p class="detail-copy provider-fallback-hint">
           多个启用的提供商按顺位依次尝试，失败后自动切换下一个。
         </p>
@@ -101,7 +86,7 @@
           <strong>{{ configFile }}</strong>
         </div>
 
-        <p v-if="credentialSourceLabel === '环境变量'" class="detail-copy">
+        <p v-if="settings?.local?.apiKeySource === 'env'" class="detail-copy">
           当前仍可回退到环境变量 key；但优先级排序与自动切换只对本地工作台配置生效。
         </p>
 
@@ -142,34 +127,6 @@ const dropTargetId = ref("");
 
 const providerDrafts = ref<ProviderDraft[]>([]);
 const providerSeed = ref(1);
-
-const credentialStatusLabel = computed(() => {
-  const localReadyCount =
-    settings.value?.local.providers.filter((item) => item.enabled && item.hasApiKey).length || 0;
-  if (localReadyCount > 0) {
-    return `${localReadyCount} 条本地可用`;
-  }
-  if (settings.value?.local.apiKeySource === "env") {
-    return "环境变量可用";
-  }
-  return "未配置";
-});
-
-const credentialSourceLabel = computed(() => {
-  switch (settings.value?.local.apiKeySource) {
-    case "local":
-      return "本地工作台";
-    case "env":
-      return "环境变量";
-    default:
-      return "未配置";
-  }
-});
-
-const fallbackStatusLabel = computed(() => {
-  const count = settings.value?.local.fallbackCount || 0;
-  return count > 0 ? `可切换 ${count} 条后备` : "无";
-});
 
 const configFile = computed(() => settings.value?.local.configFile || "-");
 
@@ -350,10 +307,6 @@ watch(
   gap: 8px;
 }
 
-.provider-fallback-hint {
-  margin-bottom: 2px;
-}
-
 .provider-stack {
   display: grid;
   gap: 6px;
@@ -486,8 +439,7 @@ watch(
 }
 
 @media (max-width: 1180px) {
-  .settings-shell,
-  .settings-meta-grid {
+  .settings-shell {
     grid-template-columns: 1fr;
   }
 
