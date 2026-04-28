@@ -1,0 +1,153 @@
+{
+  "changeRequests": [
+    {
+      "id": "cr-ef89d7437e",
+      "chapterId": "chapter-001",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈照 当前状态",
+      "summary": "检测到 沈照 可能进入状态：恐惧",
+      "evidence": "他在旧炉前站定，把那块铜牌按进槽口。下一瞬，整座炉场像被惊醒了一样，裂开的炉纹同时亮起，沉积多年的旧火从缝隙里呼啸冲出，直接扑向他胸前命窍。那一刻，@{沈照}甚至没来得及生出恐惧，便先听见了自己经脉崩开的细响。热意不是从外往里烧，而是从骨缝、从血肉、从灯窍深处同时炸开，像有人捏着一把滚烫的铁砂灌进了他的四肢百骸。他单膝跪地，手指死死抠进灰里，喉间一甜，血就顺着嘴角涌了下来。",
+      "targetIds": [
+        "char-shen-zhao"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-zhao",
+        "entityName": "沈照",
+        "state": "恐惧"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-zhao::恐惧",
+      "createdAt": "2026-04-26T17:31:32+08:00",
+      "updatedAt": "2026-04-26T17:31:58+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-26T17:31:58+08:00"
+    },
+    {
+      "id": "cr-a9f16fe981",
+      "chapterId": "chapter-004",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈照 当前状态",
+      "summary": "检测到 沈照 可能进入状态：冷静",
+      "evidence": "这一点变化，让@{沈照}心底比听见“留验”时还更冷静。",
+      "targetIds": [
+        "char-shen-zhao"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-zhao",
+        "entityName": "沈照",
+        "state": "冷静"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-zhao::冷静",
+      "createdAt": "2026-04-26T18:26:17+08:00",
+      "updatedAt": "2026-04-26T18:26:34+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-26T18:26:34+08:00"
+    },
+    {
+      "id": "cr-bd19f6425e",
+      "chapterId": "chapter-006",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈照 当前状态",
+      "summary": "检测到 沈照 可能进入状态：离开",
+      "evidence": "等@{岳怀川}也离开，@{沈照}才摊开掌心。",
+      "targetIds": [
+        "char-shen-zhao"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-zhao",
+        "entityName": "沈照",
+        "state": "离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-zhao::离开",
+      "createdAt": "2026-04-26T19:04:26+08:00",
+      "updatedAt": "2026-04-26T19:04:39+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-26T19:04:39+08:00"
+    },
+    {
+      "id": "cr-4cc0dc2a74",
+      "chapterId": "chapter-006",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 岳怀川 当前状态",
+      "summary": "检测到 岳怀川 可能进入状态：离开",
+      "evidence": "等@{岳怀川}也离开，@{沈照}才摊开掌心。",
+      "targetIds": [
+        "char-yue-huaichuan"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-yue-huaichuan",
+        "entityName": "岳怀川",
+        "state": "离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-yue-huaichuan::离开",
+      "createdAt": "2026-04-26T19:04:26+08:00",
+      "updatedAt": "2026-04-26T19:04:39+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-26T19:04:39+08:00"
+    },
+    {
+      "id": "cr-94e9fc5f95",
+      "chapterId": "chapter-007",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 沈照 当前状态",
+      "summary": "检测到 沈照 可能进入状态：怀疑",
+      "evidence": "“那你们进去。”@{沈照}把身子侧开，“我只拿了一本烂账。你们若怀疑，尽可以连我一起押去东边，看看祁师兄和岳巡使，到底谁先嫌你们多事。”",
+      "targetIds": [
+        "char-shen-zhao"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-shen-zhao",
+        "entityName": "沈照",
+        "state": "怀疑"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-shen-zhao::怀疑",
+      "createdAt": "2026-04-26T19:16:54+08:00",
+      "updatedAt": "2026-04-26T19:17:14+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-26T19:17:14+08:00"
+    },
+    {
+      "id": "cr-54c3360602",
+      "chapterId": "chapter-010",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 庄无烬 当前状态",
+      "summary": "检测到 庄无烬 可能进入状态：冷静",
+      "evidence": "沈照听见“庄无烬”三个字，反倒冷静了几分。",
+      "targetIds": [
+        "char-zhuang-wujin"
+      ],
+      "confidence": 0.78,
+      "suggestedPayload": {
+        "entityId": "char-zhuang-wujin",
+        "entityName": "庄无烬",
+        "state": "冷静"
+      },
+      "status": "rejected",
+      "projectionStatus": "rolled-back",
+      "fingerprint": "snapshot::char-zhuang-wujin::冷静",
+      "createdAt": "2026-04-26T20:22:29+08:00",
+      "updatedAt": "2026-04-26T20:22:46+08:00",
+      "decisionReason": "误判：句子主体是沈照的心理变化，不是庄无烬的当前状态。"
+    }
+  ]
+}

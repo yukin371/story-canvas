@@ -1,0 +1,114 @@
+{
+  "foreshadows": [
+    {
+      "id": "fs-remnant-lamp-response",
+      "title": "残灯第一次主动回应",
+      "origin": {
+        "type": "outline-seeded"
+      },
+      "plantPoints": [
+        {
+          "chapterId": "chapter-001",
+          "signalType": "anomaly"
+        }
+      ],
+      "payoffPlan": {
+        "window": {
+          "type": "short",
+          "targetChapterStart": "chapter-003",
+          "targetChapterEnd": "chapter-004"
+        },
+        "style": "partial-reveal",
+        "readerRealizationMode": "infer-before-confirm"
+      },
+      "lineBinding": {
+        "threads": [
+          "thread-remnant-lamp-truth"
+        ],
+        "entities": [
+          "char-shen-zhao"
+        ]
+      },
+      "emotionGoal": [
+        "不安",
+        "着迷"
+      ],
+      "status": "planted",
+      "payoffPoints": []
+    },
+    {
+      "id": "fs-lost-memory",
+      "title": "沈照丢失的一段旧记忆",
+      "origin": {
+        "type": "outline-seeded"
+      },
+      "plantPoints": [
+        {
+          "chapterId": "chapter-001",
+          "signalType": "cost-clue"
+        }
+      ],
+      "payoffPlan": {
+        "window": {
+          "type": "mid",
+          "targetChapterStart": "chapter-005",
+          "targetChapterEnd": "chapter-007"
+        },
+        "style": "delayed-payoff",
+        "readerRealizationMode": "partial-inference"
+      },
+      "lineBinding": {
+        "threads": [
+          "thread-self-erosion",
+          "thread-remnant-lamp-truth"
+        ],
+        "entities": [
+          "char-shen-zhao"
+        ]
+      },
+      "emotionGoal": [
+        "心惊",
+        "空缺感"
+      ],
+      "status": "planted",
+      "payoffPoints": []
+    },
+    {
+      "id": "fs-zhaoming-notice",
+      "title": "照命司已经注意到异常灯波",
+      "origin": {
+        "type": "outline-seeded"
+      },
+      "plantPoints": [
+        {
+          "chapterId": "chapter-002",
+          "signalType": "threat-arrival"
+        }
+      ],
+      "payoffPlan": {
+        "window": {
+          "type": "short",
+          "targetChapterStart": "chapter-003",
+          "targetChapterEnd": "chapter-005"
+        },
+        "style": "pressure-payoff",
+        "readerRealizationMode": "infer-before-confirm"
+      },
+      "lineBinding": {
+        "threads": [
+          "thread-zhaoming-bureau-hunt"
+        ],
+        "entities": [
+          "char-shen-zhao",
+          "char-yue-huaichuan"
+        ]
+      },
+      "emotionGoal": [
+        "逼近感",
+        "危机感"
+      ],
+      "status": "planted",
+      "payoffPoints": []
+    }
+  ]
+}

@@ -1,0 +1,282 @@
+{
+  "snapshotProjections": [
+    {
+      "entityId": "char-shen-zhao",
+      "entityName": "沈照",
+      "scopeRef": "chapter-001",
+      "currentState": "恐惧",
+      "sourceChangeIds": [
+        "cr-ef89d7437e"
+      ],
+      "updatedAt": "2026-04-26T17:31:58+08:00"
+    },
+    {
+      "entityId": "char-shen-zhao",
+      "entityName": "沈照",
+      "scopeRef": "chapter-004",
+      "currentState": "冷静",
+      "sourceChangeIds": [
+        "cr-a9f16fe981"
+      ],
+      "updatedAt": "2026-04-26T18:26:34+08:00"
+    },
+    {
+      "entityId": "char-shen-zhao",
+      "entityName": "沈照",
+      "scopeRef": "chapter-006",
+      "currentState": "离开",
+      "sourceChangeIds": [
+        "cr-bd19f6425e"
+      ],
+      "updatedAt": "2026-04-26T19:04:39+08:00"
+    },
+    {
+      "entityId": "char-yue-huaichuan",
+      "entityName": "岳怀川",
+      "scopeRef": "chapter-006",
+      "currentState": "离开",
+      "sourceChangeIds": [
+        "cr-4cc0dc2a74"
+      ],
+      "updatedAt": "2026-04-26T19:04:39+08:00"
+    },
+    {
+      "entityId": "char-shen-zhao",
+      "entityName": "沈照",
+      "scopeRef": "chapter-007",
+      "currentState": "怀疑",
+      "sourceChangeIds": [
+        "cr-94e9fc5f95"
+      ],
+      "updatedAt": "2026-04-26T19:17:14+08:00"
+    }
+  ],
+  "relationProjections": [],
+  "sceneScopeProjections": [
+    {
+      "chapterId": "chapter-001",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-zhuang-wujin",
+        "char-qi-lianzhu"
+      ],
+      "sourceChangeIds": [
+        "cr-ef89d7437e"
+      ],
+      "updatedAt": "2026-04-26T17:36:47+08:00"
+    },
+    {
+      "chapterId": "chapter-003",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-zhuang-wujin",
+        "char-yue-huaichuan",
+        "char-qi-lianzhu"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-26T18:10:52+08:00"
+    },
+    {
+      "chapterId": "chapter-004",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan",
+        "char-zhuang-wujin",
+        "char-qi-lianzhu"
+      ],
+      "sourceChangeIds": [
+        "cr-a9f16fe981"
+      ],
+      "updatedAt": "2026-04-26T18:26:34+08:00"
+    },
+    {
+      "chapterId": "chapter-005",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan",
+        "char-zhuang-wujin"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-26T18:43:21+08:00"
+    },
+    {
+      "chapterId": "chapter-006",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan",
+        "char-qi-lianzhu",
+        "char-zhuang-wujin"
+      ],
+      "sourceChangeIds": [
+        "cr-bd19f6425e",
+        "cr-4cc0dc2a74"
+      ],
+      "updatedAt": "2026-04-26T19:04:39+08:00"
+    },
+    {
+      "chapterId": "chapter-007",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-qi-lianzhu",
+        "char-yue-huaichuan",
+        "char-zhuang-wujin"
+      ],
+      "sourceChangeIds": [
+        "cr-94e9fc5f95"
+      ],
+      "updatedAt": "2026-04-26T19:17:14+08:00"
+    },
+    {
+      "chapterId": "chapter-008",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan",
+        "char-qi-lianzhu",
+        "char-zhuang-wujin"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-26T19:53:42+08:00"
+    },
+    {
+      "chapterId": "chapter-009",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan",
+        "inferred::周小棘"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-26T20:12:54+08:00"
+    },
+    {
+      "chapterId": "chapter-010",
+      "activeEntityIds": [
+        "char-yue-huaichuan",
+        "char-shen-zhao",
+        "char-zhuang-wujin",
+        "char-qi-lianzhu"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-26T20:30:19+08:00"
+    },
+    {
+      "chapterId": "chapter-011",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan",
+        "char-zhuang-wujin"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-26T20:43:00+08:00"
+    },
+    {
+      "chapterId": "chapter-012",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-26T20:58:46+08:00"
+    },
+    {
+      "chapterId": "chapter-013",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-26T21:13:05+08:00"
+    },
+    {
+      "chapterId": "chapter-014",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-26T22:02:09+08:00"
+    },
+    {
+      "chapterId": "chapter-015",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-26T22:07:37+08:00"
+    },
+    {
+      "chapterId": "chapter-016",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-26T22:17:31+08:00"
+    },
+    {
+      "chapterId": "chapter-017",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-26T22:24:34+08:00"
+    },
+    {
+      "chapterId": "chapter-018",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-26T22:34:54+08:00"
+    },
+    {
+      "chapterId": "chapter-019",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-26T23:01:15+08:00"
+    },
+    {
+      "chapterId": "chapter-020",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-26T23:12:43+08:00"
+    },
+    {
+      "chapterId": "chapter-021",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-26T23:22:32+08:00"
+    },
+    {
+      "chapterId": "chapter-022",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-26T23:39:26+08:00"
+    },
+    {
+      "chapterId": "chapter-023",
+      "activeEntityIds": [
+        "char-shen-zhao",
+        "char-yue-huaichuan"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-27T00:19:56+08:00"
+    }
+  ],
+  "timelineProjections": [],
+  "causalityProjections": []
+}

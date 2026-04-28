@@ -1,0 +1,59 @@
+{
+  "chapterId": "chapter-007",
+  "chapterTitle": "第七章 灰卷藏名",
+  "analyzedAt": "2026-04-26T19:20:44+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-zhao",
+      "name": "沈照",
+      "mentionCount": 53,
+      "source": "registry"
+    },
+    {
+      "id": "char-qi-lianzhu",
+      "name": "祁连烛",
+      "mentionCount": 5,
+      "source": "registry"
+    },
+    {
+      "id": "char-yue-huaichuan",
+      "name": "岳怀川",
+      "mentionCount": 2,
+      "source": "registry"
+    },
+    {
+      "id": "char-zhuang-wujin",
+      "name": "庄无烬",
+      "mentionCount": 1,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-007::char-shen-zhao::d019689567",
+      "entityId": "char-shen-zhao",
+      "entityName": "沈照",
+      "proposedState": "怀疑",
+      "stateTags": [
+        "怀疑"
+      ],
+      "evidence": "“那你们进去。”@{沈照}把身子侧开，“我只拿了一本烂账。你们若怀疑，尽可以连我一起押去东边，看看祁师兄和岳巡使，到底谁先嫌你们多事。”",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-zhao",
+      "char-qi-lianzhu",
+      "char-yue-huaichuan",
+      "char-zhuang-wujin"
+    ],
+    "activeEntityNames": [
+      "沈照",
+      "祁连烛",
+      "岳怀川",
+      "庄无烬"
+    ]
+  }
+}

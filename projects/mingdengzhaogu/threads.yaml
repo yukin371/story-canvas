@@ -1,0 +1,60 @@
+{
+  "threads": [
+    {
+      "id": "thread-remnant-lamp-truth",
+      "label": "不灭残灯来历",
+      "type": "main",
+      "status": "active",
+      "relatedEntities": [
+        "char-shen-zhao",
+        "char-yue-huaichuan"
+      ],
+      "relatedChapters": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "relatedForeshadows": [
+        "fs-remnant-lamp-response",
+        "fs-lost-memory"
+      ],
+      "targetPayoffScope": "volume"
+    },
+    {
+      "id": "thread-self-erosion",
+      "label": "借灯后的自我侵蚀",
+      "type": "main",
+      "status": "active",
+      "relatedEntities": [
+        "char-shen-zhao"
+      ],
+      "relatedChapters": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "relatedForeshadows": [
+        "fs-lost-memory"
+      ],
+      "targetPayoffScope": "volume"
+    },
+    {
+      "id": "thread-zhaoming-bureau-hunt",
+      "label": "照命司锁定异常灯波",
+      "type": "main",
+      "status": "active",
+      "relatedEntities": [
+        "char-shen-zhao",
+        "char-yue-huaichuan"
+      ],
+      "relatedChapters": [
+        "chapter-002",
+        "chapter-003"
+      ],
+      "relatedForeshadows": [
+        "fs-zhaoming-notice"
+      ],
+      "targetPayoffScope": "volume"
+    }
+  ]
+}

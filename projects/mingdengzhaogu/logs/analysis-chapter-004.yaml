@@ -1,0 +1,59 @@
+{
+  "chapterId": "chapter-004",
+  "chapterTitle": "第四章 灯下留人",
+  "analyzedAt": "2026-04-26T18:28:06+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-zhao",
+      "name": "沈照",
+      "mentionCount": 47,
+      "source": "registry"
+    },
+    {
+      "id": "char-yue-huaichuan",
+      "name": "岳怀川",
+      "mentionCount": 30,
+      "source": "registry"
+    },
+    {
+      "id": "char-zhuang-wujin",
+      "name": "庄无烬",
+      "mentionCount": 9,
+      "source": "registry"
+    },
+    {
+      "id": "char-qi-lianzhu",
+      "name": "祁连烛",
+      "mentionCount": 3,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-004::char-shen-zhao::bbb32d67c7",
+      "entityId": "char-shen-zhao",
+      "entityName": "沈照",
+      "proposedState": "冷静",
+      "stateTags": [
+        "冷静"
+      ],
+      "evidence": "这一点变化，让@{沈照}心底比听见“留验”时还更冷静。",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-zhao",
+      "char-yue-huaichuan",
+      "char-zhuang-wujin",
+      "char-qi-lianzhu"
+    ],
+    "activeEntityNames": [
+      "沈照",
+      "岳怀川",
+      "庄无烬",
+      "祁连烛"
+    ]
+  }
+}

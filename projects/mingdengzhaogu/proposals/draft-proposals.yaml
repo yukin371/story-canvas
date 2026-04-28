@@ -1,0 +1,63 @@
+{
+  "draftProposals": [
+    {
+      "id": "proposal-951d1f5cae",
+      "projectId": "命灯照骨",
+      "chapterId": "chapter-010",
+      "source": "structure-assistant",
+      "kind": "chapter-direction",
+      "title": "第十章 灰缝藏骨",
+      "summary": "东坡门伪令局后，岳怀川当场封门扣人，不再把沈照交给明面转押。沈照借木片与‘一号未转’的刻痕，逼出旧押灯路下的一处暗格，捞出与一号有关的焦骨旧牌和未交接痕迹，也在残灯回响里接到更痛的一段旧记忆；但照命司内线与青烬宗外门两边追索同时压来，岳怀川只能改走暗路，把沈照和这条旧案一起先藏起来。",
+      "content": {
+        "mode": "chapter",
+        "prompt": "承接第九章章末的‘一号未转’实证，不让谜面泄力。要求保持中快节奏，突出司内掐架升级、沈照的主动判断，以及‘每追近真相一步就更危险’的压迫感。避免把线索直接讲透，只给足可以追下去的实物与半截记忆。",
+        "items": []
+      },
+      "editable": true,
+      "status": "applied",
+      "createdAt": "2026-04-26T20:16:12+08:00",
+      "updatedAt": "2026-04-26T20:22:46+08:00",
+      "adoption": {
+        "mode": "full",
+        "appliedAt": "2026-04-26T20:16:22+08:00"
+      },
+      "projectionStatus": "applied"
+    },
+    {
+      "id": "proposal-c4c1456ba7",
+      "projectId": "命灯照骨",
+      "chapterId": "chapter-010",
+      "source": "structure-assistant",
+      "kind": "beat-outline",
+      "title": "第十章 beats",
+      "summary": "第十章关键推进节点",
+      "content": {
+        "mode": "chapter",
+        "prompt": "",
+        "items": [
+          {
+            "title": "东坡封场",
+            "summary": "岳怀川借副印伪令与旧押灯路被动手脚的证据，当场扣下东坡门来使并封住晒场，不让明面转押继续；沈照则抓住砖缝白火与木片反应，坚持下面还有未交接的旧东西。"
+          },
+          {
+            "title": "灰缝探骨",
+            "summary": "两人顺着地砖白火与木片来源撬开旧押暗格，找出一枚焦裂骨牌、半截旧缚带和未完成的交接记号；沈照在残灯牵动下接到更具体的旧忆，怀疑当年一号并非单纯失踪，而是替某个人挡下了转押。"
+          },
+          {
+            "title": "暗路改押",
+            "summary": "青烬宗外门与照命司另一拨人同时压到东坡门，岳怀川意识到明面流程已经不能用，只能临时改押，带沈照从旧押旁道脱身；沈照则把新物证扣在手里，确认自己接下来不是被动等审，而是要追到一号真身。"
+          }
+        ]
+      },
+      "editable": true,
+      "status": "applied",
+      "createdAt": "2026-04-26T20:16:36+08:00",
+      "updatedAt": "2026-04-26T20:22:46+08:00",
+      "adoption": {
+        "mode": "full",
+        "appliedAt": "2026-04-26T20:16:43+08:00"
+      },
+      "projectionStatus": "applied"
+    }
+  ]
+}

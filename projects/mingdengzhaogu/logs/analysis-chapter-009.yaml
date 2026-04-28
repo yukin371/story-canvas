@@ -1,0 +1,39 @@
+{
+  "chapterId": "chapter-009",
+  "chapterTitle": "第九章 转押灯廊",
+  "analyzedAt": "2026-04-26T20:12:22+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-zhao",
+      "name": "沈照",
+      "mentionCount": 37,
+      "source": "registry"
+    },
+    {
+      "id": "char-yue-huaichuan",
+      "name": "岳怀川",
+      "mentionCount": 36,
+      "source": "registry"
+    },
+    {
+      "id": "inferred::周小棘",
+      "name": "周小棘",
+      "mentionCount": 3,
+      "source": "inferred"
+    }
+  ],
+  "snapshotCandidates": [],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-zhao",
+      "char-yue-huaichuan",
+      "inferred::周小棘"
+    ],
+    "activeEntityNames": [
+      "沈照",
+      "岳怀川",
+      "周小棘"
+    ]
+  }
+}

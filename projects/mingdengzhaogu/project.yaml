@@ -1,0 +1,87 @@
+{
+  "title": "命灯照骨",
+  "genre": "玄幻",
+  "defaultMode": "driving",
+  "activeChapterId": "chapter-023",
+  "positioning": {
+    "primaryGenre": "fantasy",
+    "subGenre": "xuanhuan",
+    "styleTags": [
+      "dark-fantasy",
+      "cost-driven-progression"
+    ],
+    "targetAudience": [
+      "web-serial-reader",
+      "xuanhuan-reader"
+    ]
+  },
+  "storyContract": {
+    "corePromises": [
+      "每次破境都要付出真实代价，并持续改变主角的自我边界",
+      "残灯真相会沿主线逐步揭露，且每卷都推进一个更大的谜面",
+      "第一卷就建立强追读钩子：活下去、变强、但越来越不像原来的自己"
+    ],
+    "avoidances": [
+      "无成本突破",
+      "现代项目管理口吻侵入正文",
+      "人物只为执行细纲而行动"
+    ],
+    "endingContract": "主角必须面对力量与自我是否还能并存的终极选择",
+    "paceContract": "中快节奏，关键突破与卷末集中爆发"
+  },
+  "emotionalContract": {
+    "coreEmotions": [
+      "压迫下反制",
+      "代价兑现时的心惊",
+      "真相逼近时的不安与着迷"
+    ],
+    "chapterEmotionFloor": [
+      "每章至少有一个明确情绪推进点",
+      "每次燃灯或关键选择都要留下后果余波"
+    ],
+    "forbiddenEmotions": [
+      "空转讲设定",
+      "只剩流程推进没有人物痛感"
+    ],
+    "revealPreference": {
+      "defaultMode": "partial-inference",
+      "allowDirectExplainAtClimax": true
+    }
+  },
+  "storyTemplate": {
+    "id": "xuanhuan-cost-progression-serial",
+    "label": "玄幻代价升级长篇",
+    "modulePolicy": {
+      "worldbook": "required",
+      "worldrules": "required",
+      "powerprogressions": "required",
+      "factions": "required",
+      "foreshadowledger": "required",
+      "characterstatetracking": "required"
+    },
+    "reviewFocus": [
+      "世界规则兑现",
+      "代价持续追踪",
+      "角色状态演化",
+      "伏笔长回收",
+      "章间承接"
+    ]
+  },
+  "commercialPositioning": {
+    "premise": "修行的本质是燃烧命灯，以寿数、记忆、情感和因果为燃料换取更高境界；沈照得到一盏不灭残灯后，被迫在活下去与保住自我之间反复交易。",
+    "hookLine": "每变强一步，他都要拿自己去换，而那盏灯从不白借。",
+    "hookStack": [
+      "cost-of-power",
+      "identity-erosion",
+      "relic-mystery"
+    ],
+    "benchmarkWorks": [],
+    "targetPlatform": "qidian",
+    "serializationModel": "web-serial",
+    "releaseCadence": "daily",
+    "chapterWordFloor": 2500,
+    "chapterWordTarget": 3500
+  },
+  "createdAt": "2026-04-26T17:16:43+08:00",
+  "updatedAt": "2026-04-27T00:20:56+08:00"
+}

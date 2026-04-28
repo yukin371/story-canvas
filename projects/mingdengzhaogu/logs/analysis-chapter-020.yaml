@@ -1,0 +1,31 @@
+{
+  "chapterId": "chapter-020",
+  "chapterTitle": "第二十章 真原簿",
+  "analyzedAt": "2026-04-26T23:12:41+08:00",
+  "activeEntities": [
+    {
+      "id": "char-shen-zhao",
+      "name": "沈照",
+      "mentionCount": 29,
+      "source": "registry"
+    },
+    {
+      "id": "char-yue-huaichuan",
+      "name": "岳怀川",
+      "mentionCount": 17,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-shen-zhao",
+      "char-yue-huaichuan"
+    ],
+    "activeEntityNames": [
+      "沈照",
+      "岳怀川"
+    ]
+  }
+}

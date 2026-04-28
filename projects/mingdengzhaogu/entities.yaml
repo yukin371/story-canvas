@@ -1,0 +1,192 @@
+{
+  "entities": [
+    {
+      "id": "char-shen-zhao",
+      "name": "沈照",
+      "type": "character",
+      "aliases": [],
+      "summary": "本该在青烬宗外门废照棚里慢慢熄灭的边缘弟子，因体内不灭残灯第一次主动回应而活了下来。",
+      "currentState": "命灯将熄；肺腑旧伤未愈；首章后会出现记忆缺口",
+      "profile": {
+        "traits": [
+          "隐忍",
+          "算账清醒",
+          "对代价极敏感",
+          "不轻易信人"
+        ],
+        "background": "青烬宗外门底层弟子，资质中下，长期被压在最脏最险的差事上，原本会在一次次借命和欠债里慢慢耗死。",
+        "motivation": "先活下去，再查清不灭残灯的来历，并弄明白自己还能不能保住原来的自己。",
+        "arc": "从被动求生、被迫借灯，到主动争命、直面自我被改写的代价。"
+      },
+      "state": {
+        "statusTags": [
+          "命灯将熄",
+          "被宗门边缘化",
+          "肺腑旧伤"
+        ],
+        "powerLevel": {
+          "publicLevel": "引灯前夜",
+          "trueLevel": "引灯前夜"
+        },
+        "injuries": [
+          "肺腑旧伤",
+          "长期亏空"
+        ]
+      },
+      "changeLog": [
+        {
+          "id": "chg-shenzhao-000",
+          "chapterId": "chapter-000",
+          "field": "state.statusTags",
+          "reason": "在入正文前就已经被压到命灯将熄，只剩最后一点余火。"
+        }
+      ],
+      "relations": [
+        {
+          "target": "char-zhuang-wujin",
+          "type": "压迫者",
+          "detail": "外门执事，长期把最脏最险的差事往沈照身上压。"
+        },
+        {
+          "target": "char-qi-lianzhu",
+          "type": "同门对手",
+          "detail": "外门里最会踩人的那类同辈，首卷会不断试探和逼压沈照。"
+        },
+        {
+          "target": "char-yue-huaichuan",
+          "type": "猎人与目标",
+          "detail": "照命司巡灯使，第二章开始注意到沈照的异常灯息。"
+        }
+      ],
+      "registeredAt": "2026-04-26T17:20:00+08:00"
+    },
+    {
+      "id": "char-zhuang-wujin",
+      "name": "庄无烬",
+      "type": "character",
+      "aliases": [],
+      "summary": "青烬宗外门执事，熟知底层命灯耗损规则，习惯把最不值钱的人当耗材使用。",
+      "currentState": "盯着外门损耗；对沈照这种将死弟子只有利用价值",
+      "profile": {
+        "traits": [
+          "冷硬",
+          "势利",
+          "擅长推责"
+        ],
+        "background": "青烬宗外门执事，靠维持秩序和压榨底层换取向上爬的筹码。",
+        "motivation": "稳住外门秩序，不让任何异常灯波牵连自己。",
+        "arc": "从压榨底层的小权力者，逐步卷入残灯异常带来的更大危险。"
+      },
+      "state": {
+        "statusTags": [
+          "外门执事",
+          "推责熟练"
+        ],
+        "powerLevel": {
+          "publicLevel": "明火"
+        }
+      },
+      "changeLog": [],
+      "registeredAt": "2026-04-26T17:20:00+08:00"
+    },
+    {
+      "id": "char-qi-lianzhu",
+      "name": "祁连烛",
+      "type": "character",
+      "aliases": [],
+      "summary": "青烬宗外门弟子中的强势同辈，习惯把将熄的人踩进泥里，最先把沈照当成可以随手碾死的对象。",
+      "currentState": "在外门测灯和试锋里占优；对沈照的异常存有敌意",
+      "profile": {
+        "traits": [
+          "锋利",
+          "骄横",
+          "嗅觉敏锐"
+        ],
+        "background": "出身比沈照好得多，靠稳灯和资源在外门弟子里提前站稳位置。",
+        "motivation": "守住自己的排名和资源，不允许底层废人翻盘。",
+        "arc": "从轻视沈照，到把他当成真正的威胁。"
+      },
+      "state": {
+        "statusTags": [
+          "外门优等生",
+          "敌意试探"
+        ],
+        "powerLevel": {
+          "publicLevel": "引灯"
+        }
+      },
+      "changeLog": [],
+      "registeredAt": "2026-04-26T17:20:00+08:00"
+    },
+    {
+      "id": "char-yue-huaichuan",
+      "name": "岳怀川",
+      "type": "character",
+      "aliases": [],
+      "summary": "照命司巡灯使，对异常灯波有极高敏感度，是首卷最早接近残灯真相的人之一。",
+      "currentState": "正在追查青烬宗异常灯波；暂未确认目标就是沈照",
+      "profile": {
+        "traits": [
+          "克制",
+          "敏锐",
+          "不轻信宗门说辞"
+        ],
+        "background": "照命司年轻一代巡灯使，长期处理失控命灯和异常借命事件。",
+        "motivation": "追查高危命灯异象，避免旧时代残焰死灰复燃。",
+        "arc": "从按规章办事，到意识到这盏残灯牵连的不只是个体异常。"
+      },
+      "state": {
+        "statusTags": [
+          "外来追查者",
+          "识灯者"
+        ],
+        "powerLevel": {
+          "publicLevel": "映骨"
+        }
+      },
+      "changeLog": [],
+      "registeredAt": "2026-04-26T17:20:00+08:00"
+    },
+    {
+      "id": "inferred::废照棚",
+      "name": "废照棚",
+      "type": "location",
+      "aliases": [],
+      "summary": "青烬宗外门安置将熄弟子的废弃棚屋，首章用来展示底层弟子被当作耗材的生存处境。",
+      "currentState": "阴冷破败，长期堆着命灯将熄的外门弟子，是宗门默许的等死角落。",
+      "profile": {
+        "category": "location",
+        "function": "展示外门底层生态与沈照初始死局",
+        "significance": "首章起点，强化青烬宗把人当燃料的秩序感"
+      },
+      "source": "inferred",
+      "registeredAt": "2026-04-26T17:31:11+08:00"
+    },
+    {
+      "id": "inferred::旧炼灯炉场",
+      "name": "旧炼灯炉场",
+      "type": "location",
+      "aliases": [],
+      "summary": "青烬宗废弃多年的旧炉区，残留旧火、灯煞与未被处理干净的危险痕迹，是不灭残灯首次回应的现场。",
+      "currentState": "裂火复燃，封山火纹夜间锁死，是庄无烬拿来处理将死弟子的送命场。",
+      "profile": {
+        "category": "location",
+        "function": "触发残灯回响与首轮生死转折",
+        "significance": "承接代价修行规则，并埋下炉底异物与追踪者线索"
+      },
+      "source": "inferred",
+      "registeredAt": "2026-04-26T17:31:11+08:00"
+    },
+    {
+      "id": "inferred::周小棘",
+      "name": "周小棘",
+      "type": "character",
+      "aliases": [],
+      "summary": "",
+      "currentState": "",
+      "source": "inferred",
+      "registeredAt": "2026-04-26T20:04:23+08:00"
+    }
+  ],
+  "enrichmentProposals": []
+}

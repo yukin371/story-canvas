@@ -1,0 +1,343 @@
+{
+  "premiseFacts": [
+    {
+      "id": "premise-life-lamp",
+      "label": "燃灯修行",
+      "fact": "修行的本质不是单纯纳灵，而是点燃命灯，以寿数、记忆、情感和因果为燃料换取更高境界。",
+      "status": "active"
+    },
+    {
+      "id": "premise-remnant-lamp",
+      "label": "不灭残灯",
+      "fact": "沈照体内藏着一盏不灭残灯，它能替他扛过常人撑不过的燃灯过程，但每次借灯都会带走更深层的自我代价。",
+      "status": "active"
+    },
+    {
+      "id": "wf-581d8598bd",
+      "label": "那就别误。",
+      "fact": "“那就别误。”@{岳怀川}说，“从现在起，@{沈照}列留验。灯库和旧炉两边的卷档、口供、火纹，没查清之前，谁都不能私下处置他。”",
+      "sourceChapterId": "chapter-004",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T18:26:34+08:00",
+      "createdAt": "2026-04-26T18:26:34+08:00"
+    },
+    {
+      "id": "wf-a7192c1984",
+      "label": "整卷不能拿。",
+      "fact": "“整卷不能拿。”梁上那女人道，“夹页可以。”",
+      "sourceChapterId": "chapter-007",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T19:17:14+08:00",
+      "createdAt": "2026-04-26T19:17:14+08:00"
+    },
+    {
+      "id": "wf-8ba20d70de",
+      "label": "不能当众查手",
+      "fact": "没料到沈照会顺着这条路，把自己也往“不能当众查手”的位置逼。",
+      "sourceChapterId": "chapter-008",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T19:50:32+08:00",
+      "createdAt": "2026-04-26T19:50:32+08:00"
+    },
+    {
+      "id": "wf-44780b0ea5",
+      "label": "沈照擅闯旧屋",
+      "fact": "因为这一记，就意味着事情没能停在“沈照擅闯旧屋”。",
+      "sourceChapterId": "chapter-008",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T19:50:32+08:00",
+      "createdAt": "2026-04-26T19:50:32+08:00"
+    },
+    {
+      "id": "wf-dc38856e5a",
+      "label": "现在也是。",
+      "fact": "“现在也是。”@{岳怀川}道，“正因为在我灯下，才不能等到明早。”",
+      "sourceChapterId": "chapter-009",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T20:04:50+08:00",
+      "createdAt": "2026-04-26T20:04:50+08:00"
+    },
+    {
+      "id": "wf-7edc0d821a",
+      "label": "留验二号",
+      "fact": "是都知道，这句话一旦坐实，沈照这些年的“留验二号”就不是临时挂上的名。",
+      "sourceChapterId": "chapter-011",
+      "confidence": 0.88,
+      "updatedAt": "2026-04-26T20:38:45+08:00",
+      "createdAt": "2026-04-26T20:38:45+08:00"
+    },
+    {
+      "id": "wf-fa7fa11986",
+      "label": "你们总爱问是不是‘人’。",
+      "fact": "“你们总爱问是不是‘人’。”守井人喘了喘，“卷里写活，就要留活的那口。卷里写死，又不能让它真死透。留到最后，人不像人，灯不像灯，册也不是原来的册。你说那算什么？”",
+      "sourceChapterId": "chapter-014",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T21:21:56+08:00",
+      "createdAt": "2026-04-26T21:21:56+08:00"
+    },
+    {
+      "id": "wf-4dd523af5e",
+      "label": "说上头那面龛不能再留了。",
+      "fact": "“说上头那面龛不能再留了。”",
+      "sourceChapterId": "chapter-014",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T21:21:56+08:00",
+      "createdAt": "2026-04-26T21:21:56+08:00"
+    },
+    {
+      "id": "wf-45f4baf196",
+      "label": "正绞盘不能碰。",
+      "fact": "“正绞盘不能碰。”他声音压得极低，却快得像刀背抹火，“上头一收索，下头一钩板，人会直接挂死在半井。北缝是他们换膏人抄近的活路，也是我们现在唯一能抢前的路。”",
+      "sourceChapterId": "chapter-014",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T21:59:16+08:00",
+      "createdAt": "2026-04-26T21:59:16+08:00"
+    },
+    {
+      "id": "wf-28642b64c9",
+      "label": "所以我们必须现在下去。",
+      "fact": "“所以我们必须现在下去。”",
+      "sourceChapterId": "chapter-014",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T22:02:09+08:00",
+      "createdAt": "2026-04-26T22:02:09+08:00"
+    },
+    {
+      "id": "wf-949850ec45",
+      "label": "所以更不能慢。",
+      "fact": "“所以更不能慢。”岳怀川把裂灯咬在齿间，先一步踏上第一枚铁踏，“你跟着我。若下面真有验壳位，先毁锁槽，再抢人。”",
+      "sourceChapterId": "chapter-015",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T22:07:37+08:00",
+      "createdAt": "2026-04-26T22:07:37+08:00"
+    },
+    {
+      "id": "wf-a14d6000c2",
+      "label": "既然它会认我，就总有用。",
+      "fact": "“既然它会认我，就总有用。”沈照喘得发紧，“要么开路，要么害人，不能留给他们。”",
+      "sourceChapterId": "chapter-015",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T22:07:37+08:00",
+      "createdAt": "2026-04-26T22:07:37+08:00"
+    },
+    {
+      "id": "wf-df8703664b",
+      "label": "不能硬掰。",
+      "fact": "“不能硬掰。”他低声道，“会惊里面。”",
+      "sourceChapterId": "chapter-016",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T22:17:31+08:00",
+      "createdAt": "2026-04-26T22:17:31+08:00"
+    },
+    {
+      "id": "wf-9616b966d3",
+      "label": "这回更近。",
+      "fact": "“这回更近。”沈照强压着气，“有人在井里问过我能不能应。”",
+      "sourceChapterId": "chapter-017",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T22:24:34+08:00",
+      "createdAt": "2026-04-26T22:24:34+08:00"
+    },
+    {
+      "id": "wf-12a62b6756",
+      "label": "那就不能在这儿死守。",
+      "fact": "“那就不能在这儿死守。”",
+      "sourceChapterId": "chapter-017",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T22:24:34+08:00",
+      "createdAt": "2026-04-26T22:24:34+08:00"
+    },
+    {
+      "id": "wf-982162ca47",
+      "label": "不能让它一直拿你试。",
+      "fact": "“不能让它一直拿你试。”岳怀川沉声道。",
+      "sourceChapterId": "chapter-019",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T22:56:40+08:00",
+      "createdAt": "2026-04-26T22:56:40+08:00"
+    },
+    {
+      "id": "wf-290d632c60",
+      "label": "不能停。",
+      "fact": "“不能停。”岳怀川低声道。",
+      "sourceChapterId": "chapter-022",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T23:39:26+08:00",
+      "createdAt": "2026-04-26T23:39:26+08:00"
+    },
+    {
+      "id": "wf-5baaa3f3b3",
+      "label": "我一直在。",
+      "fact": "“我一直在。”她道，“只是一直不能站到亮处。”",
+      "sourceChapterId": "chapter-022",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T23:39:26+08:00",
+      "createdAt": "2026-04-26T23:39:26+08:00"
+    },
+    {
+      "id": "wf-135b8b314a",
+      "label": "不能在这儿看完。",
+      "fact": "“不能在这儿看完。”",
+      "sourceChapterId": "chapter-023",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-26T23:55:51+08:00",
+      "createdAt": "2026-04-26T23:55:51+08:00"
+    }
+  ],
+  "worldRules": [
+    {
+      "id": "rule-life-lamp-cost",
+      "label": "命灯代价不可豁免",
+      "rule": "任何真正的破境与借灯都必须支付代价，差别只在代价是立刻显现，还是被延后和伪装。",
+      "scope": "global",
+      "status": "active"
+    },
+    {
+      "id": "rule-burning-self",
+      "label": "燃料来自自我",
+      "rule": "命灯燃烧的燃料主要来自寿数、记忆、情感和因果，不存在完全无损的升境。",
+      "scope": "global",
+      "status": "active"
+    },
+    {
+      "id": "rule-remnant-lamp-signal",
+      "label": "残灯会留下灯息",
+      "rule": "不灭残灯每次主动回应或被强行借用，都会留下可被识灯者追踪的异常灯息。",
+      "scope": "global",
+      "status": "active"
+    },
+    {
+      "id": "rule-hidden-cost",
+      "label": "隐性代价更危险",
+      "rule": "命灯最危险的代价未必是折寿，而是记忆缺口、情感钝化和人格边界松动这类延后显现的后果。",
+      "scope": "global",
+      "status": "active"
+    }
+  ],
+  "powerProgressions": [
+    {
+      "id": "life-lamp-path",
+      "label": "命灯修行境界",
+      "stages": [
+        {
+          "name": "引灯",
+          "nextStage": "明火",
+          "breakthroughRequirements": [
+            "第一次主动点亮命灯",
+            "经脉能够承受持续灯火"
+          ]
+        },
+        {
+          "name": "明火",
+          "nextStage": "映骨",
+          "breakthroughRequirements": [
+            "灯火外显稳定",
+            "能压住情绪失控"
+          ]
+        },
+        {
+          "name": "映骨",
+          "nextStage": "照府",
+          "breakthroughRequirements": [
+            "灯火照骨不崩",
+            "能承受旧伤和体质反噬"
+          ]
+        },
+        {
+          "name": "照府",
+          "nextStage": "焚相",
+          "breakthroughRequirements": [
+            "神魂能承受灯火入府",
+            "记忆结构未被烧穿"
+          ]
+        },
+        {
+          "name": "焚相",
+          "nextStage": "离劫",
+          "breakthroughRequirements": [
+            "能在焚相中保住自我锚点"
+          ]
+        },
+        {
+          "name": "离劫",
+          "nextStage": "",
+          "breakthroughRequirements": [
+            "跨过命灯与自我彻底剥离的极限"
+          ]
+        }
+      ]
+    }
+  ],
+  "factions": [
+    {
+      "id": "faction-qingjin-sect",
+      "name": "青烬宗",
+      "type": "sect",
+      "status": "active",
+      "summary": "以炼灯与控火见长的宗门，表面讲秩序和规矩，实际默认把底层弟子的寿数烧成宗门运转的燃料。"
+    },
+    {
+      "id": "faction-zhaoming-bureau",
+      "name": "照命司",
+      "type": "organization",
+      "status": "active",
+      "summary": "负责登记、追查和回收高危命灯异象的半官方组织，对异常灯波极为敏感。"
+    },
+    {
+      "id": "faction-wudeng-society",
+      "name": "无灯会",
+      "type": "organization",
+      "status": "active",
+      "summary": "一群认为现有燃灯体系本身就是错误的人，既想灭灯，也想夺灯。"
+    },
+    {
+      "id": "faction-cinder-lineage",
+      "name": "残焰旧脉",
+      "type": "hidden-lineage",
+      "status": "rumored",
+      "summary": "旧时代遗留下来的识灯者与残存意志，真正了解不灭残灯的来历。"
+    }
+  ],
+  "locations": [
+    {
+      "id": "loc-waste-shed",
+      "name": "废照棚",
+      "summary": "青烬宗外门收容将熄弟子的破棚，病弱、欠债和等死都堆在这里。",
+      "status": "active"
+    },
+    {
+      "id": "loc-old-furnace-yard",
+      "name": "旧炼灯炉场",
+      "summary": "宗门废弃的旧炼灯区，首章残灯回应的核心现场。",
+      "status": "active"
+    },
+    {
+      "id": "loc-outer-lamp-platform",
+      "name": "外门测灯台",
+      "summary": "第二章公开测灯所在场地，也是底层弟子第一次被当众划分价值的地方。",
+      "status": "active"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "artifact-remnant-lamp",
+      "name": "不灭残灯",
+      "summary": "藏在沈照体内的异常命灯，既能借命，也会改写借灯者。",
+      "status": "active"
+    }
+  ],
+  "mysteries": [
+    {
+      "id": "mystery-remnant-lamp-origin",
+      "title": "不灭残灯究竟来自谁",
+      "status": "active",
+      "summary": "这盏灯是旧时代遗物、某位存在的容器，还是本就属于沈照命里的缺口，目前无人知道。"
+    },
+    {
+      "id": "mystery-missing-memory",
+      "title": "沈照首章失去的记忆是什么",
+      "status": "active",
+      "summary": "残灯第一次主动回应后，沈照忘掉了一段本该绝不会忘的旧事，这既是代价，也是后续追查线索。"
+    }
+  ]
+}
