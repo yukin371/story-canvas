@@ -124,7 +124,7 @@
 - 一幕级 `contractAlignment` 复用了章节级契约思想，但阈值更偏向“局部兑现/局部钩子”，不等同于整章判断
 - `story_review.py` 现在还会输出 `storyConstraintSignals`，用于暴露当前章评审实际消费到的情绪契约、世界规则、到窗伏笔和角色状态切片
 - `story_review.py` 现在还会在 chapter review 中输出 `chapterHandoffSignals`，用于暴露“上一章结果 -> 本章起点”的承接风险；它是软规则，误报应优先通过真实样例回灌，而不是继续硬编码更重的剧情证明器
-- `chapterHandoffSignals` 当前只在存在明确前章负载时触发：前章需要留下角色状态变化、活跃线程或章节方向负载；检测会同时看角色/状态/线程锚点与前章 direction / beat / scene goal 的语义锚点，单个弱语义锚点只算辅助证据，开头前两段没有接住但前四段内自然回接，会记录 `delayedBridge=true` 并避免误报，不要求每章开头机械复述上一章
+- `chapterHandoffSignals` 当前只在存在明确前章负载时触发：前章需要留下角色状态变化、活跃线程或章节方向负载；检测会同时看角色/状态/线程锚点、前章 direction / beat / scene goal 的语义锚点，以及“那句还没散 / 从某处脱身不过半个时辰”这类直接接续句式；单个弱语义锚点只算辅助证据，开头前两段没有接住但前四段内自然回接，会记录 `delayedBridge=true` 并避免误报，不要求每章开头机械复述上一章
 - `story_review.py` 现在还会在 chapter review 中输出 `consistencySignals`，用于暴露高频特殊术语复用、设定候选和设定冲突
 - `story_review.py` 现在还会通过 `consistencySignals.unintroducedNameReveals` 暴露“先匿名描写、后突兀报姓名”这类认知边界问题
 - `story_review.py` 现在还会通过 `consistencySignals.capabilityTaskRisks` 暴露“低修为角色直接承担高风险任务但缺少例外说明”这类设定合理性问题

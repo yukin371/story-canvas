@@ -119,6 +119,7 @@ HANDOFF_CONTEXT_ANCHOR_STOPWORDS = {
 }
 HANDOFF_CONTEXT_ANCHOR_BAD_BOUNDARY_CHARS = set("的一了是有在和与把被从到时后前里中上下来去向让给为以将已正再先只仍才层道条个种这那")
 HANDOFF_CONTEXT_ANCHOR_STRONG_CHARS = set("甲乙丙丁戊己庚辛壬癸子丑寅卯辰巳午未申酉戌亥零〇一二三四五六七八九十百千万0123456789")
+HANDOFF_CONTEXT_ANCHOR_STRONG_NOUN_CHARS = set("灯匣廊火册账牌印尸棺符页笔名灰扣缝槽线刀剑井桥阵庙碑卷簿签龛膏梁沟")
 HANDOFF_CONTEXT_ANCHOR_NOUN_CHARS = set("灯匣仓廊火册账牌印门巷尸棺符页笔名灰扣缝槽线案刀剑井桥阵庙铺楼阁塔碑卷")
 HANDOFF_CONTEXT_ANCHOR_NOUN_SUFFIXES = ("女人", "追兵", "名单", "账本", "残页", "旧案", "暗线")
 HANDOFF_DIRECT_CONTINUATION_PHRASES = (
@@ -137,6 +138,8 @@ HANDOFF_DIRECT_CONTINUATION_PHRASES = (
     "那点",
     "那声",
     "那一下",
+    "那层",
+    "落下去后",
 )
 HANDOFF_DIRECT_CONTINUATION_PATTERNS = (
     re.compile(r"^从.{1,24}(脱身|出来|带出|抢出|逃出|钻入|潜入|落进|滑进|走进)"),
@@ -1908,7 +1911,7 @@ def _extract_handoff_context_anchors(previous_chapter: Dict[str, Any], target_te
             candidates.add(cleaned)
 
     normalized_source = _normalize_handoff_anchor(source_text)
-    for length in (8, 7, 6, 5, 4):
+    for length in (8, 7, 6, 5, 4, 3):
         for idx in range(0, max(len(normalized_source) - length + 1, 0)):
             candidate = normalized_source[idx : idx + length]
             if _is_valid_handoff_anchor(candidate) and _handoff_anchor_weight(candidate) >= 2:
@@ -1958,6 +1961,8 @@ def _handoff_anchor_weight(anchor: str) -> int:
         return 3
     if any(char in anchor for char in HANDOFF_CONTEXT_ANCHOR_STRONG_CHARS):
         return 3
+    if len(anchor) >= 3 and any(char in anchor for char in HANDOFF_CONTEXT_ANCHOR_STRONG_NOUN_CHARS):
+        return 3
     if len(anchor) >= 5 and _has_handoff_anchor_noun_signal(anchor):
         return 3
     if len(anchor) >= 4 and _has_handoff_anchor_noun_signal(anchor):
@@ -1970,7 +1975,9 @@ def _normalize_handoff_anchor(text: str) -> str:
 
 
 def _is_valid_handoff_anchor(anchor: str) -> bool:
-    if len(anchor) < 4:
+    if len(anchor) < 3:
+        return False
+    if len(anchor) == 3 and not any(char in anchor for char in HANDOFF_CONTEXT_ANCHOR_STRONG_NOUN_CHARS):
         return False
     if anchor[0] in HANDOFF_CONTEXT_ANCHOR_BAD_BOUNDARY_CHARS:
         return False
