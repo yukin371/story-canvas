@@ -478,16 +478,16 @@
                       </div>
                     </div>
                   </div>
-                  <div class="template-editor-shell">
-                    <div class="template-editor-head">
-                      <span class="template-panel-label">用户模板编辑</span>
+                  <details class="template-editor-shell" :open="showAdvancedTemplateEditor" @toggle="showAdvancedTemplateEditor = ($event.currentTarget as HTMLDetailsElement).open">
+                    <summary class="template-editor-head">
+                      <span class="template-panel-label">高级模板编辑</span>
                       <div class="template-editor-actions">
-                        <button class="template-editor-link" type="button" @click="startNewPromptPackDraft">新建</button>
-                        <button class="template-editor-link" type="button" @click="startDraftFromSelectedPack">
+                        <button class="template-editor-link" type="button" @click.prevent="startNewPromptPackDraft">新建</button>
+                        <button class="template-editor-link" type="button" @click.prevent="startDraftFromSelectedPack">
                           {{ currentPackSourceLabel === "系统模板" ? "复制当前系统模板" : "编辑当前用户模板" }}
                         </button>
                       </div>
-                    </div>
+                    </summary>
                     <div class="template-editor-meta">
                       <span>{{ loadingPromptPackLibrary ? "正在读取模板库…" : promptPackLibraryDir || "未发现用户模板目录" }}</span>
                       <span>{{ promptPackDraftStateLabel }}</span>
@@ -742,7 +742,7 @@
                         </t-button>
                       </div>
                     </div>
-                  </div>
+                  </details>
                 </section>
 
                 <section class="workspace-block">
@@ -857,12 +857,12 @@
               </div>
 
               <div class="illustration-form illustration-form-side illustration-template-side">
-                <div v-if="illustrationSetupWarning" class="settings-warning-card">
+                <div v-if="illustrationSetupWarning" class="settings-warning-card illustration-settings-warning">
                   <strong>生成前需要先补齐配置</strong>
                   <p>{{ illustrationSetupWarning }}</p>
                 </div>
 
-                <div class="workspace-block">
+                <div class="workspace-block illustration-result-block">
                   <div class="workspace-block-head">
                     <strong class="workspace-block-title">结果</strong>
                     <span class="workspace-plain-meta">{{ resultSummary?.mode || mode }}</span>
@@ -896,7 +896,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
 
 import {
   buildWorkbenchAssetUrl,
@@ -1013,6 +1013,10 @@ const isProjectBound = computed(() => Boolean(summary.value?.project.root));
 
 const workspaceMode = defineModel<"review" | "illustration">("workspaceMode", { required: true });
 const selectedChapter = ref<ChapterRecord | null>(null);
+const viewportWidth = ref(typeof window === "undefined" ? 1440 : window.innerWidth);
+const isTabletLayout = computed(() => viewportWidth.value <= 1180);
+const isMobileLayout = computed(() => viewportWidth.value <= 900);
+const showAdvancedTemplateEditor = ref(false);
 
 const projectPanelMode = ref<"import" | "create">("import");
 const showProjectSetup = ref(false);
@@ -1075,6 +1079,10 @@ const sidebarGroupOpen = reactive<Record<SidebarGroupKey, boolean>>({
   illustrationChapters: true,
   illustrationHistory: false,
 });
+
+function updateViewportWidth() {
+  viewportWidth.value = window.innerWidth;
+}
 
 const responseModelOptions = [
   { label: "gpt-5.4", value: "gpt-5.4" },
@@ -1451,6 +1459,15 @@ function expandChapterSidebarGroups() {
   sidebarGroupOpen.reviewChapters = true;
   sidebarGroupOpen.illustrationChapters = true;
 }
+
+onMounted(() => {
+  updateViewportWidth();
+  window.addEventListener("resize", updateViewportWidth);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", updateViewportWidth);
+});
 
 function handleProjectSelect(value: string) {
   showProjectSetup.value = false;
@@ -2356,6 +2373,23 @@ watch(
 );
 
 watch(
+  isMobileLayout,
+  (mobile) => {
+    if (mobile) {
+      sidebarGroupOpen.reviewEntities = false;
+      sidebarGroupOpen.reviewReference = false;
+      sidebarGroupOpen.illustrationHistory = false;
+      showAdvancedTemplateEditor.value = false;
+      return;
+    }
+    if (!isTabletLayout.value) {
+      showAdvancedTemplateEditor.value = true;
+    }
+  },
+  { immediate: true }
+);
+
+watch(
   () => [summary.value?.project.root || "", settings.value?.workspaceIllustration.promptPackName || ""] as const,
   ([root]) => {
     if (root === syncedProjectRoot.value && (root || !settings.value?.workspaceIllustration)) {
@@ -3094,6 +3128,15 @@ function formatValue(value: unknown): string {
   align-items: flex-start;
 }
 
+.template-editor-head {
+  cursor: pointer;
+  list-style: none;
+}
+
+.template-editor-head::-webkit-details-marker {
+  display: none;
+}
+
 .template-editor-meta {
   flex-wrap: wrap;
   color: var(--muted);
@@ -3358,14 +3401,12 @@ function formatValue(value: unknown): string {
 
 @media (max-width: 1180px) {
   .workbench-shell {
-    height: auto;
+    min-height: 100%;
     overflow: visible;
   }
 
   .review-grid,
   .illustration-grid-separated,
-  .illustration-editor-layout,
-  .review-workspace,
   .protocol-inline,
   .workspace-project-import-row,
   .workspace-project-create-row,
@@ -3376,6 +3417,14 @@ function formatValue(value: unknown): string {
   .template-editor-grid,
   .modifier-editor-row {
     grid-template-columns: 1fr;
+  }
+
+  .illustration-editor-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 0.78fr);
+  }
+
+  .review-workspace {
+    grid-template-columns: minmax(0, 1fr) 260px;
   }
 
   .review-grid,
@@ -3409,9 +3458,34 @@ function formatValue(value: unknown): string {
   }
 
   .review-inspector-pane {
+    padding: 8px 8px 10px;
+  }
+
+  .focus-section-compact {
+    padding-left: 8px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .illustration-editor-layout,
+  .review-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .review-inspector-pane {
     border-left: 0;
     border-top: 1px solid rgba(31, 35, 41, 0.08);
     padding-top: 12px;
+  }
+
+  .illustration-form-side {
+    order: -1;
+  }
+
+  .illustration-result-block,
+  .result-block,
+  .illustration-settings-warning {
+    order: -1;
   }
 }
 
@@ -3443,6 +3517,13 @@ function formatValue(value: unknown): string {
   .workbench-sidebar-section {
     padding-left: 8px;
     padding-right: 8px;
+  }
+
+  .template-editor-actions,
+  .template-editor-meta,
+  .workspace-block-head,
+  .run-status-row {
+    flex-wrap: wrap;
   }
 }
 </style>

@@ -19,13 +19,21 @@
           </div>
         </div>
 
+        <p class="detail-copy provider-fallback-hint">
+          多个启用的提供商按顺位依次尝试，失败后自动切换下一个。
+        </p>
+
         <div class="provider-stack">
           <div
             v-for="item in providerDrafts"
             :key="item.id"
             class="provider-row"
-            :class="{ 'is-dragging': draggingProviderId === item.id }"
-            @dragover.prevent
+            :class="{
+              'is-dragging': draggingProviderId === item.id,
+              'is-drop-target': dropTargetId === item.id,
+            }"
+            @dragover.prevent="handleProviderDragOver(item.id, $event)"
+            @dragleave="handleProviderDragLeave"
             @drop="handleProviderDrop(item.id)"
           >
             <div class="provider-row-head">
@@ -41,30 +49,26 @@
                   <span v-for="dot in 9" :key="dot" class="provider-drag-dot"></span>
                 </button>
                 <div class="provider-row-title">
-                  <strong>{{ item.label || "未命名提供商" }}</strong>
-                  <span>顺位 {{ item.priority }} · {{ item.enabled ? "启用" : "停用" }}</span>
+                  <strong>#{{ item.priority }} · {{ item.label || "未命名提供商" }}</strong>
+                  <span>{{ item.enabled ? "启用" : "停用" }}</span>
                 </div>
               </div>
               <div class="provider-row-actions">
+                <t-button variant="text" size="small" @click="moveProvider(item.id, -1)">上移</t-button>
+                <t-button variant="text" size="small" @click="moveProvider(item.id, 1)">下移</t-button>
                 <t-button variant="text" size="small" theme="danger" @click="clearProviderKey(item.id)">
                   移除 Key
                 </t-button>
               </div>
             </div>
 
-            <t-form layout="vertical" class="compact-form provider-form">
-              <div class="compact-form-grid form-grid-provider-top">
+            <t-form layout="inline" class="provider-form">
+              <div class="form-grid-provider-row">
                 <t-form-item label="名称">
                   <t-input v-model="item.label" placeholder="OpenAI 官方 / Gateway A" />
                 </t-form-item>
-                <t-form-item label="启用">
-                  <t-switch v-model="item.enabled" />
-                </t-form-item>
-              </div>
-
-              <div class="compact-form-grid form-grid-provider-cred">
                 <t-form-item label="Base URL">
-                  <t-input v-model="item.baseUrl" placeholder="官方 OpenAI 可留空，兼容服务填写完整 Base URL" />
+                  <t-input v-model="item.baseUrl" placeholder="官方可留空" />
                 </t-form-item>
                 <t-form-item label="Key">
                   <t-input
@@ -73,6 +77,9 @@
                     placeholder="sk-..."
                     @update:model-value="handleProviderKeyInput(item.id, String($event ?? ''))"
                   />
+                </t-form-item>
+                <t-form-item class="provider-enable-field">
+                  <t-switch v-model="item.enabled" />
                 </t-form-item>
                 <div class="provider-inline-save">
                   <t-button theme="primary" :loading="savingSettings" @click="handleSaveProviders">
@@ -131,6 +138,7 @@ const settingsError = computed(() => workspace.settingsError.value);
 const loadingSettings = computed(() => workspace.loadingSettings.value);
 const savingSettings = computed(() => workspace.savingSettings.value);
 const draggingProviderId = ref("");
+const dropTargetId = ref("");
 
 const providerDrafts = ref<ProviderDraft[]>([]);
 const providerSeed = ref(1);
@@ -230,9 +238,21 @@ function handleProviderDragStart(id: string) {
   draggingProviderId.value = id;
 }
 
+function handleProviderDragOver(targetId: string, event: DragEvent) {
+  if (!draggingProviderId.value || draggingProviderId.value === targetId) {
+    return;
+  }
+  dropTargetId.value = targetId;
+}
+
+function handleProviderDragLeave() {
+  dropTargetId.value = "";
+}
+
 function handleProviderDrop(targetId: string) {
   if (!draggingProviderId.value || draggingProviderId.value === targetId) {
     draggingProviderId.value = "";
+    dropTargetId.value = "";
     return;
   }
   const next = [...providerDrafts.value];
@@ -240,6 +260,7 @@ function handleProviderDrop(targetId: string) {
   const toIndex = next.findIndex((item) => item.id === targetId);
   if (fromIndex < 0 || toIndex < 0) {
     draggingProviderId.value = "";
+    dropTargetId.value = "";
     return;
   }
   const [moved] = next.splice(fromIndex, 1);
@@ -247,10 +268,25 @@ function handleProviderDrop(targetId: string) {
   providerDrafts.value = next;
   normalizeProviderPriority();
   draggingProviderId.value = "";
+  dropTargetId.value = "";
 }
 
 function handleProviderDragEnd() {
   draggingProviderId.value = "";
+  dropTargetId.value = "";
+}
+
+function moveProvider(id: string, direction: -1 | 1) {
+  const currentIndex = providerDrafts.value.findIndex((item) => item.id === id);
+  const nextIndex = currentIndex + direction;
+  if (currentIndex < 0 || nextIndex < 0 || nextIndex >= providerDrafts.value.length) {
+    return;
+  }
+  const next = [...providerDrafts.value];
+  const [moved] = next.splice(currentIndex, 1);
+  next.splice(nextIndex, 0, moved);
+  providerDrafts.value = next;
+  normalizeProviderPriority();
 }
 
 async function reloadSettings() {
@@ -314,40 +350,53 @@ watch(
   gap: 8px;
 }
 
+.provider-fallback-hint {
+  margin-bottom: 2px;
+}
+
 .provider-stack {
   display: grid;
-  gap: 10px;
+  gap: 6px;
 }
 
 .provider-row {
   display: grid;
-  gap: 10px;
-  padding: 12px;
+  gap: 8px;
+  padding: 10px 12px;
   border: 1px solid var(--line);
   background: var(--surface-soft);
+  border-radius: 4px;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
 }
 
 .provider-row.is-dragging {
-  opacity: 0.56;
+  opacity: 0.5;
+  transform: scale(0.98);
+}
+
+.provider-row.is-drop-target {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
 }
 
 .provider-row-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 8px;
 }
 
 .provider-row-head-main {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   min-width: 0;
 }
 
 .provider-row-title {
-  display: grid;
-  gap: 4px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
   min-width: 0;
 }
 
@@ -382,7 +431,7 @@ watch(
 .provider-row-actions {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   flex-wrap: wrap;
 }
 
@@ -391,13 +440,21 @@ watch(
   padding-right: 0;
 }
 
-.form-grid-provider-top {
-  grid-template-columns: minmax(260px, 1fr) 88px;
+.form-grid-provider-row {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) minmax(100px, 1.3fr) minmax(100px, 1fr) 48px 72px;
+  gap: 8px;
+  align-items: end;
 }
 
-.form-grid-provider-cred {
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 1fr) 100px;
-  align-items: end;
+.provider-enable-field :deep(.t-form__label) {
+  display: none;
+}
+
+.provider-enable-field {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .provider-inline-save {
@@ -430,14 +487,26 @@ watch(
 
 @media (max-width: 1180px) {
   .settings-shell,
-  .settings-meta-grid,
-  .form-grid-provider-top,
-  .form-grid-provider-cred {
+  .settings-meta-grid {
     grid-template-columns: 1fr;
   }
 
   .settings-pane-body {
     overflow: visible;
+  }
+
+  .form-grid-provider-row {
+    grid-template-columns: minmax(80px, 1fr) minmax(80px, 1.3fr) minmax(80px, 1fr) 48px 72px;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-grid-provider-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .provider-enable-field {
+    justify-content: flex-start;
   }
 }
 </style>

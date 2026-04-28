@@ -203,6 +203,10 @@ code {
 }
 
 @media (max-width: 1180px) {
+  :root {
+    --workbench-side-width: 292px;
+  }
+
   html,
   body,
   #app {
@@ -212,5 +216,11 @@ code {
   .compact-form-row,
   .compact-form-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --workbench-side-width: 272px;
   }
 }

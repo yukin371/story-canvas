@@ -71,26 +71,29 @@
         />
       </t-content>
       <footer class="statusbar">
-        <div class="statusbar-item">
-          <span>项目</span>
-          <strong>{{ currentProjectTitle }}</strong>
+        <div class="statusbar-group statusbar-group-primary">
+          <div class="statusbar-item">
+            <span>项目</span>
+            <strong>{{ currentProjectTitle }}</strong>
+          </div>
+          <div class="statusbar-item">
+            <span>{{ currentContextLabel }}</span>
+            <strong>{{ currentContextValue }}</strong>
+          </div>
         </div>
-        <div class="statusbar-item">
-          <span>{{ currentContextLabel }}</span>
-          <strong>{{ currentContextValue }}</strong>
-        </div>
-        <div class="statusbar-item">
-          <span>题材</span>
-          <strong>{{ currentGenre }}</strong>
-        </div>
-        <div class="statusbar-spacer"></div>
-        <div class="statusbar-item statusbar-item-right">
-          <span>{{ currentDetailLabel }}</span>
-          <strong>{{ currentDetailValue }}</strong>
-        </div>
-        <div class="statusbar-item statusbar-item-right">
-          <span>{{ currentAuxLabel }}</span>
-          <strong>{{ currentAuxValue }}</strong>
+        <div class="statusbar-group statusbar-group-secondary">
+          <div class="statusbar-item statusbar-item-secondary">
+            <span>题材</span>
+            <strong>{{ currentGenre }}</strong>
+          </div>
+          <div class="statusbar-item statusbar-item-right">
+            <span>{{ currentDetailLabel }}</span>
+            <strong>{{ currentDetailValue }}</strong>
+          </div>
+          <div class="statusbar-item statusbar-item-right">
+            <span>{{ currentAuxLabel }}</span>
+            <strong>{{ currentAuxValue }}</strong>
+          </div>
         </div>
       </footer>
     </t-layout>
@@ -283,7 +286,8 @@ onMounted(() => {
 .statusbar {
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: space-between;
+  gap: 18px;
   min-height: 28px;
   padding: 0 18px;
   border-top: 1px solid var(--line);
@@ -291,6 +295,21 @@ onMounted(() => {
   color: #4b5563;
   font-size: 12px;
   overflow: hidden;
+}
+
+.statusbar-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.statusbar-group-primary {
+  flex: 1;
+}
+
+.statusbar-group-secondary {
+  justify-content: flex-end;
 }
 
 .statusbar-item {
@@ -304,9 +323,8 @@ onMounted(() => {
   justify-content: flex-end;
 }
 
-.statusbar-spacer {
-  flex: 1;
-  min-width: 12px;
+.statusbar-item-secondary {
+  opacity: 0.82;
 }
 
 .statusbar-item strong {
@@ -320,9 +338,12 @@ onMounted(() => {
 
 @media (max-width: 1180px) {
   .app-shell,
-  .main-layout,
+  .main-layout {
+    min-height: 100vh;
+  }
+
   .page-content {
-    height: auto;
+    min-height: 0;
   }
 
   .app-shell,
@@ -336,12 +357,33 @@ onMounted(() => {
   }
 
   .statusbar {
-    flex-wrap: wrap;
-    padding: 6px 16px;
+    display: grid;
+    gap: 6px;
+    padding: 8px 16px;
+  }
+
+  .statusbar-group {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px 16px;
+  }
+
+  .statusbar-group-secondary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .statusbar-item {
+    justify-content: flex-start;
   }
 
   .statusbar-item strong {
     max-width: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .statusbar-group-secondary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -394,8 +436,28 @@ onMounted(() => {
   }
 
   .statusbar {
-    gap: 8px 12px;
-    padding: 8px 12px;
+    gap: 8px;
+    padding: 8px 12px 10px;
+  }
+
+  .statusbar-group,
+  .statusbar-group-secondary {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .statusbar-item {
+    display: grid;
+    gap: 2px;
+  }
+
+  .statusbar-item-secondary {
+    display: none;
+  }
+
+  .statusbar-item strong {
+    white-space: normal;
+    line-height: 1.35;
   }
 }
 </style>
