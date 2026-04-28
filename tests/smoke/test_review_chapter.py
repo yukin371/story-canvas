@@ -856,6 +856,68 @@ class ReviewChapterSmokeTest(unittest.TestCase):
         self.assertTrue(payload["chapterHandoffSignals"]["openingContextAnchors"])
         self.assertTrue(any(item["ruleId"] == "chapterHandoffWeak" for item in payload["ruleJudgements"]))
 
+    def test_review_chapter_allows_direct_continuation_opening(self) -> None:
+        (self.temp_dir / "outline.yaml").write_text(
+            json.dumps(
+                {
+                    "chapters": [
+                        {
+                            "id": "chapter-001",
+                            "title": "借命余波",
+                            "status": "draft",
+                            "direction": "林舟在灯库里第一次借命，岳怀川确认代价已经开始回咬。",
+                        },
+                        {
+                            "id": "chapter-002",
+                            "title": "灯下留人",
+                            "status": "draft",
+                            "direction": "借命风波后，林舟必须处理灯库留下的脏账。",
+                        },
+                    ],
+                    "chapterDirections": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "threads.yaml").write_text(
+            json.dumps(
+                {
+                    "threads": [
+                        {
+                            "id": "thread-lamp-cost",
+                            "label": "借命代价",
+                            "status": "active",
+                            "relatedChapters": ["chapter-001", "chapter-002"],
+                        }
+                    ]
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
+        chapter_path = self.temp_dir / "chapters" / "chapter-002.md"
+        chapter_path.write_text(
+            "# 第二章\n\n"
+            "灯库门前，岳怀川那句“是借命”还没散，林舟掌心的冷意便又翻了上来。\n\n"
+            "他没有解释，只把灯牌压进袖底，先看庄无烬带人堵住门口。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-002"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertFalse(payload["chapterHandoffSignals"]["detected"])
+        self.assertGreaterEqual(payload["chapterHandoffSignals"]["openingDirectContinuationHits"], 2)
+        self.assertGreaterEqual(payload["chapterHandoffSignals"]["openingAnchorScore"], 2)
+        self.assertFalse(any(item["ruleId"] == "chapterHandoffWeak" for item in payload["ruleJudgements"]))
+
     def test_review_chapter_emits_meta_leakage_rule_judgement(self) -> None:
         (self.temp_dir / "review-rules.yaml").write_text(
             json.dumps(
