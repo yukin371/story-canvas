@@ -127,20 +127,23 @@
 
 ### AIF-005 真实闭环命令编排过碎
 
-- 状态: `active`
+- 状态: `mitigated`
 - 首次记录: `2026-04-29`
 - 最近核对: `2026-04-29`
 - 现象:
   - 一次卷级闭环需要显式串行运行 `status/context/outline/review/workflow/export` 多条命令。
 - AI 负担:
   - 调用方需要自己记忆顺序、刷新时机和失败后的回退位置。
+- 当前缓解:
+  - `workflow status/export --volume-id` 现在输出 `orchestrationPlan.suggestedCommands`，按当前卷级 gate 给出下一组可执行 CLI。
+  - 该计划只作为派生命令队列，不自动执行，也不写入新的卷级 workflow 状态源。
 - 当前证据:
   - `docs/plans/2026-04-29-agent-writing-workflow-e2e.md`
   - `projects/agent-volume-e2e-20260429/workflow.yaml`
 - 期望收口:
   - 提供更高层的串行 orchestration 或更明确的下一步提示。
 - 下次实施必查:
-  - 真实实跑时是否仍频繁停下来判断“下一条命令该跑什么”。
+  - 真实实跑时 `orchestrationPlan.suggestedCommands` 是否足够覆盖下一步；若仍需要人工跨命令编排，再评估持久化 volume workflow run。
 
 ## 3. Resolved
 

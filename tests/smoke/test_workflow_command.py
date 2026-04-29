@@ -367,6 +367,21 @@ class WorkflowCommandSmokeTest(unittest.TestCase):
         self.assertIn("project-gate", outline_rule["tags"])
         self.assertIn("outline_ready", outline_rule["tags"])
 
+    def test_workflow_status_exposes_start_guide_for_outline_bootstrap(self) -> None:
+        self._init_project(ready_project_gate=True)
+
+        exit_code, payload = self._run_json(["workflow", "status", "--root", str(self.temp_dir)])
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["currentStage"], "outline_ready")
+        start_guide = payload["startGuide"]
+        self.assertFalse(start_guide["hasBodyParagraphs"])
+        self.assertIn("missing-direction", start_guide["missingCodes"])
+        self.assertIn("missing-beats", start_guide["missingCodes"])
+        self.assertIn("missing-scene-plans", start_guide["missingCodes"])
+        self.assertTrue(any("structure scaffold" in item for item in start_guide["suggestedCommands"]))
+        self.assertTrue(any("scene-detect" in item for item in start_guide["suggestedCommands"]))
+
     def test_workflow_status_reports_missing_project_prd_as_advisory(self) -> None:
         self._init_project(ready_project_gate=True)
         (self.temp_dir / "PRD.md").unlink()
@@ -412,10 +427,19 @@ class WorkflowCommandSmokeTest(unittest.TestCase):
 
         exit_code, payload = self._run_json(["workflow", "run", "--root", str(self.temp_dir)])
         self.assertEqual(exit_code, 0)
-        self.assertEqual(payload["workflow"]["currentStage"], "chapter_review_ready")
+        self.assertEqual(payload["workflow"]["currentStage"], "context_ready")
 
         exit_code, _ = self._run_json(["chapter", "analyze", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
         self.assertEqual(exit_code, 0)
+        exit_code, _ = self._run_json(["context", "refresh", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+        self.assertEqual(exit_code, 0)
+
+        exit_code, payload = self._run_json(
+            ["workflow", "advance", "--root", str(self.temp_dir), "--gate", "context_ready", "--decision", "accept"]
+        )
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["currentStage"], "chapter_review_ready")
+
         exit_code, _ = self._run_json(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
         self.assertEqual(exit_code, 0)
 
@@ -442,7 +466,19 @@ class WorkflowCommandSmokeTest(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertEqual(payload["workflowStatus"], "completed")
         self.assertEqual(payload["workflow"]["workflowStatus"], "completed")
-        self.assertEqual(len(payload["workflow"]["gateHistory"]), 3)
+        self.assertEqual(len(payload["workflow"]["gateHistory"]), 4)
+
+    def test_workflow_requires_context_refresh_before_chapter_review_gate(self) -> None:
+        self._prepare_review_ready_project()
+
+        exit_code, payload = self._run_json(["workflow", "status", "--root", str(self.temp_dir)])
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["currentStage"], "context_ready")
+        self.assertEqual(payload["workflowStatus"], "in_progress")
+        self.assertEqual(payload["currentGateDecision"]["blockingRules"], ["missing-context-refresh"])
+        self.assertTrue(any("context refresh" in item for item in payload["nextActions"]))
+
 
     def test_workflow_advance_modify_and_reset(self) -> None:
         self._prepare_review_ready_project()
@@ -537,6 +573,14 @@ class WorkflowCommandSmokeTest(unittest.TestCase):
         self.assertEqual(payload["volumeStructureCheck"]["role"], "intro-volume")
         self.assertEqual(payload["volumeStructureCheck"]["summary"]["missingCount"], 1)
         self.assertEqual(payload["preflightSummary"]["mentionActionCount"], 5)
+        self.assertEqual(payload["orchestrationPlan"]["currentStage"], "volume_tooling_gate")
+        self.assertTrue(
+            any(
+                "entity mention-plan" in item and "--volume-id volume-001" in item
+                for item in payload["orchestrationPlan"]["suggestedCommands"]
+            )
+        )
+        self.assertTrue(any("review preflight" in item for item in payload["orchestrationPlan"]["suggestedCommands"]))
         self.assertIn("volume-mention-hygiene-pending", payload["currentGateDecision"]["blockingRules"])
         self.assertTrue(payload["currentRuleJudgements"])
         self.assertTrue(payload["changeRequestDrafts"])
@@ -585,6 +629,8 @@ class WorkflowCommandSmokeTest(unittest.TestCase):
         self.assertEqual(saved["scope"], "volume")
         self.assertEqual(saved["currentStage"], payload["currentStage"])
         self.assertIn("preflight", saved)
+        self.assertIn("orchestrationPlan", saved)
+        self.assertTrue(any("workflow status" in item for item in saved["orchestrationPlan"]["suggestedCommands"]))
         self.assertEqual(saved["projectAdvisories"][0]["ruleId"], "project-prd-incomplete")
 
     def test_workflow_volume_scope_requires_self_review_after_tooling_gate(self) -> None:
@@ -603,6 +649,10 @@ class WorkflowCommandSmokeTest(unittest.TestCase):
         self.assertEqual(payload["volumeSelfReview"]["repairCoverageStatus"], "")
         self.assertEqual(payload["volumeSelfReview"]["weakDimensionLabels"], [])
         self.assertEqual(payload["volumeSelfReview"]["uncoveredWeakDimensionLabels"], [])
+        self.assertTrue(any("volume-self-template" in item for item in payload["orchestrationPlan"]["suggestedCommands"]))
+        self.assertTrue(
+            any("volume-self --root" in item for item in payload["orchestrationPlan"]["suggestedCommands"])
+        )
         self.assertTrue(payload["changeRequestDrafts"])
         self.assertTrue(
             any(
@@ -632,6 +682,12 @@ class WorkflowCommandSmokeTest(unittest.TestCase):
         self.assertEqual(payload["volumeSelfReview"]["weakDimensionLabels"], [])
         self.assertEqual(payload["volumeSelfReview"]["uncoveredWeakDimensionLabels"], [])
         self.assertEqual(payload["currentGateDecision"]["status"], "ready")
+        self.assertTrue(
+            any(
+                "export --root" in item and "--format review-packet" in item
+                for item in payload["orchestrationPlan"]["suggestedCommands"]
+            )
+        )
         self.assertEqual(payload["changeRequestDrafts"], [])
 
     def test_workflow_volume_scope_blocks_missing_independent_editor_pass(self) -> None:

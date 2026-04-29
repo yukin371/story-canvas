@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from story_harness_cli.commands.project_support import build_project_advisories
+from story_harness_cli.commands.project_support import build_chapter_start_guide, build_project_advisories
 from story_harness_cli.commands.review_support import build_review_preflight_payload
 from story_harness_cli.protocol import (
     chapter_path,
@@ -54,10 +54,63 @@ def _validate_scope_args(chapter_id: str | None, volume_id: str | None) -> None:
         raise SystemExit("`--chapter-id` 与 `--volume-id` 不能同时使用")
 
 
+def _append_once(items: list[str], value: str) -> None:
+    if value not in items:
+        items.append(value)
+
+
+def _build_volume_orchestration_plan(root: Path, workflow: dict[str, Any]) -> dict[str, Any]:
+    volume_id = str(workflow.get("volumeId", ""))
+    root_arg = f'"{root}"'
+    volume_arg = f"--volume-id {volume_id}" if volume_id else ""
+    current_stage = str(workflow.get("currentStage", ""))
+    commands: list[str] = []
+    notes: list[str] = []
+
+    def add(command: str) -> None:
+        _append_once(commands, command)
+
+    add(f"story-canvas workflow status --root {root_arg} {volume_arg}".strip())
+
+    if current_stage == "volume_preflight_ready":
+        notes.append("当前优先处理卷级预检输入；缺章节文件时需先补正文文件。")
+        add(f"story-canvas review preflight --root {root_arg} {volume_arg}".strip())
+    elif current_stage == "volume_tooling_gate":
+        notes.append("当前优先处理工具侧阻塞项；先看卷级 mention plan，再回到 workflow status 复检。")
+        add(f"story-canvas entity mention-plan --root {root_arg} {volume_arg}".strip())
+        add(f"story-canvas review preflight --root {root_arg} {volume_arg}".strip())
+    elif current_stage == "human_review_ready":
+        volume_self = workflow.get("volumeSelfReview", {})
+        if not volume_self.get("present"):
+            draft_path = root / "reviews" / f"{volume_id}-self-review.draft.yaml"
+            notes.append("当前缺卷级 AI 自审；先生成 draft，补齐后再写入卷级自审结果。")
+            add(f"story-canvas review volume-self-template --root {root_arg} {volume_arg} --output \"{draft_path}\"".strip())
+            add(f"story-canvas review volume-self --root {root_arg} {volume_arg} --input \"{draft_path}\"".strip())
+        elif workflow.get("workflowStatus") == "completed":
+            packet_path = root / "reviews" / f"{volume_id}-review-packet.md"
+            notes.append("卷级 gate 已通过；刷新审查包后进入人工审查。")
+            add(f"story-canvas export --root {root_arg} {volume_arg} --format review-packet --output \"{packet_path}\"".strip())
+        else:
+            notes.append("卷级自审仍有阻塞项；按 changeRequestDrafts 修稿后重新生成并写入自审结果。")
+            add(f"story-canvas review volume-self-template --root {root_arg} {volume_arg}".strip())
+            add(f"story-canvas review volume-self --root {root_arg} {volume_arg} --input <volume-self-review.yaml>".strip())
+
+    add(f"story-canvas workflow status --root {root_arg} {volume_arg}".strip())
+    return {
+        "scope": "volume",
+        "volumeId": volume_id,
+        "currentStage": current_stage,
+        "workflowStatus": workflow.get("workflowStatus", ""),
+        "notes": notes,
+        "suggestedCommands": commands,
+    }
+
+
 def _build_volume_workflow_payload(root: Path, state: dict[str, Any], volume_id: str) -> dict[str, Any]:
     preflight_payload = build_review_preflight_payload(root, state, volume_id=volume_id)
     volume_self_review = latest_volume_self_review(state.get("story_reviews", {}), volume_id)
     workflow = infer_volume_preflight_workflow(preflight_payload, volume_self_review)
+    orchestration_plan = _build_volume_orchestration_plan(root, workflow)
     return {
         "scope": "volume",
         "stateSource": "inferred",
@@ -69,6 +122,7 @@ def _build_volume_workflow_payload(root: Path, state: dict[str, Any], volume_id:
         "preflight": preflight_payload,
         "latestVolumeSelfReview": volume_self_review or None,
         "projectAdvisories": build_project_advisories(root, include_prd_content=True),
+        "orchestrationPlan": orchestration_plan,
         **workflow,
     }
 
@@ -100,6 +154,19 @@ def command_workflow_status(args) -> int:
         "currentGateDecision": workflow_progress["stageResults"][workflow_progress["currentStage"]]["gateDecision"],
         "currentRuleJudgements": workflow_progress["stageResults"][workflow_progress["currentStage"]]["ruleJudgements"],
         "nextActions": workflow_progress["stageResults"][workflow_progress["currentStage"]]["nextActions"],
+        "startGuide": (
+            build_chapter_start_guide(
+                root,
+                workflow_progress.get("targetChapterId") or args.chapter_id or "",
+                missing_codes=list(
+                    workflow_progress["stageResults"][workflow_progress["currentStage"]]["gateDecision"].get(
+                        "blockingRules", []
+                    )
+                ),
+            )
+            if (workflow_progress.get("targetChapterId") or args.chapter_id)
+            else {}
+        ),
     }
     print(json.dumps(payload, ensure_ascii=False, indent=2))
     return 0

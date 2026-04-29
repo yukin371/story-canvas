@@ -98,6 +98,7 @@
 - 本地 UI API 若需要触发插画 dry-run 或真实 generate，应复用 `commands/illustration.py` 的命令侧 helper；插画请求组装、provider request 构造和落盘写入仍由命令层 owner
 - `workflow status` / `workflow run` / `workflow advance` / `workflow reset` / `workflow export` 这组 workflow 状态机入口，负责把 protocol + service 的推断结果、gate 决策和快照导出编排到 `workflow.yaml`
 - `workflow status/export` 现支持 `--volume-id` 的卷级 gate 视图：先基于 `review preflight` 聚合结果判断工具侧阻塞项，再结合最新 `review volume-self` 结果显式判断“是否允许进入人工审查”
+- `workflow status/export --volume-id` 当前会输出派生的 `orchestrationPlan.suggestedCommands`，把当前卷级 gate 翻成下一组可执行 CLI，但不自动执行、不写入新的 volume workflow 状态源
 - `workflow status/export --volume-id` 当前还会带出卷级自审的 `repairCoverage` 紧凑摘要，便于 workflow 面板直接区分“已有自审”与“弱项是否真的进入修复动作”
 - `workflow status/export --volume-id` 当前还会把 `review preflight` 里的 `volumeStructureCheck` 直接抬到顶层输出，便于 UI / agent 不必先反查嵌套 preflight 才能消费卷级结构检查摘要
 - 当卷级自审里存在 `repairCoverage.uncoveredWeakDimensionLabels` 时，`workflow status/export --volume-id` 当前还会把这些未覆盖弱项直接翻成 gate 阻塞原因与 `nextActions`，减少人工自己解读 raw review

@@ -13,6 +13,7 @@ from story_harness_cli.utils import stable_hash
 WORKFLOW_STAGE_ORDER = (
     "project_contract",
     "outline_ready",
+    "context_ready",
     "chapter_review_ready",
     "scene_review_ready",
     "export_ready",
@@ -62,6 +63,11 @@ def infer_workflow_status(
             "nextActions": project_gate["nextActions"],
         },
         "outline_ready": outline_gate,
+        "context_ready": _build_context_stage(
+            state,
+            target_chapter_id,
+            chapter_exists=chapter_exists,
+        ),
         "chapter_review_ready": _build_chapter_review_stage(
             target_chapter_id,
             chapter_exists=chapter_exists,
@@ -81,6 +87,7 @@ def infer_workflow_status(
     )
     stage_results["project_contract"] = _attach_gate_semantics(stage_results["project_contract"], scope="project")
     stage_results["outline_ready"] = _attach_gate_semantics(stage_results["outline_ready"], scope="chapter")
+    stage_results["context_ready"] = _attach_gate_semantics(stage_results["context_ready"], scope="chapter")
     stage_results["chapter_review_ready"] = _attach_gate_semantics(stage_results["chapter_review_ready"], scope="chapter")
     stage_results["scene_review_ready"] = _attach_gate_semantics(stage_results["scene_review_ready"], scope="scene")
     stage_results["export_ready"] = _attach_gate_semantics(stage_results["export_ready"], scope="export")
@@ -114,6 +121,10 @@ def hydrate_workflow_progress(
     )
     if current_stage not in stage_results:
         current_stage = inferred["currentStage"]
+    if _stage_index(current_stage) > _stage_index(inferred["currentStage"]):
+        current_stage = inferred["currentStage"]
+    if workflow_status == "completed" and inferred["workflowStatus"] != "completed":
+        workflow_status = inferred["workflowStatus"]
     return {
         "currentStage": current_stage,
         "targetChapterId": workflow_progress.get("targetChapterId") or inferred["targetChapterId"],
@@ -438,6 +449,51 @@ def _build_outline_stage(state: Dict[str, Any], chapter_id: str | None) -> Dict[
         "nextActions": report["nextActions"],
         "chapterId": report["chapterId"],
         "title": report["title"],
+    }
+
+
+def _build_context_stage(
+    state: Dict[str, Any],
+    chapter_id: str | None,
+    *,
+    chapter_exists: bool,
+) -> Dict[str, Any]:
+    context_lens = state.get("context_lens", {})
+    matching_lens = next(
+        (
+            item
+            for item in reversed(context_lens.get("lenses", []))
+            if item.get("chapterId") == chapter_id
+        ),
+        None,
+    )
+
+    missing = []
+    next_actions = []
+    if not chapter_exists:
+        missing.append({"code": "missing-chapter-file", "message": "缺少目标章节正文文件"})
+        next_actions.append("先补正文章节文件，再进入 context refresh")
+    elif not matching_lens:
+        missing.append({"code": "missing-context-refresh", "message": "缺少当前章节的上下文刷新结果"})
+        next_actions.extend(
+            [
+                "先运行 chapter analyze，生成本章分析基础",
+                "再运行 chapter suggest / review apply / projection apply，把结构化建议与投影入账",
+                "最后运行 context refresh，为目标章节生成可复用上下文",
+            ]
+        )
+
+    completed = chapter_exists and bool(matching_lens)
+    return {
+        "stageId": "context_ready",
+        "completed": completed,
+        "status": "ready" if completed else ("missing-chapter-file" if not chapter_exists else "missing-context-refresh"),
+        "chapterId": chapter_id,
+        "chapterFileExists": chapter_exists,
+        "contextExists": bool(matching_lens),
+        "contextUpdatedAt": matching_lens.get("updatedAt", "") if matching_lens else "",
+        "missing": missing,
+        "nextActions": next_actions,
     }
 
 
