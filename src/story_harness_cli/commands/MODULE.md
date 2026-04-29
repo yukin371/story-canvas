@@ -58,6 +58,7 @@
 - doctor 现在还会校验 `illustrations.yaml` 中的主图/多图资产引用、缺失文件和孤儿资产
 - `entity add` / `entity state-update` / `entity mention-adopt` / `entity mention-plan` / `entity mention-apply` / `entity mention-tag-apply` 现负责 repo-native 的实体建档、状态维护与确定性正文修正，覆盖 `seed/profile/currentState/state/changeLog` 的最小可用写入，并支持把章节中的缺失 mention 显式采纳进 `entities`、把已知 plain mention 批量包成规范 `@{}`，减少 AI 直接改 `entities.yaml` 与章节正文
 - `entity mention-adopt` / `entity mention-apply` / `entity mention-tag-apply` 当前在所属章节已挂到某卷时，还会自动刷新 `reviews/<volume-id>-review-packet.md`，减少 mention hygiene 修补后再手工补导出
+- `entity mention-apply` / `entity mention-tag-apply` 当前会在写入前校验修补后的 `@{...}` 标签语法，并在输出里返回 `postApplyCheck`，让调用方直接看到剩余 mention action、坏标签数量和是否仍需人工复核
 - `entity mention-check` 现负责章节级实体 mention 审查编排：输出已包裹已建档、已包裹未建档、已建档但未包裹、引号内降级忽略，以及最小相关实体/势力/物品上下文
 - `entity mention-plan` 现负责把章节级 mention 审查收敛成结构化 action plan：区分“可确定性包裹的已知引用”和“仍需显式建档的缺失引用”，避免 AI 直接根据原文手改正文或 yaml
 - `entity mention-plan` 现支持 `--volume-id` 做卷级只读预览：逐章列出待包裹 / 待建档 action，便于卷级自审或人工审查前先看整卷闭环缺口

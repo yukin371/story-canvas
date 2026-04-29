@@ -19,7 +19,7 @@ from story_harness_cli.services.reference_mentions import (
     collect_tag_replacements as svc_collect_tag_replacements,
 )
 from story_harness_cli.utils import now_iso, stable_hash
-from story_harness_cli.utils.text import extract_tag_mentions, set_keywords
+from story_harness_cli.utils.text import extract_tag_mentions, find_malformed_entity_tags, set_keywords
 
 
 def _normalize_strings(values: list[str]) -> list[str]:
@@ -318,6 +318,7 @@ def command_entity_mention_tag_apply(args) -> int:
     if not target_name and not args.all_known_unwrapped:
         raise SystemExit("批量修正需显式传入 --all-known-unwrapped，或使用 --name 定向修正")
     if not replacements:
+        post_apply_check = _build_mention_post_apply_check(state, chapter_id, chapter_text, [])
         print(
             json.dumps(
                 {
@@ -327,6 +328,7 @@ def command_entity_mention_tag_apply(args) -> int:
                     "reviewPacketFile": "",
                     "reviewPacketRefreshed": False,
                     "reviewPacketRefreshError": "",
+                    "postApplyCheck": post_apply_check,
                     "replacements": [],
                 },
                 ensure_ascii=False,
@@ -336,6 +338,8 @@ def command_entity_mention_tag_apply(args) -> int:
         return 0
 
     updated_text = _apply_tag_replacements(chapter_text, replacements)
+    post_apply_check = _build_mention_post_apply_check(state, chapter_id, updated_text, replacements)
+    _ensure_mention_post_apply_safe(post_apply_check)
     if updated_text != chapter_text:
         chapter_file.write_text(updated_text, encoding="utf-8")
     review_packet_file = ""
@@ -357,6 +361,7 @@ def command_entity_mention_tag_apply(args) -> int:
         "reviewPacketFile": review_packet_file,
         "reviewPacketRefreshed": review_packet_refreshed,
         "reviewPacketRefreshError": review_packet_refresh_error,
+        "postApplyCheck": post_apply_check,
         "replacements": [
             {
                 "name": item["canonicalName"],
@@ -700,6 +705,56 @@ def _apply_tag_replacements(text: str, replacements: list[dict]) -> str:
     return "".join(chunks)
 
 
+def _reference_key_from_replacement(item: dict) -> tuple[str, str]:
+    return (
+        str(item.get("source", "")),
+        str(item.get("id", "") or item.get("canonicalName", "")),
+    )
+
+
+def _reference_key_from_action(item: dict) -> tuple[str, str]:
+    return (
+        str(item.get("source", "")),
+        str(item.get("referenceId", "") or item.get("name", "")),
+    )
+
+
+def _build_mention_post_apply_check(state: dict, chapter_id: str, chapter_text: str, replacements: list[dict]) -> dict:
+    malformed_tags = find_malformed_entity_tags(chapter_text)
+    mention_plan = _build_mention_plan_payload(state, chapter_id, chapter_text)
+    touched_keys = {_reference_key_from_replacement(item) for item in replacements}
+    remaining_touched_actions = [
+        {
+            "actionId": item.get("actionId", ""),
+            "name": item.get("name", ""),
+            "source": item.get("source", ""),
+            "occurrenceCount": item.get("occurrenceCount", 0),
+        }
+        for item in mention_plan.get("knownUnwrappedActions", [])
+        if _reference_key_from_action(item) in touched_keys
+    ]
+    needs_manual_review = bool(malformed_tags or remaining_touched_actions)
+    reasons: list[str] = []
+    if malformed_tags:
+        reasons.append("修补结果包含非法 @{...} 标签")
+    if remaining_touched_actions:
+        reasons.append("本次触达的引用仍有未包裹 plain mention")
+    return {
+        "valid": not needs_manual_review,
+        "needsManualReview": needs_manual_review,
+        "manualReviewReasons": reasons,
+        "malformedTagCount": len(malformed_tags),
+        "malformedTags": malformed_tags[:5],
+        "remainingKnownUnwrappedActionCount": mention_plan.get("summary", {}).get("knownUnwrappedActionCount", 0),
+        "remainingTaggedMissingActionCount": mention_plan.get("summary", {}).get("taggedMissingActionCount", 0),
+        "remainingTotalActionCount": mention_plan.get("summary", {}).get("totalActionCount", 0),
+        "remainingTouchedKnownUnwrappedActions": remaining_touched_actions,
+    }
+
+
+def _ensure_mention_post_apply_safe(post_apply_check: dict) -> None:
+    if int(post_apply_check.get("malformedTagCount", 0)) > 0:
+        raise SystemExit("mention 修补结果包含非法 @{...} 标签，已拒绝写入")
 
 
 def _build_mention_check_payload(state: dict, chapter_id: str, chapter_text: str) -> dict:
@@ -789,6 +844,7 @@ def command_entity_mention_apply(args) -> int:
         selected_actions = [tag_actions[action_id] for action_id in selected_action_ids]
 
     if not selected_actions:
+        post_apply_check = _build_mention_post_apply_check(state, chapter_id, chapter_text, [])
         print(
             json.dumps(
                 {
@@ -796,6 +852,7 @@ def command_entity_mention_apply(args) -> int:
                     "updated": False,
                     "appliedActionCount": 0,
                     "replacementCount": 0,
+                    "postApplyCheck": post_apply_check,
                     "appliedActions": [],
                 },
                 ensure_ascii=False,
@@ -823,6 +880,7 @@ def command_entity_mention_apply(args) -> int:
             seen_ranges.add(replacement_key)
 
     if not replacements:
+        post_apply_check = _build_mention_post_apply_check(state, chapter_id, chapter_text, [])
         print(
             json.dumps(
                 {
@@ -833,6 +891,7 @@ def command_entity_mention_apply(args) -> int:
                     "reviewPacketFile": "",
                     "reviewPacketRefreshed": False,
                     "reviewPacketRefreshError": "",
+                    "postApplyCheck": post_apply_check,
                     "appliedActions": selected_actions,
                 },
                 ensure_ascii=False,
@@ -842,6 +901,8 @@ def command_entity_mention_apply(args) -> int:
         return 0
 
     updated_text = _apply_tag_replacements(chapter_text, replacements)
+    post_apply_check = _build_mention_post_apply_check(state, chapter_id, updated_text, replacements)
+    _ensure_mention_post_apply_safe(post_apply_check)
     if updated_text != chapter_text:
         chapter_file.write_text(updated_text, encoding="utf-8")
     review_packet_file = ""
@@ -866,6 +927,7 @@ def command_entity_mention_apply(args) -> int:
                 "reviewPacketFile": review_packet_file,
                 "reviewPacketRefreshed": review_packet_refreshed,
                 "reviewPacketRefreshError": review_packet_refresh_error,
+                "postApplyCheck": post_apply_check,
                 "appliedActions": selected_actions,
             },
             ensure_ascii=False,

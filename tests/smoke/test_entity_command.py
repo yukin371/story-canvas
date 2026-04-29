@@ -473,6 +473,10 @@ class EntityCommandTest(unittest.TestCase):
         self.assertTrue(apply_payload["reviewPacketRefreshed"])
         self.assertEqual(apply_payload["reviewPacketRefreshError"], "")
         self.assertTrue((self.temp_dir / "reviews" / "volume-001-review-packet.md").exists())
+        self.assertTrue(apply_payload["postApplyCheck"]["valid"])
+        self.assertFalse(apply_payload["postApplyCheck"]["needsManualReview"])
+        self.assertEqual(apply_payload["postApplyCheck"]["malformedTagCount"], 0)
+        self.assertEqual(apply_payload["postApplyCheck"]["remainingTouchedKnownUnwrappedActions"], [])
         self.assertIn("林舟抬头望向@{青云宗}的山门。", updated_text)
         self.assertNotIn("@{林舟}抬头", updated_text)
 
@@ -620,8 +624,52 @@ class EntityCommandTest(unittest.TestCase):
         updated_text = chapter_path.read_text(encoding="utf-8")
 
         self.assertEqual(payload["replacementCount"], 1)
+        self.assertTrue(payload["postApplyCheck"]["valid"])
+        self.assertFalse(payload["postApplyCheck"]["needsManualReview"])
+        self.assertEqual(payload["postApplyCheck"]["malformedTagCount"], 0)
+        self.assertEqual(payload["postApplyCheck"]["remainingTouchedKnownUnwrappedActions"], [])
         self.assertIn("@{林舟}没有回头。", updated_text)
         self.assertIn("“沈昭”这个名字此刻没人敢提。", updated_text)
+
+    def test_entity_mention_tag_apply_rejects_malformed_repair_output(self):
+        from contextlib import redirect_stdout
+        from io import StringIO
+
+        entities = json.loads((self.temp_dir / "entities.yaml").read_text(encoding="utf-8"))
+        entities["entities"].append(
+            {
+                "id": "char-bad-name",
+                "name": "林舟（黑衣）",
+                "source": "seed",
+                "aliases": [],
+                "seed": {},
+                "profile": {"appearance": [], "abilities": [], "speech": [], "relationships": []},
+                "currentState": {"status": "active", "physicalState": [], "emotionalState": [], "location": "未知", "lastUpdatedChapter": None},
+                "createdAt": "2026-01-01T00:00:00",
+            }
+        )
+        (self.temp_dir / "entities.yaml").write_text(json.dumps(entities, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        original_text = "# 第一章\n\n林舟（黑衣）没有回头。\n"
+        chapter_path.write_text(original_text, encoding="utf-8")
+
+        with self.assertRaises(SystemExit) as raised:
+            with redirect_stdout(StringIO()):
+                main(
+                    [
+                        "entity",
+                        "mention-tag-apply",
+                        "--root",
+                        str(self.temp_dir),
+                        "--chapter-id",
+                        "chapter-001",
+                        "--name",
+                        "林舟（黑衣）",
+                    ]
+                )
+
+        self.assertIn("已拒绝写入", str(raised.exception))
+        self.assertEqual(chapter_path.read_text(encoding="utf-8"), original_text)
 
 
 if __name__ == "__main__":

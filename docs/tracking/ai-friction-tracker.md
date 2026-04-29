@@ -106,13 +106,16 @@
 
 ### AIF-004 mention / entity 修补链稳定性不足
 
-- 状态: `active`
+- 状态: `mitigated`
 - 首次记录: `2026-04-29`
 - 最近核对: `2026-04-29`
 - 现象:
   - `entity mention-tag-apply` 在实跑中出现过乱码/异常显示，后续还需要人工复核正文与 gate 状态。
 - AI 负担:
   - 代理无法完全信任工具输出，必须再读正文和复跑 gate 做二次确认。
+- 当前缓解:
+  - `entity mention-tag-apply` / `entity mention-apply` 现在会在写入前校验修补后的 `@{...}` 标签语法；若结果包含非法标签会拒绝写入。
+  - 两个命令输出新增 `postApplyCheck`，暴露剩余 mention action 摘要、坏标签数量和是否需要人工复核，减少 agent 修补后再手读正文。
 - 当前证据:
   - `projects/agent-volume-e2e-20260429/chapters/chapter-001.md`
   - `projects/agent-volume-e2e-20260429/chapters/chapter-002.md`
@@ -120,7 +123,7 @@
 - 期望收口:
   - mention 修补后的正文、实体状态和 gate 结果应一次性保持一致，不再要求人工兜底核对。
 - 下次实施必查:
-  - mention 修补后是否仍需人工读正文确认工具没有写坏。
+  - mention 修补后 `postApplyCheck.valid` 是否足够替代人工读正文；若仍需复跑完整 gate，应转入 AIF-005 的命令编排收口。
 
 ### AIF-005 真实闭环命令编排过碎
 
