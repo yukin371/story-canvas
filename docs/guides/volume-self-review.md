@@ -22,7 +22,19 @@ python -m story_harness_cli review volume-self-template --root <project-root> --
 python -m story_harness_cli review volume-self --root <project-root> --volume-id <volume-id> --input <volume-self-review.yaml>
 ```
 
-建议先用 `review volume-self-template` 生成骨架，再回填结论与评分。
+建议先用 `review volume-self-template` 生成骨架。当前模板会根据 `preflight`、`volumeStructureCheck`、chapter/scene review 和 style aggregate 启发式预填 root `scores/issues/closureAssessment`，但这些字段仍是 draft，写回前需要作者或代理明确复核。
+
+若 author / editor 结果是分片产物，当前也支持在 CLI 里合稿，而不是手工改整份文件：
+
+```powershell
+python -m story_harness_cli review volume-self-template --root <project-root> --volume-id <volume-id> --merge-input <author-fragment.json> --editor-input <editor-fragment.json> --output <draft-dir-or-file>
+python -m story_harness_cli review volume-self --root <project-root> --volume-id <volume-id> --input <author-base.yaml> --editor-input <editor-fragment.json>
+```
+
+- `--merge-input`：通用局部覆盖输入，可重复传入
+- `--editor-input`：只导入 `editorPass` / `editorAssessment`，适合独立编辑代理产物
+- 当 `review volume-self-template` 存在 merge 输入且 `--output` 指向目录时，当前默认导出 `*.draft.yaml`
+- 不带 merge 输入时，模板仍会预填 root `scores/issues/closureAssessment`，用于减少从零手写；但默认 `conclusion.closureStatus` 仍是 `not_closed`
 
 卷级自审现在默认包含两个视角：
 
@@ -30,6 +42,7 @@ python -m story_harness_cli review volume-self --root <project-root> --volume-id
 2. `独立编辑审查`
 
 若宿主支持 subagent / 新线程 / 无上下文代理，独立编辑审查应优先走无上下文代理；若不支持，至少要切到 fresh thread，或显式记录 `same_agent_fallback`。
+这里的“无上下文”指的是：不继承当前创作线程、前轮自审结论和作者自我辩护；并不意味着编辑可以脱离项目规则、评分 rubric、模板和 review packet 自由发挥。
 
 其中 `--input` 文件必须是 JSON-compatible YAML，并遵循下方结构。
 模板中的 `待填写` 只是占位值，原样提交时 CLI 会拒绝写入。
@@ -38,6 +51,8 @@ python -m story_harness_cli review volume-self --root <project-root> --volume-id
 当前还要求：若存在 `0-2` 分弱项，则该弱项必须能对齐到可核对的章节或证据锚点。优先写在该维度自己的 `scores[].chapterRefs / evidenceRefs` 上；若对应 `issues[]` 已带可核对锚点，也可满足最小要求。
 当前 CLI 还会对低分维度做最小联动检查：若某个 `0-2` 分维度在 `issues`、`fixAction`、`repairSuggestions` 中完全没有被覆盖，会拒绝写入。
 成功写入后，可通过 `status --volume-id <volume-id>`、`workflow status --volume-id <volume-id>` 或 `export --format review-packet --volume-id <volume-id>` 直接查看 `repairCoverage` 摘要，确认弱项是否真的进入了修复清单。若 `workflow status` 仍提示未覆盖弱项，说明当前 issues / repairSuggestions 还没有把低分项翻译成可执行修稿动作。当前 `workflow status/export --volume-id` 还会附带只读 `changeRequestDrafts`，并尽量带出章节定位与 evidence，可直接作为下一轮修稿任务草案使用。
+
+当前 `review volume-self` 成功写入后，还会自动刷新 repo-native 的卷级审查包到 `reviews/<volume-id>-review-packet.md`。如果你只是想让仓库里的最新审查包跟随卷审结果同步，通常不需要再手工补跑一次 `export --format review-packet --volume-id ...`；命令输出里的 `reviewPacketRefreshed` / `reviewPacketFile` 会直接告诉你这次是否已刷新成功。
 
 ## 2. 先判闭环，再判优劣
 
@@ -74,8 +89,9 @@ python -m story_harness_cli review volume-self --root <project-root> --volume-id
 1. 上一章若留下明确状态变化、追踪压力、关系余波或活跃线程，本章前几段是否给出可感知的后果或因果桥。
 2. 若本章选择冷开场，只要在前几段内自然回接前章负载，也不应机械判成承接失败。
 3. 工具侧 `chapterHandoffSignals` 还会看前章 direction / beat / scene goal 中的关键语义锚点是否在本章开头复现，或是否出现“那句还没散 / 从某处脱身不过半个时辰”这类直接接续句式，避免把“用物件、地点、残局自然承接”误报成缺少承接。
-4. 单个弱语义锚点只算辅助证据，不应单独抵消承接告警；需要高置信专名锚点、多个弱锚点组合，或直接接续句式支撑。
-5. 真正的风险是：上一章明明留下了负载，本章开头却像直接换了一个执行场景，读者感受不到因果延续。
+4. 若上一章结尾短对白 / 短句被本章开头复现，或本章 4-10 字短对白由上一章结尾近距离关键片段合成，工具会视为高置信承接；这只用于结尾窗口，不代表全章正文任意重合都可放行。
+5. 单个弱语义锚点只算辅助证据，不应单独抵消承接告警；需要高置信专名锚点、多个弱锚点组合，或直接接续句式支撑。
+6. 真正的风险是：上一章明明留下了负载，本章开头却像直接换了一个执行场景，读者感受不到因果延续。
 
 ### 3.4 角色与冲突
 

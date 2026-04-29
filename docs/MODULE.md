@@ -7,7 +7,7 @@
 
 - 维护仓库级事实文档、路线图和文档入口
 - 记录当前样例、当前执行入口和项目画像
-- 为 guides / plans / protocol 等子模块提供上层导航
+- 为 guides / plans / tracking / protocol 等子模块提供上层导航
 
 ## 2. Owns
 

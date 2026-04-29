@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from story_harness_cli.commands.export import write_volume_review_packet
 from story_harness_cli.commands.review_support import (
     build_review_preflight_payload,
     build_world_check_payload,
@@ -26,6 +27,7 @@ from story_harness_cli.services import (
     build_scene_review,
     check_consistency,
     latest_volume_self_review,
+    merge_volume_self_review_payload,
     normalize_volume_self_review,
     resolve_scene_candidates,
     review_change_requests,
@@ -77,6 +79,7 @@ def command_review_chapter(args) -> int:
     review_rule_config, review_rule_profile_name, review_rule_source = resolve_review_rule_profile(root)
     volume = _find_volume_for_chapter(state, chapter_id)
     consistency_result = check_consistency(state, chapter_text, chapter_id)
+    previous_chapter_ending_text = _previous_chapter_ending_text(root, state, chapter_id)
     review = build_chapter_review(
         state,
         chapter_id=chapter_id,
@@ -97,6 +100,7 @@ def command_review_chapter(args) -> int:
             },
         ),
         consistency_result=consistency_result,
+        previous_chapter_ending_text=previous_chapter_ending_text,
     )
     review["styleAnalysis"]["profileSource"] = profile_source
     review["styleAnalysis"]["reviewRuleProfileSource"] = review_rule_source
@@ -240,6 +244,23 @@ def command_review_volume_self(args) -> int:
         raise SystemExit(f"卷级自审输入文件不存在: {input_path}")
 
     raw_payload = load_json_compatible_yaml(input_path, {})
+    merged_inputs: list[str] = []
+    for overlay_path in _resolve_overlay_paths(args.merge_input):
+        raw_payload = merge_volume_self_review_payload(
+            raw_payload,
+            _load_volume_self_overlay(overlay_path),
+        )
+        merged_inputs.append(str(overlay_path))
+    editor_input_path = _resolve_optional_overlay_path(args.editor_input)
+    if editor_input_path is not None:
+        editor_overlay = _load_volume_self_overlay(editor_input_path)
+        if "editorPass" not in editor_overlay and "editorAssessment" not in editor_overlay:
+            raise SystemExit("editor-input 必须至少包含 editorPass 或 editorAssessment。")
+        raw_payload = merge_volume_self_review_payload(
+            raw_payload,
+            editor_overlay,
+            sections=("editorPass", "editorAssessment"),
+        )
     generated_at = raw_payload.get("generatedAt") or now_iso()
     try:
         review = normalize_volume_self_review(
@@ -269,12 +290,25 @@ def command_review_volume_self(args) -> int:
         story_reviews.append(review)
 
     save_state(root, state)
+    review_packet_file = ""
+    review_packet_refreshed = False
+    review_packet_refresh_error = ""
+    try:
+        review_packet_file = str(write_volume_review_packet(root, state, volume))
+        review_packet_refreshed = True
+    except OSError as exc:
+        review_packet_refresh_error = str(exc)
     print(
         json.dumps(
             {
                 "saved": True,
                 "reviewFile": str(resolve_state_path(root, "story_reviews")),
+                "reviewPacketFile": review_packet_file,
+                "reviewPacketRefreshed": review_packet_refreshed,
+                "reviewPacketRefreshError": review_packet_refresh_error,
                 "inputFile": str(input_path),
+                "mergedInputs": merged_inputs,
+                "editorInput": str(editor_input_path) if editor_input_path else "",
                 "volumeId": review["volumeId"],
                 "volumeTitle": review["volumeTitle"],
                 "finalAllowHumanReview": review["finalAllowHumanReview"],
@@ -303,17 +337,39 @@ def command_review_volume_self_template(args) -> int:
         )
     except ValueError as exc:
         raise SystemExit(str(exc)) from exc
+    merged_inputs: list[str] = []
+    for overlay_path in _resolve_overlay_paths(args.merge_input):
+        payload = merge_volume_self_review_payload(
+            payload,
+            _load_volume_self_overlay(overlay_path),
+        )
+        merged_inputs.append(str(overlay_path))
+    editor_input_path = _resolve_optional_overlay_path(args.editor_input)
+    if editor_input_path is not None:
+        editor_overlay = _load_volume_self_overlay(editor_input_path)
+        if "editorPass" not in editor_overlay and "editorAssessment" not in editor_overlay:
+            raise SystemExit("editor-input 必须至少包含 editorPass 或 editorAssessment。")
+        payload = merge_volume_self_review_payload(
+            payload,
+            editor_overlay,
+            sections=("editorPass", "editorAssessment"),
+        )
+    mode = "draft" if merged_inputs or editor_input_path else "template"
 
     if args.output:
         output_path = Path(args.output)
         if output_path.exists() and output_path.is_dir():
-            output_path = output_path / f"{args.volume_id}-volume-self-review.template.yaml"
+            suffix = "draft.yaml" if mode == "draft" else "template.yaml"
+            output_path = output_path / f"{args.volume_id}-volume-self-review.{suffix}"
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         result = {
             "saved": True,
             "outputFile": str(output_path.resolve()),
             "volumeId": args.volume_id,
+            "mode": mode,
+            "mergedInputs": merged_inputs,
+            "editorInput": str(editor_input_path) if editor_input_path else "",
             "template": payload,
         }
     else:
@@ -321,6 +377,9 @@ def command_review_volume_self_template(args) -> int:
             "saved": False,
             "outputFile": "",
             "volumeId": args.volume_id,
+            "mode": mode,
+            "mergedInputs": merged_inputs,
+            "editorInput": str(editor_input_path) if editor_input_path else "",
             "template": payload,
         }
     print(json.dumps(result, ensure_ascii=False, indent=2))
@@ -351,6 +410,36 @@ def _find_outline_chapter(state: dict, chapter_id: str) -> dict:
         if chapter.get("id") == chapter_id:
             return chapter
     return {}
+
+
+def _find_previous_outline_chapter(state: dict, chapter_id: str) -> dict:
+    previous: dict = {}
+    for volume in state.get("outline", {}).get("volumes", []):
+        previous = {}
+        for chapter in volume.get("chapters", []):
+            if chapter.get("id") == chapter_id:
+                return previous
+            previous = chapter if isinstance(chapter, dict) else {}
+    previous = {}
+    for chapter in state.get("outline", {}).get("chapters", []):
+        if chapter.get("id") == chapter_id:
+            return previous
+        previous = chapter if isinstance(chapter, dict) else {}
+    return {}
+
+
+def _previous_chapter_ending_text(root: Path, state: dict, chapter_id: str, paragraph_limit: int = 16) -> str:
+    previous_chapter = _find_previous_outline_chapter(state, chapter_id)
+    previous_chapter_id = str(previous_chapter.get("id", "")).strip()
+    if not previous_chapter_id:
+        return ""
+    previous_file = chapter_path(root, previous_chapter_id)
+    if not previous_file.exists():
+        return ""
+    paragraphs = paragraphs_from_text(previous_file.read_text(encoding="utf-8"))
+    if not paragraphs:
+        return ""
+    return "\n\n".join(paragraphs[-paragraph_limit:])
 
 
 def _build_volume_chapter_anchor_index(root: Path, state: dict, volume: dict) -> dict:
@@ -442,6 +531,25 @@ def _chapter_has_handoff_gap(chapter_reviews: list[dict], chapter_id: str) -> bo
     return False
 
 
+def _resolve_overlay_paths(raw_paths: list[str] | None) -> list[Path]:
+    return [Path(item).resolve() for item in (raw_paths or [])]
+
+
+def _resolve_optional_overlay_path(raw_path: str | None) -> Path | None:
+    if not raw_path:
+        return None
+    return Path(raw_path).resolve()
+
+
+def _load_volume_self_overlay(path: Path) -> dict:
+    if not path.exists():
+        raise SystemExit(f"卷级自审覆盖输入文件不存在: {path}")
+    payload = load_json_compatible_yaml(path, {})
+    if not isinstance(payload, dict):
+        raise SystemExit(f"卷级自审覆盖输入必须是对象: {path}")
+    return payload
+
+
 def register_review_commands(subparsers) -> None:
     review_parser = subparsers.add_parser("review", help="Review workflow items and chapter quality")
     review_subparsers = review_parser.add_subparsers(dest="review_command", required=True)
@@ -476,6 +584,8 @@ def register_review_commands(subparsers) -> None:
     volume_self_parser.add_argument("--root", required=True)
     volume_self_parser.add_argument("--volume-id", required=True)
     volume_self_parser.add_argument("--input", required=True)
+    volume_self_parser.add_argument("--merge-input", action="append")
+    volume_self_parser.add_argument("--editor-input")
     volume_self_parser.set_defaults(func=command_review_volume_self)
 
     volume_self_template_parser = review_subparsers.add_parser(
@@ -485,6 +595,8 @@ def register_review_commands(subparsers) -> None:
     volume_self_template_parser.add_argument("--root", required=True)
     volume_self_template_parser.add_argument("--volume-id", required=True)
     volume_self_template_parser.add_argument("-o", "--output")
+    volume_self_template_parser.add_argument("--merge-input", action="append")
+    volume_self_template_parser.add_argument("--editor-input")
     volume_self_template_parser.set_defaults(func=command_review_volume_self_template)
 
     scene_parser = review_subparsers.add_parser("scene", help="Review one scene fragment by paragraph range or scene index")

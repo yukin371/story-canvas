@@ -14,6 +14,7 @@
 | `docs/PROJECT_PROFILE.md` | 记录高置信度项目事实 | 否 |
 | `docs/roadmap.md` | 记录当前真实状态 | **是**（唯一入口） |
 | `docs/ARCHITECTURE_GUARDRAILS.md` | 记录长期架构边界 | 否 |
+| `docs/tracking/*.md` | 长期痛点/缺口跟踪 | 否（治理输入，不是当前执行入口） |
 | 模块 `MODULE.md` | 记录模块职责与不变量 | 否 |
 | `docs/plans/YYYY-MM-DD-*.md` | 临时实施方案 | 否 |
 | `docs/adr/ADR-*.md` | 长期架构决策 | 否 |
@@ -24,6 +25,7 @@
 ## 3. 文档状态
 
 - **Current**: 当前唯一入口 → `docs/roadmap.md`
+- **Tracking**: 长期治理输入 → `docs/tracking/*.md`
 - **Background**: 可引用的背景材料 → PROJECT_PROFILE, ARCHITECTURE_GUARDRAILS, MODULE.md
 - **Historical**: 仅供回溯 → 已完成的 plans, 旧 design docs
 - **Template**: 模板 → `docs/templates/`
@@ -44,6 +46,8 @@
 1. 补"历史状态说明"到文件头部
 2. 收敛为 archive 正文 + stub 入口
 3. 被新的当前入口替代
+
+对于“长期活跃痛点”类信息，优先迁移到 `docs/tracking/*.md`，不要继续散落在多个 `docs/plans/*.md` 中并以“当前缺口”口吻长期存活。
 
 ## 6. 禁止事项
 

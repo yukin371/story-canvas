@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from copy import deepcopy
 import re
 from typing import Any, Dict, Iterable
 
@@ -329,6 +330,28 @@ def latest_volume_self_review(
     return latest
 
 
+def merge_volume_self_review_payload(
+    base_payload: Dict[str, Any],
+    overlay_payload: Dict[str, Any],
+    *,
+    sections: Iterable[str] | None = None,
+) -> Dict[str, Any]:
+    if not isinstance(base_payload, dict):
+        raise ValueError("卷级自审基础输入必须是对象。")
+    if not isinstance(overlay_payload, dict):
+        raise ValueError("卷级自审覆盖输入必须是对象。")
+    merged = deepcopy(base_payload)
+    if sections is None:
+        target_keys = overlay_payload.keys()
+    else:
+        target_keys = sections
+    for key in target_keys:
+        if key not in overlay_payload:
+            continue
+        merged[key] = _merge_payload_value(merged.get(key), overlay_payload.get(key))
+    return merged
+
+
 def build_volume_self_review_template(
     preflight_payload: Dict[str, Any],
     *,
@@ -343,14 +366,19 @@ def build_volume_self_review_template(
     suggested_repairs = _build_suggested_repairs(preflight_payload, blocking_signals)
     review_evidence = preflight_payload.get("reviewEvidence", {})
     latest_review = latest_review or {}
+    draft_autofill = _build_template_autofill(
+        preflight_payload,
+        blocking_signals=blocking_signals,
+        review_evidence=review_evidence,
+    )
 
     template = {
         "generatedAt": generated_at,
         "conclusion": {
             "closureStatus": "not_closed",
             "allowHumanReview": False,
-            "strongestPoint": "待填写",
-            "biggestRisk": blocking_signals[0]["message"] if blocking_signals else "待填写",
+            "strongestPoint": draft_autofill["strongestPoint"],
+            "biggestRisk": draft_autofill["biggestRisk"],
         },
         "editorPass": {
             "completed": False,
@@ -376,24 +404,63 @@ def build_volume_self_review_template(
             ],
         },
         "scores": [
-            {
-                "dimensionId": dimension_id,
-                "score": 0,
-                "conclusion": "待填写",
-                "chapterRefs": [],
-                "evidenceRefs": [],
-            }
-            for dimension_id, _ in VOLUME_SELF_REVIEW_DIMENSIONS
+            dict(item)
+            for item in draft_autofill["scores"]
         ],
-        "issues": [],
-        "closureAssessment": {
-            "mainProblem": "待填写",
-            "delivered": [],
-            "missing": [],
-            "reasoning": "待填写",
-        },
+        "issues": [dict(item) for item in draft_autofill["issues"]],
+        "closureAssessment": dict(draft_autofill["closureAssessment"]),
         "repairSuggestions": suggested_repairs,
         "acceptedRisks": [],
+        "_templateHints": {
+            "scoreScale": "all score fields must be integers in 0..5",
+            "rootScoresPurpose": "author or primary volume self-review scores; use the shared 10-dimension rubric",
+            "editorScoresPurpose": "independent editor scores; usually mirrors the same 10 dimensions with editor conclusions",
+            "autofillPolicy": "root scores / issues / closureAssessment are heuristically prefilled from current preflight and review evidence; review before saving.",
+            "topProblemsType": "string[]",
+            "improvementPointsType": "string[]",
+            "issuesType": "object[]",
+            "issuesRequiredFields": [
+                "issue",
+                "evidence",
+                "impact",
+                "primaryCause",
+                "fixAction",
+            ],
+            "issuesOptionalButRecommendedFields": [
+                "secondaryCauses",
+                "whyToolingMissed",
+                "whySelfReviewMissed",
+                "optimizationAction",
+                "detectedBy",
+                "ruleIds",
+                "verificationCommands",
+                "chapterRefs",
+                "evidenceRefs",
+            ],
+            "issueExample": {
+                "issue": "卷尾阶段性交付不足",
+                "evidence": [
+                    "第二章结尾更像抬出下一条主线，而不是完成本卷回合。"
+                ],
+                "impact": "会削弱本卷闭环感，暂不适合进入人工终审。",
+                "primaryCause": "generation_miss",
+                "secondaryCauses": [
+                    "self_review_miss",
+                    "tooling_miss"
+                ],
+                "fixAction": "补一层明确的阶段性兑现或输赢结果。",
+                "whyToolingMissed": "现有工具更擅长判断前提是否齐备，不够擅长判断卷尾兑现厚度。",
+                "whySelfReviewMissed": "AI 自审容易把继续抬线索误判为已完成闭环。",
+                "optimizationAction": "把 promised / delivered / missing 的对照写进卷审模板。",
+                "chapterRefs": [
+                    "chapter-002"
+                ],
+                "evidenceRefs": [
+                    "chapter-002#scene-2",
+                    f"review-packet:{preflight_payload.get('volumeId', '')}:chapter-002",
+                ],
+            },
+        },
         "_templateContext": {
             "scope": "volume",
             "volumeId": preflight_payload.get("volumeId", ""),
@@ -412,6 +479,13 @@ def build_volume_self_review_template(
             "contractAlignmentRisks": review_evidence.get("contractAlignmentRisks", []),
             "commercialAlignmentRisks": review_evidence.get("commercialAlignmentRisks", []),
             "reviewPacketRefs": review_evidence.get("reviewPacketRefs", []),
+            "draftAutofill": {
+                "used": True,
+                "strongestPointSource": draft_autofill.get("strongestPointSource", ""),
+                "biggestRiskSource": draft_autofill.get("biggestRiskSource", ""),
+                "issueCount": len(draft_autofill["issues"]),
+                "weakDimensionIds": draft_autofill.get("weakDimensionIds", []),
+            },
             "incrementalReviewOnly": {
                 "latestPersistedReview": _compact_latest_review(latest_review),
                 "warning": "独立盲审模式默认不要先读取上一轮自审摘要；只有增量复审才使用这里的上下文。",
@@ -451,6 +525,527 @@ def build_volume_self_review_template(
         },
     }
     return template
+
+
+def _build_template_autofill(
+    preflight_payload: Dict[str, Any],
+    *,
+    blocking_signals: list[Dict[str, Any]],
+    review_evidence: Dict[str, Any],
+) -> Dict[str, Any]:
+    observations = _collect_template_observations(
+        preflight_payload,
+        blocking_signals=blocking_signals,
+        review_evidence=review_evidence,
+    )
+    volume_id = str(preflight_payload.get("volumeId", "")).strip()
+    negatives_by_dimension: dict[str, list[Dict[str, Any]]] = {}
+    positives_by_dimension: dict[str, list[Dict[str, Any]]] = {}
+    for observation in observations:
+        target = (
+            negatives_by_dimension
+            if observation.get("kind") == "negative"
+            else positives_by_dimension
+        )
+        target.setdefault(str(observation.get("dimensionId", "")), []).append(observation)
+
+    scores = []
+    for dimension_id, label in VOLUME_SELF_REVIEW_DIMENSIONS:
+        negatives = negatives_by_dimension.get(dimension_id, [])
+        positives = positives_by_dimension.get(dimension_id, [])
+        chosen = negatives[0] if negatives else positives[0] if positives else {}
+        chapter_refs = _normalize_template_refs(chosen.get("chapterRefs", []))
+        evidence_refs = _normalize_template_refs(chosen.get("evidenceRefs", []))
+        if not evidence_refs and chapter_refs:
+            evidence_refs = _review_packet_refs_for_chapters(volume_id, chapter_refs)
+        score = _draft_score_for_dimension(dimension_id, negatives=negatives, positives=positives)
+        scores.append(
+            {
+                "dimensionId": dimension_id,
+                "score": score,
+                "conclusion": _draft_score_conclusion(
+                    dimension_id,
+                    score=score,
+                    chosen_observation=chosen,
+                ),
+                "chapterRefs": chapter_refs,
+                "evidenceRefs": evidence_refs,
+            }
+        )
+
+    issues = _build_template_issues(observations, volume_id=volume_id)
+    strongest_dimension = max(scores, key=lambda item: item["score"])
+    strongest_positive = positives_by_dimension.get(strongest_dimension["dimensionId"], [])
+    strongest_point = (
+        strongest_positive[0].get("summary", "").strip()
+        if strongest_positive
+        else strongest_dimension["conclusion"]
+    ) or "当前卷至少已有一项基础能力未被工具链判为阻塞。"
+    strongest_point_source = (
+        strongest_positive[0].get("source", "").strip()
+        if strongest_positive
+        else "draft-score"
+    )
+    biggest_risk = (
+        issues[0]["issue"]
+        if issues
+        else (blocking_signals[0]["message"] if blocking_signals else "当前仍需人工判断本卷是否形成完整小故事闭环。")
+    )
+    biggest_risk_source = issues[0].get("detectedBy", ["draft-score"])[0] if issues else "blocking-signal"
+    weak_dimension_ids = [
+        item["dimensionId"]
+        for item in scores
+        if int(item.get("score", 0) or 0) <= 2
+    ]
+    closure_assessment = _build_template_closure_assessment(
+        scores,
+        issues=issues,
+        strongest_point=strongest_point,
+        biggest_risk=biggest_risk,
+    )
+    return {
+        "strongestPoint": strongest_point,
+        "strongestPointSource": strongest_point_source,
+        "biggestRisk": biggest_risk,
+        "biggestRiskSource": biggest_risk_source,
+        "scores": scores,
+        "issues": issues,
+        "closureAssessment": closure_assessment,
+        "weakDimensionIds": weak_dimension_ids,
+    }
+
+
+def _collect_template_observations(
+    preflight_payload: Dict[str, Any],
+    *,
+    blocking_signals: list[Dict[str, Any]],
+    review_evidence: Dict[str, Any],
+) -> list[Dict[str, Any]]:
+    volume_id = str(preflight_payload.get("volumeId", "")).strip()
+    chapter_signals = preflight_payload.get("chapterSignals") or _build_chapter_signals(preflight_payload)
+    structure_check = preflight_payload.get("volumeStructureCheck", {})
+    observations: list[Dict[str, Any]] = []
+
+    for signal in blocking_signals:
+        code = str(signal.get("code", "")).strip()
+        dimension_id = _dimension_for_signal_code(code)
+        chapter_refs = _chapter_refs_for_signal(code, chapter_signals)
+        observations.append(
+            {
+                "kind": "negative",
+                "dimensionId": dimension_id,
+                "summary": str(signal.get("message", "")).strip(),
+                "chapterRefs": chapter_refs,
+                "evidenceRefs": _review_packet_refs_for_chapters(volume_id, chapter_refs),
+                "impact": _generic_issue_impact(dimension_id),
+                "fixAction": str(signal.get("suggestion", "")).strip() or _generic_issue_fix_action(dimension_id),
+                "source": "preflight-summary",
+                "priority": 100,
+                "ruleIds": [],
+            }
+        )
+
+    for item in structure_check.get("checklist", []):
+        if not isinstance(item, dict):
+            continue
+        status = str(item.get("status", "")).strip()
+        if status == "not_applicable":
+            continue
+        dimension_id = _dimension_for_structure_check(item)
+        chapter_refs = _normalize_template_refs(item.get("targetChapterIds", []))
+        observation = {
+            "kind": "positive" if status == "pass" else "negative",
+            "dimensionId": dimension_id,
+            "summary": str(item.get("message", "")).strip(),
+            "chapterRefs": chapter_refs,
+            "evidenceRefs": _review_packet_refs_for_chapters(volume_id, chapter_refs),
+            "impact": _generic_issue_impact(dimension_id),
+            "fixAction": str(item.get("suggestion", "")).strip() or _generic_issue_fix_action(dimension_id),
+            "source": f"volume-structure:{item.get('id', '')}",
+            "priority": 95 if status != "pass" else 40,
+            "ruleIds": [],
+        }
+        observations.append(observation)
+
+    for item in review_evidence.get("styleFlaggedChapters", []):
+        if not isinstance(item, dict):
+            continue
+        chapter_id = str(item.get("chapterId", "")).strip()
+        summary = str(item.get("summary", "")).strip()
+        patterns = item.get("detectedPatterns", [])
+        if not summary and patterns:
+            summary = " / ".join(str(value).strip() for value in patterns[:3] if str(value).strip())
+        if not summary:
+            continue
+        chapter_refs = [chapter_id] if chapter_id else []
+        observations.append(
+            {
+                "kind": "negative",
+                "dimensionId": "styleReadability",
+                "summary": summary,
+                "chapterRefs": chapter_refs,
+                "evidenceRefs": _review_packet_refs_for_chapters(volume_id, chapter_refs),
+                "impact": _generic_issue_impact("styleReadability"),
+                "fixAction": "先处理重复出现的 AI 味、长段和可读性负担，再复检 style report。",
+                "source": "style-aggregate",
+                "priority": 90,
+                "ruleIds": [],
+            }
+        )
+
+    for item in review_evidence.get("lowSceneReviews", []):
+        if not isinstance(item, dict):
+            continue
+        chapter_id = str(item.get("chapterId", "")).strip()
+        scene_index = item.get("sceneIndex")
+        summary = str(item.get("summary", "")).strip()
+        if not summary:
+            continue
+        dimension_id = _guess_dimension_id(
+            summary,
+            default="conflictEscalation",
+        )
+        evidence_refs = []
+        if chapter_id and isinstance(scene_index, int):
+            evidence_refs.append(f"{chapter_id}#scene-{scene_index}")
+        evidence_refs.extend(_review_packet_refs_for_chapters(volume_id, [chapter_id] if chapter_id else []))
+        observations.append(
+            {
+                "kind": "negative",
+                "dimensionId": dimension_id,
+                "summary": summary,
+                "chapterRefs": [chapter_id] if chapter_id else [],
+                "evidenceRefs": evidence_refs,
+                "impact": _generic_issue_impact(dimension_id),
+                "fixAction": "优先把低分 scene 的主要问题前推到卷级修稿清单。",
+                "source": "scene-review",
+                "priority": 88,
+                "ruleIds": [],
+            }
+        )
+
+    for item in review_evidence.get("topRuleJudgements", []):
+        if not isinstance(item, dict):
+            continue
+        message = str(item.get("message", "")).strip()
+        rule_id = str(item.get("ruleId", "")).strip()
+        if not message and not rule_id:
+            continue
+        dimension_id = _guess_dimension_id(
+            " ".join(part for part in (rule_id, message) if part),
+            default="styleReadability",
+        )
+        observations.append(
+            {
+                "kind": "negative",
+                "dimensionId": dimension_id,
+                "summary": message or f"规则 {rule_id} 在当前卷中重复出现。",
+                "chapterRefs": [],
+                "evidenceRefs": [],
+                "impact": _generic_issue_impact(dimension_id),
+                "fixAction": _generic_issue_fix_action(dimension_id),
+                "source": "rule-judgement",
+                "priority": 72,
+                "ruleIds": [rule_id] if rule_id else [],
+            }
+        )
+
+    for field_name, source, default_dimension in (
+        ("contractAlignmentRisks", "chapter-review:contract", "characterContinuity"),
+        ("commercialAlignmentRisks", "chapter-review:commercial", "payoffDelivery"),
+    ):
+        for message in review_evidence.get(field_name, []):
+            text = str(message).strip()
+            if not text:
+                continue
+            dimension_id = _guess_dimension_id(text, default=default_dimension)
+            chapter_refs = _chapter_refs_for_review_risk(review_evidence, text)
+            observations.append(
+                {
+                    "kind": "negative",
+                    "dimensionId": dimension_id,
+                    "summary": text,
+                    "chapterRefs": chapter_refs,
+                    "evidenceRefs": _review_packet_refs_for_chapters(volume_id, chapter_refs),
+                    "impact": _generic_issue_impact(dimension_id),
+                    "fixAction": _generic_issue_fix_action(dimension_id),
+                    "source": source,
+                    "priority": 75,
+                    "ruleIds": [],
+                }
+            )
+
+    return observations
+
+
+def _draft_score_for_dimension(
+    dimension_id: str,
+    *,
+    negatives: list[Dict[str, Any]],
+    positives: list[Dict[str, Any]],
+) -> int:
+    if negatives:
+        if any(item.get("source", "").startswith("preflight-summary") for item in negatives):
+            return 2
+        if len(negatives) >= 2:
+            return 2
+        return 2
+    if positives:
+        return 3
+    return 3
+
+
+def _draft_score_conclusion(
+    dimension_id: str,
+    *,
+    score: int,
+    chosen_observation: Dict[str, Any],
+) -> str:
+    summary = str(chosen_observation.get("summary", "")).strip()
+    if summary:
+        return summary
+    label = VOLUME_SELF_REVIEW_DIMENSION_LABELS[dimension_id]
+    if score <= 2:
+        return f"当前工具信号提示 {label} 仍有明显短板，进入人工审查前应先补一轮。"
+    return f"当前工具信号未暴露明确的 {label} 阻塞，但仍需结合卷目标人工复核。"
+
+
+def _build_template_issues(
+    observations: list[Dict[str, Any]],
+    *,
+    volume_id: str,
+) -> list[Dict[str, Any]]:
+    negatives = [
+        item
+        for item in observations
+        if item.get("kind") == "negative"
+    ]
+    negatives.sort(
+        key=lambda item: (
+            -int(item.get("priority", 0) or 0),
+            str(item.get("dimensionId", "")),
+            str(item.get("summary", "")),
+        )
+    )
+    issues = []
+    used_dimensions: set[str] = set()
+    for item in negatives:
+        dimension_id = str(item.get("dimensionId", "")).strip()
+        if not dimension_id or dimension_id in used_dimensions:
+            continue
+        used_dimensions.add(dimension_id)
+        chapter_refs = _normalize_template_refs(item.get("chapterRefs", []))
+        evidence_refs = _normalize_template_refs(item.get("evidenceRefs", []))
+        if not evidence_refs and chapter_refs:
+            evidence_refs = _review_packet_refs_for_chapters(volume_id, chapter_refs)
+        issue_title = _draft_issue_title(dimension_id, item)
+        issues.append(
+            {
+                "issue": issue_title,
+                "evidence": [str(item.get("summary", "")).strip()],
+                "impact": str(item.get("impact", "")).strip() or _generic_issue_impact(dimension_id),
+                "primaryCause": "generation_miss",
+                "secondaryCauses": ["self_review_miss"] if item.get("source") != "preflight-summary" else [],
+                "fixAction": str(item.get("fixAction", "")).strip() or _generic_issue_fix_action(dimension_id),
+                "whyToolingMissed": "现有工具已经给出相关风险信号，但还不能替代作者判断最终是否需要改稿或改到什么强度。",
+                "whySelfReviewMissed": "这一项已由模板预填，仍需要作者结合卷目标逐条确认而不是直接照抄。",
+                "optimizationAction": "把这类高频风险继续回灌到卷级自审模板和 workflow gate 的下一步提示里。",
+                "detectedBy": [str(item.get("source", "")).strip()] if str(item.get("source", "")).strip() else [],
+                "ruleIds": _normalize_template_refs(item.get("ruleIds", [])),
+                "verificationCommands": _verification_commands_for_issue(volume_id, chapter_refs),
+                "chapterRefs": chapter_refs,
+                "evidenceRefs": evidence_refs,
+            }
+        )
+        if len(issues) >= 4:
+            break
+    return issues
+
+
+def _build_template_closure_assessment(
+    scores: list[Dict[str, Any]],
+    *,
+    issues: list[Dict[str, Any]],
+    strongest_point: str,
+    biggest_risk: str,
+) -> Dict[str, Any]:
+    delivered = []
+    for item in scores:
+        if int(item.get("score", 0) or 0) < 3:
+            continue
+        delivered.append(item.get("conclusion", ""))
+        if len(delivered) >= 3:
+            break
+    missing = [issue.get("issue", "") for issue in issues[:3] if issue.get("issue")]
+    main_problem = missing[0] if missing else biggest_risk
+    reasoning = (
+        f"当前模板已根据 preflight 与 review evidence 预填。"
+        f"从工具信号看，较强项集中在：{strongest_point}；"
+        f"但当前最需要先确认的是：{biggest_risk}。"
+        "因此默认保持 `not_closed`，需要作者补完或明确接受风险后再决定是否放行。"
+    )
+    return {
+        "mainProblem": main_problem or "当前仍需确认本卷是否形成完整小故事闭环。",
+        "delivered": delivered,
+        "missing": missing,
+        "reasoning": reasoning,
+    }
+
+
+def _dimension_for_signal_code(code: str) -> str:
+    mapping = {
+        "chapter-file-missing": "volumeClosure",
+        "mention-hygiene-pending": "characterContinuity",
+        "due-foreshadow-pending": "foreshadowRhythm",
+        "overdue-foreshadow-pending": "foreshadowRhythm",
+        "unscheduled-foreshadow-pending": "foreshadowRhythm",
+        "world-onboarding-gap": "openingOnboarding",
+        "faction-registry-gap": "worldLogic",
+        "capability-task-risk": "worldLogic",
+        "power-progression-conflict": "worldLogic",
+    }
+    return mapping.get(code, "volumeClosure")
+
+
+def _dimension_for_structure_check(item: Dict[str, Any]) -> str:
+    check_id = str(item.get("id", "")).strip()
+    mapping = {
+        "outline-coverage": "volumeClosure",
+        "intro-world-onboarding": "openingOnboarding",
+        "foreshadow-debt": "foreshadowRhythm",
+        "closure-readiness": "volumeClosure",
+    }
+    if check_id in mapping:
+        return mapping[check_id]
+    text = " ".join(
+        str(item.get(field, "")).strip()
+        for field in ("label", "message", "suggestion")
+    )
+    return _guess_dimension_id(text, default="volumeClosure")
+
+
+def _guess_dimension_id(text: str, *, default: str) -> str:
+    lowered = str(text or "").lower()
+    explicit_mapping = {
+        "chapter-handoff-weak": "chapterHandoff",
+        "paragraphreadability": "styleReadability",
+        "clusteredaiphrasing": "styleReadability",
+        "sensoryvariety": "styleReadability",
+        "metaleakage": "styleReadability",
+        "povoverreach": "styleReadability",
+    }
+    for needle, dimension_id in explicit_mapping.items():
+        if needle in lowered:
+            return dimension_id
+    for dimension_id, _label in VOLUME_SELF_REVIEW_DIMENSIONS:
+        if _dimension_keywords_hit(dimension_id, [text]):
+            return dimension_id
+    return default
+
+
+def _chapter_refs_for_signal(code: str, chapter_signals: list[Dict[str, Any]]) -> list[str]:
+    field_mapping = {
+        "chapter-file-missing": "chapterFileExists",
+        "mention-hygiene-pending": "mentionActionCount",
+        "due-foreshadow-pending": "dueForeshadowCount",
+        "overdue-foreshadow-pending": "overdueForeshadowCount",
+        "unscheduled-foreshadow-pending": "unresolvedWithoutScheduleCount",
+        "world-onboarding-gap": "worldOnboardingGapCount",
+        "faction-registry-gap": "factionRegistryGapCount",
+        "capability-task-risk": "capabilityTaskRiskCount",
+        "power-progression-conflict": "powerProgressionConflictCount",
+    }
+    field_name = field_mapping.get(code, "")
+    chapter_refs = []
+    for item in chapter_signals:
+        chapter_id = str(item.get("chapterId", "")).strip()
+        if not chapter_id:
+            continue
+        if code == "chapter-file-missing":
+            if not bool(item.get("chapterFileExists")):
+                chapter_refs.append(chapter_id)
+            continue
+        count = int(item.get(field_name, 0) or 0) if field_name else 0
+        if count > 0:
+            chapter_refs.append(chapter_id)
+    return chapter_refs[:3]
+
+
+def _chapter_refs_for_review_risk(review_evidence: Dict[str, Any], text: str) -> list[str]:
+    chapter_refs = []
+    for item in review_evidence.get("chapterReviewSummaries", []):
+        if not isinstance(item, dict):
+            continue
+        summary = str(item.get("summary", "")).strip()
+        chapter_id = str(item.get("chapterId", "")).strip()
+        if not summary or not chapter_id:
+            continue
+        if any(keyword.lower() in summary.lower() for keyword in str(text).split()):
+            chapter_refs.append(chapter_id)
+        if len(chapter_refs) >= 3:
+            break
+    return chapter_refs
+
+
+def _review_packet_refs_for_chapters(volume_id: str, chapter_refs: Iterable[str]) -> list[str]:
+    refs = []
+    seen = set()
+    for chapter_id in chapter_refs:
+        chapter_id = str(chapter_id).strip()
+        if not chapter_id or chapter_id in seen:
+            continue
+        seen.add(chapter_id)
+        refs.append(f"review-packet:{volume_id}:{chapter_id}")
+    return refs
+
+
+def _normalize_template_refs(values: Iterable[Any]) -> list[str]:
+    normalized = []
+    seen = set()
+    for value in values:
+        item = str(value).strip()
+        if not item or item in seen:
+            continue
+        seen.add(item)
+        normalized.append(item)
+    return normalized
+
+
+def _draft_issue_title(dimension_id: str, observation: Dict[str, Any]) -> str:
+    summary = str(observation.get("summary", "")).strip()
+    if summary:
+        return summary
+    return f"{VOLUME_SELF_REVIEW_DIMENSION_LABELS[dimension_id]} 仍需补强"
+
+
+def _generic_issue_impact(dimension_id: str) -> str:
+    label = VOLUME_SELF_REVIEW_DIMENSION_LABELS[dimension_id]
+    return f"会直接拉低{label}，默认不建议把当前版本直接送入人工审查。"
+
+
+def _generic_issue_fix_action(dimension_id: str) -> str:
+    fixes = {
+        "volumeClosure": "补一处更明确的阶段性交付、收束或卷尾回合完成感。",
+        "openingOnboarding": "把读者必须先懂的前提、规则或处境解释再前置一层。",
+        "worldLogic": "补制度代价、世界规则或能力边界，让设定更能自洽落地。",
+        "chapterHandoff": "补上一章结果对下一章开头的具体承接，而不是只靠话题延续。",
+        "characterContinuity": "补角色动机、反应或状态延续，让选择链更完整。",
+        "antagonistShaping": "把对手从线索或名词推进成有动作、有目标的在场压力。",
+        "conflictEscalation": "补更硬的阻力、误判、失败边缘或选择代价，拉开升级台阶。",
+        "payoffDelivery": "补一处更明确的兑现、输赢结果或读者可感知的回报。",
+        "foreshadowRhythm": "明确哪些短线本卷要回收，哪些长线要带着责任进入下一卷。",
+        "styleReadability": "优先处理 AI 味、长段和重复句式，再复检可读性。",
+    }
+    return fixes[dimension_id]
+
+
+def _verification_commands_for_issue(volume_id: str, chapter_refs: list[str]) -> list[str]:
+    commands = [f"workflow status --root <root> --volume-id {volume_id}"]
+    if chapter_refs:
+        commands.append(
+            f"export --root <root> --format review-packet --volume-id {volume_id}"
+        )
+    return commands
 
 
 def _normalize_scores(raw_scores: Any, *, field_name: str = "scores") -> list[Dict[str, Any]]:
@@ -1153,3 +1748,14 @@ def _dimension_keywords_hit(dimension_id: str, texts: Iterable[str]) -> bool:
     if not combined:
         return False
     return any(keyword.lower() in combined for keyword in keywords)
+
+
+def _merge_payload_value(base_value: Any, overlay_value: Any) -> Any:
+    if overlay_value is None:
+        return deepcopy(base_value)
+    if isinstance(base_value, dict) and isinstance(overlay_value, dict):
+        merged = deepcopy(base_value)
+        for key, value in overlay_value.items():
+            merged[key] = _merge_payload_value(merged.get(key), value)
+        return merged
+    return deepcopy(overlay_value)

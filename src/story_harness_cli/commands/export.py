@@ -56,6 +56,19 @@ def command_export(args) -> int:
     return 0
 
 
+def write_volume_review_packet(
+    root: Path,
+    state: dict,
+    volume: dict,
+    *,
+    output_path: Path | None = None,
+) -> Path:
+    target_path = output_path or _default_volume_review_packet_path(root, volume)
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+    target_path.write_text(_generate_volume_review_packet(state, root, volume), encoding="utf-8")
+    return target_path.resolve()
+
+
 def _chapter_title(state: dict, chapter_id: str) -> str:
     for vol in state.get("outline", {}).get("volumes", []):
         for ch in vol.get("chapters", []):
@@ -114,6 +127,12 @@ def _default_export_name(state: dict, fmt: str, volume: dict | None) -> str:
             return f"{title}-review-packet"
         return title
     return state["project"].get("title", "manuscript")
+
+
+def _default_volume_review_packet_path(root: Path, volume: dict) -> Path:
+    volume_id = str(volume.get("id") or "").strip()
+    filename = f"{volume_id}-review-packet.md" if volume_id else "volume-review-packet.md"
+    return root / "reviews" / filename
 
 
 def _find_outline_chapter(state: dict, chapter_id: str) -> dict:

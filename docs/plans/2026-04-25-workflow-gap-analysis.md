@@ -1,7 +1,10 @@
 # Workflow 设计现状与缺口整理
 
+> 历史状态: 2026-04-29 起降级为 `historical-source`
+> 说明: 本文记录的“缺少显式 workflow 命令组 / `workflow.yaml` / 卷级 gate”等核心缺口已经进入主仓库实现。后续活跃 AI 实施痛点请改查 `docs/tracking/ai-friction-tracker.md`。
+
 > 日期: 2026-04-25
-> 状态: 调研完成，待实施
+> 状态: Historical source
 > 目的: 把仓库内已经存在的 workflow 相关设计、实现和缺口收敛成单一入口，避免后续继续重复设计第二套方案
 
 ## 1. 结论

@@ -1,7 +1,10 @@
 # 写作审查缺口记录
 
+> 历史状态: 2026-04-29 起降级为 `historical-source`
+> 说明: 本文继续保留人工审查回溯价值，但不再作为长期活跃痛点入口。后续仍会增加 AI 实施负担的条目，应统一收敛到 `docs/tracking/ai-friction-tracker.md`。
+
 > 日期: 2026-04-26
-> 状态: 持续补充
+> 状态: Historical source
 > 用途: 记录人工审查中发现、但系统尚未稳定覆盖的写作问题，作为后续 review / consistency / export 能力补强输入
 
 ## 1. 旧导出串章标题

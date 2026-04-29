@@ -1,7 +1,10 @@
 # 写作问题补强实施计划
 
+> 历史状态: 2026-04-29 起降级为 `historical-source`
+> 说明: 本文是阶段性实施计划，不再承担长期缺口入口职责。残留未收口问题请转查 `docs/tracking/ai-friction-tracker.md`，不要直接复活本文作为当前执行入口。
+
 > 日期: 2026-04-26
-> 状态: 草稿
+> 状态: Historical source
 > 关联当前入口: `docs/roadmap.md`
 > 关联问题记录:
 > - `docs/plans/2026-04-26-writing-review-gap-log.md`

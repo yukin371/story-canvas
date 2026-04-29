@@ -1,5 +1,8 @@
 # 2026-04-26 Workflow Gap Notes
 
+> 历史状态: 2026-04-29 起降级为 `historical-source`
+> 说明: 本文保留为真实样例回溯材料。其中已解决项已归档，仍活跃的 AI 实施负担已迁到 `docs/tracking/ai-friction-tracker.md`，后续不要再把本文当作当前缺口入口。
+
 ## 背景
 
 在《命灯照骨》长篇样例的真实写作闭环中，新增章节与回填 `scenePlans` 段落边界时，当前流程仍依赖 agent 直接编辑项目内的 `project.yaml`、`outline.yaml`、`detailed_outlines.yaml`。

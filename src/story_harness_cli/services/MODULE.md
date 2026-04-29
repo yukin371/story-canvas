@@ -24,7 +24,7 @@
 - `outline_guard.py`: 章节大纲前置检查，判断是否具备项目定位 / 故事契约 + direction / beats / scenePlans 进入写作或细化
 - `story_review.py`: 章节回顾评分、一幕评审、类型/平台加权评分、评论、改稿建议、契约对齐与商业连载对齐检查，并开始消费情绪契约、揭露偏好、模板关注点、伏笔窗口、世界规则、角色动态状态，以及 style/consistency 护栏信号；对高置信“方案文档腔”会进入 `priorityActions` 与 `contractAlignment.risks`；chapter 级 review 现还会消费章节承接摘要，对“上一章结果 -> 本章开头承接偏弱”输出 `chapterHandoffSignals`、`priorityActions`、`contractAlignment.risks` 与 `chapterHandoffWeak` rule judgement；chapter/scene 共用的 `projectContext`、`priorityActions` 与对齐后处理已收敛到共享 helper，避免两条评审路径长期并行漂移
 - `style_detector.py`: AI 风格启发式检测与约束生成；允许通过外部注入 scorer 增强句式近似判断，但默认保持 builtin fallback，并支持基于 profile 的术语观察词、重复白名单、词级阈值、题材语域失真词表、叙事支架复用检测，以及连续 `目标：/风险：/约束：/时间窗口：` 这类结构化方案块识别；`planBlockPolicy` 可对标签白名单与命中阈值做题材级放宽；当前还内建了中文高频 AI 句式簇（`不是……是……`、`不像……更像……`、`真正……从来都是……` / `还有什么？`）、移动端段落可读性信号，以及 `clusteredAIPhrasing` 聚合层，用于把多项轻度 AI 句式/可读性问题收敛成统一风险；同时会消费 `review_rule_detector.py` 返回的规则信号，把 `review-rules.yaml` 驱动的检测结果并入 `patternResults/judgements`
-- `illustration_prompting.py`: chapter / entity 插图 prompt 构造、template/modifier/policy/lexicon 解析后的 prompt snapshot 组装、目标元数据整理与 dry-run request 组装；当前 entity prompt 优先抽取角色卡外貌/视觉锚点，chapter prompt 则避免直接注入章节正文摘要，并把模板从标签式拼接收敛成更自然的美术 brief；chapter / entity / temporary 当前都可显式选择首批 use-case 矩阵
+- `illustration_prompting.py`: chapter / entity 插图 prompt 构造、template/modifier/policy/lexicon 解析后的 prompt snapshot 组装、目标元数据整理与 dry-run request 组装；当前 entity prompt 优先抽取角色卡外貌/视觉锚点，chapter prompt 则避免直接注入章节正文摘要，并把模板从标签式拼接收敛成更自然的美术 brief；chapter / entity / temporary 当前都可显式选择首批 use-case 矩阵，并额外支持“纯绘图 / 文字设计”这组正交文本版式参数
 - `illustration_prompting.py`: 当前还支持 freeform / temporary 目标 payload；当图片不绑定具体章节或角色时，仍走相同 pack/template 展开，但 target type 会标记为 `temporary`；pack 没有专用模板时，服务层会按同类 use-case fallback 解析模板与词库
 - `illustration_batching.py`: batch spec 归一化、delivery mode 约束、batch manifest summary，以及 `webui-manual` / `external-agent` 的纯说明载荷组装
 - `reference_mentions.py`: 章节内结构化引用 mention 的纯分析，负责已建档引用目录、已包裹/未包裹/未建档分组、plain mention 的确定性 tag replacement 候选，以及最小 related context
@@ -36,7 +36,9 @@
 - `workflow_engine.py` 在卷级 `human_review_ready` gate 中，当前还会把 `repairCoverage.uncoveredWeakDimensionLabels` 视为显式阻塞，并把这些弱项翻译成更具体的 `nextActions`
 - `workflow_engine.py` 当前还会为卷级当前 gate 生成只读 `changeRequestDrafts`：工具侧阻塞会转成带 `chapterId/evidence` 的修复草案，卷级自审阻塞会转成修稿动作草案；当卷级自审尚未生成时，还会把 `volumeStructureCheck` 中的 `risk/missing` 检查项转成结构修补草案，供 UI/agent 直接消费而不必二次解析 `nextActions`
 - `volume_self_review.py`: 卷级 AI 自审的纯校验与归一化，负责固定评分维度、缺陷归因、独立编辑审查元数据、问题级工具/自审漏检解释，以及人工审查门槛判断，并提供最近一次卷级自审结果读取 helper
+- `volume_self_review.py` 当前还提供卷级自审 payload merge helper，供命令层把 author/editor 分片输入结构化合稿，而不是让 agent 手工拼整份 YAML
 - `volume_self_review.py` 生成模板时当前还会透传 command 层卷级预检中的 `volumeStructureCheck`、chapter/scene/style 证据摘要，并显式提示独立编辑审查模式 / 上下文隔离要求，让 AI 自审能直接对照卷级阶段映射与结构检查稿
+- `volume_self_review.py` 当前还会把这些卷级工具信号启发式收敛成 root `scores/issues/closureAssessment` draft，优先产出可审阅起点而不是全空模板，但不会擅自把默认结论抬成 `closed`
 - `volume_self_review.py` 现还负责拦截模板占位值，避免未填写完成的卷级自审草稿被写入 `story_reviews`
 - `volume_self_review.py` 现还会做最小有效性检查，拒绝“全部 0 分”或与闭环结论不匹配的空白 `delivered/missing`
 - `volume_self_review.py` 现还会做最小一致性检查，避免“声明可人工审查但门槛未过”“独立编辑审查未完成却想放行”或“未闭环却没有主要问题清单”这类自相矛盾输入
@@ -124,7 +126,7 @@
 - 一幕级 `contractAlignment` 复用了章节级契约思想，但阈值更偏向“局部兑现/局部钩子”，不等同于整章判断
 - `story_review.py` 现在还会输出 `storyConstraintSignals`，用于暴露当前章评审实际消费到的情绪契约、世界规则、到窗伏笔和角色状态切片
 - `story_review.py` 现在还会在 chapter review 中输出 `chapterHandoffSignals`，用于暴露“上一章结果 -> 本章起点”的承接风险；它是软规则，误报应优先通过真实样例回灌，而不是继续硬编码更重的剧情证明器
-- `chapterHandoffSignals` 当前只在存在明确前章负载时触发：前章需要留下角色状态变化、活跃线程或章节方向负载；检测会同时看角色/状态/线程锚点、前章 direction / beat / scene goal 的语义锚点，以及“那句还没散 / 从某处脱身不过半个时辰”这类直接接续句式；单个弱语义锚点只算辅助证据，开头前两段没有接住但前四段内自然回接，会记录 `delayedBridge=true` 并避免误报，不要求每章开头机械复述上一章
+- `chapterHandoffSignals` 当前只在存在明确前章负载时触发：前章需要留下角色状态变化、活跃线程或章节方向负载；检测会同时看角色/状态/线程锚点、前章 direction / beat / scene goal 的语义锚点、“那句还没散 / 从某处脱身不过半个时辰”这类直接接续句式，以及命令层传入的上一章结尾窗口中是否存在当前章开头短对白 / 短句的高置信承接；单个弱语义锚点只算辅助证据，开头前两段没有接住但前四段内自然回接，会记录 `delayedBridge=true` 并避免误报，不要求每章开头机械复述上一章
 - `story_review.py` 现在还会在 chapter review 中输出 `consistencySignals`，用于暴露高频特殊术语复用、设定候选和设定冲突
 - `story_review.py` 现在还会通过 `consistencySignals.unintroducedNameReveals` 暴露“先匿名描写、后突兀报姓名”这类认知边界问题
 - `story_review.py` 现在还会通过 `consistencySignals.capabilityTaskRisks` 暴露“低修为角色直接承担高风险任务但缺少例外说明”这类设定合理性问题
@@ -148,6 +150,7 @@
 - `illustration_prompting.py` 当前会优先消费 `profile.appearance/visual/look`、`seed.appearance/visual` 与当前外在状态作为角色图 prompt 基线；若角色卡没有这些字段，才回退到 summary
 - `illustration_prompting.py` 的 chapter-scene prompt 当前不再直接拼接章节正文 excerpt，避免 prompt 过长和把正文误当作最终生图说明
 - `illustration_prompting.py` 当前会优先把 modifier 转成自然短句，再和 pack 的 `lexicon` 一起渲染进模板；兼容旧模板时仍保留 `styleModifiers/userExtraPrompt/commercialPrompt` 这组旧 placeholder
+- `illustration_prompting.py` 当前会把 `textDesignMode/titleText/subtitleText/bodyText/fontStyleHint` 收敛进 `promptSnapshot.textDesign`，并转成自然语言版式 brief；该层是请求级参数，不是新的模板分类
 - `illustration_prompting.py` 当前按 use-case 家族解析 subject / guardrail / lexicon；即使 pack 只定义了 `chapter-scene`，`duel-scene`、`chase-escape`、`manga-panel` 也应优先沿同类模板 fallback，而不是退成不相关模板
 - `evaluate_project_story_gate` 的用途是把“先确定市场定位和故事承诺，再拆章节”变成硬门禁，而不是 review 阶段的软建议
 - workflow 的 `currentStage` 口径是“第一个未满足 inferred 条件的 gate”，不是“所有前置 gate 都必须先人工 accept 才算通过”
