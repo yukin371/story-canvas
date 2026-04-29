@@ -306,6 +306,56 @@ class ContextRefreshSmokeTest(unittest.TestCase):
         self.assertEqual(context_lens["lenses"][0]["chapterHandoff"]["previousChapter"]["id"], "chapter-001")
         self.assertNotIn("projectAdvisories", context_lens["lenses"][0])
 
+    def test_context_refresh_prefers_current_analysis_over_stale_projection_scope(self) -> None:
+        _write_json(
+            self.temp_dir / "projections" / "projection.yaml",
+            {
+                "snapshotProjections": [
+                    {
+                        "entityId": "inferred::旧南堤",
+                        "entityName": "旧南堤",
+                        "scopeRef": "chapter-001",
+                        "currentState": "离开",
+                    },
+                    {
+                        "entityId": "char-linzhou",
+                        "entityName": "林舟",
+                        "scopeRef": "chapter-001",
+                        "currentState": "离开",
+                    },
+                ],
+                "relationProjections": [],
+                "sceneScopeProjections": [
+                    {
+                        "chapterId": "chapter-001",
+                        "activeEntityIds": ["char-linzhou", "inferred::旧南堤"],
+                    }
+                ],
+                "timelineProjections": [],
+                "causalityProjections": [],
+            },
+        )
+        _write_json(
+            self.temp_dir / "logs" / "analysis-chapter-001.yaml",
+            {
+                "chapterId": "chapter-001",
+                "sceneScope": {
+                    "activeEntityIds": ["char-linzhou"],
+                },
+                "snapshotCandidates": [],
+            },
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["context", "refresh", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        active_ids = [item["id"] for item in payload["activeCharacters"]]
+        self.assertEqual(active_ids, ["char-linzhou"])
+        self.assertNotEqual(payload["activeCharacters"][0]["currentState"], "离开")
+
     def test_context_show_includes_project_advisories_without_persisting_them(self) -> None:
         _write_json(
             self.temp_dir / "outline.yaml",

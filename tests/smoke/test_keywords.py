@@ -72,6 +72,15 @@ class KeywordsCustomTest(unittest.TestCase):
         tags2 = state_tags_for_paragraph("他受伤了")
         self.assertNotIn("受伤", tags2)
 
+    def test_state_keywords_ignore_direct_negation(self):
+        tags = state_tags_for_paragraph("她的手指没有离开屏幕，伤口也并未流血。")
+        self.assertNotIn("离开", tags)
+        self.assertNotIn("流血", tags)
+
+        positive_tags = state_tags_for_paragraph("她终于离开会议室，手臂开始流血。")
+        self.assertIn("离开", positive_tags)
+        self.assertIn("流血", positive_tags)
+
 
 if __name__ == "__main__":
     unittest.main()

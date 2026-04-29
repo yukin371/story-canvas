@@ -250,10 +250,18 @@ def refresh_context_lens(state: Dict[str, Dict[str, Any]], chapter_id: str, anal
         (item for item in projection.get("sceneScopeProjections", []) if item.get("chapterId") == chapter_id),
         None,
     )
-    active_entity_ids = (scope or {}).get("activeEntityIds") or analysis.get("sceneScope", {}).get("activeEntityIds", [])
+    analysis_has_current_scope = analysis.get("chapterId") == chapter_id
+    analysis_active_entity_ids = analysis.get("sceneScope", {}).get("activeEntityIds", [])
+    active_entity_ids = analysis_active_entity_ids or (scope or {}).get("activeEntityIds") or []
+    analysis_snapshot_entity_ids = {
+        item.get("entityId")
+        for item in analysis.get("snapshotCandidates", [])
+        if isinstance(item, dict) and item.get("entityId")
+    }
     snapshot_index = {
         (item.get("entityId"), item.get("scopeRef")): item
         for item in projection.get("snapshotProjections", [])
+        if not analysis_has_current_scope or item.get("entityId") in analysis_snapshot_entity_ids
     }
 
     active_characters = []

@@ -1,0 +1,31 @@
+{
+  "chapterId": "chapter-001",
+  "chapterTitle": "停雨申请",
+  "analyzedAt": "2026-04-29T16:07:54+08:00",
+  "activeEntities": [
+    {
+      "id": "char-xucheng",
+      "name": "许澄",
+      "mentionCount": 6,
+      "source": "registry"
+    },
+    {
+      "id": "char-luowen",
+      "name": "骆闻",
+      "mentionCount": 2,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "char-xucheng",
+      "char-luowen"
+    ],
+    "activeEntityNames": [
+      "许澄",
+      "骆闻"
+    ]
+  }
+}

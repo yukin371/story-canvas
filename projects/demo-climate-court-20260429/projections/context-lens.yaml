@@ -1,0 +1,117 @@
+{
+  "currentChapterId": "chapter-001",
+  "lenses": [
+    {
+      "chapterId": "chapter-001",
+      "chapterTitle": "停雨申请",
+      "emotionalContract": {
+        "coreEmotions": [
+          "压迫",
+          "冷静紧张"
+        ],
+        "chapterEmotionFloor": [
+          "每章至少出现一次证据压力或程序风险"
+        ],
+        "forbiddenEmotions": [],
+        "revealPreference": {
+          "defaultMode": "",
+          "allowDirectExplainAtClimax": false
+        }
+      },
+      "storyTemplate": {
+        "id": "",
+        "label": "",
+        "modulePolicy": {},
+        "reviewFocus": []
+      },
+      "chapterHandoff": {
+        "previousChapter": null,
+        "currentChapter": {
+          "id": "chapter-001",
+          "title": "停雨申请",
+          "direction": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头；中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡",
+          "beatHints": [
+            "开场：建立日常世界",
+            "触发事件：打破平衡的事件",
+            "第一幕转折：主角做出选择，无法回头"
+          ],
+          "sceneGoals": [
+            "旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮。窗外的雨压在玻璃上，像有人持续按着整座城市的脉搏。"
+          ]
+        },
+        "nextChapter": null,
+        "carryOverEntityChanges": [],
+        "activeThreadLabels": []
+      },
+      "activeCharacters": [
+        {
+          "id": "char-xucheng",
+          "name": "许澄",
+          "currentState": {
+            "status": "active",
+            "physicalState": [],
+            "emotionalState": [],
+            "location": "临海市第二巡回法庭",
+            "lastUpdatedChapter": null,
+            "powerLevel": ""
+          },
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "",
+            "trueLevel": ""
+          },
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "char-luowen",
+          "name": "骆闻",
+          "currentState": {
+            "status": "active",
+            "physicalState": [],
+            "emotionalState": [],
+            "location": "临海市第二巡回法庭",
+            "lastUpdatedChapter": null,
+            "powerLevel": ""
+          },
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "",
+            "trueLevel": ""
+          },
+          "injuries": [],
+          "recentChange": null
+        }
+      ],
+      "activeRelations": [],
+      "activeWorldRules": [
+        {
+          "id": "rule-rain-injunction",
+          "label": "停雨临时禁令",
+          "rule": "申请方需在四十八小时内提交最低证据链：降雨协议、实时雨量日志、损害扩大风险、替代供水方案。",
+          "scope": ""
+        }
+      ],
+      "activeFactions": [
+        {
+          "id": "faction-yunheng",
+          "name": "云衡气候",
+          "type": "",
+          "status": ""
+        },
+        {
+          "id": "faction-water-bureau",
+          "name": "市水务局",
+          "type": "",
+          "status": ""
+        }
+      ],
+      "activeThreads": [],
+      "activeForeshadows": [],
+      "dueForeshadows": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-29T16:14:12+08:00"
+    }
+  ]
+}

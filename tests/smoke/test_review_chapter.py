@@ -290,6 +290,35 @@ class ReviewChapterSmokeTest(unittest.TestCase):
         self.assertTrue(any("设定冲突" in item or "守夜代价" in item for item in alignment_text))
         self.assertTrue(any("蝴蝶效应" in item for item in payload["consistencySignals"]["specialTermRepetition"]["evidence"]))
 
+    def test_review_chapter_counts_procedural_legal_tension(self) -> None:
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(
+            "# 第一章\n\n"
+            "@{许澄}把停雨临时禁令申请递进夜间法庭，申请书要求四十八小时内叫停城市人工降雨协议。\n\n"
+            "对方律师提出紧急异议：如果禁令误发，申请方必须承担新区限水损失的连带担保。\n\n"
+            "法官要求云衡气候在凌晨两点前提交原始雨量日志、调度签章和人工接管链路，否则按证据缺失处理。\n",
+            encoding="utf-8",
+        )
+
+        with redirect_stdout(StringIO()):
+            analyze_exit = main(["chapter", "analyze", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+        self.assertEqual(analyze_exit, 0)
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        dimensions = {item["id"]: item for item in payload["scores"]["dimensions"]}
+        self.assertGreaterEqual(dimensions["conflictTension"]["score"], 14)
+        self.assertGreaterEqual(dimensions["characterPressure"]["score"], 14)
+        self.assertTrue(any("程序/证据张力" in item for item in dimensions["conflictTension"]["signals"]))
+        self.assertFalse(
+            any("张力偏平" in item for item in dimensions["conflictTension"]["suggestions"]),
+            dimensions["conflictTension"]["suggestions"],
+        )
+
     def test_review_chapter_flags_genre_register_drift_for_xuanhuan(self) -> None:
         project = json.loads((self.temp_dir / "project.yaml").read_text(encoding="utf-8"))
         project["genre"] = "玄幻"
@@ -917,6 +946,206 @@ class ReviewChapterSmokeTest(unittest.TestCase):
         self.assertGreaterEqual(payload["chapterHandoffSignals"]["openingDirectContinuationHits"], 2)
         self.assertGreaterEqual(payload["chapterHandoffSignals"]["openingAnchorScore"], 2)
         self.assertFalse(any(item["ruleId"] == "chapterHandoffWeak" for item in payload["ruleJudgements"]))
+
+    def test_review_chapter_allows_exact_previous_ending_quote_bridge(self) -> None:
+        (self.temp_dir / "outline.yaml").write_text(
+            json.dumps(
+                {
+                    "chapters": [
+                        {
+                            "id": "chapter-001",
+                            "title": "灯前禁声",
+                            "status": "draft",
+                            "direction": "林舟确认灯库禁声令已经压到门前。",
+                        },
+                        {
+                            "id": "chapter-002",
+                            "title": "禁声之后",
+                            "status": "draft",
+                            "direction": "承接灯库禁声令，林舟必须在不能回应的情况下脱身。",
+                        },
+                    ],
+                    "chapterDirections": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "threads.yaml").write_text(
+            json.dumps(
+                {
+                    "threads": [
+                        {
+                            "id": "thread-silence-order",
+                            "label": "灯库禁声令",
+                            "status": "active",
+                            "relatedChapters": ["chapter-001", "chapter-002"],
+                        }
+                    ]
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 第一章\n\n"
+            "岳怀川把灯牌压低，终于看见门缝外那枚灰签动了一下。\n\n"
+            "他没敢再解释，只短短吐出两个字：\n\n"
+            "“别应。”\n",
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-002.md").write_text(
+            "# 第二章\n\n"
+            "“别应。”\n\n"
+            "林舟几乎是在听见这两个字的同时咬住舌尖，把已经到喉咙口的答声压了回去。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-002"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertFalse(payload["chapterHandoffSignals"]["detected"])
+        self.assertTrue(payload["chapterHandoffSignals"]["previousEndingBridgeHits"])
+        self.assertGreaterEqual(payload["chapterHandoffSignals"]["openingAnchorScore"], 2)
+        self.assertTrue(any("上一章结尾承接" in item for item in payload["chapterHandoffSignals"]["openingAnchorSummary"]))
+        self.assertFalse(any(item["ruleId"] == "chapterHandoffWeak" for item in payload["ruleJudgements"]))
+
+    def test_review_chapter_allows_short_quote_rebuilt_from_previous_ending_fragments(self) -> None:
+        (self.temp_dir / "outline.yaml").write_text(
+            json.dumps(
+                {
+                    "chapters": [
+                        {
+                            "id": "chapter-001",
+                            "title": "旧路未转",
+                            "status": "draft",
+                            "direction": "林舟在旧押灯路发现一号转押记录异常。",
+                        },
+                        {
+                            "id": "chapter-002",
+                            "title": "未转之后",
+                            "status": "draft",
+                            "direction": "承接一号未转的异常，判断旧案仍在灯路底下。",
+                        },
+                    ],
+                    "chapterDirections": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "threads.yaml").write_text(
+            json.dumps(
+                {
+                    "threads": [
+                        {
+                            "id": "thread-old-transfer",
+                            "label": "旧押灯路",
+                            "status": "active",
+                            "relatedChapters": ["chapter-001", "chapter-002"],
+                        }
+                    ]
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 第一章\n\n"
+            "灯面上只剩两个字。\n\n"
+            "未转。\n\n"
+            "说明当年该被转押走的一号，没有按令走成。\n\n"
+            "林舟忽然知道，今夜真正要转押的，不一定是他。\n",
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-002.md").write_text(
+            "# 第二章\n\n"
+            "“一号未转。”\n\n"
+            "四个字贴在裂开的白灯火里，短得像刀口。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-002"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertFalse(payload["chapterHandoffSignals"]["detected"])
+        self.assertIn("一号...未转", payload["chapterHandoffSignals"]["previousEndingBridgeHits"])
+        self.assertGreaterEqual(payload["chapterHandoffSignals"]["openingAnchorScore"], 2)
+        self.assertFalse(any(item["ruleId"] == "chapterHandoffWeak" for item in payload["ruleJudgements"]))
+
+    def test_review_chapter_does_not_clear_handoff_on_unmatched_short_quote(self) -> None:
+        (self.temp_dir / "outline.yaml").write_text(
+            json.dumps(
+                {
+                    "chapters": [
+                        {
+                            "id": "chapter-001",
+                            "title": "仓库惊变",
+                            "status": "draft",
+                            "direction": "林舟在仓库冲突后确认自己被盯上。",
+                        },
+                        {
+                            "id": "chapter-002",
+                            "title": "陌生答声",
+                            "status": "draft",
+                            "direction": "承接仓库冲突后的追踪风险，决定是否继续深查守夜人。",
+                        },
+                    ],
+                    "chapterDirections": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "threads.yaml").write_text(
+            json.dumps(
+                {
+                    "threads": [
+                        {
+                            "id": "thread-night-watch",
+                            "label": "守夜人暗线",
+                            "status": "active",
+                            "relatedChapters": ["chapter-001", "chapter-002"],
+                        }
+                    ]
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 第一章\n\n"
+            "仓库门外的脚步声停住，林舟终于确认自己被守夜人盯上了。\n",
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-002.md").write_text(
+            "# 第二章\n\n"
+            "“好啊。”\n\n"
+            "清晨的集市已经热闹起来，林舟却没有处理前夜留下的伤势、追踪或守夜人压力。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-002"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertTrue(payload["chapterHandoffSignals"]["detected"])
+        self.assertFalse(payload["chapterHandoffSignals"]["previousEndingBridgeHits"])
+        self.assertTrue(any(item["ruleId"] == "chapterHandoffWeak" for item in payload["ruleJudgements"]))
 
     def test_review_chapter_emits_meta_leakage_rule_judgement(self) -> None:
         (self.temp_dir / "review-rules.yaml").write_text(

@@ -948,7 +948,7 @@ def _build_volume_review_evidence(root: Path, state: dict[str, Any], volume: dic
         state.get("story_reviews", {}).get("chapterReviews", []),
         chapter_ids=chapter_ids,
     )
-    scene_reviews = _filter_scene_reviews(
+    scene_reviews = _latest_scene_reviews_by_scope(
         state.get("story_reviews", {}).get("sceneReviews", []),
         chapter_ids=chapter_ids,
     )
@@ -1004,6 +1004,40 @@ def _filter_scene_reviews(reviews: list[dict[str, Any]], *, chapter_ids: list[st
         for item in reviews
         if str(item.get("chapterId", "")).strip() in chapter_id_set
     ]
+
+
+def _latest_scene_reviews_by_scope(reviews: list[dict[str, Any]], *, chapter_ids: list[str]) -> list[dict[str, Any]]:
+    chapter_id_set = set(chapter_ids)
+    latest_by_scope: dict[tuple[str, str, str, str], dict[str, Any]] = {}
+    for review in reviews:
+        chapter_id = str(review.get("chapterId", "")).strip()
+        if chapter_id not in chapter_id_set:
+            continue
+        scene_range = review.get("sceneRange", {}) if isinstance(review.get("sceneRange", {}), dict) else {}
+        scene_index = str(scene_range.get("sceneIndex", "") or "")
+        if scene_index:
+            scope_key = (chapter_id, scene_index, "", "")
+        else:
+            scope_key = (
+                chapter_id,
+                "",
+                str(scene_range.get("startParagraph", "") or ""),
+                str(scene_range.get("endParagraph", "") or ""),
+            )
+        existing = latest_by_scope.get(scope_key)
+        generated_at = str(review.get("generatedAt", ""))
+        if existing is None or generated_at >= str(existing.get("generatedAt", "")):
+            latest_by_scope[scope_key] = review
+    return sorted(
+        latest_by_scope.values(),
+        key=lambda item: (
+            chapter_ids.index(str(item.get("chapterId", "")).strip())
+            if str(item.get("chapterId", "")).strip() in chapter_ids
+            else 999,
+            int((item.get("sceneRange", {}) or {}).get("sceneIndex", 999) or 999),
+            str(item.get("generatedAt", "")),
+        ),
+    )
 
 
 def _build_volume_style_evidence(

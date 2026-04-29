@@ -12,7 +12,7 @@
 ## 2. Owns
 
 - `analyzer.py`: 章节分析（实体识别、状态检测、关系检测、场景范围）
-- `analyzer.py`: 章节分析（实体识别、状态检测、关系检测、场景范围），以及正文名称到 `entities/worldbook` 建档条目的引用对齐
+- `analyzer.py`: 章节分析（实体识别、状态检测、关系检测、场景范围），以及正文名称到 `entities/worldbook` 建档条目的引用对齐；当前会跳过已建档 worldbook 引用的 inferred character 注册，避免势力/地点/物件污染角色链路
 - `change_requests.py`: 变更请求生成与审核
 - `projection_engine.py`: 投影状态管理（upsert_by_key 去重），并在 `projection apply` 时吸纳高置信、无冲突的新设定候选到 `worldbook.premiseFacts`
 - `consistency_engine.py`: 一致性校验（hard checks: 状态/关系矛盾; soft checks: 大纲偏离），并输出正文中新设定候选、和既有世界设定的冲突预警，以及高置信的“姓名/身份无来源提前揭露”“能力层级 vs 任务风险不匹配”“当前境界 vs 突破目标越阶”风险
@@ -21,8 +21,9 @@
 - `review_rule_detector.py`: review-rule profile 驱动的独立规则检测入口，当前负责 `metaLeakage`、`povOverreach` 与 whitelist 豁免求值，并向 `style_detector` 返回可并入 `patternResults` 的规则信号；`povOverreach` 首版只覆盖高置信的有限视角盲区细节断言（如身后/右后方的具体视觉细节），暂不追求全量语义 POV 分析
 - `entity_enricher.py`: 角色外貌/能力提取与丰富化提案
 - `context_lens.py`: 写作上下文构建（活跃角色/关系 + 情绪契约 + 题材模板 + 世界约束 + 线索/伏笔切片），并产出 `previous/current/next chapter` 承接摘要与可延续的角色变化 / 线程信号
+- `context_lens.py`: 当命令层传入当前章节的新 analysis 时，优先使用 analysis 的 scene scope，并只采纳仍由本次 analysis 支撑的同章 snapshot，避免旧 projection 污染新上下文
 - `outline_guard.py`: 章节大纲前置检查，判断是否具备项目定位 / 故事契约 + direction / beats / scenePlans 进入写作或细化
-- `story_review.py`: 章节回顾评分、一幕评审、类型/平台加权评分、评论、改稿建议、契约对齐与商业连载对齐检查，并开始消费情绪契约、揭露偏好、模板关注点、伏笔窗口、世界规则、角色动态状态，以及 style/consistency 护栏信号；对高置信“方案文档腔”会进入 `priorityActions` 与 `contractAlignment.risks`；chapter 级 review 现还会消费章节承接摘要，对“上一章结果 -> 本章开头承接偏弱”输出 `chapterHandoffSignals`、`priorityActions`、`contractAlignment.risks` 与 `chapterHandoffWeak` rule judgement；chapter/scene 共用的 `projectContext`、`priorityActions` 与对齐后处理已收敛到共享 helper，避免两条评审路径长期并行漂移
+- `story_review.py`: 章节回顾评分、一幕评审、类型/平台加权评分、评论、改稿建议、契约对齐与商业连载对齐检查，并开始消费情绪契约、揭露偏好、模板关注点、伏笔窗口、世界规则、角色动态状态，以及 style/consistency 护栏信号；对高置信“方案文档腔”会进入 `priorityActions` 与 `contractAlignment.risks`；chapter 级 review 现还会消费章节承接摘要，对“上一章结果 -> 本章开头承接偏弱”输出 `chapterHandoffSignals`、`priorityActions`、`contractAlignment.risks` 与 `chapterHandoffWeak` rule judgement；chapter/scene 共用的 `projectContext`、`priorityActions` 与对齐后处理已收敛到共享 helper，避免两条评审路径长期并行漂移；章节评分现会把禁令、异议、担保、限水、原始日志、接管链路、提交期限等程序/证据张力计入推进、压力与冲突维度；一幕伏笔评分与章末商业 hook 对齐现会把陌生号码、日志异常、接管链路、被截断输入等悬念物证信号计入钩子
 - `style_detector.py`: AI 风格启发式检测与约束生成；允许通过外部注入 scorer 增强句式近似判断，但默认保持 builtin fallback，并支持基于 profile 的术语观察词、重复白名单、词级阈值、题材语域失真词表、叙事支架复用检测，以及连续 `目标：/风险：/约束：/时间窗口：` 这类结构化方案块识别；`planBlockPolicy` 可对标签白名单与命中阈值做题材级放宽；当前还内建了中文高频 AI 句式簇（`不是……是……`、`不像……更像……`、`真正……从来都是……` / `还有什么？`）、移动端段落可读性信号，以及 `clusteredAIPhrasing` 聚合层，用于把多项轻度 AI 句式/可读性问题收敛成统一风险；同时会消费 `review_rule_detector.py` 返回的规则信号，把 `review-rules.yaml` 驱动的检测结果并入 `patternResults/judgements`
 - `illustration_prompting.py`: chapter / entity 插图 prompt 构造、template/modifier/policy/lexicon 解析后的 prompt snapshot 组装、目标元数据整理与 dry-run request 组装；当前 entity prompt 优先抽取角色卡外貌/视觉锚点，chapter prompt 则避免直接注入章节正文摘要，并把模板从标签式拼接收敛成更自然的美术 brief；chapter / entity / temporary 当前都可显式选择首批 use-case 矩阵，并额外支持“纯绘图 / 文字设计”这组正交文本版式参数
 - `illustration_prompting.py`: 当前还支持 freeform / temporary 目标 payload；当图片不绑定具体章节或角色时，仍走相同 pack/template 展开，但 target type 会标记为 `temporary`；pack 没有专用模板时，服务层会按同类 use-case fallback 解析模板与词库
@@ -45,6 +46,7 @@
 - `volume_self_review.py` 当前还要求 `0-2` 分弱项必须能对齐到可核对的章节或证据锚点，优先通过 `scores[].chapterRefs/evidenceRefs`，否则至少要在带 ref 的 `issues[]` 中能追到对应问题
 - `volume_self_review.py` 现还会用轻量关键词做低分维度覆盖检查，避免 `issues/fixAction/repairSuggestions` 与最弱项完全脱节
 - `volume_self_review.py` 现还会归一化 `repairCoverage` 摘要，输出弱项列表、未覆盖弱项和 coverage status，供 `status/export` 直接消费
+- `volume_self_review.py` 的 `repairCoverage` 当前会合并 root 自审与独立编辑评分中的低分弱项，并保留 `rootWeakDimensionLabels` / `editorWeakDimensionLabels`，避免多代理审查发现的问题只藏在 `editorAssessment.scores` 里
 - `volume_self_review.py` 的 `issues` 现还兼容可选 `chapterRefs/evidenceRefs`，用于把卷级问题直接锚到章节或外部审查证据
 - `volume_self_review.py` 当前还提供卷级 issue refs 的纯校验 helper，供 command 层在拿到章节段落数 / scenePlans 后验证 `chapter-xxx#paragraph-n` 与 `chapter-xxx#scene-n` 是否真的存在
 - `volume_self_review.py` 当前还会消费 command 层提供的 `semanticAnchors` 做纯校验，首批支持 `chapter-xxx#world-rule-onboarding` 与 `chapter-xxx#handoff-gap` 这类章节语义锚点
@@ -117,6 +119,7 @@
 - `projection_engine.py` 的 `upsert_by_key` 使用 `|` 合并 dict，确保 payload 完整覆盖
 - `projection_engine.py` 对新设定的自动入账当前只写 `worldbook.premiseFacts`，不会自动升级成 `worldRules`
 - `story_review.py` 里 `primaryGenre` 与 `subGenre`/`styleTags` 的归一化口径不同：前者归主类，后者保留细分类 slug
+- `story_review.py` 的职业/程序悬疑张力仍是 core 关键词启发式，后续若继续扩展题材，应优先迁入 profile/overlay 信号配置，而不是无限扩充核心词表
 - `story_review.py` 的 `weightedScores.profile` 现在还会保留 `commercialPositioning.targetPlatform`，用于解释平台修正来源
 - `build_scene_review` 当前按段落范围近似 scene，不是结构化 scene graph；结果应视为启发式提示
 - `resolve_scene_candidates` 只有在 `scenePlans` 缺失时才会启用启发式切分

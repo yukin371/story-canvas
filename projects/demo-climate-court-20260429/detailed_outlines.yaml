@@ -1,0 +1,88 @@
+{
+  "entries": [
+    {
+      "chapterId": "chapter-001",
+      "beats": [
+        {
+          "id": "beat-a05ab6facafa",
+          "summary": "开场：建立日常世界",
+          "status": "planned",
+          "source": "structure-scaffold",
+          "structureTemplateId": "three-act",
+          "structureBeatName": "开场",
+          "position": 0.0
+        },
+        {
+          "id": "beat-ce46f8fc5fae",
+          "summary": "触发事件：打破平衡的事件",
+          "status": "planned",
+          "source": "structure-scaffold",
+          "structureTemplateId": "three-act",
+          "structureBeatName": "触发事件",
+          "position": 0.12
+        },
+        {
+          "id": "beat-cdab8f9de889",
+          "summary": "第一幕转折：主角做出选择，无法回头",
+          "status": "planned",
+          "source": "structure-scaffold",
+          "structureTemplateId": "three-act",
+          "structureBeatName": "第一幕转折",
+          "position": 0.25
+        },
+        {
+          "id": "beat-98e9f542680c",
+          "summary": "中点：从被动变主动 / 虚假胜利",
+          "status": "planned",
+          "source": "structure-scaffold",
+          "structureTemplateId": "three-act",
+          "structureBeatName": "中点",
+          "position": 0.5
+        },
+        {
+          "id": "beat-c0ef489e79e9",
+          "summary": "灵魂暗夜：最低点，失去一切",
+          "status": "planned",
+          "source": "structure-scaffold",
+          "structureTemplateId": "three-act",
+          "structureBeatName": "灵魂暗夜",
+          "position": 0.75
+        },
+        {
+          "id": "beat-a9fdf122ca61",
+          "summary": "高潮：最终对决 / 真相揭露",
+          "status": "planned",
+          "source": "structure-scaffold",
+          "structureTemplateId": "three-act",
+          "structureBeatName": "高潮",
+          "position": 0.88
+        },
+        {
+          "id": "beat-1db60f04a9fd",
+          "summary": "结局：新平衡",
+          "status": "planned",
+          "source": "structure-scaffold",
+          "structureTemplateId": "three-act",
+          "structureBeatName": "结局",
+          "position": 1.0
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-ec84da47ff",
+          "title": "场景01 旧南堤溃口后的第六小时，临海市第二巡",
+          "summary": "旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮。窗外的雨压在玻璃上，像有人持续按着整座城市的脉搏。",
+          "startParagraph": 1,
+          "endParagraph": 16,
+          "source": "heuristic-detect",
+          "detectionMethod": "scene-candidate-v1",
+          "breakReason": "chapter-start",
+          "createdAt": "2026-04-29T14:04:51+08:00",
+          "updatedAt": "2026-04-29T14:04:51+08:00"
+        }
+      ],
+      "updatedAt": "2026-04-29T08:58:32.016689+00:00",
+      "direction": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头；中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡"
+    }
+  ]
+}

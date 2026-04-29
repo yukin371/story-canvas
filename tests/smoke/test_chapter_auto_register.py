@@ -137,6 +137,43 @@ class ChapterAutoRegisterTest(unittest.TestCase):
         finally:
             shutil.rmtree(tmp2, ignore_errors=True)
 
+    def test_worldbook_mentions_are_not_auto_registered_as_characters(self):
+        (self.temp_dir / "worldbook.yaml").write_text(
+            json.dumps(
+                {
+                    "premiseFacts": [],
+                    "worldRules": [
+                        {
+                            "id": "rule-rain-injunction",
+                            "label": "停雨临时禁令",
+                            "rule": "法院可在公共风险扩大前暂时叫停人工降雨协议。",
+                        }
+                    ],
+                    "factions": [{"id": "faction-yunheng", "name": "云衡气候"}],
+                    "locations": [{"id": "loc-old-dike", "name": "旧南堤"}],
+                    "artifacts": [{"id": "artifact-rain-log", "name": "雨量日志"}],
+                    "mysteries": [],
+                },
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 第一章\n\n@{许澄}在@{旧南堤}事故后调取@{云衡气候}的@{雨量日志}，准备申请@{停雨临时禁令}。\n",
+            encoding="utf-8",
+        )
+
+        result = main(["chapter", "analyze", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+        self.assertEqual(result, 0)
+
+        state = load_project_state(self.temp_dir)
+        names = {e["name"] for e in state["entities"]["entities"]}
+        self.assertIn("许澄", names)
+        self.assertNotIn("旧南堤", names)
+        self.assertNotIn("云衡气候", names)
+        self.assertNotIn("雨量日志", names)
+        self.assertNotIn("停雨临时禁令", names)
+
 
 if __name__ == "__main__":
     unittest.main()

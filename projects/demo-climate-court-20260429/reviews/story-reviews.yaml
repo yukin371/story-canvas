@@ -1,0 +1,4622 @@
+{
+  "rubricVersion": "chapter-review-v1",
+  "sceneRubricVersion": "scene-review-v1",
+  "volumeSelfReviewRubricVersion": "volume-self-review-v1",
+  "chapterReviews": [
+    {
+      "reviewId": "chapter-review-5bfb4beacf",
+      "fingerprint": "chapter-review-v1:chapter-001:ee915b571347be26",
+      "rubricVersion": "chapter-review-v1",
+      "generatedAt": "2026-04-29T14:01:32+08:00",
+      "chapterId": "chapter-001",
+      "chapterTitle": "停雨申请",
+      "summary": "结合分析结果和正文信号，本章总分 69/100。当前强项在场景清晰度，最需要补强的是冲突张力。",
+      "rating": "workable",
+      "scores": {
+        "total": 69,
+        "maxScore": 100,
+        "dimensions": [
+          {
+            "id": "plotMomentum",
+            "label": "情节推进",
+            "score": 19,
+            "maxScore": 20,
+            "comment": "这一章能看到明确推进。",
+            "signals": [
+              "状态/关系推进信号 5 处",
+              "段落 5 段",
+              "转折连接词 2 处"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "characterPressure",
+            "label": "人物压力",
+            "score": 18,
+            "maxScore": 20,
+            "comment": "人物承压和状态变化可感知。",
+            "signals": [
+              "活跃角色 5 个",
+              "状态候选 5 个",
+              "心理/压力词 0 个"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "conflictTension",
+            "label": "冲突张力",
+            "score": 3,
+            "maxScore": 20,
+            "comment": "冲突张力偏平，读者的追读理由还不够强。",
+            "signals": [
+              "高风险关系变化 0 处",
+              "张力关键词 0 个",
+              "疑问/感叹标记 0 个"
+            ],
+            "suggestions": [
+              "补一个明确阻力：对手、风险、时间压力或信息缺口，避免章节太平。",
+              "考虑留下一个未解答的问题或悬念钩子，提高章末牵引力。"
+            ]
+          },
+          {
+            "id": "sceneClarity",
+            "label": "场景清晰度",
+            "score": 20,
+            "maxScore": 20,
+            "comment": "这一幕的镜头和焦点比较清楚。",
+            "signals": [
+              "环境锚点 2 个",
+              "出场角色 5 个",
+              "开头带锚点 是"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "proseControl",
+            "label": "表达控制",
+            "score": 9,
+            "maxScore": 20,
+            "comment": "基础节奏可读，但 AI 风格信号额外扣了 6 分。",
+            "signals": [
+              "平均段长 186",
+              "长段落 4 段",
+              "对话段 2 段",
+              "风格额外扣分 6"
+            ],
+            "suggestions": [
+              "拆分过长段落，把动作、信息和情绪分开承载，节奏会更稳。",
+              "“不是……是……”类翻转句偏多（每千字2.3次），优先改成直接动作、结果或判断，不要反复先否后立",
+              "段落长度过于均匀，可调整长短交替制造节奏感"
+            ]
+          }
+        ]
+      },
+      "weightedScores": {
+        "profile": {
+          "primaryGenre": "speculative",
+          "subGenre": "climate-courtroom",
+          "styleTags": [
+            "near-future",
+            "legal-procedural"
+          ],
+          "targetPlatform": "中文职业悬疑连载"
+        },
+        "appliedWeights": {
+          "plotMomentum": 20,
+          "characterPressure": 20,
+          "conflictTension": 20,
+          "sceneClarity": 20,
+          "proseControl": 20
+        },
+        "adjustments": [],
+        "total": 69.0,
+        "maxScore": 100,
+        "rating": "workable",
+        "breakdown": [
+          {
+            "id": "plotMomentum",
+            "label": "情节推进",
+            "rawScore": 19,
+            "weight": 20,
+            "contribution": 19.0
+          },
+          {
+            "id": "characterPressure",
+            "label": "人物压力",
+            "rawScore": 18,
+            "weight": 20,
+            "contribution": 18.0
+          },
+          {
+            "id": "conflictTension",
+            "label": "冲突张力",
+            "rawScore": 3,
+            "weight": 20,
+            "contribution": 3.0
+          },
+          {
+            "id": "sceneClarity",
+            "label": "场景清晰度",
+            "rawScore": 20,
+            "weight": 20,
+            "contribution": 20.0
+          },
+          {
+            "id": "proseControl",
+            "label": "表达控制",
+            "rawScore": 9,
+            "weight": 20,
+            "contribution": 9.0
+          }
+        ]
+      },
+      "strengths": [
+        "情节推进：这一章能看到明确推进。",
+        "人物压力：人物承压和状态变化可感知。",
+        "场景清晰度：这一幕的镜头和焦点比较清楚。"
+      ],
+      "priorityActions": [
+        "补一个明确阻力：对手、风险、时间压力或信息缺口，避免章节太平。",
+        "考虑留下一个未解答的问题或悬念钩子，提高章末牵引力。",
+        "拆分过长段落，把动作、信息和情绪分开承载，节奏会更稳。",
+        "“不是……是……”类翻转句偏多（每千字2.3次），优先改成直接动作、结果或判断，不要反复先否后立"
+      ],
+      "textMetrics": {
+        "wordCount": 853,
+        "paragraphCount": 5,
+        "averageParagraphLength": 186,
+        "dialogueParagraphs": 2,
+        "tagMentions": [
+          "云衡气候",
+          "市水务局",
+          "旧南堤",
+          "许澄",
+          "雨量日志",
+          "骆闻"
+        ]
+      },
+      "analysisSignals": {
+        "analysisBacked": true,
+        "activeEntityCount": 5,
+        "snapshotCandidateCount": 5,
+        "relationCandidateCount": 0,
+        "settingCandidateCount": 0,
+        "settingConflictCount": 0,
+        "unintroducedNameRevealCount": 0,
+        "capabilityTaskRiskCount": 0,
+        "powerProgressionConflictCount": 0,
+        "wrappedEntityCount": 6,
+        "wrappedEntityMissingCount": 0,
+        "chapterHandoffRiskCount": 0,
+        "sceneEntityNames": [
+          "许澄",
+          "市水务局",
+          "云衡气候",
+          "雨量日志",
+          "骆闻"
+        ]
+      },
+      "chapterHandoffSignals": {
+        "detected": false,
+        "severity": "none",
+        "loadStrength": 0,
+        "openingAnchorScore": 1,
+        "earlyAnchorScore": 1,
+        "delayedBridge": false,
+        "previousChapterId": "",
+        "previousChapterTitle": "上一章",
+        "currentDirection": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头；中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡",
+        "nextChapterTitle": "",
+        "openingEntityAnchors": [],
+        "openingStateAnchors": [],
+        "openingThreadAnchors": [],
+        "openingContextAnchors": [],
+        "earlyEntityAnchors": [],
+        "earlyStateAnchors": [],
+        "earlyThreadAnchors": [],
+        "earlyContextAnchors": [],
+        "openingContinuityHits": 1,
+        "earlyContinuityHits": 3,
+        "openingDirectContinuationHits": 0,
+        "earlyDirectContinuationHits": 0,
+        "previousEndingBridgeHits": [],
+        "closingHookHits": 1,
+        "loadSummary": [],
+        "openingAnchorSummary": [
+          "连续性词命中：1"
+        ],
+        "earlyAnchorSummary": [
+          "连续性词命中：3"
+        ],
+        "gapReasons": [
+          "上一章没有足够明确的承接负载"
+        ],
+        "suggestion": "",
+        "evidence": [
+          "开章前两段：连续性词命中：1",
+          "开章原文：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间"
+        ]
+      },
+      "styleAnalysis": {
+        "profile": "default",
+        "reviewRuleProfile": "default",
+        "reviewRuleEnabledRules": [],
+        "styleAnalysis": {
+          "overallScore": 14,
+          "totalDeduction": 6,
+          "patternResults": [
+            {
+              "id": "simileDensity",
+              "label": "比喻密度",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 3.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "hedgeAdverbs",
+              "label": "模糊副词",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 5.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "tellingEmotion",
+              "label": "叙述性情感",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 2.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "formulaicTransition",
+              "label": "程式化过渡",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 2.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "contrastFlipPattern",
+              "label": "翻转句式",
+              "detected": true,
+              "count": 2,
+              "perThousand": 2.3,
+              "threshold": 1.2,
+              "severity": "medium",
+              "evidence": [
+                "不是停工，不是停航，是要求法院在四十八小时内叫停一套仍在运"
+              ],
+              "suggestion": "“不是……是……”类翻转句偏多（每千字2.3次），优先改成直接动作、结果或判断，不要反复先否后立"
+            },
+            {
+              "id": "analogicalPivotPattern",
+              "label": "类比翻转句",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "templateCatchphrasePattern",
+              "label": "模板化口癖",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "sensoryVariety",
+              "label": "感官单一",
+              "detected": false,
+              "count": 4,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "paragraphUniformity",
+              "label": "段落均质",
+              "detected": true,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "medium",
+              "evidence": [],
+              "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感"
+            },
+            {
+              "id": "paragraphReadability",
+              "label": "段落可读性",
+              "detected": true,
+              "count": 5,
+              "perThousand": 0,
+              "threshold": 90,
+              "severity": "high",
+              "evidence": [
+                "第1段约173字：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗...",
+                "第2段约189字：她的委托人没有到场。旧城区居民代表仍困在临时安置点，通信断断续续...",
+                "第3段约167字：法庭的远程会议室里，云衡气候的代理律师骆闻已经上线。他没有急着反..."
+              ],
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+            },
+            {
+              "id": "sentenceRepetition",
+              "label": "句式重复",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "source": "builtin",
+              "suggestion": ""
+            },
+            {
+              "id": "specialTermRepetition",
+              "label": "特殊术语复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "narrativeFrameRepetition",
+              "label": "叙事支架复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "registerDrift",
+              "label": "题材语域失真",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "structuredPlanBlock",
+              "label": "方案文档腔",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "clusteredAIPhrasing",
+              "label": "AI句群叠加",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            }
+          ],
+          "sensoryDistribution": {
+            "visual": 4,
+            "auditory": 1,
+            "tactile": 1,
+            "olfactory": 2,
+            "gustatory": 0,
+            "dominantSense": "visual",
+            "missingSenses": [
+              "gustatory"
+            ]
+          },
+          "paragraphUniformity": {
+            "lengthStdDev": 15.4,
+            "avgLength": 185.8,
+            "isUniform": true,
+            "score": 1
+          },
+          "paragraphReadability": {
+            "detected": true,
+            "severity": "high",
+            "count": 5,
+            "threshold": 90,
+            "veryLongThreshold": 150,
+            "maxLength": 189,
+            "evidence": [
+              "第1段约173字：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗...",
+              "第2段约189字：她的委托人没有到场。旧城区居民代表仍困在临时安置点，通信断断续续...",
+              "第3段约167字：法庭的远程会议室里，云衡气候的代理律师骆闻已经上线。他没有急着反..."
+            ],
+            "overlongParagraphs": [
+              {
+                "paragraphIndex": 1,
+                "length": 173,
+                "snippet": "旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗..."
+              },
+              {
+                "paragraphIndex": 2,
+                "length": 189,
+                "snippet": "她的委托人没有到场。旧城区居民代表仍困在临时安置点，通信断断续续..."
+              },
+              {
+                "paragraphIndex": 3,
+                "length": 167,
+                "snippet": "法庭的远程会议室里，云衡气候的代理律师骆闻已经上线。他没有急着反..."
+              },
+              {
+                "paragraphIndex": 4,
+                "length": 174,
+                "snippet": "第一次休庭只给了十五分钟。许澄在走廊尽头拨通安置点的视频，屏幕那..."
+              },
+              {
+                "paragraphIndex": 5,
+                "length": 146,
+                "snippet": "复庭时，法官要求云衡气候和市水务局在凌晨两点前提交原始雨量日志、..."
+              }
+            ]
+          },
+          "sentenceRepetition": {
+            "repeatedStructures": [],
+            "hasRepetition": false,
+            "score": 3,
+            "source": "builtin"
+          },
+          "specialTermRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topTerms": []
+          },
+          "narrativeFrameRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topFrames": []
+          },
+          "registerDrift": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedCategories": [],
+            "suggestion": ""
+          },
+          "structuredPlanBlock": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedLabels": [],
+            "suggestion": ""
+          },
+          "clusteredAIPhrasing": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "threshold": 3,
+            "signalScore": 3,
+            "signalIds": [
+              "contrastFlipPattern",
+              "paragraphReadability"
+            ],
+            "evidence": [],
+            "suggestion": ""
+          },
+          "metaLeakage": {},
+          "sources": {
+            "sentenceRepetition": "builtin"
+          },
+          "judgements": [
+            {
+              "ruleId": "contrastFlipPattern",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到翻转句式问题，例如 不是停工，不是停航，是要求法院在四十八小时内叫停一套仍在运。",
+              "suggestion": "“不是……是……”类翻转句偏多（每千字2.3次），优先改成直接动作、结果或判断，不要反复先否后立",
+              "evidence": [
+                "不是停工，不是停航，是要求法院在四十八小时内叫停一套仍在运"
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style",
+                "ai-phrasing"
+              ]
+            },
+            {
+              "ruleId": "paragraphUniformity",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到段落均质问题。",
+              "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+              "evidence": [],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style"
+              ]
+            },
+            {
+              "ruleId": "paragraphReadability",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "high",
+              "status": "triggered",
+              "message": "检测到段落可读性问题，例如 第1段约173字：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗...。",
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+              "evidence": [
+                "第1段约173字：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗...",
+                "第2段约189字：她的委托人没有到场。旧城区居民代表仍困在临时安置点，通信断断续续...",
+                "第3段约167字：法庭的远程会议室里，云衡气候的代理律师骆闻已经上线。他没有急着反..."
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style",
+                "readability",
+                "mobile-reading"
+              ]
+            }
+          ],
+          "summary": "检测到3项AI风格特征：翻转句式、段落均质、段落可读性。扣6分。",
+          "suggestions": [
+            "“不是……是……”类翻转句偏多（每千字2.3次），优先改成直接动作、结果或判断，不要反复先否后立",
+            "段落长度过于均匀，可调整长短交替制造节奏感",
+            "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+          ]
+        },
+        "judgements": [
+          {
+            "ruleId": "contrastFlipPattern",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到翻转句式问题，例如 不是停工，不是停航，是要求法院在四十八小时内叫停一套仍在运。",
+            "suggestion": "“不是……是……”类翻转句偏多（每千字2.3次），优先改成直接动作、结果或判断，不要反复先否后立",
+            "evidence": [
+              "不是停工，不是停航，是要求法院在四十八小时内叫停一套仍在运"
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style",
+              "ai-phrasing"
+            ]
+          },
+          {
+            "ruleId": "paragraphUniformity",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到段落均质问题。",
+            "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+            "evidence": [],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style"
+            ]
+          },
+          {
+            "ruleId": "paragraphReadability",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "high",
+            "status": "triggered",
+            "message": "检测到段落可读性问题，例如 第1段约173字：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗...。",
+            "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+            "evidence": [
+              "第1段约173字：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗...",
+              "第2段约189字：她的委托人没有到场。旧城区居民代表仍困在临时安置点，通信断断续续...",
+              "第3段约167字：法庭的远程会议室里，云衡气候的代理律师骆闻已经上线。他没有急着反..."
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style",
+              "readability",
+              "mobile-reading"
+            ]
+          }
+        ],
+        "constraints": [
+          "“不是……是……”类翻转句偏多（每千字2.3次），优先改成直接动作、结果或判断，不要反复先否后立",
+          "段落长度过于均匀，可调整长短交替制造节奏感",
+          "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+        ],
+        "textMetrics": {
+          "wordCount": 853,
+          "paragraphCount": 5,
+          "averageParagraphLength": 186
+        },
+        "profileSource": "builtin",
+        "reviewRuleProfileSource": "builtin"
+      },
+      "projectContext": {
+        "genre": "近未来职业法庭悬疑",
+        "positioning": {
+          "primaryGenre": "speculative",
+          "subGenre": "climate-courtroom",
+          "styleTags": [
+            "near-future",
+            "legal-procedural"
+          ],
+          "targetAudience": [
+            "职业悬疑读者"
+          ]
+        },
+        "storyContract": {
+          "corePromises": [
+            "每章推进一起气候工程诉讼的证据链与公共风险",
+            "用职业流程、证据压力和人物选择制造悬疑"
+          ],
+          "avoidances": [
+            "不把案件写成单纯超自然谜题",
+            "不靠玄幻战力或民俗禁忌推进"
+          ],
+          "endingContract": "第一卷结束时交出第一场临时禁令听证的阶段性胜负与代价",
+          "paceContract": "中快节奏，证据推进优先于设定说明"
+        },
+        "emotionalContract": {
+          "coreEmotions": [
+            "压迫",
+            "冷静紧张"
+          ],
+          "chapterEmotionFloor": [
+            "每章至少出现一次证据压力或程序风险"
+          ],
+          "forbiddenEmotions": [],
+          "revealPreference": {
+            "defaultMode": "",
+            "allowDirectExplainAtClimax": false
+          }
+        },
+        "storyTemplate": {
+          "id": "",
+          "label": "",
+          "modulePolicy": {},
+          "reviewFocus": []
+        },
+        "commercialPositioning": {
+          "premise": "近未来沿海城市依赖人工降雨协议维持淡水配给，一场失控暴雨导致旧城区溃堤。年轻公益律师许澄接手临时禁令申请，却发现气候公司、城市水务局和受害社区各自篡改了一段关键雨量日志。",
+          "hookLine": "她要在四十八小时内证明一场雨不是天灾，而是被签过字的事故。",
+          "hookStack": [
+            "雨量日志被三方同时改写",
+            "临时禁令听证倒计时四十八小时",
+            "主角的父亲曾参与旧版降雨协议"
+          ],
+          "benchmarkWorks": [],
+          "targetPlatform": "中文职业悬疑连载",
+          "serializationModel": "短卷测试",
+          "releaseCadence": "测试用三章首卷",
+          "chapterWordFloor": 800,
+          "chapterWordTarget": 1400
+        }
+      },
+      "storyConstraintSignals": {
+        "emotionalContract": {
+          "coreEmotions": [
+            "压迫",
+            "冷静紧张"
+          ],
+          "chapterEmotionFloor": [
+            "每章至少出现一次证据压力或程序风险"
+          ],
+          "forbiddenEmotions": []
+        },
+        "worldRules": [
+          {
+            "id": "rule-rain-injunction",
+            "label": "停雨临时禁令",
+            "scope": ""
+          }
+        ],
+        "dueForeshadows": [],
+        "trackedEntities": [
+          {
+            "id": "char-xucheng",
+            "name": "许澄",
+            "currentState": {
+              "status": "active",
+              "physicalState": [],
+              "emotionalState": [],
+              "location": "临海市第二巡回法庭",
+              "lastUpdatedChapter": null,
+              "powerLevel": ""
+            },
+            "stateTags": [],
+            "recentChange": null
+          },
+          {
+            "id": "char-luowen",
+            "name": "骆闻",
+            "currentState": {
+              "status": "active",
+              "physicalState": [],
+              "emotionalState": [],
+              "location": "临海市第二巡回法庭",
+              "lastUpdatedChapter": null,
+              "powerLevel": ""
+            },
+            "stateTags": [],
+            "recentChange": null
+          }
+        ],
+        "chapterHandoff": {
+          "previousChapter": null,
+          "currentChapter": {
+            "id": "chapter-001",
+            "title": "停雨申请",
+            "direction": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头；中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡",
+            "beatHints": [
+              "开场：建立日常世界",
+              "触发事件：打破平衡的事件",
+              "第一幕转折：主角做出选择，无法回头"
+            ],
+            "sceneGoals": [
+              "旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗外的雨还是一层一层压下来。许澄把湿透的案卷袋摊在安检台上"
+            ]
+          },
+          "nextChapter": null,
+          "carryOverEntityChanges": [],
+          "activeThreadLabels": []
+        }
+      },
+      "wrappedEntitySignals": {
+        "count": 6,
+        "wrappedNames": [
+          "云衡气候",
+          "市水务局",
+          "旧南堤",
+          "许澄",
+          "雨量日志",
+          "骆闻"
+        ],
+        "covered": [
+          {
+            "name": "云衡气候",
+            "kind": "character",
+            "id": "inferred::云衡气候",
+            "source": "entities"
+          },
+          {
+            "name": "市水务局",
+            "kind": "character",
+            "id": "inferred::市水务局",
+            "source": "entities"
+          },
+          {
+            "name": "旧南堤",
+            "kind": "location",
+            "id": "loc-old-south-dike",
+            "source": "worldbook.locations"
+          },
+          {
+            "name": "许澄",
+            "kind": "character",
+            "id": "char-xucheng",
+            "source": "entities"
+          },
+          {
+            "name": "雨量日志",
+            "kind": "character",
+            "id": "inferred::雨量日志",
+            "source": "entities"
+          },
+          {
+            "name": "骆闻",
+            "kind": "character",
+            "id": "char-luowen",
+            "source": "entities"
+          }
+        ],
+        "missing": []
+      },
+      "consistencySignals": {
+        "specialTermRepetition": {
+          "detected": false,
+          "severity": "none",
+          "evidence": [],
+          "suggestion": ""
+        },
+        "settingCandidates": [],
+        "settingConflicts": [],
+        "unintroducedNameReveals": [],
+        "capabilityTaskRisks": [],
+        "powerProgressionConflicts": []
+      },
+      "ruleJudgements": [
+        {
+          "ruleId": "contrastFlipPattern",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到翻转句式问题，例如 不是停工，不是停航，是要求法院在四十八小时内叫停一套仍在运。",
+          "suggestion": "“不是……是……”类翻转句偏多（每千字2.3次），优先改成直接动作、结果或判断，不要反复先否后立",
+          "evidence": [
+            "不是停工，不是停航，是要求法院在四十八小时内叫停一套仍在运"
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {},
+          "tags": [
+            "style",
+            "ai-phrasing"
+          ]
+        },
+        {
+          "ruleId": "paragraphUniformity",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到段落均质问题。",
+          "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {},
+          "tags": [
+            "style"
+          ]
+        },
+        {
+          "ruleId": "paragraphReadability",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "high",
+          "status": "triggered",
+          "message": "检测到段落可读性问题，例如 第1段约173字：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗...。",
+          "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+          "evidence": [
+            "第1段约173字：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗...",
+            "第2段约189字：她的委托人没有到场。旧城区居民代表仍困在临时安置点，通信断断续续...",
+            "第3段约167字：法庭的远程会议室里，云衡气候的代理律师骆闻已经上线。他没有急着反..."
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {},
+          "tags": [
+            "style",
+            "readability",
+            "mobile-reading"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "beatId": "beat-a05ab6facafa",
+            "summary": "开场：建立日常世界",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "beatId": "beat-ce46f8fc5fae",
+            "summary": "触发事件：打破平衡的事件",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "beatId": "beat-cdab8f9de889",
+            "summary": "第一幕转折：主角做出选择，无法回头",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "beatId": "beat-98e9f542680c",
+            "summary": "中点：从被动变主动 / 虚假胜利",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "beatId": "beat-c0ef489e79e9",
+            "summary": "灵魂暗夜：最低点，失去一切",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "beatId": "beat-a9fdf122ca61",
+            "summary": "高潮：最终对决 / 真相揭露",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "beatId": "beat-1db60f04a9fd",
+            "summary": "结局：新平衡",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        }
+      ],
+      "contractAlignment": {
+        "status": "mixed",
+        "matched": [
+          "情绪契约已被章节压力/推进承接，核心目标包括：压迫, 冷静紧张。",
+          "情绪契约中的章节情绪底线基本成立，本章不只是信息搬运。",
+          "当前章已承接 2 个受追踪角色的状态或变化压力。"
+        ],
+        "risks": [
+          "核心承诺“用职业流程、证据压力和人物选择制造悬疑”：悬疑/反转承诺在本章里的张力兑现偏弱。"
+        ],
+        "notes": [
+          "已记录节奏承诺：中快节奏，证据推进优先于设定说明。",
+          "核心承诺“每章推进一起气候工程诉讼的证据链与公共风险”目前仅记录，尚未接入自动判定。",
+          "项目当前存在 1 条世界规则约束，例如“停雨临时禁令”，chapter review 已纳入提示。",
+          "本章共有 6 个已包裹实体引用，其中 6 个已能对齐到角色卡或世界设定。"
+        ]
+      },
+      "commercialAlignment": {
+        "status": "aligned",
+        "matched": [
+          "章节字数达到最低交付线 800 字。",
+          "商业 hook line 对应的开章承诺和章末追读牵引基本成立。"
+        ],
+        "risks": [],
+        "notes": [
+          "章节字数 853，距建议目标 1400 字仍有差距。",
+          "商业 hook 栈“雨量日志被三方同时改写”目前仅记录，尚未接入自动判定。",
+          "商业 hook 栈“临时禁令听证倒计时四十八小时”目前仅记录，尚未接入自动判定。",
+          "商业 hook 栈“主角的父亲曾参与旧版降雨协议”目前仅记录，尚未接入自动判定。",
+          "已记录目标平台：中文职业悬疑连载。",
+          "已记录连载模型：短卷测试。"
+        ]
+      },
+      "rubric": [
+        {
+          "id": "plotMomentum",
+          "label": "情节推进",
+          "maxScore": 20,
+          "focus": "这一章是否产生了明确推进或落点"
+        },
+        {
+          "id": "characterPressure",
+          "label": "人物压力",
+          "maxScore": 20,
+          "focus": "人物是否承受了新的压力、状态变化或选择"
+        },
+        {
+          "id": "conflictTension",
+          "label": "冲突张力",
+          "maxScore": 20,
+          "focus": "文本里是否存在阻力、风险、悬念或对抗"
+        },
+        {
+          "id": "sceneClarity",
+          "label": "场景清晰度",
+          "maxScore": 20,
+          "focus": "读者能否快速抓到场景、角色和叙事焦点"
+        },
+        {
+          "id": "proseControl",
+          "label": "表达控制",
+          "maxScore": 20,
+          "focus": "段落节奏、句式负担和强调是否受控"
+        }
+      ]
+    },
+    {
+      "reviewId": "chapter-review-708444d0da",
+      "fingerprint": "chapter-review-v1:chapter-001:4f285b8563b8b31c",
+      "rubricVersion": "chapter-review-v1",
+      "generatedAt": "2026-04-29T16:31:37+08:00",
+      "chapterId": "chapter-001",
+      "chapterTitle": "停雨申请",
+      "summary": "结合分析结果和正文信号，本章总分 86/100。当前强项在场景清晰度，最需要补强的是人物压力。",
+      "rating": "strong",
+      "scores": {
+        "total": 86,
+        "maxScore": 100,
+        "dimensions": [
+          {
+            "id": "plotMomentum",
+            "label": "情节推进",
+            "score": 16,
+            "maxScore": 20,
+            "comment": "这一章能看到明确推进。",
+            "signals": [
+              "状态/关系推进信号 0 处",
+              "程序/证据推进信号 20 处",
+              "段落 16 段",
+              "转折连接词 1 处"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "characterPressure",
+            "label": "人物压力",
+            "score": 15,
+            "maxScore": 20,
+            "comment": "人物承压和状态变化可感知。",
+            "signals": [
+              "活跃角色 2 个",
+              "状态候选 0 个",
+              "心理/压力词 7 个",
+              "程序/后果压力 20 处"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "conflictTension",
+            "label": "冲突张力",
+            "score": 15,
+            "maxScore": 20,
+            "comment": "文本有明确阻力和悬念。",
+            "signals": [
+              "高风险关系变化 0 处",
+              "直接张力关键词 0 个",
+              "程序/证据张力 20 处",
+              "疑问/感叹标记 0 个"
+            ],
+            "suggestions": [
+              "考虑留下一个未解答的问题或悬念钩子，提高章末牵引力。"
+            ]
+          },
+          {
+            "id": "sceneClarity",
+            "label": "场景清晰度",
+            "score": 20,
+            "maxScore": 20,
+            "comment": "这一幕的镜头和焦点比较清楚。",
+            "signals": [
+              "环境锚点 2 个",
+              "出场角色 2 个",
+              "开头带锚点 是"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "proseControl",
+            "label": "表达控制",
+            "score": 20,
+            "maxScore": 20,
+            "comment": "基础节奏可读，但 AI 风格信号额外扣了 1 分。",
+            "signals": [
+              "平均段长 62",
+              "长段落 0 段",
+              "对话段 3 段",
+              "风格额外扣分 1"
+            ],
+            "suggestions": [
+              "段落长度过于均匀，可调整长短交替制造节奏感"
+            ]
+          }
+        ]
+      },
+      "weightedScores": {
+        "profile": {
+          "primaryGenre": "speculative",
+          "subGenre": "climate-courtroom",
+          "styleTags": [
+            "near-future",
+            "legal-procedural"
+          ],
+          "targetPlatform": "中文职业悬疑连载"
+        },
+        "appliedWeights": {
+          "plotMomentum": 20,
+          "characterPressure": 20,
+          "conflictTension": 20,
+          "sceneClarity": 20,
+          "proseControl": 20
+        },
+        "adjustments": [],
+        "total": 86.0,
+        "maxScore": 100,
+        "rating": "strong",
+        "breakdown": [
+          {
+            "id": "plotMomentum",
+            "label": "情节推进",
+            "rawScore": 16,
+            "weight": 20,
+            "contribution": 16.0
+          },
+          {
+            "id": "characterPressure",
+            "label": "人物压力",
+            "rawScore": 15,
+            "weight": 20,
+            "contribution": 15.0
+          },
+          {
+            "id": "conflictTension",
+            "label": "冲突张力",
+            "rawScore": 15,
+            "weight": 20,
+            "contribution": 15.0
+          },
+          {
+            "id": "sceneClarity",
+            "label": "场景清晰度",
+            "rawScore": 20,
+            "weight": 20,
+            "contribution": 20.0
+          },
+          {
+            "id": "proseControl",
+            "label": "表达控制",
+            "rawScore": 20,
+            "weight": 20,
+            "contribution": 20.0
+          }
+        ]
+      },
+      "strengths": [
+        "情节推进：这一章能看到明确推进。",
+        "场景清晰度：这一幕的镜头和焦点比较清楚。",
+        "表达控制：基础节奏可读，但 AI 风格信号额外扣了 1 分。"
+      ],
+      "priorityActions": [
+        "考虑留下一个未解答的问题或悬念钩子，提高章末牵引力。",
+        "段落长度过于均匀，可调整长短交替制造节奏感"
+      ],
+      "textMetrics": {
+        "wordCount": 906,
+        "paragraphCount": 16,
+        "averageParagraphLength": 62,
+        "dialogueParagraphs": 3,
+        "tagMentions": [
+          "云衡气候",
+          "市水务局",
+          "旧南堤",
+          "许澄",
+          "雨量日志",
+          "骆闻"
+        ]
+      },
+      "analysisSignals": {
+        "analysisBacked": true,
+        "activeEntityCount": 2,
+        "snapshotCandidateCount": 0,
+        "relationCandidateCount": 0,
+        "settingCandidateCount": 0,
+        "settingConflictCount": 0,
+        "unintroducedNameRevealCount": 0,
+        "capabilityTaskRiskCount": 0,
+        "powerProgressionConflictCount": 0,
+        "wrappedEntityCount": 6,
+        "wrappedEntityMissingCount": 0,
+        "chapterHandoffRiskCount": 0,
+        "sceneEntityNames": [
+          "许澄",
+          "骆闻"
+        ]
+      },
+      "chapterHandoffSignals": {
+        "detected": false,
+        "severity": "none",
+        "loadStrength": 0,
+        "openingAnchorScore": 0,
+        "earlyAnchorScore": 0,
+        "delayedBridge": false,
+        "previousChapterId": "",
+        "previousChapterTitle": "上一章",
+        "currentDirection": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头；中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡",
+        "nextChapterTitle": "",
+        "openingEntityAnchors": [],
+        "openingStateAnchors": [],
+        "openingThreadAnchors": [],
+        "openingContextAnchors": [],
+        "earlyEntityAnchors": [],
+        "earlyStateAnchors": [],
+        "earlyThreadAnchors": [],
+        "earlyContextAnchors": [],
+        "openingContinuityHits": 0,
+        "earlyContinuityHits": 0,
+        "openingDirectContinuationHits": 0,
+        "earlyDirectContinuationHits": 0,
+        "previousEndingBridgeHits": [],
+        "closingHookHits": 0,
+        "loadSummary": [],
+        "openingAnchorSummary": [],
+        "earlyAnchorSummary": [],
+        "gapReasons": [
+          "上一章没有足够明确的承接负载"
+        ],
+        "suggestion": "",
+        "evidence": [
+          "开章前两段：未命中实体、状态、线程或连续性锚点",
+          "开章原文：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间"
+        ]
+      },
+      "styleAnalysis": {
+        "profile": "default",
+        "reviewRuleProfile": "default",
+        "reviewRuleEnabledRules": [],
+        "styleAnalysis": {
+          "overallScore": 19,
+          "totalDeduction": 1,
+          "patternResults": [
+            {
+              "id": "simileDensity",
+              "label": "比喻密度",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 3.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "hedgeAdverbs",
+              "label": "模糊副词",
+              "detected": false,
+              "count": 1,
+              "perThousand": 1.1,
+              "threshold": 5.0,
+              "severity": "none",
+              "evidence": [
+                "慢慢"
+              ],
+              "suggestion": ""
+            },
+            {
+              "id": "tellingEmotion",
+              "label": "叙述性情感",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 2.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "formulaicTransition",
+              "label": "程式化过渡",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 2.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "contrastFlipPattern",
+              "label": "翻转句式",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 1.2,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "analogicalPivotPattern",
+              "label": "类比翻转句",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "templateCatchphrasePattern",
+              "label": "模板化口癖",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "sensoryVariety",
+              "label": "感官单一",
+              "detected": false,
+              "count": 4,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "paragraphUniformity",
+              "label": "段落均质",
+              "detected": true,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "medium",
+              "evidence": [],
+              "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感"
+            },
+            {
+              "id": "paragraphReadability",
+              "label": "段落可读性",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 90,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "sentenceRepetition",
+              "label": "句式重复",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "source": "builtin",
+              "suggestion": ""
+            },
+            {
+              "id": "specialTermRepetition",
+              "label": "特殊术语复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "narrativeFrameRepetition",
+              "label": "叙事支架复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "registerDrift",
+              "label": "题材语域失真",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "structuredPlanBlock",
+              "label": "方案文档腔",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "clusteredAIPhrasing",
+              "label": "AI句群叠加",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            }
+          ],
+          "sensoryDistribution": {
+            "visual": 4,
+            "auditory": 2,
+            "tactile": 1,
+            "olfactory": 2,
+            "gustatory": 0,
+            "dominantSense": "visual",
+            "missingSenses": [
+              "gustatory"
+            ]
+          },
+          "paragraphUniformity": {
+            "lengthStdDev": 16.6,
+            "avgLength": 61.9,
+            "isUniform": true,
+            "score": 2
+          },
+          "paragraphReadability": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "threshold": 90,
+            "veryLongThreshold": 150,
+            "maxLength": 82,
+            "evidence": [],
+            "overlongParagraphs": []
+          },
+          "sentenceRepetition": {
+            "repeatedStructures": [],
+            "hasRepetition": false,
+            "score": 3,
+            "source": "builtin"
+          },
+          "specialTermRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topTerms": []
+          },
+          "narrativeFrameRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topFrames": []
+          },
+          "registerDrift": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedCategories": [],
+            "suggestion": ""
+          },
+          "structuredPlanBlock": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedLabels": [],
+            "suggestion": ""
+          },
+          "clusteredAIPhrasing": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "threshold": 3,
+            "signalScore": 0,
+            "signalIds": [],
+            "evidence": [],
+            "suggestion": ""
+          },
+          "metaLeakage": {},
+          "sources": {
+            "sentenceRepetition": "builtin"
+          },
+          "judgements": [
+            {
+              "ruleId": "paragraphUniformity",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到段落均质问题。",
+              "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+              "evidence": [],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style"
+              ]
+            }
+          ],
+          "summary": "检测到1项AI风格特征：段落均质。扣1分。",
+          "suggestions": [
+            "段落长度过于均匀，可调整长短交替制造节奏感"
+          ]
+        },
+        "judgements": [
+          {
+            "ruleId": "paragraphUniformity",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到段落均质问题。",
+            "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+            "evidence": [],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style"
+            ]
+          }
+        ],
+        "constraints": [
+          "段落长度过于均匀，可调整长短交替制造节奏感"
+        ],
+        "textMetrics": {
+          "wordCount": 906,
+          "paragraphCount": 16,
+          "averageParagraphLength": 62
+        },
+        "profileSource": "builtin",
+        "reviewRuleProfileSource": "builtin"
+      },
+      "projectContext": {
+        "genre": "近未来职业法庭悬疑",
+        "positioning": {
+          "primaryGenre": "speculative",
+          "subGenre": "climate-courtroom",
+          "styleTags": [
+            "near-future",
+            "legal-procedural"
+          ],
+          "targetAudience": [
+            "职业悬疑读者"
+          ]
+        },
+        "storyContract": {
+          "corePromises": [
+            "每章推进一起气候工程诉讼的证据链与公共风险",
+            "用职业流程、证据压力和人物选择制造悬疑"
+          ],
+          "avoidances": [
+            "不把案件写成单纯超自然谜题",
+            "不靠玄幻战力或民俗禁忌推进"
+          ],
+          "endingContract": "第一卷结束时交出第一场临时禁令听证的阶段性胜负与代价",
+          "paceContract": "中快节奏，证据推进优先于设定说明"
+        },
+        "emotionalContract": {
+          "coreEmotions": [
+            "压迫",
+            "冷静紧张"
+          ],
+          "chapterEmotionFloor": [
+            "每章至少出现一次证据压力或程序风险"
+          ],
+          "forbiddenEmotions": [],
+          "revealPreference": {
+            "defaultMode": "",
+            "allowDirectExplainAtClimax": false
+          }
+        },
+        "storyTemplate": {
+          "id": "",
+          "label": "",
+          "modulePolicy": {},
+          "reviewFocus": []
+        },
+        "commercialPositioning": {
+          "premise": "近未来沿海城市依赖人工降雨协议维持淡水配给，一场失控暴雨导致旧城区溃堤。年轻公益律师许澄接手临时禁令申请，却发现气候公司、城市水务局和受害社区各自篡改了一段关键雨量日志。",
+          "hookLine": "她要在四十八小时内证明一场雨不是天灾，而是被签过字的事故。",
+          "hookStack": [
+            "雨量日志被三方同时改写",
+            "临时禁令听证倒计时四十八小时",
+            "主角的父亲曾参与旧版降雨协议"
+          ],
+          "benchmarkWorks": [],
+          "targetPlatform": "中文职业悬疑连载",
+          "serializationModel": "短卷测试",
+          "releaseCadence": "测试用三章首卷",
+          "chapterWordFloor": 800,
+          "chapterWordTarget": 1400
+        }
+      },
+      "storyConstraintSignals": {
+        "emotionalContract": {
+          "coreEmotions": [
+            "压迫",
+            "冷静紧张"
+          ],
+          "chapterEmotionFloor": [
+            "每章至少出现一次证据压力或程序风险"
+          ],
+          "forbiddenEmotions": []
+        },
+        "worldRules": [
+          {
+            "id": "rule-rain-injunction",
+            "label": "停雨临时禁令",
+            "scope": ""
+          }
+        ],
+        "dueForeshadows": [],
+        "trackedEntities": [
+          {
+            "id": "char-xucheng",
+            "name": "许澄",
+            "currentState": {
+              "status": "active",
+              "physicalState": [],
+              "emotionalState": [],
+              "location": "临海市第二巡回法庭",
+              "lastUpdatedChapter": null,
+              "powerLevel": ""
+            },
+            "stateTags": [],
+            "recentChange": null
+          },
+          {
+            "id": "char-luowen",
+            "name": "骆闻",
+            "currentState": {
+              "status": "active",
+              "physicalState": [],
+              "emotionalState": [],
+              "location": "临海市第二巡回法庭",
+              "lastUpdatedChapter": null,
+              "powerLevel": ""
+            },
+            "stateTags": [],
+            "recentChange": null
+          }
+        ],
+        "chapterHandoff": {
+          "previousChapter": null,
+          "currentChapter": {
+            "id": "chapter-001",
+            "title": "停雨申请",
+            "direction": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头；中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡",
+            "beatHints": [
+              "开场：建立日常世界",
+              "触发事件：打破平衡的事件",
+              "第一幕转折：主角做出选择，无法回头"
+            ],
+            "sceneGoals": [
+              "旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮。窗外的雨压在玻璃上，像有人持续按着整座城市的脉搏。"
+            ]
+          },
+          "nextChapter": null,
+          "carryOverEntityChanges": [],
+          "activeThreadLabels": []
+        }
+      },
+      "wrappedEntitySignals": {
+        "count": 6,
+        "wrappedNames": [
+          "云衡气候",
+          "市水务局",
+          "旧南堤",
+          "许澄",
+          "雨量日志",
+          "骆闻"
+        ],
+        "covered": [
+          {
+            "name": "云衡气候",
+            "kind": "faction",
+            "id": "faction-yunheng",
+            "source": "worldbook.factions"
+          },
+          {
+            "name": "市水务局",
+            "kind": "faction",
+            "id": "faction-water-bureau",
+            "source": "worldbook.factions"
+          },
+          {
+            "name": "旧南堤",
+            "kind": "location",
+            "id": "loc-old-south-dike",
+            "source": "worldbook.locations"
+          },
+          {
+            "name": "许澄",
+            "kind": "character",
+            "id": "char-xucheng",
+            "source": "entities"
+          },
+          {
+            "name": "雨量日志",
+            "kind": "artifact",
+            "id": "artifact-rain-log",
+            "source": "worldbook.artifacts"
+          },
+          {
+            "name": "骆闻",
+            "kind": "character",
+            "id": "char-luowen",
+            "source": "entities"
+          }
+        ],
+        "missing": []
+      },
+      "consistencySignals": {
+        "specialTermRepetition": {
+          "detected": false,
+          "severity": "none",
+          "evidence": [],
+          "suggestion": ""
+        },
+        "settingCandidates": [],
+        "settingConflicts": [],
+        "unintroducedNameReveals": [],
+        "capabilityTaskRisks": [],
+        "powerProgressionConflicts": []
+      },
+      "ruleJudgements": [
+        {
+          "ruleId": "paragraphUniformity",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到段落均质问题。",
+          "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {},
+          "tags": [
+            "style"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "beatId": "beat-a05ab6facafa",
+            "summary": "开场：建立日常世界",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "beatId": "beat-ce46f8fc5fae",
+            "summary": "触发事件：打破平衡的事件",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "beatId": "beat-cdab8f9de889",
+            "summary": "第一幕转折：主角做出选择，无法回头",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "beatId": "beat-98e9f542680c",
+            "summary": "中点：从被动变主动 / 虚假胜利",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "beatId": "beat-c0ef489e79e9",
+            "summary": "灵魂暗夜：最低点，失去一切",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "beatId": "beat-a9fdf122ca61",
+            "summary": "高潮：最终对决 / 真相揭露",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "beatId": "beat-1db60f04a9fd",
+            "summary": "结局：新平衡",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        }
+      ],
+      "contractAlignment": {
+        "status": "mixed",
+        "matched": [
+          "情绪契约已被章节压力/推进承接，核心目标包括：压迫, 冷静紧张。",
+          "情绪契约中的章节情绪底线基本成立，本章不只是信息搬运。",
+          "当前章已承接 2 个受追踪角色的状态或变化压力。"
+        ],
+        "risks": [
+          "核心承诺“用职业流程、证据压力和人物选择制造悬疑”：悬疑/反转承诺在本章里的张力兑现偏弱。"
+        ],
+        "notes": [
+          "已记录节奏承诺：中快节奏，证据推进优先于设定说明。",
+          "核心承诺“每章推进一起气候工程诉讼的证据链与公共风险”目前仅记录，尚未接入自动判定。",
+          "项目当前存在 1 条世界规则约束，例如“停雨临时禁令”，chapter review 已纳入提示。",
+          "本章共有 6 个已包裹实体引用，其中 6 个已能对齐到角色卡或世界设定。"
+        ]
+      },
+      "commercialAlignment": {
+        "status": "aligned",
+        "matched": [
+          "章节字数达到最低交付线 800 字。",
+          "商业 hook line 对应的开章承诺和章末追读牵引基本成立。"
+        ],
+        "risks": [],
+        "notes": [
+          "章节字数 906，距建议目标 1400 字仍有差距。",
+          "商业 hook 栈“雨量日志被三方同时改写”目前仅记录，尚未接入自动判定。",
+          "商业 hook 栈“临时禁令听证倒计时四十八小时”目前仅记录，尚未接入自动判定。",
+          "商业 hook 栈“主角的父亲曾参与旧版降雨协议”目前仅记录，尚未接入自动判定。",
+          "已记录目标平台：中文职业悬疑连载。",
+          "已记录连载模型：短卷测试。"
+        ]
+      },
+      "rubric": [
+        {
+          "id": "plotMomentum",
+          "label": "情节推进",
+          "maxScore": 20,
+          "focus": "这一章是否产生了明确推进或落点"
+        },
+        {
+          "id": "characterPressure",
+          "label": "人物压力",
+          "maxScore": 20,
+          "focus": "人物是否承受了新的压力、状态变化或选择"
+        },
+        {
+          "id": "conflictTension",
+          "label": "冲突张力",
+          "maxScore": 20,
+          "focus": "文本里是否存在阻力、风险、悬念或对抗"
+        },
+        {
+          "id": "sceneClarity",
+          "label": "场景清晰度",
+          "maxScore": 20,
+          "focus": "读者能否快速抓到场景、角色和叙事焦点"
+        },
+        {
+          "id": "proseControl",
+          "label": "表达控制",
+          "maxScore": 20,
+          "focus": "段落节奏、句式负担和强调是否受控"
+        }
+      ]
+    }
+  ],
+  "sceneReviews": [
+    {
+      "reviewId": "scene-review-b172a9cbd4",
+      "fingerprint": "scene-review-v1:chapter-001:1:5:50f4b55c70c98362",
+      "rubricVersion": "scene-review-v1",
+      "generatedAt": "2026-04-29T14:02:04+08:00",
+      "chapterId": "chapter-001",
+      "chapterTitle": "停雨申请",
+      "sceneRange": {
+        "startParagraph": 1,
+        "endParagraph": 5,
+        "paragraphCount": 5,
+        "totalChapterParagraphs": 5,
+        "sceneIndex": 1,
+        "source": "explicit",
+        "scenePlanId": "scene-a20feededb"
+      },
+      "summary": "基于选定片段的正文与分析信号，这一幕总分 72/100。当前最稳的是场景清晰度，最需要补强的是伏笔与回收。",
+      "rating": "solid",
+      "scores": {
+        "total": 72,
+        "maxScore": 100,
+        "dimensions": [
+          {
+            "id": "sceneFunction",
+            "label": "场景功能",
+            "score": 18,
+            "maxScore": 20,
+            "comment": "这一幕承担了清楚的推进或转折功能。",
+            "signals": [
+              "推进/变化信号 8 处",
+              "状态候选 5 个",
+              "关系候选 0 个"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "continuity",
+            "label": "连续性",
+            "score": 14,
+            "maxScore": 20,
+            "comment": "这一幕单独可读，但与前后文的承接还可以更明显。",
+            "signals": [
+              "承接角色重合 0 个",
+              "后续角色重合 0 个",
+              "承接/过渡词 4 个"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "logic",
+            "label": "逻辑性",
+            "score": 16,
+            "maxScore": 20,
+            "comment": "人物行动和因果链基本说得通。",
+            "signals": [
+              "因果词 1 个",
+              "动机词 1 个",
+              "决定/变化词 3 个"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "foreshadowing",
+            "label": "伏笔与回收",
+            "score": 4,
+            "maxScore": 20,
+            "comment": "这一幕完成了当前动作，但伏笔/回收信号还偏弱。",
+            "signals": [
+              "伏笔信号 0 个",
+              "回收信号 0 个",
+              "疑问钩子 0 个"
+            ],
+            "suggestions": [
+              "考虑种下一个后续要兑现的信息点，或让当前冲突形成更明确的回收钩子。",
+              "结尾可以留下一个未解答的问题，增强这一幕的牵引力。"
+            ]
+          },
+          {
+            "id": "sceneClarity",
+            "label": "场景清晰度",
+            "score": 20,
+            "maxScore": 20,
+            "comment": "这一幕的镜头和焦点比较清楚。",
+            "signals": [
+              "环境锚点 2 个",
+              "出场角色 6 个",
+              "开头带锚点 是"
+            ],
+            "suggestions": []
+          }
+        ]
+      },
+      "strengths": [
+        "场景功能：这一幕承担了清楚的推进或转折功能。",
+        "逻辑性：人物行动和因果链基本说得通。",
+        "场景清晰度：这一幕的镜头和焦点比较清楚。"
+      ],
+      "priorityActions": [
+        "考虑种下一个后续要兑现的信息点，或让当前冲突形成更明确的回收钩子。",
+        "结尾可以留下一个未解答的问题，增强这一幕的牵引力。"
+      ],
+      "textMetrics": {
+        "wordCount": 849,
+        "paragraphCount": 5,
+        "averageParagraphLength": 186,
+        "tagMentions": [
+          "云衡气候",
+          "市水务局",
+          "旧南堤",
+          "许澄",
+          "雨量日志",
+          "骆闻"
+        ],
+        "totalChapterParagraphs": 5
+      },
+      "analysisSignals": {
+        "analysisBacked": true,
+        "activeEntityCount": 5,
+        "snapshotCandidateCount": 5,
+        "relationCandidateCount": 0,
+        "settingCandidateCount": 0,
+        "settingConflictCount": 0,
+        "unintroducedNameRevealCount": 0,
+        "capabilityTaskRiskCount": 0,
+        "powerProgressionConflictCount": 0,
+        "wrappedEntityCount": 6,
+        "wrappedEntityMissingCount": 0
+      },
+      "styleAnalysis": {
+        "profile": "default",
+        "reviewRuleProfile": "default",
+        "reviewRuleEnabledRules": [],
+        "styleAnalysis": {
+          "overallScore": 14,
+          "totalDeduction": 6,
+          "patternResults": [
+            {
+              "id": "simileDensity",
+              "label": "比喻密度",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 3.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "hedgeAdverbs",
+              "label": "模糊副词",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 5.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "tellingEmotion",
+              "label": "叙述性情感",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 2.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "formulaicTransition",
+              "label": "程式化过渡",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 2.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "contrastFlipPattern",
+              "label": "翻转句式",
+              "detected": true,
+              "count": 2,
+              "perThousand": 2.4,
+              "threshold": 1.2,
+              "severity": "medium",
+              "evidence": [
+                "不是停工，不是停航，是要求法院在四十八小时内叫停一套仍在运"
+              ],
+              "suggestion": "“不是……是……”类翻转句偏多（每千字2.4次），优先改成直接动作、结果或判断，不要反复先否后立"
+            },
+            {
+              "id": "analogicalPivotPattern",
+              "label": "类比翻转句",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "templateCatchphrasePattern",
+              "label": "模板化口癖",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "sensoryVariety",
+              "label": "感官单一",
+              "detected": false,
+              "count": 4,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "paragraphUniformity",
+              "label": "段落均质",
+              "detected": true,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "medium",
+              "evidence": [],
+              "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感"
+            },
+            {
+              "id": "paragraphReadability",
+              "label": "段落可读性",
+              "detected": true,
+              "count": 5,
+              "perThousand": 0,
+              "threshold": 90,
+              "severity": "high",
+              "evidence": [
+                "第1段约173字：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗...",
+                "第2段约189字：她的委托人没有到场。旧城区居民代表仍困在临时安置点，通信断断续续...",
+                "第3段约167字：法庭的远程会议室里，云衡气候的代理律师骆闻已经上线。他没有急着反..."
+              ],
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+            },
+            {
+              "id": "sentenceRepetition",
+              "label": "句式重复",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "source": "builtin",
+              "suggestion": ""
+            },
+            {
+              "id": "specialTermRepetition",
+              "label": "特殊术语复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "narrativeFrameRepetition",
+              "label": "叙事支架复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "registerDrift",
+              "label": "题材语域失真",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "structuredPlanBlock",
+              "label": "方案文档腔",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "clusteredAIPhrasing",
+              "label": "AI句群叠加",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            }
+          ],
+          "sensoryDistribution": {
+            "visual": 4,
+            "auditory": 1,
+            "tactile": 1,
+            "olfactory": 2,
+            "gustatory": 0,
+            "dominantSense": "visual",
+            "missingSenses": [
+              "gustatory"
+            ]
+          },
+          "paragraphUniformity": {
+            "lengthStdDev": 15.4,
+            "avgLength": 185.8,
+            "isUniform": true,
+            "score": 1
+          },
+          "paragraphReadability": {
+            "detected": true,
+            "severity": "high",
+            "count": 5,
+            "threshold": 90,
+            "veryLongThreshold": 150,
+            "maxLength": 189,
+            "evidence": [
+              "第1段约173字：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗...",
+              "第2段约189字：她的委托人没有到场。旧城区居民代表仍困在临时安置点，通信断断续续...",
+              "第3段约167字：法庭的远程会议室里，云衡气候的代理律师骆闻已经上线。他没有急着反..."
+            ],
+            "overlongParagraphs": [
+              {
+                "paragraphIndex": 1,
+                "length": 173,
+                "snippet": "旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗..."
+              },
+              {
+                "paragraphIndex": 2,
+                "length": 189,
+                "snippet": "她的委托人没有到场。旧城区居民代表仍困在临时安置点，通信断断续续..."
+              },
+              {
+                "paragraphIndex": 3,
+                "length": 167,
+                "snippet": "法庭的远程会议室里，云衡气候的代理律师骆闻已经上线。他没有急着反..."
+              },
+              {
+                "paragraphIndex": 4,
+                "length": 174,
+                "snippet": "第一次休庭只给了十五分钟。许澄在走廊尽头拨通安置点的视频，屏幕那..."
+              },
+              {
+                "paragraphIndex": 5,
+                "length": 146,
+                "snippet": "复庭时，法官要求云衡气候和市水务局在凌晨两点前提交原始雨量日志、..."
+              }
+            ]
+          },
+          "sentenceRepetition": {
+            "repeatedStructures": [],
+            "hasRepetition": false,
+            "score": 3,
+            "source": "builtin"
+          },
+          "specialTermRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topTerms": []
+          },
+          "narrativeFrameRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topFrames": []
+          },
+          "registerDrift": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedCategories": [],
+            "suggestion": ""
+          },
+          "structuredPlanBlock": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedLabels": [],
+            "suggestion": ""
+          },
+          "clusteredAIPhrasing": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "threshold": 3,
+            "signalScore": 3,
+            "signalIds": [
+              "contrastFlipPattern",
+              "paragraphReadability"
+            ],
+            "evidence": [],
+            "suggestion": ""
+          },
+          "metaLeakage": {},
+          "sources": {
+            "sentenceRepetition": "builtin"
+          },
+          "judgements": [
+            {
+              "ruleId": "contrastFlipPattern",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到翻转句式问题，例如 不是停工，不是停航，是要求法院在四十八小时内叫停一套仍在运。",
+              "suggestion": "“不是……是……”类翻转句偏多（每千字2.4次），优先改成直接动作、结果或判断，不要反复先否后立",
+              "evidence": [
+                "不是停工，不是停航，是要求法院在四十八小时内叫停一套仍在运"
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style",
+                "ai-phrasing"
+              ]
+            },
+            {
+              "ruleId": "paragraphUniformity",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到段落均质问题。",
+              "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+              "evidence": [],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style"
+              ]
+            },
+            {
+              "ruleId": "paragraphReadability",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "high",
+              "status": "triggered",
+              "message": "检测到段落可读性问题，例如 第1段约173字：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗...。",
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+              "evidence": [
+                "第1段约173字：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗...",
+                "第2段约189字：她的委托人没有到场。旧城区居民代表仍困在临时安置点，通信断断续续...",
+                "第3段约167字：法庭的远程会议室里，云衡气候的代理律师骆闻已经上线。他没有急着反..."
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style",
+                "readability",
+                "mobile-reading"
+              ]
+            }
+          ],
+          "summary": "检测到3项AI风格特征：翻转句式、段落均质、段落可读性。扣6分。",
+          "suggestions": [
+            "“不是……是……”类翻转句偏多（每千字2.4次），优先改成直接动作、结果或判断，不要反复先否后立",
+            "段落长度过于均匀，可调整长短交替制造节奏感",
+            "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+          ]
+        },
+        "judgements": [
+          {
+            "ruleId": "contrastFlipPattern",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到翻转句式问题，例如 不是停工，不是停航，是要求法院在四十八小时内叫停一套仍在运。",
+            "suggestion": "“不是……是……”类翻转句偏多（每千字2.4次），优先改成直接动作、结果或判断，不要反复先否后立",
+            "evidence": [
+              "不是停工，不是停航，是要求法院在四十八小时内叫停一套仍在运"
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style",
+              "ai-phrasing"
+            ]
+          },
+          {
+            "ruleId": "paragraphUniformity",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到段落均质问题。",
+            "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+            "evidence": [],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style"
+            ]
+          },
+          {
+            "ruleId": "paragraphReadability",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "high",
+            "status": "triggered",
+            "message": "检测到段落可读性问题，例如 第1段约173字：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗...。",
+            "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+            "evidence": [
+              "第1段约173字：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗...",
+              "第2段约189字：她的委托人没有到场。旧城区居民代表仍困在临时安置点，通信断断续续...",
+              "第3段约167字：法庭的远程会议室里，云衡气候的代理律师骆闻已经上线。他没有急着反..."
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style",
+              "readability",
+              "mobile-reading"
+            ]
+          }
+        ],
+        "constraints": [
+          "“不是……是……”类翻转句偏多（每千字2.4次），优先改成直接动作、结果或判断，不要反复先否后立",
+          "段落长度过于均匀，可调整长短交替制造节奏感",
+          "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+        ],
+        "textMetrics": {
+          "wordCount": 849,
+          "paragraphCount": 5,
+          "averageParagraphLength": 186
+        },
+        "profileSource": "builtin",
+        "reviewRuleProfileSource": "builtin"
+      },
+      "projectContext": {
+        "genre": "近未来职业法庭悬疑",
+        "positioning": {
+          "primaryGenre": "speculative",
+          "subGenre": "climate-courtroom",
+          "styleTags": [
+            "near-future",
+            "legal-procedural"
+          ],
+          "targetAudience": [
+            "职业悬疑读者"
+          ]
+        },
+        "storyContract": {
+          "corePromises": [
+            "每章推进一起气候工程诉讼的证据链与公共风险",
+            "用职业流程、证据压力和人物选择制造悬疑"
+          ],
+          "avoidances": [
+            "不把案件写成单纯超自然谜题",
+            "不靠玄幻战力或民俗禁忌推进"
+          ],
+          "endingContract": "第一卷结束时交出第一场临时禁令听证的阶段性胜负与代价",
+          "paceContract": "中快节奏，证据推进优先于设定说明"
+        },
+        "emotionalContract": {
+          "coreEmotions": [
+            "压迫",
+            "冷静紧张"
+          ],
+          "chapterEmotionFloor": [
+            "每章至少出现一次证据压力或程序风险"
+          ],
+          "forbiddenEmotions": [],
+          "revealPreference": {
+            "defaultMode": "",
+            "allowDirectExplainAtClimax": false
+          }
+        },
+        "storyTemplate": {
+          "id": "",
+          "label": "",
+          "modulePolicy": {},
+          "reviewFocus": []
+        },
+        "commercialPositioning": {
+          "premise": "近未来沿海城市依赖人工降雨协议维持淡水配给，一场失控暴雨导致旧城区溃堤。年轻公益律师许澄接手临时禁令申请，却发现气候公司、城市水务局和受害社区各自篡改了一段关键雨量日志。",
+          "hookLine": "她要在四十八小时内证明一场雨不是天灾，而是被签过字的事故。",
+          "hookStack": [
+            "雨量日志被三方同时改写",
+            "临时禁令听证倒计时四十八小时",
+            "主角的父亲曾参与旧版降雨协议"
+          ],
+          "benchmarkWorks": [],
+          "targetPlatform": "中文职业悬疑连载",
+          "serializationModel": "短卷测试",
+          "releaseCadence": "测试用三章首卷",
+          "chapterWordFloor": 800,
+          "chapterWordTarget": 1400
+        }
+      },
+      "storyConstraintSignals": {
+        "emotionalContract": {
+          "coreEmotions": [
+            "压迫",
+            "冷静紧张"
+          ],
+          "chapterEmotionFloor": [
+            "每章至少出现一次证据压力或程序风险"
+          ],
+          "forbiddenEmotions": []
+        },
+        "worldRules": [
+          {
+            "id": "rule-rain-injunction",
+            "label": "停雨临时禁令",
+            "scope": ""
+          }
+        ],
+        "dueForeshadows": [],
+        "trackedEntities": [
+          {
+            "id": "char-xucheng",
+            "name": "许澄",
+            "currentState": {
+              "status": "active",
+              "physicalState": [],
+              "emotionalState": [],
+              "location": "临海市第二巡回法庭",
+              "lastUpdatedChapter": null,
+              "powerLevel": ""
+            },
+            "stateTags": [],
+            "recentChange": null
+          },
+          {
+            "id": "char-luowen",
+            "name": "骆闻",
+            "currentState": {
+              "status": "active",
+              "physicalState": [],
+              "emotionalState": [],
+              "location": "临海市第二巡回法庭",
+              "lastUpdatedChapter": null,
+              "powerLevel": ""
+            },
+            "stateTags": [],
+            "recentChange": null
+          }
+        ],
+        "chapterHandoff": {
+          "previousChapter": null,
+          "currentChapter": {
+            "id": "chapter-001",
+            "title": "停雨申请",
+            "direction": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头；中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡",
+            "beatHints": [
+              "开场：建立日常世界",
+              "触发事件：打破平衡的事件",
+              "第一幕转折：主角做出选择，无法回头"
+            ],
+            "sceneGoals": [
+              "旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗外的雨还是一层一层压下来。许澄把湿透的案卷袋摊在安检台上"
+            ]
+          },
+          "nextChapter": null,
+          "carryOverEntityChanges": [],
+          "activeThreadLabels": []
+        }
+      },
+      "wrappedEntitySignals": {
+        "count": 6,
+        "wrappedNames": [
+          "云衡气候",
+          "市水务局",
+          "旧南堤",
+          "许澄",
+          "雨量日志",
+          "骆闻"
+        ],
+        "covered": [
+          {
+            "name": "云衡气候",
+            "kind": "character",
+            "id": "inferred::云衡气候",
+            "source": "entities"
+          },
+          {
+            "name": "市水务局",
+            "kind": "character",
+            "id": "inferred::市水务局",
+            "source": "entities"
+          },
+          {
+            "name": "旧南堤",
+            "kind": "location",
+            "id": "loc-old-south-dike",
+            "source": "worldbook.locations"
+          },
+          {
+            "name": "许澄",
+            "kind": "character",
+            "id": "char-xucheng",
+            "source": "entities"
+          },
+          {
+            "name": "雨量日志",
+            "kind": "character",
+            "id": "inferred::雨量日志",
+            "source": "entities"
+          },
+          {
+            "name": "骆闻",
+            "kind": "character",
+            "id": "char-luowen",
+            "source": "entities"
+          }
+        ],
+        "missing": []
+      },
+      "consistencySignals": {
+        "specialTermRepetition": {
+          "detected": false,
+          "severity": "none",
+          "evidence": [],
+          "suggestion": ""
+        },
+        "settingCandidates": [],
+        "settingConflicts": [],
+        "unintroducedNameReveals": [],
+        "capabilityTaskRisks": [],
+        "powerProgressionConflicts": []
+      },
+      "ruleJudgements": [
+        {
+          "ruleId": "contrastFlipPattern",
+          "source": "core",
+          "scope": "scene",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到翻转句式问题，例如 不是停工，不是停航，是要求法院在四十八小时内叫停一套仍在运。",
+          "suggestion": "“不是……是……”类翻转句偏多（每千字2.4次），优先改成直接动作、结果或判断，不要反复先否后立",
+          "evidence": [
+            "不是停工，不是停航，是要求法院在四十八小时内叫停一套仍在运"
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 5
+          },
+          "payload": {},
+          "tags": [
+            "style",
+            "ai-phrasing"
+          ]
+        },
+        {
+          "ruleId": "paragraphUniformity",
+          "source": "core",
+          "scope": "scene",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到段落均质问题。",
+          "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 5
+          },
+          "payload": {},
+          "tags": [
+            "style"
+          ]
+        },
+        {
+          "ruleId": "paragraphReadability",
+          "source": "core",
+          "scope": "scene",
+          "kind": "style",
+          "severity": "high",
+          "status": "triggered",
+          "message": "检测到段落可读性问题，例如 第1段约173字：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗...。",
+          "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+          "evidence": [
+            "第1段约173字：旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮，窗...",
+            "第2段约189字：她的委托人没有到场。旧城区居民代表仍困在临时安置点，通信断断续续...",
+            "第3段约167字：法庭的远程会议室里，云衡气候的代理律师骆闻已经上线。他没有急着反..."
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 5
+          },
+          "payload": {},
+          "tags": [
+            "style",
+            "readability",
+            "mobile-reading"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 5
+          },
+          "payload": {
+            "beatId": "beat-a05ab6facafa",
+            "summary": "开场：建立日常世界",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 5
+          },
+          "payload": {
+            "beatId": "beat-ce46f8fc5fae",
+            "summary": "触发事件：打破平衡的事件",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 5
+          },
+          "payload": {
+            "beatId": "beat-cdab8f9de889",
+            "summary": "第一幕转折：主角做出选择，无法回头",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 5
+          },
+          "payload": {
+            "beatId": "beat-98e9f542680c",
+            "summary": "中点：从被动变主动 / 虚假胜利",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 5
+          },
+          "payload": {
+            "beatId": "beat-c0ef489e79e9",
+            "summary": "灵魂暗夜：最低点，失去一切",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 5
+          },
+          "payload": {
+            "beatId": "beat-a9fdf122ca61",
+            "summary": "高潮：最终对决 / 真相揭露",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 5
+          },
+          "payload": {
+            "beatId": "beat-1db60f04a9fd",
+            "summary": "结局：新平衡",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        }
+      ],
+      "contractAlignment": {
+        "status": "mixed",
+        "matched": [
+          "这一幕已承接情绪契约的核心情绪方向：压迫, 冷静紧张。",
+          "这一幕满足情绪契约的章节情绪底线，没有完全滑向纯说明。",
+          "这一幕对受追踪角色状态的承接基本成立。"
+        ],
+        "risks": [
+          "核心承诺“用职业流程、证据压力和人物选择制造悬疑”：悬疑/反转承诺在这一幕里的钩子偏弱。"
+        ],
+        "notes": [
+          "已记录节奏承诺：中快节奏，证据推进优先于设定说明。",
+          "核心承诺“每章推进一起气候工程诉讼的证据链与公共风险”目前仅记录，尚未接入一幕级自动判定。",
+          "项目当前存在 1 条世界规则约束，例如“停雨临时禁令”，scene review 已纳入提示。",
+          "本章共有 6 个已包裹实体引用，其中 6 个已能对齐到角色卡或世界设定。"
+        ]
+      },
+      "commercialAlignment": {
+        "status": "at-risk",
+        "matched": [],
+        "risks": [
+          "这一幕处于章末，但追读钩子还不够强。"
+        ],
+        "notes": [
+          "商业 hook 栈“雨量日志被三方同时改写”目前仅记录，尚未接入一幕级自动判定。",
+          "商业 hook 栈“临时禁令听证倒计时四十八小时”目前仅记录，尚未接入一幕级自动判定。",
+          "商业 hook 栈“主角的父亲曾参与旧版降雨协议”目前仅记录，尚未接入一幕级自动判定。",
+          "已记录连载模型：短卷测试。"
+        ]
+      },
+      "rubric": [
+        {
+          "id": "sceneFunction",
+          "label": "场景功能",
+          "maxScore": 20,
+          "focus": "这一幕是否承担推进、转折、铺垫或兑现任务"
+        },
+        {
+          "id": "continuity",
+          "label": "连续性",
+          "maxScore": 20,
+          "focus": "这一幕是否与前后文形成承接，而不是孤立切片"
+        },
+        {
+          "id": "logic",
+          "label": "逻辑性",
+          "maxScore": 20,
+          "focus": "人物行动、因果链和信息流是否说得通"
+        },
+        {
+          "id": "foreshadowing",
+          "label": "伏笔与回收",
+          "maxScore": 20,
+          "focus": "这一幕是否种下信息、维持悬念或完成局部兑现"
+        },
+        {
+          "id": "sceneClarity",
+          "label": "场景清晰度",
+          "maxScore": 20,
+          "focus": "读者能否迅速抓到时间、地点、角色和冲突焦点"
+        }
+      ]
+    },
+    {
+      "reviewId": "scene-review-4c3807c8a8",
+      "fingerprint": "scene-review-v1:chapter-001:1:16:9242d3c01bd0037b",
+      "rubricVersion": "scene-review-v1",
+      "generatedAt": "2026-04-29T16:25:28+08:00",
+      "chapterId": "chapter-001",
+      "chapterTitle": "停雨申请",
+      "sceneRange": {
+        "startParagraph": 1,
+        "endParagraph": 16,
+        "paragraphCount": 16,
+        "totalChapterParagraphs": 16,
+        "sceneIndex": 1,
+        "source": "explicit",
+        "scenePlanId": "scene-ec84da47ff"
+      },
+      "summary": "基于选定片段的正文与分析信号，这一幕总分 75/100。当前最稳的是场景清晰度，最需要补强的是逻辑性。",
+      "rating": "solid",
+      "scores": {
+        "total": 75,
+        "maxScore": 100,
+        "dimensions": [
+          {
+            "id": "sceneFunction",
+            "label": "场景功能",
+            "score": 16,
+            "maxScore": 20,
+            "comment": "这一幕承担了清楚的推进或转折功能。",
+            "signals": [
+              "推进/变化信号 2 处",
+              "状态候选 0 个",
+              "关系候选 0 个"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "continuity",
+            "label": "连续性",
+            "score": 14,
+            "maxScore": 20,
+            "comment": "这一幕单独可读，但与前后文的承接还可以更明显。",
+            "signals": [
+              "承接角色重合 0 个",
+              "后续角色重合 0 个",
+              "承接/过渡词 3 个"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "logic",
+            "label": "逻辑性",
+            "score": 10,
+            "maxScore": 20,
+            "comment": "事件能看懂，但因果或动机还可以再明示一点。",
+            "signals": [
+              "因果词 0 个",
+              "动机词 1 个",
+              "决定/变化词 2 个"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "foreshadowing",
+            "label": "伏笔与回收",
+            "score": 15,
+            "maxScore": 20,
+            "comment": "这一幕兼顾了悬念维持或局部兑现。",
+            "signals": [
+              "伏笔信号 0 个",
+              "回收信号 0 个",
+              "疑问钩子 0 个",
+              "悬念物证/异常信号 13 个"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "sceneClarity",
+            "label": "场景清晰度",
+            "score": 20,
+            "maxScore": 20,
+            "comment": "这一幕的镜头和焦点比较清楚。",
+            "signals": [
+              "环境锚点 2 个",
+              "出场角色 6 个",
+              "开头带锚点 是"
+            ],
+            "suggestions": []
+          }
+        ]
+      },
+      "strengths": [
+        "场景功能：这一幕承担了清楚的推进或转折功能。",
+        "场景清晰度：这一幕的镜头和焦点比较清楚。"
+      ],
+      "priorityActions": [],
+      "textMetrics": {
+        "wordCount": 902,
+        "paragraphCount": 16,
+        "averageParagraphLength": 62,
+        "tagMentions": [
+          "云衡气候",
+          "市水务局",
+          "旧南堤",
+          "许澄",
+          "雨量日志",
+          "骆闻"
+        ],
+        "totalChapterParagraphs": 16
+      },
+      "analysisSignals": {
+        "analysisBacked": true,
+        "activeEntityCount": 2,
+        "snapshotCandidateCount": 0,
+        "relationCandidateCount": 0,
+        "settingCandidateCount": 0,
+        "settingConflictCount": 0,
+        "unintroducedNameRevealCount": 0,
+        "capabilityTaskRiskCount": 0,
+        "powerProgressionConflictCount": 0,
+        "wrappedEntityCount": 6,
+        "wrappedEntityMissingCount": 0
+      },
+      "styleAnalysis": {
+        "profile": "default",
+        "reviewRuleProfile": "default",
+        "reviewRuleEnabledRules": [],
+        "styleAnalysis": {
+          "overallScore": 19,
+          "totalDeduction": 1,
+          "patternResults": [
+            {
+              "id": "simileDensity",
+              "label": "比喻密度",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 3.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "hedgeAdverbs",
+              "label": "模糊副词",
+              "detected": false,
+              "count": 1,
+              "perThousand": 1.1,
+              "threshold": 5.0,
+              "severity": "none",
+              "evidence": [
+                "慢慢"
+              ],
+              "suggestion": ""
+            },
+            {
+              "id": "tellingEmotion",
+              "label": "叙述性情感",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 2.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "formulaicTransition",
+              "label": "程式化过渡",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 2.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "contrastFlipPattern",
+              "label": "翻转句式",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 1.2,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "analogicalPivotPattern",
+              "label": "类比翻转句",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "templateCatchphrasePattern",
+              "label": "模板化口癖",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "sensoryVariety",
+              "label": "感官单一",
+              "detected": false,
+              "count": 4,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "paragraphUniformity",
+              "label": "段落均质",
+              "detected": true,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "medium",
+              "evidence": [],
+              "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感"
+            },
+            {
+              "id": "paragraphReadability",
+              "label": "段落可读性",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 90,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "sentenceRepetition",
+              "label": "句式重复",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "source": "builtin",
+              "suggestion": ""
+            },
+            {
+              "id": "specialTermRepetition",
+              "label": "特殊术语复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "narrativeFrameRepetition",
+              "label": "叙事支架复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "registerDrift",
+              "label": "题材语域失真",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "structuredPlanBlock",
+              "label": "方案文档腔",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "clusteredAIPhrasing",
+              "label": "AI句群叠加",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            }
+          ],
+          "sensoryDistribution": {
+            "visual": 4,
+            "auditory": 2,
+            "tactile": 1,
+            "olfactory": 2,
+            "gustatory": 0,
+            "dominantSense": "visual",
+            "missingSenses": [
+              "gustatory"
+            ]
+          },
+          "paragraphUniformity": {
+            "lengthStdDev": 16.6,
+            "avgLength": 61.9,
+            "isUniform": true,
+            "score": 2
+          },
+          "paragraphReadability": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "threshold": 90,
+            "veryLongThreshold": 150,
+            "maxLength": 82,
+            "evidence": [],
+            "overlongParagraphs": []
+          },
+          "sentenceRepetition": {
+            "repeatedStructures": [],
+            "hasRepetition": false,
+            "score": 3,
+            "source": "builtin"
+          },
+          "specialTermRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topTerms": []
+          },
+          "narrativeFrameRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topFrames": []
+          },
+          "registerDrift": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedCategories": [],
+            "suggestion": ""
+          },
+          "structuredPlanBlock": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedLabels": [],
+            "suggestion": ""
+          },
+          "clusteredAIPhrasing": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "threshold": 3,
+            "signalScore": 0,
+            "signalIds": [],
+            "evidence": [],
+            "suggestion": ""
+          },
+          "metaLeakage": {},
+          "sources": {
+            "sentenceRepetition": "builtin"
+          },
+          "judgements": [
+            {
+              "ruleId": "paragraphUniformity",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到段落均质问题。",
+              "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+              "evidence": [],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style"
+              ]
+            }
+          ],
+          "summary": "检测到1项AI风格特征：段落均质。扣1分。",
+          "suggestions": [
+            "段落长度过于均匀，可调整长短交替制造节奏感"
+          ]
+        },
+        "judgements": [
+          {
+            "ruleId": "paragraphUniformity",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到段落均质问题。",
+            "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+            "evidence": [],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style"
+            ]
+          }
+        ],
+        "constraints": [
+          "段落长度过于均匀，可调整长短交替制造节奏感"
+        ],
+        "textMetrics": {
+          "wordCount": 902,
+          "paragraphCount": 16,
+          "averageParagraphLength": 62
+        },
+        "profileSource": "builtin",
+        "reviewRuleProfileSource": "builtin"
+      },
+      "projectContext": {
+        "genre": "近未来职业法庭悬疑",
+        "positioning": {
+          "primaryGenre": "speculative",
+          "subGenre": "climate-courtroom",
+          "styleTags": [
+            "near-future",
+            "legal-procedural"
+          ],
+          "targetAudience": [
+            "职业悬疑读者"
+          ]
+        },
+        "storyContract": {
+          "corePromises": [
+            "每章推进一起气候工程诉讼的证据链与公共风险",
+            "用职业流程、证据压力和人物选择制造悬疑"
+          ],
+          "avoidances": [
+            "不把案件写成单纯超自然谜题",
+            "不靠玄幻战力或民俗禁忌推进"
+          ],
+          "endingContract": "第一卷结束时交出第一场临时禁令听证的阶段性胜负与代价",
+          "paceContract": "中快节奏，证据推进优先于设定说明"
+        },
+        "emotionalContract": {
+          "coreEmotions": [
+            "压迫",
+            "冷静紧张"
+          ],
+          "chapterEmotionFloor": [
+            "每章至少出现一次证据压力或程序风险"
+          ],
+          "forbiddenEmotions": [],
+          "revealPreference": {
+            "defaultMode": "",
+            "allowDirectExplainAtClimax": false
+          }
+        },
+        "storyTemplate": {
+          "id": "",
+          "label": "",
+          "modulePolicy": {},
+          "reviewFocus": []
+        },
+        "commercialPositioning": {
+          "premise": "近未来沿海城市依赖人工降雨协议维持淡水配给，一场失控暴雨导致旧城区溃堤。年轻公益律师许澄接手临时禁令申请，却发现气候公司、城市水务局和受害社区各自篡改了一段关键雨量日志。",
+          "hookLine": "她要在四十八小时内证明一场雨不是天灾，而是被签过字的事故。",
+          "hookStack": [
+            "雨量日志被三方同时改写",
+            "临时禁令听证倒计时四十八小时",
+            "主角的父亲曾参与旧版降雨协议"
+          ],
+          "benchmarkWorks": [],
+          "targetPlatform": "中文职业悬疑连载",
+          "serializationModel": "短卷测试",
+          "releaseCadence": "测试用三章首卷",
+          "chapterWordFloor": 800,
+          "chapterWordTarget": 1400
+        }
+      },
+      "storyConstraintSignals": {
+        "emotionalContract": {
+          "coreEmotions": [
+            "压迫",
+            "冷静紧张"
+          ],
+          "chapterEmotionFloor": [
+            "每章至少出现一次证据压力或程序风险"
+          ],
+          "forbiddenEmotions": []
+        },
+        "worldRules": [
+          {
+            "id": "rule-rain-injunction",
+            "label": "停雨临时禁令",
+            "scope": ""
+          }
+        ],
+        "dueForeshadows": [],
+        "trackedEntities": [
+          {
+            "id": "char-xucheng",
+            "name": "许澄",
+            "currentState": {
+              "status": "active",
+              "physicalState": [],
+              "emotionalState": [],
+              "location": "临海市第二巡回法庭",
+              "lastUpdatedChapter": null,
+              "powerLevel": ""
+            },
+            "stateTags": [],
+            "recentChange": null
+          },
+          {
+            "id": "char-luowen",
+            "name": "骆闻",
+            "currentState": {
+              "status": "active",
+              "physicalState": [],
+              "emotionalState": [],
+              "location": "临海市第二巡回法庭",
+              "lastUpdatedChapter": null,
+              "powerLevel": ""
+            },
+            "stateTags": [],
+            "recentChange": null
+          }
+        ],
+        "chapterHandoff": {
+          "previousChapter": null,
+          "currentChapter": {
+            "id": "chapter-001",
+            "title": "停雨申请",
+            "direction": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头；中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡",
+            "beatHints": [
+              "开场：建立日常世界",
+              "触发事件：打破平衡的事件",
+              "第一幕转折：主角做出选择，无法回头"
+            ],
+            "sceneGoals": [
+              "旧南堤溃口后的第六小时，临海市第二巡回法庭把夜间照明开到最亮。窗外的雨压在玻璃上，像有人持续按着整座城市的脉搏。"
+            ]
+          },
+          "nextChapter": null,
+          "carryOverEntityChanges": [],
+          "activeThreadLabels": []
+        }
+      },
+      "wrappedEntitySignals": {
+        "count": 6,
+        "wrappedNames": [
+          "云衡气候",
+          "市水务局",
+          "旧南堤",
+          "许澄",
+          "雨量日志",
+          "骆闻"
+        ],
+        "covered": [
+          {
+            "name": "云衡气候",
+            "kind": "faction",
+            "id": "faction-yunheng",
+            "source": "worldbook.factions"
+          },
+          {
+            "name": "市水务局",
+            "kind": "faction",
+            "id": "faction-water-bureau",
+            "source": "worldbook.factions"
+          },
+          {
+            "name": "旧南堤",
+            "kind": "location",
+            "id": "loc-old-south-dike",
+            "source": "worldbook.locations"
+          },
+          {
+            "name": "许澄",
+            "kind": "character",
+            "id": "char-xucheng",
+            "source": "entities"
+          },
+          {
+            "name": "雨量日志",
+            "kind": "artifact",
+            "id": "artifact-rain-log",
+            "source": "worldbook.artifacts"
+          },
+          {
+            "name": "骆闻",
+            "kind": "character",
+            "id": "char-luowen",
+            "source": "entities"
+          }
+        ],
+        "missing": []
+      },
+      "consistencySignals": {
+        "specialTermRepetition": {
+          "detected": false,
+          "severity": "none",
+          "evidence": [],
+          "suggestion": ""
+        },
+        "settingCandidates": [],
+        "settingConflicts": [],
+        "unintroducedNameReveals": [],
+        "capabilityTaskRisks": [],
+        "powerProgressionConflicts": []
+      },
+      "ruleJudgements": [
+        {
+          "ruleId": "paragraphUniformity",
+          "source": "core",
+          "scope": "scene",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到段落均质问题。",
+          "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 16
+          },
+          "payload": {},
+          "tags": [
+            "style"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 16
+          },
+          "payload": {
+            "beatId": "beat-a05ab6facafa",
+            "summary": "开场：建立日常世界",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 16
+          },
+          "payload": {
+            "beatId": "beat-ce46f8fc5fae",
+            "summary": "触发事件：打破平衡的事件",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 16
+          },
+          "payload": {
+            "beatId": "beat-cdab8f9de889",
+            "summary": "第一幕转折：主角做出选择，无法回头",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 16
+          },
+          "payload": {
+            "beatId": "beat-98e9f542680c",
+            "summary": "中点：从被动变主动 / 虚假胜利",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 16
+          },
+          "payload": {
+            "beatId": "beat-c0ef489e79e9",
+            "summary": "灵魂暗夜：最低点，失去一切",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 16
+          },
+          "payload": {
+            "beatId": "beat-a9fdf122ca61",
+            "summary": "高潮：最终对决 / 真相揭露",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 16
+          },
+          "payload": {
+            "beatId": "beat-1db60f04a9fd",
+            "summary": "结局：新平衡",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        }
+      ],
+      "contractAlignment": {
+        "status": "aligned",
+        "matched": [
+          "核心承诺“用职业流程、证据压力和人物选择制造悬疑”：悬疑/反转承诺已被这一幕的伏笔与回收支撑。",
+          "这一幕已承接情绪契约的核心情绪方向：压迫, 冷静紧张。",
+          "这一幕满足情绪契约的章节情绪底线，没有完全滑向纯说明。",
+          "这一幕对受追踪角色状态的承接基本成立。"
+        ],
+        "risks": [],
+        "notes": [
+          "已记录节奏承诺：中快节奏，证据推进优先于设定说明。",
+          "核心承诺“每章推进一起气候工程诉讼的证据链与公共风险”目前仅记录，尚未接入一幕级自动判定。",
+          "项目当前存在 1 条世界规则约束，例如“停雨临时禁令”，scene review 已纳入提示。",
+          "本章共有 6 个已包裹实体引用，其中 6 个已能对齐到角色卡或世界设定。"
+        ]
+      },
+      "commercialAlignment": {
+        "status": "aligned",
+        "matched": [
+          "这一幕作为章末场景，已形成较明确的追读钩子。"
+        ],
+        "risks": [],
+        "notes": [
+          "商业 hook 栈“雨量日志被三方同时改写”目前仅记录，尚未接入一幕级自动判定。",
+          "商业 hook 栈“临时禁令听证倒计时四十八小时”目前仅记录，尚未接入一幕级自动判定。",
+          "商业 hook 栈“主角的父亲曾参与旧版降雨协议”目前仅记录，尚未接入一幕级自动判定。",
+          "已记录连载模型：短卷测试。"
+        ]
+      },
+      "rubric": [
+        {
+          "id": "sceneFunction",
+          "label": "场景功能",
+          "maxScore": 20,
+          "focus": "这一幕是否承担推进、转折、铺垫或兑现任务"
+        },
+        {
+          "id": "continuity",
+          "label": "连续性",
+          "maxScore": 20,
+          "focus": "这一幕是否与前后文形成承接，而不是孤立切片"
+        },
+        {
+          "id": "logic",
+          "label": "逻辑性",
+          "maxScore": 20,
+          "focus": "人物行动、因果链和信息流是否说得通"
+        },
+        {
+          "id": "foreshadowing",
+          "label": "伏笔与回收",
+          "maxScore": 20,
+          "focus": "这一幕是否种下信息、维持悬念或完成局部兑现"
+        },
+        {
+          "id": "sceneClarity",
+          "label": "场景清晰度",
+          "maxScore": 20,
+          "focus": "读者能否迅速抓到时间、地点、角色和冲突焦点"
+        }
+      ]
+    }
+  ],
+  "volumeSelfReviews": [
+    {
+      "rubricVersion": "volume-self-review-v1",
+      "volumeId": "volume-001",
+      "volumeTitle": "第一卷：雨证",
+      "generatedAt": "2026-04-29T16:44:50+08:00",
+      "conclusion": {
+        "closureStatus": "not_closed",
+        "allowHumanReview": false,
+        "strongestPoint": "当前卷 1/1 章都已具备 direction / beats / scenePlans 中的至少一项结构信号。",
+        "biggestRisk": "检测到1项AI风格特征：段落均质。扣1分。"
+      },
+      "editorPass": {
+        "completed": true,
+        "reviewerRole": "editor",
+        "mode": "independent_agent",
+        "contextIsolation": "no_context_proxy",
+        "notes": "独立编辑判定：单章可读性较稳，但当前 volume-001 只有 chapter-001，未兑现项目契约中的三章首卷、四十八小时临时禁令听证阶段性胜负与代价。"
+      },
+      "editorAssessment": {
+        "overallVerdict": "block",
+        "summaryComment": "不建议进入人工终审。正文完成了强开场和案件钩子，但作为第一卷仍停在引子/立案节点，缺少卷级阶段胜负、代价和主要承诺回收。",
+        "topProblems": [
+          "volume-001 当前只有 chapter-001，项目 commercialPositioning.releaseCadence 标明“测试用三章首卷”，storyContract.endingContract 要求第一卷结束交出临时禁令听证的阶段性胜负与代价；现稿只到法院要求提交原始日志和陌生短信钩子，卷级闭环未完成。",
+          "章内程序压力成立，但三幕七拍被压缩进单章单场景，outline 中中点、最低点、高潮、结局等结构拍未真正落成卷内事件，导致冲突升级更像开局抬题而非完整小故事。",
+          "核心悬疑承诺仍主要停留在“二十三点三十七分”的新钩子，雨量日志被谁改、临时禁令是否阶段性胜负、停雨代价如何落地都未形成短线兑现。"
+        ],
+        "improvementPoints": [
+          "补足 volume-001 至少后续两章或重新声明短卷只含一章；若保留三章首卷，下一步应写出凌晨两点日志提交、证据反咬或担保代价，再给出临时禁令的阶段性裁定。",
+          "把 chapter-001 结尾短信转化为可验证行动：追查二十三点三十七分的接管链路，并让云衡气候、市水务局或社区一方付出明确程序代价。",
+          "增强对手塑造：明确骆闻、云衡气候和市水务局各自为什么要维持降雨、隐藏接管或拖延日志，而不是只承担程序阻力。",
+          "修订节奏时保留当前职业法庭质感，同时打破段落均质，增加长短段交替和关键动作后的留白。"
+        ],
+        "scores": [
+          {
+            "dimensionId": "volumeClosure",
+            "label": "卷级闭环",
+            "score": 1,
+            "conclusion": "未闭环；当前只完成开场案件钩子，未交出第一卷要求的临时禁令听证阶段性胜负与代价。",
+            "chapterRefs": [
+              "chapter-001"
+            ],
+            "evidenceRefs": [
+              "chapter-001#scene-1",
+              "chapter-001#paragraph-15",
+              "chapter-001#paragraph-16"
+            ]
+          },
+          {
+            "dimensionId": "openingOnboarding",
+            "label": "开篇 onboarding",
+            "score": 4,
+            "conclusion": "开篇 onboarding 清楚，读者能理解旧南堤溃口、人工降雨协议、临时禁令申请和证据门槛。",
+            "chapterRefs": [
+              "chapter-001"
+            ],
+            "evidenceRefs": [
+              "chapter-001#paragraph-1",
+              "chapter-001#paragraph-3",
+              "chapter-001#paragraph-5"
+            ]
+          },
+          {
+            "dimensionId": "worldLogic",
+            "label": "世界与制度逻辑",
+            "score": 3,
+            "conclusion": "基础制度逻辑可读，但停雨、供水、人工接管和日志篡改之间的程序链还偏概括，需要在后续章补原始日志与责任链。",
+            "chapterRefs": [
+              "chapter-001"
+            ],
+            "evidenceRefs": [
+              "chapter-001#scene-1",
+              "review-packet:volume-001:chapter-001"
+            ]
+          },
+          {
+            "dimensionId": "chapterHandoff",
+            "label": "章间承接",
+            "score": 3,
+            "conclusion": "单章卷暂无章间承接可检验；chapter-001 自身收尾给出明确下一步，但卷级续接尚未落正文。",
+            "chapterRefs": [
+              "chapter-001"
+            ],
+            "evidenceRefs": [
+              "chapter-001#paragraph-16"
+            ]
+          },
+          {
+            "dimensionId": "characterContinuity",
+            "label": "角色连续性",
+            "score": 3,
+            "conclusion": "许澄的职业目标和冷静承压基本一致，但人物个人代价和选择压力还浅，尚未支撑卷级角色弧。",
+            "chapterRefs": [
+              "chapter-001"
+            ],
+            "evidenceRefs": [
+              "chapter-001#paragraph-5",
+              "chapter-001#paragraph-10",
+              "chapter-001#paragraph-16"
+            ]
+          },
+          {
+            "dimensionId": "antagonistShaping",
+            "label": "对手塑造",
+            "score": 3,
+            "conclusion": "骆闻作为程序型阻力有效，云衡气候和市水务局的利益、约束、具体做法仍需展开。",
+            "chapterRefs": [
+              "chapter-001"
+            ],
+            "evidenceRefs": [
+              "chapter-001#paragraph-7",
+              "chapter-001#paragraph-9",
+              "chapter-001#paragraph-15"
+            ]
+          },
+          {
+            "dimensionId": "conflictEscalation",
+            "label": "冲突升级",
+            "score": 3,
+            "conclusion": "从申请、担保压力、记录矛盾到三十七分钩子有开局升级，但还不是卷级升级链。",
+            "chapterRefs": [
+              "chapter-001"
+            ],
+            "evidenceRefs": [
+              "chapter-001#paragraph-9",
+              "chapter-001#paragraph-13",
+              "chapter-001#paragraph-16"
+            ]
+          },
+          {
+            "dimensionId": "payoffDelivery",
+            "label": "爽点兑现",
+            "score": 2,
+            "conclusion": "只交付了受理与调取日志的局部推进，未交付临时禁令是否阶段性胜负、停雨代价或主要悬疑的短线回报。",
+            "chapterRefs": [
+              "chapter-001"
+            ],
+            "evidenceRefs": [
+              "chapter-001#paragraph-15",
+              "chapter-001#paragraph-16"
+            ]
+          },
+          {
+            "dimensionId": "foreshadowRhythm",
+            "label": "伏笔与回收节奏",
+            "score": 2,
+            "conclusion": "二十三点三十七分钩子有效，但作为卷尾留下的新谜多于回收；hookStack 中“三方改写”和“父亲参与旧版协议”尚未形成卷内节奏。",
+            "chapterRefs": [
+              "chapter-001"
+            ],
+            "evidenceRefs": [
+              "chapter-001#paragraph-13",
+              "chapter-001#paragraph-16",
+              "review-packet:volume-001:chapter-001"
+            ]
+          },
+          {
+            "dimensionId": "styleReadability",
+            "label": "风格与可读性",
+            "score": 4,
+            "conclusion": "职业悬疑语感清楚，信息密度可控；主要风格问题是段落长度偏均质，节奏变化不足。",
+            "chapterRefs": [
+              "chapter-001"
+            ],
+            "evidenceRefs": [
+              "review-packet:volume-001:chapter-001"
+            ]
+          }
+        ]
+      },
+      "scores": [
+        {
+          "dimensionId": "volumeClosure",
+          "label": "卷级闭环",
+          "score": 3,
+          "conclusion": "当前卷 1/1 章都已具备 direction / beats / scenePlans 中的至少一项结构信号。",
+          "chapterRefs": [],
+          "evidenceRefs": []
+        },
+        {
+          "dimensionId": "openingOnboarding",
+          "label": "开篇 onboarding",
+          "score": 3,
+          "conclusion": "前几章没有暴露额外 world onboarding 缺口。",
+          "chapterRefs": [],
+          "evidenceRefs": []
+        },
+        {
+          "dimensionId": "worldLogic",
+          "label": "世界与制度逻辑",
+          "score": 2,
+          "conclusion": "基于选定片段的正文与分析信号，这一幕总分 75/100。当前最稳的是场景清晰度，最需要补强的是逻辑性。",
+          "chapterRefs": [
+            "chapter-001"
+          ],
+          "evidenceRefs": [
+            "chapter-001#scene-1",
+            "review-packet:volume-001:chapter-001"
+          ]
+        },
+        {
+          "dimensionId": "chapterHandoff",
+          "label": "章间承接",
+          "score": 3,
+          "conclusion": "当前工具信号未暴露明确的 章间承接 阻塞，但仍需结合卷目标人工复核。",
+          "chapterRefs": [],
+          "evidenceRefs": []
+        },
+        {
+          "dimensionId": "characterContinuity",
+          "label": "角色连续性",
+          "score": 3,
+          "conclusion": "当前工具信号未暴露明确的 角色连续性 阻塞，但仍需结合卷目标人工复核。",
+          "chapterRefs": [],
+          "evidenceRefs": []
+        },
+        {
+          "dimensionId": "antagonistShaping",
+          "label": "对手塑造",
+          "score": 3,
+          "conclusion": "当前工具信号未暴露明确的 对手塑造 阻塞，但仍需结合卷目标人工复核。",
+          "chapterRefs": [],
+          "evidenceRefs": []
+        },
+        {
+          "dimensionId": "conflictEscalation",
+          "label": "冲突升级",
+          "score": 2,
+          "conclusion": "核心承诺“用职业流程、证据压力和人物选择制造悬疑”：悬疑/反转承诺在本章里的张力兑现偏弱。",
+          "chapterRefs": [
+            "chapter-001"
+          ],
+          "evidenceRefs": [
+            "review-packet:volume-001:chapter-001"
+          ]
+        },
+        {
+          "dimensionId": "payoffDelivery",
+          "label": "爽点兑现",
+          "score": 3,
+          "conclusion": "当前工具信号未暴露明确的 爽点兑现 阻塞，但仍需结合卷目标人工复核。",
+          "chapterRefs": [],
+          "evidenceRefs": []
+        },
+        {
+          "dimensionId": "foreshadowRhythm",
+          "label": "伏笔与回收节奏",
+          "score": 3,
+          "conclusion": "当前卷没有积压的到窗 / 逾期 / 未排期伏笔。",
+          "chapterRefs": [],
+          "evidenceRefs": []
+        },
+        {
+          "dimensionId": "styleReadability",
+          "label": "风格与可读性",
+          "score": 2,
+          "conclusion": "检测到1项AI风格特征：段落均质。扣1分。",
+          "chapterRefs": [
+            "chapter-001"
+          ],
+          "evidenceRefs": [
+            "review-packet:volume-001:chapter-001"
+          ]
+        }
+      ],
+      "issues": [
+        {
+          "issue": "检测到1项AI风格特征：段落均质。扣1分。",
+          "evidence": [
+            "检测到1项AI风格特征：段落均质。扣1分。"
+          ],
+          "impact": "会直接拉低风格与可读性，默认不建议把当前版本直接送入人工审查。",
+          "primaryCause": "generation_miss",
+          "secondaryCauses": [
+            "self_review_miss"
+          ],
+          "fixAction": "先处理重复出现的 AI 味、长段和可读性负担，再复检 style report。",
+          "whyToolingMissed": "现有工具已经给出相关风险信号，但还不能替代作者判断最终是否需要改稿或改到什么强度。",
+          "whySelfReviewMissed": "这一项已由模板预填，仍需要作者结合卷目标逐条确认而不是直接照抄。",
+          "optimizationAction": "把这类高频风险继续回灌到卷级自审模板和 workflow gate 的下一步提示里。",
+          "detectedBy": [
+            "style-aggregate"
+          ],
+          "ruleIds": [],
+          "verificationCommands": [
+            "workflow status --root <root> --volume-id volume-001",
+            "export --root <root> --format review-packet --volume-id volume-001"
+          ],
+          "chapterRefs": [
+            "chapter-001"
+          ],
+          "evidenceRefs": [
+            "review-packet:volume-001:chapter-001"
+          ]
+        },
+        {
+          "issue": "基于选定片段的正文与分析信号，这一幕总分 75/100。当前最稳的是场景清晰度，最需要补强的是逻辑性。",
+          "evidence": [
+            "基于选定片段的正文与分析信号，这一幕总分 75/100。当前最稳的是场景清晰度，最需要补强的是逻辑性。"
+          ],
+          "impact": "会直接拉低世界与制度逻辑，默认不建议把当前版本直接送入人工审查。",
+          "primaryCause": "generation_miss",
+          "secondaryCauses": [
+            "self_review_miss"
+          ],
+          "fixAction": "优先把低分 scene 的主要问题前推到卷级修稿清单。",
+          "whyToolingMissed": "现有工具已经给出相关风险信号，但还不能替代作者判断最终是否需要改稿或改到什么强度。",
+          "whySelfReviewMissed": "这一项已由模板预填，仍需要作者结合卷目标逐条确认而不是直接照抄。",
+          "optimizationAction": "把这类高频风险继续回灌到卷级自审模板和 workflow gate 的下一步提示里。",
+          "detectedBy": [
+            "scene-review"
+          ],
+          "ruleIds": [],
+          "verificationCommands": [
+            "workflow status --root <root> --volume-id volume-001",
+            "export --root <root> --format review-packet --volume-id volume-001"
+          ],
+          "chapterRefs": [
+            "chapter-001"
+          ],
+          "evidenceRefs": [
+            "chapter-001#scene-1",
+            "review-packet:volume-001:chapter-001"
+          ]
+        },
+        {
+          "issue": "核心承诺“用职业流程、证据压力和人物选择制造悬疑”：悬疑/反转承诺在本章里的张力兑现偏弱。",
+          "evidence": [
+            "核心承诺“用职业流程、证据压力和人物选择制造悬疑”：悬疑/反转承诺在本章里的张力兑现偏弱。"
+          ],
+          "impact": "会直接拉低冲突升级，默认不建议把当前版本直接送入人工审查。",
+          "primaryCause": "generation_miss",
+          "secondaryCauses": [
+            "self_review_miss"
+          ],
+          "fixAction": "补更硬的阻力、误判、失败边缘或选择代价，拉开升级台阶。",
+          "whyToolingMissed": "现有工具已经给出相关风险信号，但还不能替代作者判断最终是否需要改稿或改到什么强度。",
+          "whySelfReviewMissed": "这一项已由模板预填，仍需要作者结合卷目标逐条确认而不是直接照抄。",
+          "optimizationAction": "把这类高频风险继续回灌到卷级自审模板和 workflow gate 的下一步提示里。",
+          "detectedBy": [
+            "chapter-review:contract"
+          ],
+          "ruleIds": [],
+          "verificationCommands": [
+            "workflow status --root <root> --volume-id volume-001",
+            "export --root <root> --format review-packet --volume-id volume-001"
+          ],
+          "chapterRefs": [
+            "chapter-001"
+          ],
+          "evidenceRefs": [
+            "review-packet:volume-001:chapter-001"
+          ]
+        }
+      ],
+      "closureAssessment": {
+        "mainProblem": "检测到1项AI风格特征：段落均质。扣1分。",
+        "delivered": [
+          "当前卷 1/1 章都已具备 direction / beats / scenePlans 中的至少一项结构信号。",
+          "前几章没有暴露额外 world onboarding 缺口。",
+          "当前工具信号未暴露明确的 章间承接 阻塞，但仍需结合卷目标人工复核。"
+        ],
+        "missing": [
+          "检测到1项AI风格特征：段落均质。扣1分。",
+          "基于选定片段的正文与分析信号，这一幕总分 75/100。当前最稳的是场景清晰度，最需要补强的是逻辑性。",
+          "核心承诺“用职业流程、证据压力和人物选择制造悬疑”：悬疑/反转承诺在本章里的张力兑现偏弱。"
+        ],
+        "reasoning": "当前模板已根据 preflight 与 review evidence 预填。从工具信号看，较强项集中在：当前卷 1/1 章都已具备 direction / beats / scenePlans 中的至少一项结构信号。；但当前最需要先确认的是：检测到1项AI风格特征：段落均质。扣1分。。因此默认保持 `not_closed`，需要作者补完或明确接受风险后再决定是否放行。"
+      },
+      "repairSuggestions": [
+        "先判断这一卷是否已经形成完整小故事闭环。",
+        "再逐项补写最影响人工审查的结构或解释缺口。"
+      ],
+      "acceptedRisks": [],
+      "gateFailures": [
+        {
+          "code": "volume-self-review-not-closed",
+          "message": "卷级自审结论仍为未闭环，不能进入人工审查。"
+        },
+        {
+          "code": "volume-self-review-styleReadability-below-threshold",
+          "message": "风格与可读性 当前仅 2/5，低于人工审查门槛 3/5。",
+          "dimensionId": "styleReadability",
+          "score": 2,
+          "requiredScore": 3
+        },
+        {
+          "code": "volume-self-review-declared-blocked",
+          "message": "卷级自审明确判定当前版本暂不建议进入人工审查。"
+        },
+        {
+          "code": "volume-self-review-editor-verdict-blocking",
+          "message": "独立编辑审查尚未给出可放行结论，当前 verdict 为 block。"
+        }
+      ],
+      "finalAllowHumanReview": false,
+      "scoreSummary": {
+        "average": 2.7,
+        "lowestScore": 2,
+        "lowestDimensions": [
+          "世界与制度逻辑",
+          "冲突升级",
+          "风格与可读性"
+        ],
+        "strongestDimension": {
+          "dimensionId": "volumeClosure",
+          "label": "卷级闭环",
+          "score": 3
+        }
+      },
+      "repairCoverage": {
+        "weakDimensionIds": [
+          "worldLogic",
+          "conflictEscalation",
+          "styleReadability",
+          "volumeClosure",
+          "payoffDelivery",
+          "foreshadowRhythm"
+        ],
+        "weakDimensionLabels": [
+          "世界与制度逻辑",
+          "冲突升级",
+          "风格与可读性",
+          "卷级闭环",
+          "爽点兑现",
+          "伏笔与回收节奏"
+        ],
+        "rootWeakDimensionIds": [
+          "worldLogic",
+          "conflictEscalation",
+          "styleReadability"
+        ],
+        "rootWeakDimensionLabels": [
+          "世界与制度逻辑",
+          "冲突升级",
+          "风格与可读性"
+        ],
+        "editorWeakDimensionIds": [
+          "volumeClosure",
+          "payoffDelivery",
+          "foreshadowRhythm"
+        ],
+        "editorWeakDimensionLabels": [
+          "卷级闭环",
+          "爽点兑现",
+          "伏笔与回收节奏"
+        ],
+        "uncoveredWeakDimensionIds": [],
+        "uncoveredWeakDimensionLabels": [],
+        "issueCount": 3,
+        "repairSuggestionCount": 2,
+        "status": "complete"
+      }
+    }
+  ]
+}

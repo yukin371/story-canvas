@@ -1,0 +1,62 @@
+{
+  "premiseFacts": [],
+  "worldRules": [
+    {
+      "id": "rule-rain-injunction",
+      "label": "停雨临时禁令",
+      "rule": "申请方需在四十八小时内提交最低证据链：降雨协议、实时雨量日志、损害扩大风险、替代供水方案。",
+      "summary": "法院可在公共风险扩大前暂时叫停人工降雨协议，但申请方必须证明继续降雨会造成难以弥补的损害",
+      "aliases": [],
+      "updatedAt": "2026-04-29T13:57:45+08:00",
+      "createdAt": "2026-04-29T13:57:45+08:00"
+    }
+  ],
+  "powerProgressions": [],
+  "factions": [
+    {
+      "id": "faction-yunheng",
+      "name": "云衡气候",
+      "summary": "运营临海市人工降雨协议的气候工程公司",
+      "type": "private-climate-operator",
+      "status": "active-contractor",
+      "hierarchy": "城市级公共服务承包商",
+      "territory": "临海市人工降雨协议与新区储水池调度接口",
+      "aliases": [],
+      "updatedAt": "2026-04-29T13:51:56+08:00",
+      "createdAt": "2026-04-29T13:51:56+08:00"
+    },
+    {
+      "id": "faction-water-bureau",
+      "name": "市水务局",
+      "summary": "负责降雨协议采购、验收和城市防汛调度的公共机构",
+      "type": "municipal-agency",
+      "status": "public-authority",
+      "hierarchy": "市级水务主管部门",
+      "territory": "临海市防汛调度、供水配给和降雨协议验收",
+      "aliases": [],
+      "updatedAt": "2026-04-29T13:52:07+08:00",
+      "createdAt": "2026-04-29T13:52:07+08:00"
+    }
+  ],
+  "locations": [
+    {
+      "id": "loc-old-south-dike",
+      "name": "旧南堤",
+      "summary": "临海市低洼旧城区防汛堤段，溃堤事故发生地",
+      "aliases": [],
+      "updatedAt": "2026-04-29T13:52:36+08:00",
+      "createdAt": "2026-04-29T13:52:36+08:00"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "artifact-rain-log",
+      "name": "雨量日志",
+      "summary": "记录人工降雨协议每十分钟投放量、风场修正和人工接管时间的关键电子日志",
+      "aliases": [],
+      "updatedAt": "2026-04-29T13:52:21+08:00",
+      "createdAt": "2026-04-29T13:52:21+08:00"
+    }
+  ],
+  "mysteries": []
+}

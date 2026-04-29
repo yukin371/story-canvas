@@ -1,0 +1,83 @@
+{
+  "entities": [
+    {
+      "id": "char-xucheng",
+      "name": "许澄",
+      "type": "character",
+      "source": "seed",
+      "aliases": [],
+      "summary": "年轻公益律师，接手旧南堤溃堤后的停雨临时禁令申请",
+      "seed": {
+        "archetype": "",
+        "personality": "",
+        "motivation": "证明事故责任并保护仍在低洼区的住户",
+        "background": ""
+      },
+      "profile": {
+        "appearance": [],
+        "abilities": [],
+        "speech": [],
+        "relationships": []
+      },
+      "state": {
+        "statusTags": [],
+        "powerLevel": {
+          "publicLevel": "",
+          "trueLevel": ""
+        },
+        "injuries": []
+      },
+      "currentState": {
+        "status": "active",
+        "physicalState": [],
+        "emotionalState": [],
+        "location": "临海市第二巡回法庭",
+        "lastUpdatedChapter": null,
+        "powerLevel": ""
+      },
+      "changeLog": [],
+      "createdAt": "2026-04-29T13:51:40+08:00",
+      "updatedAt": "2026-04-29T13:51:40+08:00"
+    },
+    {
+      "id": "char-luowen",
+      "name": "骆闻",
+      "type": "character",
+      "source": "seed",
+      "aliases": [],
+      "summary": "气候公司云衡的首席算法律师，负责反对停雨禁令",
+      "seed": {
+        "archetype": "",
+        "personality": "",
+        "motivation": "保住云衡气候的降雨协议与免责条款",
+        "background": ""
+      },
+      "profile": {
+        "appearance": [],
+        "abilities": [],
+        "speech": [],
+        "relationships": []
+      },
+      "state": {
+        "statusTags": [],
+        "powerLevel": {
+          "publicLevel": "",
+          "trueLevel": ""
+        },
+        "injuries": []
+      },
+      "currentState": {
+        "status": "active",
+        "physicalState": [],
+        "emotionalState": [],
+        "location": "临海市第二巡回法庭",
+        "lastUpdatedChapter": null,
+        "powerLevel": ""
+      },
+      "changeLog": [],
+      "createdAt": "2026-04-29T13:51:41+08:00",
+      "updatedAt": "2026-04-29T13:51:41+08:00"
+    }
+  ],
+  "enrichmentProposals": []
+}

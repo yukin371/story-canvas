@@ -39,6 +39,23 @@ def entity_registry(entities_state: Dict[str, Any]) -> Dict[str, Dict[str, Any]]
     return result
 
 
+def worldbook_reference_names(worldbook_state: Dict[str, Any] | None) -> set[str]:
+    if not isinstance(worldbook_state, dict):
+        return set()
+    names: set[str] = set()
+    for key in ("factions", "artifacts", "locations", "mysteries", "worldRules"):
+        for item in worldbook_state.get(key, []):
+            if not isinstance(item, dict):
+                continue
+            for value in (item.get("name"), item.get("title"), item.get("label")):
+                if isinstance(value, str) and value.strip():
+                    names.add(value.strip())
+            for alias in item.get("aliases", []):
+                if isinstance(alias, str) and alias.strip():
+                    names.add(alias.strip())
+    return names
+
+
 def inferred_entities_from_tags(text: str) -> Dict[str, Dict[str, Any]]:
     found: Dict[str, Dict[str, Any]] = {}
     for name in sorted(extract_tag_mentions(text)):
@@ -54,19 +71,28 @@ def inferred_entities_from_tags(text: str) -> Dict[str, Dict[str, Any]]:
     return found
 
 
-def resolve_entities(text: str, entities_state: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+def resolve_entities(
+    text: str,
+    entities_state: Dict[str, Any],
+    worldbook_state: Dict[str, Any] | None = None,
+) -> Dict[str, Dict[str, Any]]:
     registry = entity_registry(entities_state)
     inferred = inferred_entities_from_tags(text)
     tag_mentions = set(extract_tag_mentions(text))
+    known_worldbook_names = worldbook_reference_names(worldbook_state)
     resolved: Dict[str, Dict[str, Any]] = {}
 
     for entity_id, entity in registry.items():
+        if entity.get("source") == "inferred" and entity.get("name") in known_worldbook_names:
+            continue
         names = [entity["name"], *entity.get("aliases", [])]
         if any(name and (name in text or name in tag_mentions) for name in names):
             resolved[entity_id] = entity
 
     for entity_id, entity in inferred.items():
         if entity["name"] not in tag_mentions:
+            continue
+        if entity["name"] in known_worldbook_names:
             continue
         existing = next(
             (
@@ -128,7 +154,7 @@ def analyze_chapter(root: Path, state: Dict[str, Dict[str, Any]], chapter_id: st
 
     text = chapter_file.read_text(encoding="utf-8")
     paragraphs = paragraphs_from_text(text)
-    resolved_entities = resolve_entities(text, state["entities"])
+    resolved_entities = resolve_entities(text, state["entities"], state.get("worldbook", {}))
     mention_map: Dict[str, int] = {entity_id: 0 for entity_id in resolved_entities}
     snapshot_candidates: List[Dict[str, Any]] = []
     relation_candidates: List[Dict[str, Any]] = []

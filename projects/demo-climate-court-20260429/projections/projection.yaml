@@ -1,0 +1,77 @@
+{
+  "snapshotProjections": [
+    {
+      "entityId": "char-xucheng",
+      "entityName": "许澄",
+      "scopeRef": "chapter-001",
+      "currentState": "离开",
+      "sourceChangeIds": [
+        "cr-b965e464e4"
+      ],
+      "updatedAt": "2026-04-29T13:59:27+08:00"
+    },
+    {
+      "entityId": "char-luowen",
+      "entityName": "骆闻",
+      "scopeRef": "chapter-001",
+      "currentState": "离开",
+      "sourceChangeIds": [
+        "cr-79e6c2d097"
+      ],
+      "updatedAt": "2026-04-29T13:59:27+08:00"
+    },
+    {
+      "entityId": "inferred::云衡气候",
+      "entityName": "云衡气候",
+      "scopeRef": "chapter-001",
+      "currentState": "离开",
+      "sourceChangeIds": [
+        "cr-50ea4c4a21"
+      ],
+      "updatedAt": "2026-04-29T13:59:27+08:00"
+    },
+    {
+      "entityId": "inferred::市水务局",
+      "entityName": "市水务局",
+      "scopeRef": "chapter-001",
+      "currentState": "离开",
+      "sourceChangeIds": [
+        "cr-5adace5ffd"
+      ],
+      "updatedAt": "2026-04-29T13:59:27+08:00"
+    },
+    {
+      "entityId": "inferred::雨量日志",
+      "entityName": "雨量日志",
+      "scopeRef": "chapter-001",
+      "currentState": "离开",
+      "sourceChangeIds": [
+        "cr-fba028a83d"
+      ],
+      "updatedAt": "2026-04-29T13:59:27+08:00"
+    }
+  ],
+  "relationProjections": [],
+  "sceneScopeProjections": [
+    {
+      "chapterId": "chapter-001",
+      "activeEntityIds": [
+        "char-xucheng",
+        "inferred::市水务局",
+        "inferred::云衡气候",
+        "inferred::雨量日志",
+        "char-luowen"
+      ],
+      "sourceChangeIds": [
+        "cr-b965e464e4",
+        "cr-79e6c2d097",
+        "cr-50ea4c4a21",
+        "cr-5adace5ffd",
+        "cr-fba028a83d"
+      ],
+      "updatedAt": "2026-04-29T13:59:27+08:00"
+    }
+  ],
+  "timelineProjections": [],
+  "causalityProjections": []
+}

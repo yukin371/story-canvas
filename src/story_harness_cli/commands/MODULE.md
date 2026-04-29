@@ -19,6 +19,7 @@
 - `review preflight` 现负责章节 / 卷级只读预检聚合：把 mention hygiene、伏笔到窗 / 逾期、世界 onboarding / 势力与战力风险收敛成一个 AI 自审入口，减少在卷级闭环前来回手拼多个命令输出
 - `review preflight` 当前还会带出顶层 `projectAdvisories`；首个 advisory 为缺少 `PRD.md`，让 AI 在常规预检入口就能看到项目立项文档缺口
 - `review preflight --volume-id` 当前还会附带 `volumeStructureCheck`，用轻量阶段映射和检查项暴露卷级结构明示度、引入卷 onboarding、伏笔债务和卷尾收束准备度，先服务 AI 自审与人工审查
+- `review preflight --volume-id` 聚合 review evidence 时，chapter review 按章节取最新，scene review 按章节 + scene 范围取最新，避免历史低分评审继续污染卷级自审输入
 - `review volume-self-template` 现负责 repo-native 的卷级 AI 自审模板生成：基于卷级 `review preflight` 输出模板骨架、当前卷风险摘要、逐章信号、已持久化 chapter/scene review 摘要、卷级 style 风险摘要、独立编辑审查要求和建议修补方向，减少 AI/作者手拼输入文件
 - `review volume-self-template` 当前还会根据 `preflight`、`volumeStructureCheck`、chapter/scene review 与 style aggregate 启发式预填 root `scores/issues/closureAssessment`，把模板从“空骨架”收敛成可直接审阅的 draft 起点，但默认仍保持 `not_closed`
 - `review volume-self-template` 现支持 `--merge-input` 与 `--editor-input`：可把 author/editor 分片产物结构化 merge 回模板骨架，目录输出时若存在 merge 输入会自动落为 `.draft.yaml`，减少 agent 手工改整份 YAML
@@ -74,6 +75,7 @@
 - `status` 当前还会在 `project.projectAdvisories` 与 `workflow.projectAdvisories` 暴露项目级只读提示；既会提示缺少 `PRD.md`，也会提示 `PRD.md` 是否仍停留在 bootstrap/TBD 占位状态，便于 UI / agent 在总览页直接看到立项文档缺口；同时 `project.reviewRuleConfig` 会暴露 `review-rules.yaml` 的 active/resolved profile 与豁免数量
 - `status.targetChapter` 当前还会带出 `startGuide`：显式说明当前章是否已有正文段落、还缺哪些 outline 信号，以及建议先跑哪些结构/scene 命令
 - `status` 的卷级 AI 自审摘要当前还会直接暴露 `repairCoverage` 紧凑信号，说明低分弱项是否已经被 `issues/repairSuggestions` 覆盖，便于 UI 或人工审查看到“还有哪些弱项根本没进入修复清单”
+- `status` / `workflow status --volume-id` 当前展示的卷级弱项会合并 root 自审与独立编辑评分，并可通过原始 `repairCoverage.rootWeakDimensionLabels` / `editorWeakDimensionLabels` 追溯来源，减少多代理审查后再手读 editor 分表
 - `outline scene-sync` 现负责显式 `scenePlans` 的边界校验与安全回填：默认输出校验报告和建议，显式传 `--apply` 才会回写；当前优先覆盖尾部越界收正与“scene 数量一致时按 heuristic 重算边界”
 - `entity add` / `entity state-update` / `entity mention-adopt` / `entity mention-apply` / `entity mention-tag-apply` 只在显式子命令下写入实体卡、变化日志与章节正文，不会按正文自动建档或自动改状态
 - `entity mention-check` 默认只做只读检查，不会自动补 `@{}` 或自动建档；当前主要服务写后自查和后续审查注入，而不是替代人工命名判断

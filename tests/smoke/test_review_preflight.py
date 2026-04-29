@@ -320,6 +320,114 @@ class ReviewPreflightSmokeTest(unittest.TestCase):
         self.assertTrue(any(item["name"] == "岳池" for item in second_chapter["mentionPlan"]["taggedMissingActions"]))
         self.assertTrue(second_chapter["worldCheck"]["onboardingGaps"])
 
+    def test_review_preflight_uses_latest_scene_review_per_scope(self) -> None:
+        _write_json(
+            self.temp_dir / "project.yaml",
+            {
+                "title": "雨证",
+                "genre": "职业悬疑",
+                "activeChapterId": "chapter-001",
+            },
+        )
+        _write_json(
+            self.temp_dir / "outline.yaml",
+            {
+                "chapters": [],
+                "chapterDirections": [],
+                "volumes": [
+                    {
+                        "id": "volume-001",
+                        "title": "第一卷",
+                        "theme": "临时禁令",
+                        "chapters": [
+                            {
+                                "id": "chapter-001",
+                                "title": "停雨申请",
+                                "direction": "完成第一场听证钩子",
+                                "beats": [{"summary": "递交申请"}],
+                                "scenePlans": [{"title": "听证", "goal": "留下日志异常"}],
+                            }
+                        ],
+                    }
+                ],
+            },
+        )
+        _write_json(self.temp_dir / "entities.yaml", {"entities": [], "enrichmentProposals": []})
+        _write_json(
+            self.temp_dir / "worldbook.yaml",
+            {
+                "premiseFacts": [],
+                "worldRules": [],
+                "powerProgressions": [],
+                "factions": [],
+                "locations": [],
+                "artifacts": [],
+                "mysteries": [],
+            },
+        )
+        _write_json(self.temp_dir / "foreshadowing.yaml", {"foreshadows": []})
+        _write_json(
+            self.temp_dir / "reviews" / "story-reviews.yaml",
+            {
+                "rubricVersion": "chapter-review-v1",
+                "sceneRubricVersion": "scene-review-v1",
+                "chapterReviews": [
+                    {
+                        "chapterId": "chapter-001",
+                        "chapterTitle": "停雨申请",
+                        "generatedAt": "2026-04-29T10:00:00+08:00",
+                        "scores": {"total": 50},
+                        "ruleJudgements": [{"ruleId": "oldChapterRule", "message": "旧章节问题"}],
+                    },
+                    {
+                        "chapterId": "chapter-001",
+                        "chapterTitle": "停雨申请",
+                        "generatedAt": "2026-04-29T11:00:00+08:00",
+                        "scores": {"total": 86},
+                        "ruleJudgements": [{"ruleId": "newChapterRule", "message": "新章节问题"}],
+                    },
+                ],
+                "sceneReviews": [
+                    {
+                        "chapterId": "chapter-001",
+                        "generatedAt": "2026-04-29T10:10:00+08:00",
+                        "rating": "workable",
+                        "scores": {"total": 50},
+                        "sceneRange": {"sceneIndex": 1, "startParagraph": 1, "endParagraph": 2},
+                        "priorityActions": ["旧场景问题"],
+                        "ruleJudgements": [{"ruleId": "oldSceneRule", "message": "旧场景问题"}],
+                    },
+                    {
+                        "chapterId": "chapter-001",
+                        "generatedAt": "2026-04-29T11:10:00+08:00",
+                        "rating": "strong",
+                        "scores": {"total": 90},
+                        "sceneRange": {"sceneIndex": 1, "startParagraph": 1, "endParagraph": 3},
+                        "priorityActions": [],
+                        "ruleJudgements": [{"ruleId": "newSceneRule", "message": "新场景问题"}],
+                    },
+                ],
+                "volumeSelfReviews": [],
+            },
+        )
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 第一章\n\n雨量日志出现异常。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "preflight", "--root", str(self.temp_dir), "--volume-id", "volume-001"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["reviewEvidence"]["lowSceneReviews"], [])
+        rule_ids = {item["ruleId"] for item in payload["reviewEvidence"]["topRuleJudgements"]}
+        self.assertIn("newChapterRule", rule_ids)
+        self.assertIn("newSceneRule", rule_ids)
+        self.assertNotIn("oldChapterRule", rule_ids)
+        self.assertNotIn("oldSceneRule", rule_ids)
+
     def test_review_preflight_reports_incomplete_prd(self) -> None:
         self._write_incomplete_prd()
         _write_json(

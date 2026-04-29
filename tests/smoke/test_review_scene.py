@@ -94,6 +94,52 @@ class ReviewSceneSmokeTest(unittest.TestCase):
         self.assertEqual(len(saved["sceneReviews"]), 1)
         self.assertEqual(saved["sceneReviews"][0]["reviewId"], payload["reviewId"])
 
+    def test_review_scene_counts_mystery_hook_without_question_mark(self) -> None:
+        project = json.loads((self.temp_dir / "project.yaml").read_text(encoding="utf-8"))
+        project["commercialPositioning"] = {
+            "hookLine": "她发现日志异常来自被截断的接管链路。",
+            "serializationModel": "短卷测试",
+        }
+        (self.temp_dir / "project.yaml").write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding="utf-8")
+
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(
+            "# 第一章\n\n"
+            "@{许澄}把原始雨量日志和调度签章并排放大，发现二十三点三十七分那一格有半个灰色光标残影，像被人截断过一次输入。\n\n"
+            "陌生号码跳进一行字：别追二十三点四十分，追二十三点三十七分。有人在接管前先动了日志。\n",
+            encoding="utf-8",
+        )
+
+        with redirect_stdout(StringIO()):
+            analyze_exit = main(["chapter", "analyze", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+        self.assertEqual(analyze_exit, 0)
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(
+                [
+                    "review",
+                    "scene",
+                    "--root",
+                    str(self.temp_dir),
+                    "--chapter-id",
+                    "chapter-001",
+                    "--start-paragraph",
+                    "1",
+                    "--end-paragraph",
+                    "2",
+                ]
+            )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        dimensions = {item["id"]: item for item in payload["scores"]["dimensions"]}
+        self.assertGreaterEqual(dimensions["foreshadowing"]["score"], 15)
+        self.assertTrue(any("悬念物证/异常信号" in item for item in dimensions["foreshadowing"]["signals"]))
+        self.assertFalse(any("未解答的问题" in item for item in dimensions["foreshadowing"]["suggestions"]))
+        self.assertEqual(payload["commercialAlignment"]["status"], "aligned")
+        self.assertTrue(any("追读钩子" in item for item in payload["commercialAlignment"]["matched"]))
+
     def test_review_scene_can_list_candidates(self) -> None:
         chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
         chapter_path.write_text(

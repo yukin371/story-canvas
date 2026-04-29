@@ -17,8 +17,50 @@ RUBRIC_VERSION = "chapter-review-v1"
 SCENE_RUBRIC_VERSION = "scene-review-v1"
 MAX_DIMENSION_SCORE = 20
 PLOT_CONNECTORS = ("但是", "却", "然而", "于是", "随后", "突然", "结果", "直到", "终于", "这才")
-PRESSURE_KEYWORDS = ("害怕", "恐惧", "怀疑", "犹豫", "挣扎", "后悔", "愤怒", "紧张", "秘密", "代价")
+PRESSURE_KEYWORDS = (
+    "害怕",
+    "恐惧",
+    "怀疑",
+    "犹豫",
+    "挣扎",
+    "后悔",
+    "愤怒",
+    "紧张",
+    "秘密",
+    "代价",
+    "承担",
+    "损害",
+    "损失",
+    "中断",
+    "断供",
+    "限水",
+    "担保",
+)
 TENSION_KEYWORDS = ("冲突", "争吵", "危险", "威胁", "追逐", "背叛", "裂痕", "秘密", "失控", "崩溃", "追杀")
+PROCEDURAL_TENSION_KEYWORDS = (
+    "禁令",
+    "异议",
+    "申请",
+    "担保",
+    "限水",
+    "损失",
+    "损害",
+    "证据",
+    "原始",
+    "签章",
+    "日志",
+    "接管",
+    "提交",
+    "期限",
+    "凌晨",
+    "四十八小时",
+    "十五分钟",
+    "倒计时",
+    "法院",
+    "法官",
+    "复庭",
+    "休庭",
+)
 SETTING_KEYWORDS = (
     "清晨",
     "午后",
@@ -37,6 +79,23 @@ SETTING_KEYWORDS = (
     "医院",
     "车站",
     "天台",
+    "码头",
+)
+SCENE_RELOCATION_VERBS = ("赶去", "赶到", "来到", "回到", "抵达", "前往", "直奔", "奔向", "折返")
+SCENE_RELOCATION_KEYWORDS = (
+    "码头",
+    "仓库",
+    "书铺",
+    "后屋",
+    "栈桥",
+    "巷",
+    "巷子",
+    "屋",
+    "房间",
+    "门口",
+    "港口",
+    "街",
+    "桥",
 )
 SCENE_BREAK_KEYWORDS = (
     "三天后",
@@ -93,6 +152,25 @@ FORESHADOWING_PAYOFF_KEYWORDS = (
     "终于明白",
     "证实",
     "这意味着",
+)
+MYSTERY_HOOK_KEYWORDS = (
+    "陌生号码",
+    "短信",
+    "消息",
+    "别追",
+    "追",
+    "截断",
+    "光标",
+    "原始",
+    "哈希",
+    "签章",
+    "日志",
+    "接管",
+    "链路",
+    "改写",
+    "篡改",
+    "知道",
+    "异常",
 )
 HOOK_KEYWORDS = ("秘密", "真相", "代价", "危险", "账本", "背叛", "是谁", "为什么")
 HANDOFF_OPENING_PARAGRAPH_LIMIT = 4
@@ -250,6 +328,7 @@ def build_chapter_review(
     analysis: Dict[str, Any] | None = None,
     style_report: Dict[str, Any] | None = None,
     consistency_result: Dict[str, Any] | None = None,
+    previous_chapter_ending_text: str = "",
 ) -> Dict[str, Any]:
     analysis = analysis or {}
     clean_text = strip_entity_tags(chapter_text)
@@ -262,7 +341,11 @@ def build_chapter_review(
     relation_candidates = list(analysis.get("relationCandidates", []))
     scene_entities = analysis.get("sceneScope", {}).get("activeEntityNames", []) or mention_names[:6]
     story_constraint_signals = _build_story_constraint_signals(state, chapter_id, scene_entities or mention_names)
-    chapter_handoff_signals = _build_chapter_handoff_signals(chapter_text, story_constraint_signals)
+    chapter_handoff_signals = _build_chapter_handoff_signals(
+        chapter_text,
+        story_constraint_signals,
+        previous_chapter_ending_text=previous_chapter_ending_text,
+    )
     wrapped_entity_signals = _build_wrapped_entity_signals(state, chapter_text)
     consistency_result = consistency_result or {}
     consistency_signals = _build_consistency_signals(style_report, consistency_result)
@@ -625,6 +708,7 @@ def _score_plot_momentum(
     clean_text: str,
 ) -> Dict[str, Any]:
     connector_hits = _count_keyword_hits(clean_text, PLOT_CONNECTORS)
+    procedural_hits = _count_keyword_hits(clean_text, PROCEDURAL_TENSION_KEYWORDS)
     progression_signals = len(snapshot_candidates) + len(relation_candidates)
     score = 4
     if word_count >= 220:
@@ -643,6 +727,10 @@ def _score_plot_momentum(
         score += 7
     elif progression_signals >= 1:
         score += 5
+    elif procedural_hits >= 4:
+        score += 4
+    elif procedural_hits >= 2:
+        score += 2
 
     if connector_hits >= 3:
         score += 2
@@ -650,16 +738,17 @@ def _score_plot_momentum(
         score += 1
 
     suggestions: List[str] = []
-    if progression_signals == 0:
+    if progression_signals == 0 and procedural_hits < 2:
         suggestions.append("补一个明确的状态变化、关系变化或决定性动作，让章节前后产生落差。")
     if word_count < 120:
         suggestions.append("当前章节偏短，建议补足转折或收束段，避免只像一个切片。")
     if len(paragraphs) < 2:
         suggestions.append("把起势、推进、落点拆成至少两段，读者会更容易感到推进。")
 
-    comment = "这一章能看到明确推进。" if progression_signals else "这一章更像铺垫，推进信号偏弱。"
+    comment = "这一章能看到明确推进。" if (progression_signals or procedural_hits >= 2) else "这一章更像铺垫，推进信号偏弱。"
     signals = [
         f"状态/关系推进信号 {progression_signals} 处",
+        f"程序/证据推进信号 {procedural_hits} 处",
         f"段落 {len(paragraphs)} 段",
         f"转折连接词 {connector_hits} 处",
     ]
@@ -675,6 +764,7 @@ def _score_character_pressure(
     active_count = len(active_entities) if active_entities else len(mention_names)
     dominant_mentions = max((item.get("mentionCount", 0) for item in active_entities), default=0)
     pressure_hits = _count_keyword_hits(clean_text, PRESSURE_KEYWORDS)
+    procedural_hits = _count_keyword_hits(clean_text, PROCEDURAL_TENSION_KEYWORDS)
     score = 4
 
     if active_count >= 3:
@@ -696,25 +786,32 @@ def _score_character_pressure(
         score += 2
     elif pressure_hits >= 1:
         score += 1
+    if procedural_hits >= 4:
+        score += 3
+    elif procedural_hits >= 2:
+        score += 2
 
     suggestions: List[str] = []
-    if not snapshot_candidates:
+    if not snapshot_candidates and procedural_hits < 2:
         suggestions.append("补一处人物状态变化或代价反馈，让角色不是只在场而是真的被事件推动。")
     if active_count <= 1:
         suggestions.append("给核心角色一个更具体的选择、犹豫或立场变化，增强人物存在感。")
 
-    comment = "人物承压和状态变化可感知。" if snapshot_candidates else "人物出场了，但被逼到变化的力度还不够。"
+    comment = "人物承压和状态变化可感知。" if (snapshot_candidates or procedural_hits >= 2) else "人物出场了，但被逼到变化的力度还不够。"
     signals = [
         f"活跃角色 {active_count} 个",
         f"状态候选 {len(snapshot_candidates)} 个",
         f"心理/压力词 {pressure_hits} 个",
+        f"程序/后果压力 {procedural_hits} 处",
     ]
     return _dimension_result("characterPressure", "人物压力", score, comment, signals, suggestions)
 
 
 def _score_conflict_tension(relation_candidates: List[Dict[str, Any]], clean_text: str) -> Dict[str, Any]:
     high_risk_count = sum(1 for item in relation_candidates if item.get("severity") == "high-risk")
-    tension_hits = _count_keyword_hits(clean_text, TENSION_KEYWORDS)
+    direct_tension_hits = _count_keyword_hits(clean_text, TENSION_KEYWORDS)
+    procedural_hits = _count_keyword_hits(clean_text, PROCEDURAL_TENSION_KEYWORDS)
+    tension_hits = direct_tension_hits + procedural_hits
     punctuation_hits = len(re.findall(r"[？！?!]", clean_text))
     score = 3
 
@@ -727,6 +824,10 @@ def _score_conflict_tension(relation_candidates: List[Dict[str, Any]], clean_tex
         score += 6
     elif tension_hits >= 1:
         score += 4
+    if procedural_hits >= 4:
+        score += 4
+    elif procedural_hits >= 2:
+        score += 2
 
     if punctuation_hits >= 3:
         score += 3
@@ -745,7 +846,8 @@ def _score_conflict_tension(relation_candidates: List[Dict[str, Any]], clean_tex
     comment = "文本有明确阻力和悬念。" if (relation_candidates or tension_hits) else "冲突张力偏平，读者的追读理由还不够强。"
     signals = [
         f"高风险关系变化 {high_risk_count} 处",
-        f"张力关键词 {tension_hits} 个",
+        f"直接张力关键词 {direct_tension_hits} 个",
+        f"程序/证据张力 {procedural_hits} 处",
         f"疑问/感叹标记 {punctuation_hits} 个",
     ]
     return _dimension_result("conflictTension", "冲突张力", score, comment, signals, suggestions)
@@ -1465,7 +1567,14 @@ def _evaluate_commercial_scene_alignment(
     last_paragraph = paragraphs[-1] if paragraphs else ""
     hook_hits = _count_keyword_hits(scene_text, HOOK_KEYWORDS)
     final_hook_hits = _count_keyword_hits(last_paragraph, HOOK_KEYWORDS)
-    cliffhanger_like = final_hook_hits > 0 or "？" in last_paragraph or "?" in last_paragraph
+    mystery_hook_hits = _count_keyword_hits(scene_text, MYSTERY_HOOK_KEYWORDS)
+    final_mystery_hook_hits = _count_keyword_hits(last_paragraph, MYSTERY_HOOK_KEYWORDS)
+    cliffhanger_like = (
+        final_hook_hits > 0
+        or final_mystery_hook_hits >= 2
+        or "？" in last_paragraph
+        or "?" in last_paragraph
+    )
 
     if hook_line and is_terminal_scene:
         if foreshadowing >= 14 and cliffhanger_like:
@@ -1518,7 +1627,7 @@ def _evaluate_commercial_scene_alignment(
         else:
             notes.append(f"商业 hook 栈“{hook}”目前仅记录，尚未接入一幕级自动判定。")
 
-    if hook_hits == 0 and foreshadowing < 12:
+    if hook_hits == 0 and mystery_hook_hits == 0 and foreshadowing < 12:
         notes.append("这一幕的商业钩子信号较弱，如用作章节关键场景可考虑补一层追读问题。")
     if serialization_model:
         notes.append(f"已记录连载模型：{serialization_model}。")
@@ -1652,6 +1761,7 @@ def _build_story_constraint_signals(
 def _build_chapter_handoff_signals(
     chapter_text: str,
     story_constraint_signals: Dict[str, Any],
+    previous_chapter_ending_text: str = "",
 ) -> Dict[str, Any]:
     handoff = story_constraint_signals.get("chapterHandoff", {}) if isinstance(story_constraint_signals, dict) else {}
     previous_chapter = handoff.get("previousChapter", {}) if isinstance(handoff.get("previousChapter"), dict) else {}
@@ -1689,6 +1799,10 @@ def _build_chapter_handoff_signals(
     early_thread_hits = [label for label in active_thread_labels if label in early_text]
     opening_context_anchors = _extract_handoff_context_anchors(previous_chapter, opening_text)
     early_context_anchors = _extract_handoff_context_anchors(previous_chapter, early_text)
+    previous_ending_bridge_hits = _detect_previous_ending_bridge_hits(
+        previous_chapter_ending_text,
+        clean_paragraphs[0] if clean_paragraphs else "",
+    )
     opening_direct_continuation_hits = _count_handoff_direct_continuation_hits(opening_text)
     early_direct_continuation_hits = _count_handoff_direct_continuation_hits(early_text)
     continuity_hits = _count_keyword_hits(opening_text, SCENE_CONTINUITY_KEYWORDS)
@@ -1711,6 +1825,7 @@ def _build_chapter_handoff_signals(
         + min(len(opening_thread_hits), 1)
         + _score_handoff_context_anchors(opening_context_anchors)
         + _score_handoff_direct_continuation(opening_direct_continuation_hits, opening_context_anchors)
+        + (2 if previous_ending_bridge_hits else 0)
     )
     if continuity_hits >= 1:
         anchor_score += 1
@@ -1758,6 +1873,7 @@ def _build_chapter_handoff_signals(
         state_tags=opening_state_tags,
         thread_hits=opening_thread_hits,
         context_anchor_hits=opening_context_anchors,
+        previous_ending_bridge_hits=previous_ending_bridge_hits,
         direct_continuation_hits=opening_direct_continuation_hits,
         continuity_hits=continuity_hits,
     )
@@ -1766,6 +1882,7 @@ def _build_chapter_handoff_signals(
         state_tags=early_state_tags,
         thread_hits=early_thread_hits,
         context_anchor_hits=early_context_anchors,
+        previous_ending_bridge_hits=[],
         direct_continuation_hits=early_direct_continuation_hits,
         continuity_hits=early_continuity_hits,
     )
@@ -1799,6 +1916,8 @@ def _build_chapter_handoff_signals(
         evidence.append("开章前两段：未命中实体、状态、线程或连续性锚点")
     if delayed_bridge and early_summary:
         evidence.append(f"前 {HANDOFF_OPENING_PARAGRAPH_LIMIT} 段回接：" + "；".join(early_summary[:2]))
+    if previous_ending_bridge_hits:
+        evidence.append("上一章结尾承接：" + "；".join(previous_ending_bridge_hits[:2]))
     if clean_paragraphs:
         evidence.append(f"开章原文：{clean_paragraphs[0][:24]}")
 
@@ -1825,6 +1944,7 @@ def _build_chapter_handoff_signals(
         "earlyContinuityHits": early_continuity_hits,
         "openingDirectContinuationHits": opening_direct_continuation_hits,
         "earlyDirectContinuationHits": early_direct_continuation_hits,
+        "previousEndingBridgeHits": previous_ending_bridge_hits[:3],
         "closingHookHits": closing_hook_hits,
         "loadSummary": load_summary,
         "openingAnchorSummary": opening_summary,
@@ -1872,6 +1992,7 @@ def _build_handoff_anchor_summary(
     state_tags: list[str],
     thread_hits: list[str],
     context_anchor_hits: list[str],
+    previous_ending_bridge_hits: list[str],
     direct_continuation_hits: int,
     continuity_hits: int,
 ) -> list[str]:
@@ -1884,11 +2005,116 @@ def _build_handoff_anchor_summary(
         summary.append("线程锚点：" + " / ".join(thread_hits[:3]))
     if context_anchor_hits:
         summary.append("前章语义锚点：" + " / ".join(context_anchor_hits[:3]))
+    if previous_ending_bridge_hits:
+        summary.append("上一章结尾承接：" + " / ".join(previous_ending_bridge_hits[:2]))
     if direct_continuation_hits:
         summary.append(f"直接接续句式：{direct_continuation_hits}")
     if continuity_hits:
         summary.append(f"连续性词命中：{continuity_hits}")
     return summary
+
+
+def _detect_previous_ending_bridge_hits(previous_ending_text: str, opening_paragraph: str) -> list[str]:
+    if not previous_ending_text or not opening_paragraph:
+        return []
+    previous_text = strip_entity_tags(previous_ending_text)
+    opening = strip_entity_tags(opening_paragraph).strip()
+    if not previous_text or not opening:
+        return []
+
+    hits: list[str] = []
+    for candidate in _previous_ending_bridge_candidates(opening):
+        if candidate in previous_text and candidate not in hits:
+            hits.append(candidate)
+    fragment_hit = _detect_previous_ending_fragment_bridge(previous_text, opening)
+    if fragment_hit and fragment_hit not in hits:
+        hits.append(fragment_hit)
+    return hits[:3]
+
+
+def _previous_ending_bridge_candidates(opening: str) -> list[str]:
+    candidates: list[str] = []
+    compact_opening = re.sub(r"\s+", "", opening)
+    if _is_previous_ending_bridge_candidate(compact_opening, require_quote=True):
+        candidates.append(compact_opening)
+
+    for quoted in re.findall(r"[“\"'「『]([^”\"'」』]{1,28})[”\"'」』]", opening):
+        content = quoted.strip()
+        if not content:
+            continue
+        for candidate in (
+            f"“{content}”",
+            f"“{content}。”",
+            f"“{content}！”",
+            f"“{content}？”",
+            f"\"{content}\"",
+        ):
+            if _is_previous_ending_bridge_candidate(candidate, require_quote=True):
+                candidates.append(candidate)
+
+    first_sentence = re.split(r"(?<=[。！？!?])", opening.strip(), maxsplit=1)[0].strip()
+    compact_sentence = re.sub(r"\s+", "", first_sentence)
+    if not any(char in compact_sentence for char in "“”\"'「」『』") and _is_previous_ending_bridge_candidate(
+        compact_sentence,
+        require_quote=False,
+    ):
+        candidates.append(compact_sentence)
+
+    unique: list[str] = []
+    for candidate in candidates:
+        if candidate not in unique:
+            unique.append(candidate)
+    unique.sort(key=lambda item: (-len(item), item))
+    return unique
+
+
+def _is_previous_ending_bridge_candidate(candidate: str, *, require_quote: bool) -> bool:
+    if not candidate:
+        return False
+    if len(candidate) > 48:
+        return False
+    has_quote = any(char in candidate for char in "“”\"'「」『』")
+    if require_quote and not has_quote:
+        return False
+    normalized = _normalize_handoff_anchor(candidate)
+    if len(normalized) < 2:
+        return False
+    if len(normalized) < 4 and not has_quote:
+        return False
+    if len(normalized) <= 2 and normalized in {"好", "是", "不", "嗯", "啊", "别", "走", "来", "对"}:
+        return False
+    return True
+
+
+def _detect_previous_ending_fragment_bridge(previous_text: str, opening: str) -> str:
+    quoted = re.findall(r"[“\"'「『]([^”\"'」』]{2,12})[”\"'」』]", opening)
+    if not quoted:
+        return ""
+    content = _normalize_handoff_anchor(quoted[0])
+    if len(content) < 4 or len(content) > 10:
+        return ""
+    first = content[:2]
+    last = content[-2:]
+    if first == last:
+        return ""
+    if not _is_strong_previous_ending_fragment(first) and not _is_strong_previous_ending_fragment(last):
+        return ""
+    previous_normalized = _normalize_handoff_anchor(previous_text)
+    first_positions = [match.start() for match in re.finditer(re.escape(first), previous_normalized)]
+    last_positions = [match.start() for match in re.finditer(re.escape(last), previous_normalized)]
+    if not first_positions or not last_positions:
+        return ""
+    if not any(abs(first_pos - last_pos) <= 80 for first_pos in first_positions for last_pos in last_positions):
+        return ""
+    return f"{first}...{last}"
+
+
+def _is_strong_previous_ending_fragment(fragment: str) -> bool:
+    if len(fragment) < 2:
+        return False
+    return bool(re.search(r"[0-9一二三四五六七八九十零〇甲乙丙丁子丑寅卯辰巳午未申酉戌亥]", fragment)) or any(
+        char in fragment for char in "号签簿册灯匣灰骨缝槽印牌"
+    )
 
 
 def _extract_handoff_context_anchors(previous_chapter: Dict[str, Any], target_text: str) -> list[str]:
@@ -2601,6 +2827,11 @@ def _scene_break_reason(paragraph: str, current_scene_length: int) -> str:
             return f"transition:{keyword}"
     if re.match(r"^第[一二三四五六七八九十0-9]+天", paragraph):
         return "transition:day-shift"
+    relocation_window = paragraph[:48]
+    if any(verb in relocation_window for verb in SCENE_RELOCATION_VERBS) and any(
+        keyword in relocation_window for keyword in SCENE_RELOCATION_KEYWORDS
+    ):
+        return "transition:relocation"
     return ""
 
 
@@ -2749,6 +2980,7 @@ def _score_scene_logic(
 def _score_scene_foreshadowing(relation_candidates: List[Dict[str, Any]], scene_text: str) -> Dict[str, Any]:
     setup_hits = _count_keyword_hits(scene_text, FORESHADOWING_SETUP_KEYWORDS)
     payoff_hits = _count_keyword_hits(scene_text, FORESHADOWING_PAYOFF_KEYWORDS)
+    mystery_hook_hits = _count_keyword_hits(scene_text, MYSTERY_HOOK_KEYWORDS)
     question_hits = len(re.findall(r"[？?]", scene_text))
     score = 4
 
@@ -2760,13 +2992,18 @@ def _score_scene_foreshadowing(relation_candidates: List[Dict[str, Any]], scene_
     if payoff_hits >= 1:
         score += 6
 
-    if question_hits >= 1 or relation_candidates:
+    if mystery_hook_hits >= 3:
+        score += 8
+    elif mystery_hook_hits >= 1:
+        score += 5
+
+    if question_hits >= 1 or relation_candidates or mystery_hook_hits >= 2:
         score += 3
 
     suggestions: List[str] = []
-    if setup_hits == 0 and payoff_hits == 0:
+    if setup_hits == 0 and payoff_hits == 0 and mystery_hook_hits == 0:
         suggestions.append("考虑种下一个后续要兑现的信息点，或让当前冲突形成更明确的回收钩子。")
-    if question_hits == 0 and not relation_candidates:
+    if question_hits == 0 and not relation_candidates and mystery_hook_hits < 2:
         suggestions.append("结尾可以留下一个未解答的问题，增强这一幕的牵引力。")
 
     comment = "这一幕兼顾了悬念维持或局部兑现。" if score >= 15 else "这一幕完成了当前动作，但伏笔/回收信号还偏弱。"
@@ -2774,6 +3011,7 @@ def _score_scene_foreshadowing(relation_candidates: List[Dict[str, Any]], scene_
         f"伏笔信号 {setup_hits} 个",
         f"回收信号 {payoff_hits} 个",
         f"疑问钩子 {question_hits} 个",
+        f"悬念物证/异常信号 {mystery_hook_hits} 个",
     ]
     return _dimension_result("foreshadowing", "伏笔与回收", score, comment, signals, suggestions)
 

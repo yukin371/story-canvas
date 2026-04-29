@@ -205,8 +205,13 @@ def normalize_volume_self_review(
     ]
     repair_coverage = _build_repair_coverage(
         ordered_scores,
+        editor_scores=editor_assessment.get("scores", []),
         issues=issues,
         repair_suggestions=repair_suggestions,
+        extra_coverage_texts=(
+            editor_assessment.get("topProblems", [])
+            + editor_assessment.get("improvementPoints", [])
+        ),
     )
 
     return {
@@ -751,7 +756,7 @@ def _collect_template_observations(
         )
 
     for field_name, source, default_dimension in (
-        ("contractAlignmentRisks", "chapter-review:contract", "characterContinuity"),
+        ("contractAlignmentRisks", "chapter-review:contract", "conflictEscalation"),
         ("commercialAlignmentRisks", "chapter-review:commercial", "payoffDelivery"),
     ):
         for message in review_evidence.get(field_name, []):
@@ -933,6 +938,11 @@ def _guess_dimension_id(text: str, *, default: str) -> str:
         "sensoryvariety": "styleReadability",
         "metaleakage": "styleReadability",
         "povoverreach": "styleReadability",
+        "张力兑现": "conflictEscalation",
+        "张力偏弱": "conflictEscalation",
+        "章末牵引": "foreshadowRhythm",
+        "追读": "foreshadowRhythm",
+        "钩子": "foreshadowRhythm",
     }
     for needle, dimension_id in explicit_mapping.items():
         if needle in lowered:
@@ -973,6 +983,11 @@ def _chapter_refs_for_signal(code: str, chapter_signals: list[Dict[str, Any]]) -
 
 def _chapter_refs_for_review_risk(review_evidence: Dict[str, Any], text: str) -> list[str]:
     chapter_refs = []
+    candidates = [
+        item
+        for item in review_evidence.get("chapterReviewSummaries", [])
+        if isinstance(item, dict) and str(item.get("chapterId", "")).strip()
+    ]
     for item in review_evidence.get("chapterReviewSummaries", []):
         if not isinstance(item, dict):
             continue
@@ -984,6 +999,8 @@ def _chapter_refs_for_review_risk(review_evidence: Dict[str, Any], text: str) ->
             chapter_refs.append(chapter_id)
         if len(chapter_refs) >= 3:
             break
+    if not chapter_refs and len(candidates) == 1:
+        chapter_refs.append(str(candidates[0].get("chapterId", "")).strip())
     return chapter_refs
 
 
@@ -1659,24 +1676,45 @@ def _normalize_editor_assessment(raw_value: Any, *, completed: bool) -> Dict[str
 def _build_repair_coverage(
     normalized_scores: list[Dict[str, Any]],
     *,
+    editor_scores: list[Dict[str, Any]] | None = None,
     issues: list[Dict[str, Any]],
     repair_suggestions: list[str],
+    extra_coverage_texts: Iterable[str] | None = None,
 ) -> Dict[str, Any]:
-    weak_dimensions = [
+    root_weak_dimensions = [
         item.get("dimensionId", "")
         for item in normalized_scores
         if item.get("score", 0) <= 2
     ]
+    editor_weak_dimensions = [
+        item.get("dimensionId", "")
+        for item in (editor_scores or [])
+        if item.get("score", 0) <= 2
+    ]
+    weak_dimensions = _dedupe_dimension_ids(root_weak_dimensions + editor_weak_dimensions)
     uncovered = _find_uncovered_weak_dimensions(
         weak_dimensions,
         issues=issues,
         repair_suggestions=repair_suggestions,
+        extra_coverage_texts=extra_coverage_texts,
     )
     return {
         "weakDimensionIds": weak_dimensions,
         "weakDimensionLabels": [
             VOLUME_SELF_REVIEW_DIMENSION_LABELS[item]
             for item in weak_dimensions
+            if item in VOLUME_SELF_REVIEW_DIMENSION_LABELS
+        ],
+        "rootWeakDimensionIds": root_weak_dimensions,
+        "rootWeakDimensionLabels": [
+            VOLUME_SELF_REVIEW_DIMENSION_LABELS[item]
+            for item in root_weak_dimensions
+            if item in VOLUME_SELF_REVIEW_DIMENSION_LABELS
+        ],
+        "editorWeakDimensionIds": editor_weak_dimensions,
+        "editorWeakDimensionLabels": [
+            VOLUME_SELF_REVIEW_DIMENSION_LABELS[item]
+            for item in editor_weak_dimensions
             if item in VOLUME_SELF_REVIEW_DIMENSION_LABELS
         ],
         "uncoveredWeakDimensionIds": uncovered,
@@ -1696,6 +1734,7 @@ def _find_uncovered_weak_dimensions(
     *,
     issues: list[Dict[str, Any]],
     repair_suggestions: list[str],
+    extra_coverage_texts: Iterable[str] | None = None,
 ) -> list[str]:
     issue_texts = []
     for item in issues:
@@ -1703,11 +1742,23 @@ def _find_uncovered_weak_dimensions(
         issue_texts.append(str(item.get("impact", "")))
         issue_texts.append(str(item.get("fixAction", "")))
     issue_texts.extend(repair_suggestions)
+    issue_texts.extend(str(item) for item in (extra_coverage_texts or []))
     uncovered = []
     for dimension_id in weak_dimensions:
         if not _dimension_keywords_hit(dimension_id, issue_texts):
             uncovered.append(dimension_id)
     return uncovered
+
+
+def _dedupe_dimension_ids(dimension_ids: Iterable[str]) -> list[str]:
+    deduped: list[str] = []
+    for dimension_id in dimension_ids:
+        value = str(dimension_id or "").strip()
+        if not value or value not in VOLUME_SELF_REVIEW_DIMENSION_LABELS:
+            continue
+        if value not in deduped:
+            deduped.append(value)
+    return deduped
 
 
 def _find_low_score_dimensions_without_refs(

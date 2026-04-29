@@ -76,13 +76,17 @@
   - `review volume-self-template --editor-input`
   - `review volume-self --editor-input`
   - 两者都已能直接消费结构化 editor 产物，不再要求把 `editorPass` / `editorAssessment` 手工抄进主输入文件。
+  - `repairCoverage` 现在会把独立编辑评分中的 `0-2` 分弱项合并到卷审弱项摘要，并保留 `rootWeakDimensionLabels` / `editorWeakDimensionLabels`，让 `workflow status --volume-id` 的下一步提示能直接看到多代理审查发现的卷级闭环、爽点兑现、伏笔节奏等弱项。
 - 当前证据:
   - `Kant` 的 fresh-context editor pass
   - `projects/agent-volume-e2e-20260429/reviews/volume-001-self-review.yaml`
+  - `projects/demo-climate-court-20260429/reviews/volume-001-editor-pass.json`
+  - `tests.smoke.test_review_volume_self.test_review_volume_self_repair_coverage_includes_editor_weak_dimensions`
 - 期望收口:
   - 增加导入 editor pass 的正式入口，而不是让 agent 手工抄写。
 - 下次实施必查:
   - 子代理结果是否已能稳定序列化为 editor fragment，并直接被 CLI 吃掉，无需二次抄录。
+  - workflow/status 是否直接暴露 editor 弱项；若仍必须手读 `editorAssessment.scores`，继续收口摘要层。
 
 ### AIF-003 状态产物需要手工刷新才能一致
 
@@ -144,6 +148,114 @@
   - 提供更高层的串行 orchestration 或更明确的下一步提示。
 - 下次实施必查:
   - 真实实跑时 `orchestrationPlan.suggestedCommands` 是否足够覆盖下一步；若仍需要人工跨命令编排，再评估持久化 volume workflow run。
+
+### AIF-006 多命令并行写入不适合批量建档
+
+- 状态: `active`
+- 首次记录: `2026-04-29`
+- 最近核对: `2026-04-29`
+- 现象:
+  - 新项目初始化时，尝试并行执行 `entity add` / `world add` 这类状态写入命令会触发 stale snapshot 防护。
+  - 防护本身正确，但批量种子建档和多代理分工时缺少 repo-native 串行批处理入口。
+- AI 负担:
+  - agent 必须手动记住“读状态 -> 单条写入 -> 再读状态”的串行约束，不能把独立 seed 命令自然并行化。
+- 当前缓解:
+  - 只靠调用方串行执行；暂无批处理命令。
+- 当前证据:
+  - `projects/demo-climate-court-20260429` 初始化阶段并行建档触发状态覆盖保护。
+- 期望收口:
+  - 提供 `entity/world` seed batch 或 project bootstrap spec，一次性写入角色、势力、地点、物件和世界规则。
+- 下次实施必查:
+  - 新项目 seed 阶段是否仍需 agent 逐条敲命令；如果是，应优先实现批量 bootstrap，而不是继续靠提示词约束。
+
+### AIF-007 分析器会把非角色引用推入角色链路
+
+- 状态: `mitigated`
+- 首次记录: `2026-04-29`
+- 最近核对: `2026-04-29`
+- 现象:
+  - `chapter analyze` 曾把已建档 `worldbook` 引用（势力、地点、物件、规则）注册为 `inferred::...` character。
+  - 状态词检测曾把 `没有离开` 这类否定短语识别成角色状态变化。
+  - 污染一旦进入 `projection.yaml`，`context refresh` 曾优先使用旧 projection scope，导致新 analysis 已修复但 context 仍显示旧污染。
+- AI 负担:
+  - agent 需要手动清理 `entities.yaml`，并复核 context/review 中的活跃实体和状态候选是否被污染。
+- 当前缓解:
+  - `analyzer.resolve_entities` 现在会对齐 `worldbook` 名称/别名，跳过已建档 worldbook 引用的 inferred character 注册。
+  - `state_tags_for_paragraph` 增加直接否定窗口，避免 `没有/未/并未/... + 状态词` 生成状态标签。
+  - `context_lens.refresh_context_lens` 在有当前章节 analysis 时，优先使用 analysis scene scope，并只采纳仍由本次 analysis 支撑的同章 snapshot。
+- 当前证据:
+  - `tests.smoke.test_chapter_auto_register.test_worldbook_mentions_are_not_auto_registered_as_characters`
+  - `tests.smoke.test_keywords.test_state_keywords_ignore_direct_negation`
+  - `tests.smoke.test_context_refresh.test_context_refresh_prefers_current_analysis_over_stale_projection_scope`
+- 期望收口:
+  - 分析器输出区分 character / faction / location / artifact / rule，不只是在 inferred character 入口跳过 worldbook。
+- 下次实施必查:
+  - 新项目 `chapter analyze` 后是否还需要手工删除 `inferred::` worldbook 条目；是否仍有否定句状态误报。
+
+### AIF-008 评审题材信号过窄会误导作者迎合检测器
+
+- 状态: `mitigated`
+- 首次记录: `2026-04-29`
+- 最近核对: `2026-04-29`
+- 现象:
+  - 职业法庭 / 程序悬疑章节中，禁令、异议、担保、限水损失、原始日志、接管链路、提交期限等真实张力没有被 `review chapter` 充分计分。
+  - 一幕评审与商业对齐曾只把问号或通用 hook 词当作追读钩子，漏掉“陌生号码 / 别追某时间点 / 日志光标残影 / 接管链路异常”这类无问号但明确可追读的物证悬念。
+  - 评分会诱导 agent 把文本改成通用“危险/威胁/追杀”词，而不是保持题材语域。
+- AI 负担:
+  - agent 需要判断是正文问题还是工具漏报，并可能手动解释“为什么低分不可信”。
+- 当前缓解:
+  - `review chapter` 的情节推进、人物压力、冲突张力已计入程序/证据/公共后果类关键词。
+  - `review scene` 的伏笔与回收维度、章末商业 hook 对齐已计入悬念物证/异常信号，不再只依赖问号。
+- 当前证据:
+  - `tests.smoke.test_review_chapter.test_review_chapter_counts_procedural_legal_tension`
+  - `tests.smoke.test_review_scene.test_review_scene_counts_mystery_hook_without_question_mark`
+  - `projects/demo-climate-court-20260429/chapters/chapter-001.md`
+- 期望收口:
+  - 题材 overlay 或 profile 可配置 review signal，而不是继续在 core 里堆硬编码词表。
+- 下次实施必查:
+  - 非玄幻/悬疑/言情等新题材实跑时，评分是否仍要求作者改成通用冲突词；若复现，应推动 profile 化题材信号。
+
+### AIF-009 卷级预检混入历史评审噪音
+
+- 状态: `mitigated`
+- 首次记录: `2026-04-29`
+- 最近核对: `2026-04-29`
+- 现象:
+  - 同一章节/场景多次复评后，`review preflight --volume-id` 的 `reviewEvidence.lowSceneReviews/topRuleJudgements` 曾混入旧低分场景评审和旧规则命中。
+  - 这会让已修复问题继续出现在卷级自审输入里。
+- AI 负担:
+  - agent 需要人工判断哪些 review evidence 是最新真相、哪些只是历史噪音。
+- 当前缓解:
+  - 卷级预检现在对 chapter review 按章节取最新，对 scene review 按章节 + scene 范围取最新，再聚合低分场景和规则命中。
+- 当前证据:
+  - `tests.smoke.test_review_preflight.test_review_preflight_uses_latest_scene_review_per_scope`
+  - `projects/demo-climate-court-20260429` 的旧低分 scene review 不应再污染最新 preflight。
+- 期望收口:
+  - review 写入侧可考虑按 fingerprint/scope upsert 或显式标记 superseded，减少状态文件长期堆积历史噪音。
+- 下次实施必查:
+  - 多轮复评后，`reviewEvidence.lowSceneReviews` 是否只反映最新仍低分的场景；如果旧问题仍出现，应继续收口 review 写入策略。
+
+### AIF-010 卷级预检未消费卷目标 / 章数承诺
+
+- 状态: `active`
+- 首次记录: `2026-04-29`
+- 最近核对: `2026-04-29`
+- 现象:
+  - `projects/demo-climate-court-20260429` 的 `commercialPositioning.releaseCadence` 写明“测试用三章首卷”，`PRD.md` 也写明第一卷目标是完成临时禁令听证前的证据争夺并交出第一场程序胜负。
+  - 但 `review preflight --volume-id` / `workflow status --volume-id` 的 `volumeStructureCheck.closure-readiness` 只看到当前卷 1/1 章已落正文，就判定具备进入卷级闭环判断的最低前提。
+  - 独立编辑代理后续才指出“单章只是开场，不构成三章首卷的小故事闭环”。
+- AI 负担:
+  - agent 需要手动对照 `project.yaml` / `PRD.md` / `outline.yaml` 判断当前卷是不是缺章或缺交付，而不能只信 `volumeStructureCheck`。
+- 当前缓解:
+  - 独立编辑审查会在 `editorAssessment.scores` 中暴露 `volumeClosure=1`，且 `repairCoverage.editorWeakDimensionLabels` 会把“卷级闭环”带入 workflow 弱项摘要。
+- 当前证据:
+  - `projects/demo-climate-court-20260429/project.yaml`
+  - `projects/demo-climate-court-20260429/PRD.md`
+  - `projects/demo-climate-court-20260429/reviews/volume-001-editor-pass.json`
+- 期望收口:
+  - `volumeStructureCheck` 应消费明确的卷目标、预期章数、`releaseCadence` / `PRD` 里的首卷交付要求；若当前卷章节数或交付节点不足，应在 preflight 阶段给出 `risk/missing`，而不是等独立编辑人工发现。
+- 下次实施必查:
+  - 新项目卷级预检是否仍把“当前 outline 里只有一章”误当作“短卷已满足结构前提”；若复现，应优先实现卷目标/章数承诺解析。
 
 ## 3. Resolved
 

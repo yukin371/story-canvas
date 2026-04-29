@@ -1,0 +1,129 @@
+{
+  "changeRequests": [
+    {
+      "id": "cr-b965e464e4",
+      "chapterId": "chapter-001",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 许澄 当前状态",
+      "summary": "检测到 许澄 可能进入状态：离开",
+      "evidence": "复庭时，法官要求@{云衡气候}和@{市水务局}在凌晨两点前提交原始@{雨量日志}、调度签章和接管链路。@{骆闻}终于皱了一下眉。@{许澄}把受理通知拍给安置点，手指却没有离开屏幕，因为同时跳进来的还有一条陌生号码短信：别追二十三点四十分，追二十三点三十七分。她看着那三个数字，第一次意识到这场雨的争点不是有没有人工接管，而是谁在接管前先动了日志。",
+      "targetIds": [
+        "char-xucheng"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-xucheng",
+        "entityName": "许澄",
+        "state": "离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-xucheng::离开",
+      "createdAt": "2026-04-29T13:59:06+08:00",
+      "updatedAt": "2026-04-29T13:59:27+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-29T13:59:27+08:00"
+    },
+    {
+      "id": "cr-79e6c2d097",
+      "chapterId": "chapter-001",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 骆闻 当前状态",
+      "summary": "检测到 骆闻 可能进入状态：离开",
+      "evidence": "复庭时，法官要求@{云衡气候}和@{市水务局}在凌晨两点前提交原始@{雨量日志}、调度签章和接管链路。@{骆闻}终于皱了一下眉。@{许澄}把受理通知拍给安置点，手指却没有离开屏幕，因为同时跳进来的还有一条陌生号码短信：别追二十三点四十分，追二十三点三十七分。她看着那三个数字，第一次意识到这场雨的争点不是有没有人工接管，而是谁在接管前先动了日志。",
+      "targetIds": [
+        "char-luowen"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "char-luowen",
+        "entityName": "骆闻",
+        "state": "离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::char-luowen::离开",
+      "createdAt": "2026-04-29T13:59:06+08:00",
+      "updatedAt": "2026-04-29T13:59:27+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-29T13:59:27+08:00"
+    },
+    {
+      "id": "cr-50ea4c4a21",
+      "chapterId": "chapter-001",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 云衡气候 当前状态",
+      "summary": "检测到 云衡气候 可能进入状态：离开",
+      "evidence": "复庭时，法官要求@{云衡气候}和@{市水务局}在凌晨两点前提交原始@{雨量日志}、调度签章和接管链路。@{骆闻}终于皱了一下眉。@{许澄}把受理通知拍给安置点，手指却没有离开屏幕，因为同时跳进来的还有一条陌生号码短信：别追二十三点四十分，追二十三点三十七分。她看着那三个数字，第一次意识到这场雨的争点不是有没有人工接管，而是谁在接管前先动了日志。",
+      "targetIds": [
+        "inferred::云衡气候"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "inferred::云衡气候",
+        "entityName": "云衡气候",
+        "state": "离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::inferred::云衡气候::离开",
+      "createdAt": "2026-04-29T13:59:06+08:00",
+      "updatedAt": "2026-04-29T13:59:27+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-29T13:59:27+08:00"
+    },
+    {
+      "id": "cr-5adace5ffd",
+      "chapterId": "chapter-001",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 市水务局 当前状态",
+      "summary": "检测到 市水务局 可能进入状态：离开",
+      "evidence": "复庭时，法官要求@{云衡气候}和@{市水务局}在凌晨两点前提交原始@{雨量日志}、调度签章和接管链路。@{骆闻}终于皱了一下眉。@{许澄}把受理通知拍给安置点，手指却没有离开屏幕，因为同时跳进来的还有一条陌生号码短信：别追二十三点四十分，追二十三点三十七分。她看着那三个数字，第一次意识到这场雨的争点不是有没有人工接管，而是谁在接管前先动了日志。",
+      "targetIds": [
+        "inferred::市水务局"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "inferred::市水务局",
+        "entityName": "市水务局",
+        "state": "离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::inferred::市水务局::离开",
+      "createdAt": "2026-04-29T13:59:06+08:00",
+      "updatedAt": "2026-04-29T13:59:27+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-29T13:59:27+08:00"
+    },
+    {
+      "id": "cr-fba028a83d",
+      "chapterId": "chapter-001",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 雨量日志 当前状态",
+      "summary": "检测到 雨量日志 可能进入状态：离开",
+      "evidence": "复庭时，法官要求@{云衡气候}和@{市水务局}在凌晨两点前提交原始@{雨量日志}、调度签章和接管链路。@{骆闻}终于皱了一下眉。@{许澄}把受理通知拍给安置点，手指却没有离开屏幕，因为同时跳进来的还有一条陌生号码短信：别追二十三点四十分，追二十三点三十七分。她看着那三个数字，第一次意识到这场雨的争点不是有没有人工接管，而是谁在接管前先动了日志。",
+      "targetIds": [
+        "inferred::雨量日志"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "inferred::雨量日志",
+        "entityName": "雨量日志",
+        "state": "离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::inferred::雨量日志::离开",
+      "createdAt": "2026-04-29T13:59:06+08:00",
+      "updatedAt": "2026-04-29T13:59:27+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-29T13:59:27+08:00"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "title": "雨证协议",
+  "genre": "近未来职业法庭悬疑",
+  "defaultMode": "driving",
+  "activeChapterId": "chapter-001",
+  "positioning": {
+    "primaryGenre": "speculative",
+    "subGenre": "climate-courtroom",
+    "styleTags": [
+      "near-future",
+      "legal-procedural"
+    ],
+    "targetAudience": [
+      "职业悬疑读者"
+    ]
+  },
+  "storyContract": {
+    "corePromises": [
+      "每章推进一起气候工程诉讼的证据链与公共风险",
+      "用职业流程、证据压力和人物选择制造悬疑"
+    ],
+    "avoidances": [
+      "不把案件写成单纯超自然谜题",
+      "不靠玄幻战力或民俗禁忌推进"
+    ],
+    "endingContract": "第一卷结束时交出第一场临时禁令听证的阶段性胜负与代价",
+    "paceContract": "中快节奏，证据推进优先于设定说明"
+  },
+  "emotionalContract": {
+    "coreEmotions": [
+      "压迫",
+      "冷静紧张"
+    ],
+    "chapterEmotionFloor": [
+      "每章至少出现一次证据压力或程序风险"
+    ],
+    "forbiddenEmotions": [],
+    "revealPreference": {
+      "defaultMode": "",
+      "allowDirectExplainAtClimax": false
+    }
+  },
+  "storyTemplate": {
+    "id": "",
+    "label": "",
+    "modulePolicy": {},
+    "reviewFocus": []
+  },
+  "commercialPositioning": {
+    "premise": "近未来沿海城市依赖人工降雨协议维持淡水配给，一场失控暴雨导致旧城区溃堤。年轻公益律师许澄接手临时禁令申请，却发现气候公司、城市水务局和受害社区各自篡改了一段关键雨量日志。",
+    "hookLine": "她要在四十八小时内证明一场雨不是天灾，而是被签过字的事故。",
+    "hookStack": [
+      "雨量日志被三方同时改写",
+      "临时禁令听证倒计时四十八小时",
+      "主角的父亲曾参与旧版降雨协议"
+    ],
+    "benchmarkWorks": [],
+    "targetPlatform": "中文职业悬疑连载",
+    "serializationModel": "短卷测试",
+    "releaseCadence": "测试用三章首卷",
+    "chapterWordFloor": 800,
+    "chapterWordTarget": 1400
+  },
+  "createdAt": "2026-04-29T13:49:43+08:00",
+  "updatedAt": "2026-04-29T16:14:12+08:00"
+}

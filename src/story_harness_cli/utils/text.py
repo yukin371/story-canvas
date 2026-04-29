@@ -44,7 +44,7 @@ def paragraphs_from_text(text: str) -> List[str]:
     raw_parts = re.split(r"\n\s*\n", text)
     parts: List[str] = []
     for item in raw_parts:
-        normalized = item.strip()
+        normalized = item.strip().lstrip("\ufeff").strip()
         if not normalized:
             continue
         if normalized.startswith("#"):
@@ -123,7 +123,18 @@ def find_malformed_entity_tags(text: str) -> List[Dict[str, Any]]:
 
 def state_tags_for_paragraph(paragraph: str) -> List[str]:
     kw = _kw_override.get("state", STATE_KEYWORDS) if _kw_override else STATE_KEYWORDS
-    return [label for keyword, label in kw.items() if keyword in paragraph]
+    labels: List[str] = []
+    for keyword, label in kw.items():
+        for match in re.finditer(re.escape(keyword), paragraph):
+            if not _keyword_is_negated(paragraph, match.start()):
+                labels.append(label)
+                break
+    return labels
+
+
+def _keyword_is_negated(text: str, start: int) -> bool:
+    prefix = text[max(0, start - 4) : start]
+    return any(prefix.endswith(marker) for marker in ("没有", "未", "并未", "不是", "不再", "无法", "不会", "无"))
 
 
 def relation_for_paragraph(paragraph: str) -> Tuple[str | None, str]:
