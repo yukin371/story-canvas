@@ -5,6 +5,7 @@ import re
 from pathlib import Path
 from typing import Any
 
+from story_harness_cli.commands.export import write_volume_review_packet_for_chapter
 from story_harness_cli.commands.review_support import build_world_check_payload
 from story_harness_cli.protocol import chapter_path, ensure_project_root, load_project_state, save_state
 from story_harness_cli.utils import now_iso, stable_hash
@@ -702,6 +703,16 @@ def command_world_mention_adopt(args) -> int:
 
     state.setdefault("project", {})["updatedAt"] = timestamp
     save_state(root, state)
+    review_packet_file = ""
+    review_packet_refreshed = False
+    review_packet_refresh_error = ""
+    try:
+        packet_path = write_volume_review_packet_for_chapter(root, state, chapter_id)
+        if packet_path is not None:
+            review_packet_file = str(packet_path)
+            review_packet_refreshed = True
+    except OSError as exc:
+        review_packet_refresh_error = str(exc)
     print(
         json.dumps(
             {
@@ -709,6 +720,9 @@ def command_world_mention_adopt(args) -> int:
                 "chapterId": chapter_id,
                 "mentionSource": "tagged" if name in tagged_mentions else "plain",
                 "kind": kind,
+                "reviewPacketFile": review_packet_file,
+                "reviewPacketRefreshed": review_packet_refreshed,
+                "reviewPacketRefreshError": review_packet_refresh_error,
                 "item": _compact_world_item(kind, result_item),
             },
             ensure_ascii=False,

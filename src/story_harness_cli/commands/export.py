@@ -69,6 +69,17 @@ def write_volume_review_packet(
     return target_path.resolve()
 
 
+def write_volume_review_packet_for_chapter(
+    root: Path,
+    state: dict,
+    chapter_id: str,
+) -> Path | None:
+    volume = _find_volume_for_chapter(state, chapter_id)
+    if volume is None:
+        return None
+    return write_volume_review_packet(root, state, volume)
+
+
 def _chapter_title(state: dict, chapter_id: str) -> str:
     for vol in state.get("outline", {}).get("volumes", []):
         for ch in vol.get("chapters", []):
@@ -133,6 +144,16 @@ def _default_volume_review_packet_path(root: Path, volume: dict) -> Path:
     volume_id = str(volume.get("id") or "").strip()
     filename = f"{volume_id}-review-packet.md" if volume_id else "volume-review-packet.md"
     return root / "reviews" / filename
+
+
+def _find_volume_for_chapter(state: dict, chapter_id: str | None) -> dict | None:
+    if not chapter_id:
+        return None
+    for volume in state.get("outline", {}).get("volumes", []):
+        for chapter in volume.get("chapters", []):
+            if chapter.get("id") == chapter_id:
+                return volume
+    return None
 
 
 def _find_outline_chapter(state: dict, chapter_id: str) -> dict:

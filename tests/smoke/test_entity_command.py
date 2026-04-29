@@ -52,6 +52,30 @@ class EntityCommandTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
+    def _write_volume_outline(self) -> None:
+        (self.temp_dir / "outline.yaml").write_text(
+            json.dumps(
+                {
+                    "chapters": [],
+                    "chapterDirections": [],
+                    "volumes": [
+                        {
+                            "id": "volume-001",
+                            "title": "第一卷",
+                            "chapters": [
+                                {"id": "chapter-001", "title": "第一章"},
+                                {"id": "chapter-002", "title": "第二章"},
+                            ],
+                        }
+                    ],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
     def test_entity_enrich_command(self):
         result = main([
             "entity", "enrich",
@@ -305,6 +329,7 @@ class EntityCommandTest(unittest.TestCase):
         from contextlib import redirect_stdout
         from io import StringIO
 
+        self._write_volume_outline()
         (self.temp_dir / "chapters" / "chapter-001.md").write_text(
             "# 第一章\n\n@{林舟}看见了 @{岳池} 手里的旧灯。\n",
             encoding="utf-8",
@@ -339,6 +364,9 @@ class EntityCommandTest(unittest.TestCase):
 
         self.assertEqual(payload["action"], "created")
         self.assertEqual(payload["mentionSource"], "tagged")
+        self.assertTrue(payload["reviewPacketRefreshed"])
+        self.assertEqual(payload["reviewPacketRefreshError"], "")
+        self.assertTrue((self.temp_dir / "reviews" / "volume-001-review-packet.md").exists())
         self.assertEqual(adopted["name"], "岳池")
         self.assertEqual(adopted["source"], "tagged-mention")
         self.assertEqual(adopted["currentState"]["lastUpdatedChapter"], "chapter-001")
@@ -390,6 +418,7 @@ class EntityCommandTest(unittest.TestCase):
         from contextlib import redirect_stdout
         from io import StringIO
 
+        self._write_volume_outline()
         (self.temp_dir / "worldbook.yaml").write_text(
             json.dumps(
                 {
@@ -441,6 +470,9 @@ class EntityCommandTest(unittest.TestCase):
         updated_text = chapter_path.read_text(encoding="utf-8")
 
         self.assertEqual(apply_payload["appliedActionCount"], 1)
+        self.assertTrue(apply_payload["reviewPacketRefreshed"])
+        self.assertEqual(apply_payload["reviewPacketRefreshError"], "")
+        self.assertTrue((self.temp_dir / "reviews" / "volume-001-review-packet.md").exists())
         self.assertIn("林舟抬头望向@{青云宗}的山门。", updated_text)
         self.assertNotIn("@{林舟}抬头", updated_text)
 

@@ -198,9 +198,16 @@ class WorldCommandSmokeTest(unittest.TestCase):
         _write_json(
             self.temp_dir / "outline.yaml",
             {
-                "chapters": [
-                    {"id": "chapter-001", "title": "入山", "status": "draft"},
+                "volumes": [
+                    {
+                        "id": "volume-001",
+                        "title": "第一卷",
+                        "chapters": [
+                            {"id": "chapter-001", "title": "入山", "status": "draft"},
+                        ],
+                    }
                 ],
+                "chapters": [],
                 "chapterDirections": [],
             },
         )
@@ -235,6 +242,9 @@ class WorldCommandSmokeTest(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertEqual(payload["action"], "created")
         self.assertEqual(payload["mentionSource"], "tagged")
+        self.assertTrue(payload["reviewPacketRefreshed"])
+        self.assertEqual(payload["reviewPacketRefreshError"], "")
+        self.assertTrue((self.temp_dir / "reviews" / "volume-001-review-packet.md").exists())
         self.assertEqual(worldbook["locations"][0]["name"], "黑沼集")
         self.assertEqual(worldbook["locations"][0]["summary"], "边陲黑市据点")
 

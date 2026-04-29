@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from story_harness_cli.commands.export import write_volume_review_packet_for_chapter
 from story_harness_cli.protocol import chapter_path, ensure_project_root, load_project_state, save_state
 from story_harness_cli.protocol.keywords import load_keywords
 from story_harness_cli.commands.review_support import (
@@ -266,12 +267,25 @@ def command_entity_mention_adopt(args) -> int:
 
     state.setdefault("project", {})["updatedAt"] = timestamp
     save_state(root, state)
+    review_packet_file = ""
+    review_packet_refreshed = False
+    review_packet_refresh_error = ""
+    try:
+        packet_path = write_volume_review_packet_for_chapter(root, state, chapter_id)
+        if packet_path is not None:
+            review_packet_file = str(packet_path)
+            review_packet_refreshed = True
+    except OSError as exc:
+        review_packet_refresh_error = str(exc)
     print(
         json.dumps(
             {
                 "action": action,
                 "chapterId": chapter_id,
                 "mentionSource": "tagged" if name in tagged_mentions else "plain",
+                "reviewPacketFile": review_packet_file,
+                "reviewPacketRefreshed": review_packet_refreshed,
+                "reviewPacketRefreshError": review_packet_refresh_error,
                 "entity": _compact_entity(entity),
             },
             ensure_ascii=False,
@@ -310,6 +324,9 @@ def command_entity_mention_tag_apply(args) -> int:
                     "chapterId": chapter_id,
                     "updated": False,
                     "replacementCount": 0,
+                    "reviewPacketFile": "",
+                    "reviewPacketRefreshed": False,
+                    "reviewPacketRefreshError": "",
                     "replacements": [],
                 },
                 ensure_ascii=False,
@@ -321,11 +338,25 @@ def command_entity_mention_tag_apply(args) -> int:
     updated_text = _apply_tag_replacements(chapter_text, replacements)
     if updated_text != chapter_text:
         chapter_file.write_text(updated_text, encoding="utf-8")
+    review_packet_file = ""
+    review_packet_refreshed = False
+    review_packet_refresh_error = ""
+    if updated_text != chapter_text:
+        try:
+            packet_path = write_volume_review_packet_for_chapter(root, state, chapter_id)
+            if packet_path is not None:
+                review_packet_file = str(packet_path)
+                review_packet_refreshed = True
+        except OSError as exc:
+            review_packet_refresh_error = str(exc)
 
     payload = {
         "chapterId": chapter_id,
         "updated": updated_text != chapter_text,
         "replacementCount": len(replacements),
+        "reviewPacketFile": review_packet_file,
+        "reviewPacketRefreshed": review_packet_refreshed,
+        "reviewPacketRefreshError": review_packet_refresh_error,
         "replacements": [
             {
                 "name": item["canonicalName"],
@@ -799,6 +830,9 @@ def command_entity_mention_apply(args) -> int:
                     "updated": False,
                     "appliedActionCount": len(selected_actions),
                     "replacementCount": 0,
+                    "reviewPacketFile": "",
+                    "reviewPacketRefreshed": False,
+                    "reviewPacketRefreshError": "",
                     "appliedActions": selected_actions,
                 },
                 ensure_ascii=False,
@@ -810,6 +844,17 @@ def command_entity_mention_apply(args) -> int:
     updated_text = _apply_tag_replacements(chapter_text, replacements)
     if updated_text != chapter_text:
         chapter_file.write_text(updated_text, encoding="utf-8")
+    review_packet_file = ""
+    review_packet_refreshed = False
+    review_packet_refresh_error = ""
+    if updated_text != chapter_text:
+        try:
+            packet_path = write_volume_review_packet_for_chapter(root, state, chapter_id)
+            if packet_path is not None:
+                review_packet_file = str(packet_path)
+                review_packet_refreshed = True
+        except OSError as exc:
+            review_packet_refresh_error = str(exc)
 
     print(
         json.dumps(
@@ -818,6 +863,9 @@ def command_entity_mention_apply(args) -> int:
                 "updated": updated_text != chapter_text,
                 "appliedActionCount": len(selected_actions),
                 "replacementCount": len(replacements),
+                "reviewPacketFile": review_packet_file,
+                "reviewPacketRefreshed": review_packet_refreshed,
+                "reviewPacketRefreshError": review_packet_refresh_error,
                 "appliedActions": selected_actions,
             },
             ensure_ascii=False,

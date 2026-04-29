@@ -95,13 +95,14 @@
   - agent 需要额外判断哪个文件是最新真相源，并主动重导出。
 - 当前缓解:
   - `review volume-self` 成功写入后现在会自动刷新 `reviews/<volume-id>-review-packet.md`，并在命令输出里返回刷新结果与目标文件路径。
+  - `entity mention-adopt` / `entity mention-apply` / `entity mention-tag-apply` / `world mention-adopt` 现在也会在章节属于某卷时自动刷新对应的卷级审查包。
 - 当前证据:
   - `projects/agent-volume-e2e-20260429/reviews/volume-001-review-packet.md`
   - `python -m story_canvas export --root .\projects\agent-volume-e2e-20260429 --volume-id volume-001 --format review-packet --output ...`
 - 期望收口:
   - mention hygiene 等其他卷级关键状态写入后，也能自动刷新 review packet，或在 status 输出中明确提示“导出已过期”。
 - 下次实施必查:
-  - 除 `review volume-self` 之外的卷级状态修改后，是否还需要手工补一次 `export review-packet`。
+  - 除当前已覆盖的卷审与 mention 修补入口之外，其他卷级状态修改后是否还需要手工补一次 `export review-packet`。
 
 ### AIF-004 mention / entity 修补链稳定性不足
 

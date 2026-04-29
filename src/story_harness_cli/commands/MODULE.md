@@ -57,12 +57,14 @@
 - doctor 现在还会检查章节中的坏标签语法，例如未闭合 `@{`、空标签 `@{}`、以及把整句对白/叙述塞进 `@{...}` 的非法实体标签
 - doctor 现在还会校验 `illustrations.yaml` 中的主图/多图资产引用、缺失文件和孤儿资产
 - `entity add` / `entity state-update` / `entity mention-adopt` / `entity mention-plan` / `entity mention-apply` / `entity mention-tag-apply` 现负责 repo-native 的实体建档、状态维护与确定性正文修正，覆盖 `seed/profile/currentState/state/changeLog` 的最小可用写入，并支持把章节中的缺失 mention 显式采纳进 `entities`、把已知 plain mention 批量包成规范 `@{}`，减少 AI 直接改 `entities.yaml` 与章节正文
+- `entity mention-adopt` / `entity mention-apply` / `entity mention-tag-apply` 当前在所属章节已挂到某卷时，还会自动刷新 `reviews/<volume-id>-review-packet.md`，减少 mention hygiene 修补后再手工补导出
 - `entity mention-check` 现负责章节级实体 mention 审查编排：输出已包裹已建档、已包裹未建档、已建档但未包裹、引号内降级忽略，以及最小相关实体/势力/物品上下文
 - `entity mention-plan` 现负责把章节级 mention 审查收敛成结构化 action plan：区分“可确定性包裹的已知引用”和“仍需显式建档的缺失引用”，避免 AI 直接根据原文手改正文或 yaml
 - `entity mention-plan` 现支持 `--volume-id` 做卷级只读预览：逐章列出待包裹 / 待建档 action，便于卷级自审或人工审查前先看整卷闭环缺口
 - `entity mention-apply` 现只允许显式应用 `mention-plan` 中的确定性 tag action；遇到缺失建档 action 仍必须改走 `entity mention-adopt` 或 `world mention-adopt`
 - `foreshadow check` 现负责伏笔到窗/逾期/未排期检查编排：兼容旧版 `plannedPayoffChapter` 与新版 `payoffPlan.window`，输出当前章的 due / overdue / unresolved-without-schedule 视图
 - `world list` / `world add` / `world mention-adopt` / `world progression-add` / `world progression-stage-add` 现负责 repo-native 的 worldbook 浏览与显式写入，覆盖 `worldRules`、`factions`、`locations`、`artifacts`、`mysteries` 与最小 `powerProgressions` 维护，并支持把章节中的缺失 mention 显式采纳进 `worldbook`，减少 AI 直接改 `worldbook.yaml`
+- `world mention-adopt` 当前在所属章节已挂到某卷时，也会自动刷新 `reviews/<volume-id>-review-packet.md`，避免 world mention 建档后卷级审查包继续过期
 - `world check` 现负责核心概念 onboarding 与世界尺度审查编排：输出 `storyTemplate.modulePolicy` 下的世界模块缺口、当前章/当前卷涉及的势力/地点/物品/谜团上下文、早期世界规则缺失提示、势力建档薄弱项，以及复用一致性引擎的高风险任务/战力突破冲突信号
 - `style check` / `style constraints` / `style report` / `style repair` 这组风格治理命令，以及 optional scorer 的 command-side 装配
 - `style check` / `style constraints` / `style report` / `style repair` 这组风格治理命令，以及 `style-profiles.yaml` 中 pattern / 术语词典 / 白名单 / 题材语域词表的 command-side 装配；未显式传 `--profile` 时会按项目定位自动选 profile；当前还会装配 `review-rules.yaml` 的 resolved profile，并把章节/卷/scene scope 透传给服务层规则检测；章节输出现会直接暴露中文高频 AI 句式簇、`paragraphReadability` 与 `clusteredAIPhrasing` 等新风格信号
