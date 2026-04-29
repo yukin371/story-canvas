@@ -1,0 +1,63 @@
+{
+  "snapshotProjections": [
+    {
+      "entityId": "lin-zhaoye",
+      "entityName": "林照夜",
+      "scopeRef": "chapter-001",
+      "currentState": "离开",
+      "sourceChangeIds": [
+        "cr-0a7475852c"
+      ],
+      "updatedAt": "2026-04-30T00:34:18+08:00"
+    },
+    {
+      "entityId": "qiao-sheng",
+      "entityName": "乔声",
+      "scopeRef": "chapter-001",
+      "currentState": "离开",
+      "sourceChangeIds": [
+        "cr-6a4fd29693"
+      ],
+      "updatedAt": "2026-04-30T00:34:18+08:00"
+    }
+  ],
+  "relationProjections": [],
+  "sceneScopeProjections": [
+    {
+      "chapterId": "chapter-001",
+      "activeEntityIds": [
+        "lin-zhaoye",
+        "qiao-sheng",
+        "yu-ren"
+      ],
+      "sourceChangeIds": [
+        "cr-8b364bdc78",
+        "cr-0a7475852c",
+        "cr-6a4fd29693"
+      ],
+      "updatedAt": "2026-04-30T00:53:14+08:00"
+    },
+    {
+      "chapterId": "chapter-002",
+      "activeEntityIds": [
+        "lin-zhaoye",
+        "qiao-sheng",
+        "yu-ren"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-30T00:49:42+08:00"
+    },
+    {
+      "chapterId": "chapter-003",
+      "activeEntityIds": [
+        "lin-zhaoye",
+        "yu-ren",
+        "qiao-sheng"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-30T00:49:47+08:00"
+    }
+  ],
+  "timelineProjections": [],
+  "causalityProjections": []
+}

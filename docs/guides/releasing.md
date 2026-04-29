@@ -15,8 +15,11 @@ This repository is currently in a fast-iteration phase. The release process shou
 
 ```powershell
 uv run python scripts/install_adapter.py --host codex --dry-run
+uv run python scripts/install_adapter.py --host codex --repo-skill --dry-run
 uv run python scripts/install_adapter.py --host claude --workspace <workspace-root> --dry-run
 ```
+
+If the repository tracks repo-local Codex skills under `.codex/skills/`, refresh them from `adapters/codex-skill/` before release.
 
 ## Versioning
 

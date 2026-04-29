@@ -1,0 +1,75 @@
+{
+  "premiseFacts": [],
+  "worldRules": [
+    {
+      "id": "fog-bell-rule",
+      "label": "雾钟规则",
+      "rule": "听见第十三下的人会被卷入对应缺页案；若三日内不补齐档案，见证人的名字也会从公共记录里消失。",
+      "summary": "雾钟只在被城市档案遗忘的人身上响起，第十三下会点名一个仍活着的见证人。",
+      "aliases": [
+        "雾钟"
+      ],
+      "updatedAt": "2026-04-29T23:55:26+08:00",
+      "createdAt": "2026-04-29T23:55:26+08:00"
+    }
+  ],
+  "powerProgressions": [
+    {
+      "id": "fog-witness-progression",
+      "label": "雾档见证人阶段",
+      "stages": [
+        {
+          "name": "无资格听钟者",
+          "nextStage": "活见证人",
+          "aliases": [],
+          "breakthroughRequirements": [
+            "被第十三下雾钟点名并存活"
+          ],
+          "bottleneck": "公共记录会开始缺页"
+        },
+        {
+          "name": "活见证人",
+          "nextStage": "临时外勤协查",
+          "aliases": [],
+          "breakthroughRequirements": [
+            "补齐一份缺页档案并通过雾务局审查"
+          ],
+          "bottleneck": "必须承担下一份雾档点名风险"
+        }
+      ],
+      "updatedAt": "2026-04-30T00:39:50+08:00",
+      "summary": "记录被雾钟点名者从普通目击者到临时外勤的身份变化",
+      "createdAt": "2026-04-30T00:39:49+08:00"
+    }
+  ],
+  "factions": [
+    {
+      "id": "fog-bureau",
+      "name": "雾务局",
+      "summary": "雾灾后成立的城市异常档案机关，公开负责失踪档案归档，实际管理雾中缺页。",
+      "aliases": [
+        "旧案科"
+      ],
+      "updatedAt": "2026-04-30T00:39:28+08:00",
+      "type": "municipal-anomaly-archive",
+      "hierarchy": "市级异常档案机关，下设旧案科和外勤组",
+      "status": "公开合法但内部封存大量缺页案",
+      "territory": "雾灾城区与所有缺页档案关联地点",
+      "createdAt": "2026-04-29T23:55:41+08:00"
+    }
+  ],
+  "locations": [
+    {
+      "id": "old-bus-terminal",
+      "name": "旧公交总站",
+      "summary": "雾灾后废弃的十三路总站，站牌会在雾里显示已经不存在的班次。",
+      "aliases": [
+        "十三路旧站"
+      ],
+      "updatedAt": "2026-04-29T23:56:20+08:00",
+      "createdAt": "2026-04-29T23:56:20+08:00"
+    }
+  ],
+  "artifacts": [],
+  "mysteries": []
+}

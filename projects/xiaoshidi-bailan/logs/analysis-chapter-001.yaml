@@ -1,0 +1,78 @@
+{
+  "chapterId": "chapter-001",
+  "chapterTitle": "扫地也算修行",
+  "analyzedAt": "2026-04-29T20:59:00+08:00",
+  "activeEntities": [
+    {
+      "id": "lu-xian",
+      "name": "陆闲",
+      "mentionCount": 21,
+      "source": "registry"
+    },
+    {
+      "id": "zhu-hongling",
+      "name": "祝红绫",
+      "mentionCount": 9,
+      "source": "registry"
+    },
+    {
+      "id": "huo-fei",
+      "name": "霍飞",
+      "mentionCount": 9,
+      "source": "registry"
+    },
+    {
+      "id": "han-zhanglao",
+      "name": "韩长老",
+      "mentionCount": 4,
+      "source": "registry"
+    },
+    {
+      "id": "su-que",
+      "name": "苏雀",
+      "mentionCount": 2,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-001::han-zhanglao::8f79fec817",
+      "entityId": "han-zhanglao",
+      "entityName": "韩长老",
+      "proposedState": "紧张",
+      "stateTags": [
+        "紧张"
+      ],
+      "evidence": "@{韩长老}刚要喝止，@{霍飞}已经慢悠悠补了一句：“别紧张，我只是想看看，贵宗这位小师弟扫地时有没有顺手修行。若连祖师崖前一块试灵石都收拾不住，三日后你们也省得上台了。到时我第一个点他上场，让全山都看看青岚宗的替补底牌能撑几招。”",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-001::huo-fei::8f79fec817",
+      "entityId": "huo-fei",
+      "entityName": "霍飞",
+      "proposedState": "紧张",
+      "stateTags": [
+        "紧张"
+      ],
+      "evidence": "@{韩长老}刚要喝止，@{霍飞}已经慢悠悠补了一句：“别紧张，我只是想看看，贵宗这位小师弟扫地时有没有顺手修行。若连祖师崖前一块试灵石都收拾不住，三日后你们也省得上台了。到时我第一个点他上场，让全山都看看青岚宗的替补底牌能撑几招。”",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "lu-xian",
+      "zhu-hongling",
+      "huo-fei",
+      "han-zhanglao",
+      "su-que"
+    ],
+    "activeEntityNames": [
+      "陆闲",
+      "祝红绫",
+      "霍飞",
+      "韩长老",
+      "苏雀"
+    ]
+  }
+}

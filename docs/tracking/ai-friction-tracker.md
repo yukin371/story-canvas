@@ -1,6 +1,6 @@
 # AI 实施痛点长期追踪
 
-> 最后更新: 2026-04-29
+> 最后更新: 2026-04-30
 > 状态: 当前有效长期追踪入口
 > 作用: 记录会持续增加 AI 实施负担的真实流程痛点，并要求后续实施前后固定回看与回写
 
@@ -212,7 +212,7 @@
 - 最近核对: `2026-04-29`
 - 现象:
   - 职业法庭 / 程序悬疑章节中，禁令、异议、担保、限水损失、原始日志、接管链路、提交期限等真实张力没有被 `review chapter` 充分计分。
-  - 一幕评审与商业对齐曾只把问号或通用 hook 词当作追读钩子，漏掉“陌生号码 / 别追某时间点 / 日志光标残影 / 接管链路异常”这类无问号但明确可追读的物证悬念。
+  - 场景评审与商业对齐曾只把问号或通用 hook 词当作追读钩子，漏掉“陌生号码 / 别追某时间点 / 日志光标残影 / 接管链路异常”这类无问号但明确可追读的物证悬念。
   - 评分会诱导 agent 把文本改成通用“危险/威胁/追杀”词，而不是保持题材语域。
 - AI 负担:
   - agent 需要判断是正文问题还是工具漏报，并可能手动解释“为什么低分不可信”。
@@ -250,7 +250,7 @@
 
 ### AIF-010 卷级预检未消费卷目标 / 章数承诺
 
-- 状态: `active`
+- 状态: `mitigated`
 - 首次记录: `2026-04-29`
 - 最近核对: `2026-04-29`
 - 现象:
@@ -260,7 +260,9 @@
 - AI 负担:
   - agent 需要手动对照 `project.yaml` / `PRD.md` / `outline.yaml` 判断当前卷是不是缺章或缺交付，而不能只信 `volumeStructureCheck`。
 - 当前缓解:
-  - 独立编辑审查会在 `editorAssessment.scores` 中暴露 `volumeClosure=1`，且 `repairCoverage.editorWeakDimensionLabels` 会把“卷级闭环”带入 workflow 弱项摘要。
+  - `review preflight --volume-id` 现会输出 `volumeClosureContract`，优先消费 `commercialPositioning.releaseCadence` 中显式的“X 章首卷”承诺，并把 `PRD.md` 的 `卷目标` 带进结构证据。
+  - `volumeStructureCheck.closure-readiness` 现会在 `requiredChapterCount` 未满足时直接转为 `risk`，不再把“当前 outline 只有 1/1 章”误当成卷级收束前提已满足。
+  - `workflow status/export --volume-id` 现会把这类 contract miss 直接纳入 `volume_tooling_gate` 的 blocking rules，避免只停留在 change-request draft 或独立编辑口头判断。
 - 当前证据:
   - `projects/demo-climate-court-20260429/project.yaml`
   - `projects/demo-climate-court-20260429/PRD.md`
@@ -268,11 +270,13 @@
   - `projects/xiaoshidi-bailan/project.yaml`
   - `projects/xiaoshidi-bailan/outline.yaml`
   - `projects/xiaoshidi-bailan/reviews/volume-001-self-review.draft.yaml`
-  - `2026-04-29` 实跑中，`projects/xiaoshidi-bailan` 的 `paceContract` 明确要求“前三章”完成异常机制展示、第一次外部挑衅、一次轻松打脸和至少两位师姐强记忆点，但 `review preflight --volume-id volume-001` / `workflow status --volume-id volume-001` 仍因当前 outline 只有 `chapter-001` 而把 `closure-readiness` 判成 `pass`。
+  - `tests.smoke.test_review_preflight.test_review_preflight_volume_closure_readiness_consumes_required_chapter_contract`
+  - `tests.smoke.test_workflow_command.test_workflow_volume_scope_blocks_when_required_chapter_contract_is_unmet`
 - 期望收口:
   - `volumeStructureCheck` 应消费明确的卷目标、预期章数、`releaseCadence` / `PRD` 里的首卷交付要求；若当前卷章节数或交付节点不足，应在 preflight 阶段给出 `risk/missing`，而不是等独立编辑人工发现。
 - 下次实施必查:
-  - 新项目卷级预检是否仍把“当前 outline 里只有一章”误当作“短卷已满足结构前提”；若复现，应优先实现卷目标/章数承诺解析。
+  - 目前只对显式“X 章首卷”承诺做了 repo-native 收口，`requiredDeliveries/requiredPayoffs` 仍未结构化；若卷目标缺失明确章数但仍存在“小故事未交付”误判，继续推进更细的 closure contract。
+  - 若项目只把承诺写在自然语言 `paceContract` 中，当前仍不会硬解析；若这类项目继续误判，应优先补结构化卷契约，而不是继续扩展自然语言猜测。
 
 ### AIF-011 本地 UI 审查工作区缺少核心卷审视图且项目切换会残留旧章节
 
@@ -337,6 +341,105 @@
 - 下次实施必查:
   - 真实多 scene 章节里，`outlineDeviation` 是否仍会对已兑现 beat 误报；尤其检查“scene 数量与 beat 数量不一致”以及“缺少显式 `scenePlans`”的回退口径。
   - 若仍出现误报，优先补正文证据和 beat/scene 映射，而不是要求作者迎合检测器改写正文。
+
+### AIF-013 语料 overlay 过度抽象导致写作输出机械化
+
+- 状态: `mitigated`
+- 首次记录: `2026-04-29`
+- 最近核对: `2026-04-29`
+- 现象:
+  - 写作 skill 能加载题材 overlay，但 overlay 多以“当前高置信写法 / 节奏建议 / 常见误区”呈现，容易被 agent 当成命令清单执行。
+  - 语料分析中的对白压力、句子质地、叙述距离、意象残留等风格信号没有稳定进入起稿前的执行层。
+  - 修稿时容易出现“为过规则加桥接句”“把交付/推进/钩子等作者侧词汇写进正文”的机械感。
+- AI 负担:
+  - agent 需要临场把语料 checklist 翻译成自然 prose，缺少 repo-native skill 规则约束时容易输出方案文档腔或检测器补丁。
+- 当前缓解:
+  - `story-harness-writing` 的 `Writing Policy` 已要求从 corpus / overlay 先抽内部 style brief，再进入正文，不把字段直接写进章节。
+  - `writing-universal.md` 新增“语料信号转散文”，把叙述距离、行文速度、句子质地、对白压力、意象库、禁用语域作为起稿内控。
+  - `genre-overlays.md` 新增“语料抽取精度”，要求后续 overlay 至少区分主消费点、场景发动机、节奏曲线、对白策略、意象触感和风格禁区。
+- 当前证据:
+  - `.codex/skills/story-harness-writing/SKILL.md`
+  - `.codex/skills/story-harness-writing/references/writing-universal.md`
+  - `.codex/skills/story-harness-writing/references/genre-overlays.md`
+  - `adapters/codex-skill/story-harness-writing/references/writing-universal.md`
+  - `adapters/claude-code/story-harness-writing/references/writing-universal.md`
+- 期望收口:
+  - 各 overlay 文件逐步补齐题材特有的对白策略、意象触感、句法倾向和禁用语域，而不是只保留结构提示。
+  - 后续真实写作实跑应检查输出是否仍出现作者侧命令词、提纲直译和检测器补丁式桥接。
+- 下次实施必查:
+  - 写作前是否生成了内部 style brief，而不是直接照 overlay checklist 起稿。
+  - 章节修稿是否把规则转成角色动作、物件残留、关系边界和后果，而不是写成“推进/交付/承接/钩子”等作者侧措辞。
+
+### AIF-014 skill 校验脚本依赖缺失导致无法离线验证
+
+- 状态: `active`
+- 首次记录: `2026-04-29`
+- 最近核对: `2026-04-29`
+- 现象:
+  - 执行 `C:\Users\yukin\.codex\skills\.system\skill-creator\scripts\quick_validate.py` 校验 writing skill 时，脚本因 `ModuleNotFoundError: No module named 'yaml'` 失败。
+  - 当前仓库 base 环境强调 stdlib-only，不能为了校验一个 adapter skill 直接引入未确认第三方依赖。
+- AI 负担:
+  - agent 无法使用 skill-creator 推荐的标准校验脚本，只能手写 frontmatter / 文件结构基础检查。
+- 当前缓解:
+  - 本轮改用无第三方依赖的 frontmatter 基础检查和 `git diff --check` 验证目标文件。
+- 当前证据:
+  - `python C:\Users\yukin\.codex\skills\.system\skill-creator\scripts\quick_validate.py .codex\skills\story-harness-writing`
+  - 错误：`ModuleNotFoundError: No module named 'yaml'`
+- 期望收口:
+  - `quick_validate.py` 使用 stdlib 可完成基础 YAML frontmatter 校验，或在 skill-creator 文档中明确校验脚本需要额外依赖。
+- 下次实施必查:
+  - skill 校验是否仍因缺少 `yaml` 失败；若仍失败，继续使用 stdlib fallback 并保留风险说明。
+
+### AIF-015 stats / doctor 字数目标与 review 商业配置分叉
+
+- 状态: `active`
+- 首次记录: `2026-04-30`
+- 最近核对: `2026-04-30`
+- 现象:
+  - `projects/new-book-validation-20260429/project.yaml` 中 `commercialPositioning.chapterWordFloor=1200`、`chapterWordTarget=1800`。
+  - 同项目 `review preflight --volume-id volume-001` 不再按 1200 字报告三章字数不足，但 `stats` 和 `doctor` 仍显示章节最低 2000 / 推荐 3000，并把三章都标为低于最低字数。
+- AI 负担:
+  - agent 容易被 `stats` / `doctor` 诱导继续注水到 2000 字，和当前测试卷配置及 review 商业口径冲突。
+  - 卷级自审需要额外解释“为什么接受 1450 字左右章节”，否则会显得 gate 结论互相矛盾。
+- 当前缓解:
+  - 本轮在 `projects/new-book-validation-20260429/reviews/volume-001-self-review.draft.yaml` 中把该问题记录为 `tooling_miss`，并明确接受不按错误 2000/3000 目标注水。
+- 当前证据:
+  - `projects/new-book-validation-20260429/project.yaml`
+  - `PYTHONPATH=src python -m story_canvas stats --root projects\new-book-validation-20260429`
+  - `PYTHONPATH=src python -m story_canvas doctor --root projects\new-book-validation-20260429`
+  - `PYTHONPATH=src python -m story_canvas review preflight --root projects\new-book-validation-20260429 --volume-id volume-001`
+- 期望收口:
+  - `stats`、`doctor`、`review preflight` 使用同一章节字数目标来源，优先消费项目商业配置。
+  - 若配置缺失或 profile fallback 生效，应在输出中显式标出来源，避免 agent 误判。
+- 下次实施必查:
+  - 新项目自定义 `chapterWordFloor/Target` 后，`stats` 和 `doctor` 是否仍报告 2000/3000。
+  - 若仍分叉，应优先修 owner 路径，而不是继续让写作端手动解释风险。
+
+### AIF-016 scene-detect 覆盖已有场景粒度时退化为单场景
+
+- 状态: `active`
+- 首次记录: `2026-04-30`
+- 最近核对: `2026-04-30`
+- 现象:
+  - `projects/new-book-validation-20260429` 三章原本都有 3 个 `scenePlans`。
+  - 执行 `outline scene-detect --replace` 后，`chapter-001`、`chapter-002`、`chapter-003` 都被检测成 `detected=1`，每章只剩一个覆盖全章的大场景。
+  - 后续必须手工 `scene-update` / `scene-add` 恢复每章 3 个场景计划，才能让 `review scene` 继续提供有效粒度。
+  - 这里的 `scene` 指章节内的场景 / 场次 / 功能段，不是传统三幕式里的 `act`。
+- AI 负担:
+  - agent 如果只看命令成功码，会把可审查的多场景结构误压成单一场景，导致场景评审失去局部诊断能力。
+  - 该问题会放大用户此前质疑的“为什么只能检查到 chapter1 / 工具扫描存在问题”的感受，因为工具成功输出不代表扫描粒度合理。
+- 当前缓解:
+  - 本轮手工恢复了三章 `scenePlans`，并在卷级自审中把该问题记录为 `tooling_miss`。
+- 当前证据:
+  - `PYTHONPATH=src python -m story_canvas outline scene-detect --root projects\new-book-validation-20260429 --chapter-id chapter-001 --replace`
+  - 同命令对 `chapter-002` / `chapter-003` 均返回 `detected=1`
+  - `projects/new-book-validation-20260429/outline.yaml`
+- 期望收口:
+  - `scene-detect --replace` 在覆盖已有多 scenePlans 前，若新检测场景数显著下降，应输出 warning 或要求额外确认参数。
+  - 中文连续正文的场景切分启发式需要识别场景职责、地点/时间/事件转折，而不是无分隔符时默认整章一个 scene。
+- 下次实施必查:
+  - 对已有 3 个 scenePlans 的章节执行 `scene-detect --replace` 是否仍退化到 1 scene。
+  - `review scene` 是否能在不手工恢复 scenePlans 的情况下保持稳定局部审查粒度。
 
 ## 3. Resolved
 

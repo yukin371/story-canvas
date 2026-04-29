@@ -1,0 +1,176 @@
+{
+  "currentChapterId": "chapter-002",
+  "lenses": [
+    {
+      "chapterId": "chapter-001",
+      "chapterTitle": "第一章",
+      "emotionalContract": {
+        "coreEmotions": [],
+        "chapterEmotionFloor": [],
+        "forbiddenEmotions": [],
+        "revealPreference": {
+          "defaultMode": "",
+          "allowDirectExplainAtClimax": false
+        }
+      },
+      "storyTemplate": {
+        "id": "",
+        "label": "",
+        "modulePolicy": {},
+        "reviewFocus": []
+      },
+      "chapterHandoff": {
+        "previousChapter": null,
+        "currentChapter": {
+          "id": "chapter-001",
+          "title": "第一章",
+          "direction": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头",
+          "beatHints": [
+            "开场：建立日常世界",
+            "触发事件：打破平衡的事件",
+            "第一幕转折：主角做出选择，无法回头"
+          ],
+          "sceneGoals": [
+            "林舟蹲在旧书铺后屋的工作台前，指尖被潮气泡得发白。今晚送来的旧账簿比往常更沉，封皮像是浸过海水，翻开第一页时却没有霉味，",
+            "他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库门口挂着褪色的封条，封条中央却被人用香灰画了一枚歪斜的记"
+          ]
+        },
+        "nextChapter": {
+          "id": "chapter-002",
+          "title": "第二章 空名仓单",
+          "direction": "结构指引：中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡",
+          "beatHints": [
+            "中点：从被动变主动 / 虚假胜利",
+            "灵魂暗夜：最低点，失去一切",
+            "高潮：最终对决 / 真相揭露"
+          ],
+          "sceneGoals": [
+            "仓库里堆满发潮木箱，最里面那盏小灯只照出半张女人侧脸。林舟没有立刻往前走，他先把账簿贴到胸口，逼自己去听周围的水声和脚步",
+            "半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一页又多出一串陌生名字，最末那个却被墨团硬生生抹去，只剩下"
+          ]
+        },
+        "carryOverEntityChanges": [],
+        "activeThreadLabels": []
+      },
+      "activeCharacters": [
+        {
+          "id": "inferred::林舟",
+          "name": "林舟",
+          "currentState": "",
+          "stateTags": [],
+          "powerLevel": {},
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "inferred::周晚",
+          "name": "周晚",
+          "currentState": "",
+          "stateTags": [],
+          "powerLevel": {},
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "inferred::郑叔",
+          "name": "郑叔",
+          "currentState": "",
+          "stateTags": [],
+          "powerLevel": {},
+          "injuries": [],
+          "recentChange": null
+        }
+      ],
+      "activeRelations": [],
+      "activeWorldRules": [],
+      "activeFactions": [],
+      "activeThreads": [],
+      "activeForeshadows": [],
+      "dueForeshadows": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-29T00:37:16+08:00"
+    },
+    {
+      "chapterId": "chapter-002",
+      "chapterTitle": "第二章 空名仓单",
+      "emotionalContract": {
+        "coreEmotions": [],
+        "chapterEmotionFloor": [],
+        "forbiddenEmotions": [],
+        "revealPreference": {
+          "defaultMode": "",
+          "allowDirectExplainAtClimax": false
+        }
+      },
+      "storyTemplate": {
+        "id": "",
+        "label": "",
+        "modulePolicy": {},
+        "reviewFocus": []
+      },
+      "chapterHandoff": {
+        "previousChapter": {
+          "id": "chapter-001",
+          "title": "第一章",
+          "direction": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头",
+          "beatHints": [
+            "开场：建立日常世界",
+            "触发事件：打破平衡的事件",
+            "第一幕转折：主角做出选择，无法回头"
+          ],
+          "sceneGoals": [
+            "林舟蹲在旧书铺后屋的工作台前，指尖被潮气泡得发白。今晚送来的旧账簿比往常更沉，封皮像是浸过海水，翻开第一页时却没有霉味，",
+            "他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库门口挂着褪色的封条，封条中央却被人用香灰画了一枚歪斜的记"
+          ]
+        },
+        "currentChapter": {
+          "id": "chapter-002",
+          "title": "第二章 空名仓单",
+          "direction": "结构指引：中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡",
+          "beatHints": [
+            "中点：从被动变主动 / 虚假胜利",
+            "灵魂暗夜：最低点，失去一切",
+            "高潮：最终对决 / 真相揭露"
+          ],
+          "sceneGoals": [
+            "仓库里堆满发潮木箱，最里面那盏小灯只照出半张女人侧脸。林舟没有立刻往前走，他先把账簿贴到胸口，逼自己去听周围的水声和脚步",
+            "半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一页又多出一串陌生名字，最末那个却被墨团硬生生抹去，只剩下"
+          ]
+        },
+        "nextChapter": null,
+        "carryOverEntityChanges": [],
+        "activeThreadLabels": []
+      },
+      "activeCharacters": [
+        {
+          "id": "inferred::林舟",
+          "name": "林舟",
+          "currentState": "",
+          "stateTags": [],
+          "powerLevel": {},
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "inferred::周晚",
+          "name": "周晚",
+          "currentState": "",
+          "stateTags": [],
+          "powerLevel": {},
+          "injuries": [],
+          "recentChange": null
+        }
+      ],
+      "activeRelations": [],
+      "activeWorldRules": [],
+      "activeFactions": [],
+      "activeThreads": [],
+      "activeForeshadows": [],
+      "dueForeshadows": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-29T00:40:40+08:00"
+    }
+  ]
+}

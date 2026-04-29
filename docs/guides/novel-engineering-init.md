@@ -204,11 +204,11 @@ uv run story-canvas init `
 - 老项目加载时自动补齐缺省字段
 - `review chapter` 依据 `primaryGenre` / `subGenre` / `styleTags` / `commercialPositioning.targetPlatform` 输出 `weightedScores`
 - `review chapter` 输出 `projectContext`、`contractAlignment` 与 `commercialAlignment`
-- `review scene` 已输出一幕级 `projectContext`、`contractAlignment` 与 `commercialAlignment`
+- `review scene` 已输出场景级 `projectContext`、`contractAlignment` 与 `commercialAlignment`
 - `outline scene-detect` 可把启发式候选场景落成显式 `scenePlans`
 - `doctor` 对缺失的定位层/故事契约字段给出提示
 - `doctor` 对商业连载项目额外检查 `premise`、hook、平台、连载模型、更新节奏和章节字数目标
 
 目前尚未支持：
 
-- 更细粒度的一幕级伏笔/连续性/逻辑自动校验
+- 更细粒度的场景级伏笔/连续性/逻辑自动校验

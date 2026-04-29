@@ -1,0 +1,251 @@
+{
+  "entities": [
+    {
+      "id": "lu-xian",
+      "name": "陆闲",
+      "type": "protagonist",
+      "source": "manual",
+      "aliases": [],
+      "summary": "青岚宗最不起眼的小师弟，只想摆烂混饭，却在扫地挨骂做杂活时意外进入最适合自己的修炼状态。",
+      "seed": {
+        "archetype": "摆烂型反常天才",
+        "personality": "",
+        "motivation": "保住清闲和温饱，别被师姐们抓去高强度修炼。",
+        "background": ""
+      },
+      "profile": {
+        "appearance": [],
+        "abilities": [],
+        "speech": [],
+        "relationships": []
+      },
+      "state": {
+        "statusTags": [],
+        "powerLevel": {
+          "publicLevel": "外人眼里的废柴小师弟",
+          "trueLevel": "拥有与常人相反、会在摆烂和杂活中触发的异常修炼机制"
+        },
+        "injuries": []
+      },
+      "currentState": {
+        "status": "杂役坡扫地中",
+        "physicalState": [],
+        "emotionalState": [
+          "躲事、警觉、想保住肉包"
+        ],
+        "location": "青岚宗",
+        "lastUpdatedChapter": "chapter-001",
+        "powerLevel": "外人眼里的废柴小师弟"
+      },
+      "changeLog": [],
+      "createdAt": "2026-04-29T19:45:23+08:00",
+      "updatedAt": "2026-04-29T19:45:23+08:00"
+    },
+    {
+      "id": "zhu-hongling",
+      "name": "祝红绫",
+      "type": "major-support",
+      "source": "manual",
+      "aliases": [],
+      "summary": "青岚宗二师姐，性子火爆却极度护短，对陆闲管得严，也最先把他的异常出手误认成藏锋。",
+      "seed": {
+        "archetype": "护短刀修师姐",
+        "personality": "",
+        "motivation": "护住宗门脸面和同门，不让黑沙门再踩到头上。",
+        "background": ""
+      },
+      "profile": {
+        "appearance": [],
+        "abilities": [],
+        "speech": [],
+        "relationships": []
+      },
+      "state": {
+        "statusTags": [],
+        "powerLevel": {
+          "publicLevel": "青岚宗最能打也最会骂人的二师姐",
+          "trueLevel": "已开始怀疑陆闲一直在藏锋"
+        },
+        "injuries": []
+      },
+      "currentState": {
+        "status": "迎战前压着火气",
+        "physicalState": [],
+        "emotionalState": [
+          "恼火、护短、逐渐转为郑重"
+        ],
+        "location": "青岚宗",
+        "lastUpdatedChapter": "chapter-001",
+        "powerLevel": "青岚宗最能打也最会骂人的二师姐"
+      },
+      "changeLog": [],
+      "createdAt": "2026-04-29T19:45:38+08:00",
+      "updatedAt": "2026-04-29T19:45:38+08:00"
+    },
+    {
+      "id": "su-que",
+      "name": "苏雀",
+      "type": "support",
+      "source": "manual",
+      "aliases": [],
+      "summary": "青岚宗五师姐，嘴上不正经，遇事却和其他师姐一样极其护短。",
+      "seed": {
+        "archetype": "爱起哄的护短师姐",
+        "personality": "",
+        "motivation": "护住自家小师弟和宗门面子，顺便看黑沙门出丑。",
+        "background": ""
+      },
+      "profile": {
+        "appearance": [],
+        "abilities": [],
+        "speech": [],
+        "relationships": []
+      },
+      "state": {
+        "statusTags": [],
+        "powerLevel": {
+          "publicLevel": "爱啃青果看热闹的五师姐",
+          "trueLevel": "对同门的护短态度非常坚决"
+        },
+        "injuries": []
+      },
+      "currentState": {
+        "status": "在前院观望局势",
+        "physicalState": [],
+        "emotionalState": [
+          "轻松、促狭、站队明确"
+        ],
+        "location": "青岚宗",
+        "lastUpdatedChapter": "chapter-001",
+        "powerLevel": "爱啃青果看热闹的五师姐"
+      },
+      "changeLog": [],
+      "createdAt": "2026-04-29T19:45:54+08:00",
+      "updatedAt": "2026-04-29T19:45:54+08:00"
+    },
+    {
+      "id": "han-zhanglao",
+      "name": "韩长老",
+      "type": "support",
+      "source": "manual",
+      "aliases": [],
+      "summary": "青岚宗长老，嘴上严厉，实际扛着宗门体面和对外压力。",
+      "seed": {
+        "archetype": "嘴硬撑场面的宗门长老",
+        "personality": "",
+        "motivation": "在黑沙门挑衅前保住宗门体面和资源。",
+        "background": ""
+      },
+      "profile": {
+        "appearance": [],
+        "abilities": [],
+        "speech": [],
+        "relationships": []
+      },
+      "state": {
+        "statusTags": [],
+        "powerLevel": {
+          "publicLevel": "会骂人也要守门面的长老",
+          "trueLevel": "承担宗门对外博弈压力"
+        },
+        "injuries": []
+      },
+      "currentState": {
+        "status": "应对黑沙门来人",
+        "physicalState": [],
+        "emotionalState": [
+          "焦躁、强撑体面"
+        ],
+        "location": "青岚宗",
+        "lastUpdatedChapter": "chapter-001",
+        "powerLevel": "会骂人也要守门面的长老"
+      },
+      "changeLog": [],
+      "createdAt": "2026-04-29T19:46:10+08:00",
+      "updatedAt": "2026-04-29T19:46:10+08:00"
+    },
+    {
+      "id": "huo-fei",
+      "name": "霍飞",
+      "type": "antagonist",
+      "source": "manual",
+      "aliases": [],
+      "summary": "黑沙门少年弟子，代表来山上试探和羞辱青岚宗，对陆闲的废柴表象充满轻视。",
+      "seed": {
+        "archetype": "上门踩脸的年轻挑衅者",
+        "personality": "",
+        "motivation": "借小比前试探进一步压青岚宗气势，拿走灵田和水井。",
+        "background": ""
+      },
+      "profile": {
+        "appearance": [],
+        "abilities": [],
+        "speech": [],
+        "relationships": []
+      },
+      "state": {
+        "statusTags": [],
+        "powerLevel": {
+          "publicLevel": "黑沙门来踩场的得意弟子",
+          "trueLevel": "只是奉命试压，并未预料陆闲的异常反击"
+        },
+        "injuries": []
+      },
+      "currentState": {
+        "status": "带着试探和羞辱意味上山",
+        "physicalState": [],
+        "emotionalState": [
+          "轻蔑、挑衅、随后惊疑不定"
+        ],
+        "location": "青岚宗",
+        "lastUpdatedChapter": "chapter-001",
+        "powerLevel": "黑沙门来踩场的得意弟子"
+      },
+      "changeLog": [],
+      "createdAt": "2026-04-29T19:46:23+08:00",
+      "updatedAt": "2026-04-29T19:46:23+08:00"
+    },
+    {
+      "id": "shen-tinglan",
+      "name": "沈听岚",
+      "type": "major-support",
+      "source": "manual",
+      "aliases": [],
+      "summary": "青岚宗大师姐，外冷内稳，最擅长在宗门要塌的时候把局面重新摆平，也最先决定把陆闲当成真正底牌来用。",
+      "seed": {
+        "archetype": "冷静谋局的大师姐",
+        "personality": "",
+        "motivation": "保住宗门根基，并在最小代价下把陆闲这张未知底牌用到最关键的位置。",
+        "background": ""
+      },
+      "profile": {
+        "appearance": [],
+        "abilities": [],
+        "speech": [],
+        "relationships": []
+      },
+      "state": {
+        "statusTags": [],
+        "powerLevel": {
+          "publicLevel": "青岚宗最能稳局的大师姐",
+          "trueLevel": "已经确认陆闲的异常价值，并开始围绕他重排小比布局"
+        },
+        "injuries": []
+      },
+      "currentState": {
+        "status": "把陆闲列为宗门隐藏底牌",
+        "physicalState": [],
+        "emotionalState": [
+          "冷静、审慎、压着喜色"
+        ],
+        "location": "青岚宗",
+        "lastUpdatedChapter": "chapter-003",
+        "powerLevel": "青岚宗最能稳局的大师姐"
+      },
+      "changeLog": [],
+      "createdAt": "2026-04-29T21:25:00+08:00",
+      "updatedAt": "2026-04-29T21:25:00+08:00"
+    }
+  ],
+  "enrichmentProposals": []
+}

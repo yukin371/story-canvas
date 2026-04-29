@@ -1,0 +1,23 @@
+{
+  "chapterId": "chapter-001",
+  "chapterTitle": "第一章",
+  "analyzedAt": "2026-04-29T12:03:34+08:00",
+  "activeEntities": [
+    {
+      "id": "inferred::顾迟",
+      "name": "顾迟",
+      "mentionCount": 2,
+      "source": "inferred"
+    }
+  ],
+  "snapshotCandidates": [],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "inferred::顾迟"
+    ],
+    "activeEntityNames": [
+      "顾迟"
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "changeRequests": [
+    {
+      "id": "cr-7adbca8265",
+      "chapterId": "chapter-001",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 韩长老 当前状态",
+      "summary": "检测到 韩长老 可能进入状态：紧张",
+      "evidence": "@{韩长老}刚要喝止，@{霍飞}已经慢悠悠补了一句：“别紧张，我只是想看看，贵宗这位小师弟扫地时有没有顺手修行。若连祖师崖前一块试灵石都收拾不住，三日后你们也省得上台了。”",
+      "targetIds": [
+        "han-zhanglao"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "han-zhanglao",
+        "entityName": "韩长老",
+        "state": "紧张"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::han-zhanglao::紧张",
+      "createdAt": "2026-04-29T20:05:56+08:00",
+      "updatedAt": "2026-04-29T20:06:19+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-29T20:06:19+08:00"
+    },
+    {
+      "id": "cr-04d397b92c",
+      "chapterId": "chapter-001",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 霍飞 当前状态",
+      "summary": "检测到 霍飞 可能进入状态：紧张",
+      "evidence": "@{韩长老}刚要喝止，@{霍飞}已经慢悠悠补了一句：“别紧张，我只是想看看，贵宗这位小师弟扫地时有没有顺手修行。若连祖师崖前一块试灵石都收拾不住，三日后你们也省得上台了。”",
+      "targetIds": [
+        "huo-fei"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "huo-fei",
+        "entityName": "霍飞",
+        "state": "紧张"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::huo-fei::紧张",
+      "createdAt": "2026-04-29T20:05:56+08:00",
+      "updatedAt": "2026-04-29T20:06:19+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-29T20:06:19+08:00"
+    }
+  ]
+}

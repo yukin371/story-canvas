@@ -1,0 +1,59 @@
+{
+  "title": "雾钟档案",
+  "genre": "都市超凡悬疑",
+  "defaultMode": "driving",
+  "activeChapterId": "chapter-001",
+  "positioning": {
+    "primaryGenre": "fantasy",
+    "subGenre": "urban-supernatural-mystery",
+    "styleTags": [
+      "identity-mystery",
+      "world-anomaly"
+    ],
+    "targetAudience": [
+      "urban-fantasy-reader"
+    ]
+  },
+  "storyContract": {
+    "corePromises": [
+      "落榜档案员被一只只在死人记忆里响的雾钟点名，三章内查清第一起失踪小案并获得进入雾务局外勤资格"
+    ],
+    "avoidances": [
+      "不堆设定名词，不用方案文档腔，不让谜团只增不收"
+    ],
+    "endingContract": "首卷交付一层雾钟规则和一次失踪案局部真相，保留更大档案局黑幕",
+    "paceContract": "测试用三章首卷：第一章异常点名与尸记钟声，第二章追查失踪者并付出身份代价，第三章揭开第一层雾钟规则并完成小案闭环"
+  },
+  "emotionalContract": {
+    "coreEmotions": [
+      "潮湿、压迫、冷幽默下的自证"
+    ],
+    "chapterEmotionFloor": [],
+    "forbiddenEmotions": [],
+    "revealPreference": {
+      "defaultMode": "",
+      "allowDirectExplainAtClimax": false
+    }
+  },
+  "storyTemplate": {
+    "id": "",
+    "label": "",
+    "modulePolicy": {},
+    "reviewFocus": [
+      "身份谜团与世界规则双线推进；语料风格化；章间承接；卷级小闭环"
+    ]
+  },
+  "commercialPositioning": {
+    "premise": "在雾灾后城市，失败考生林照夜能听见死人记忆里的钟声，他被卷入一桩公交站失踪案，发现钟声不是索命而是城市档案在求救。",
+    "hookLine": "雾里响起第十三下钟时，只有林照夜听见失踪者喊了自己的准考证号。",
+    "hookStack": [],
+    "benchmarkWorks": [],
+    "targetPlatform": "qidian-like-web",
+    "serializationModel": "three-chapter-test-volume",
+    "releaseCadence": "测试用三章首卷",
+    "chapterWordFloor": 1200,
+    "chapterWordTarget": 1800
+  },
+  "createdAt": "2026-04-29T23:54:15+08:00",
+  "updatedAt": "2026-04-30T00:53:14+08:00"
+}

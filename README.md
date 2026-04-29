@@ -331,8 +331,11 @@ uv run story-canvas doctor --root .\projects\demo-short-story
 
 ```powershell
 uv run python scripts/install_adapter.py --host codex --force
+uv run python scripts/install_adapter.py --host codex --repo-skill --force
 uv run python scripts/install_adapter.py --host claude --workspace <workspace-root> --force
 ```
+
+其中 `--repo-skill` 会把 Codex skill 部署到当前仓库的 `.codex/skills/<skill-name>`，适合把仓库自带 adapter 直接作为 repo-local skill 使用；`adapters/codex-skill/<skill-name>` 仍然是 source of truth。
 
 一次安装多个 adapter：
 

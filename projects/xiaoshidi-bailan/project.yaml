@@ -1,0 +1,90 @@
+{
+  "title": "小师弟只想摆烂，师姐们却全疯了",
+  "genre": "玄幻宗门 / 欢乐爽文 / 伪后宫",
+  "defaultMode": "driving",
+  "activeChapterId": "chapter-003",
+  "positioning": {
+    "primaryGenre": "玄幻宗门",
+    "subGenre": "欢乐爽文 / 伪后宫",
+    "styleTags": [
+      "轻松搞笑",
+      "废柴逆袭",
+      "师姐群像",
+      "扮猪吃虎",
+      "宗门日常"
+    ],
+    "targetAudience": [
+      "喜欢轻松玄幻升级爽文的读者",
+      "喜欢多女主暧昧群像但不想要沉重感情线的读者"
+    ]
+  },
+  "storyContract": {
+    "corePromises": [
+      "主角看似废柴摆烂，实则用离谱方式持续破局变强",
+      "每个主要小单元都交付清晰打脸、反转或破防爽点",
+      "师姐们各有能力和性格缺陷，围绕主角形成欢乐护短和误会升级",
+      "宗门危机与外部挑衅不断把主角从摆烂状态推到台前"
+    ],
+    "avoidances": [
+      "不写压抑虐主长线",
+      "不让女角色只作为奖品或挂件存在",
+      "不在前期确认沉重恋爱关系",
+      "不把主角写成主动油腻开后宫"
+    ],
+    "endingContract": "第一阶段交付宗门内身份反转与小师弟真正价值被核心师姐团确认，但保留更大宗门/仙门格局。",
+    "paceContract": "前三章必须完成主角异常机制展示、第一次外部挑衅、一次轻松打脸和至少两位师姐的强记忆点登场。"
+  },
+  "emotionalContract": {
+    "coreEmotions": [
+      "欢乐",
+      "爽快",
+      "轻松期待",
+      "暧昧但不沉重",
+      "反派破防的喜感"
+    ],
+    "chapterEmotionFloor": [
+      "每章至少一个明确笑点",
+      "每章至少一个读者可感知的爽点或期待钩子"
+    ],
+    "forbiddenEmotions": [
+      "长期憋屈",
+      "沉重虐恋",
+      "无意义羞辱",
+      "阴湿背刺主调"
+    ],
+    "revealPreference": {
+      "defaultMode": "先误会后揭示，让旁人脑补主角深不可测",
+      "allowDirectExplainAtClimax": true
+    }
+  },
+  "storyTemplate": {
+    "id": "cheerful-xuanhuan-sect-power-fantasy",
+    "label": "欢乐玄幻宗门爽文",
+    "modulePolicy": {},
+    "reviewFocus": [
+      "爽点是否清晰",
+      "笑点是否自然",
+      "主角摆烂与破局是否同时成立",
+      "师姐群像是否各有能动性",
+      "伪后宫边界是否轻松不油腻"
+    ]
+  },
+  "commercialPositioning": {
+    "premise": "一个只想在宗门摆烂的小师弟，因为修炼机制与常人完全相反，总在偷懒、挨骂、做杂活时无意顿悟，结果被师姐们一路脑补成深藏不露的宗门希望。",
+    "hookLine": "我真只想摆烂，师姐们却非说我在下一盘大棋。",
+    "hookStack": [
+      "废柴小师弟的反常修炼机制",
+      "师姐们越护短越惹事的欢乐修罗场",
+      "敌人认真挑衅却被主角无意破局的反差爽点",
+      "宗门从破落边缘被迫崛起的升级线"
+    ],
+    "benchmarkWorks": [],
+    "targetPlatform": "中文网文连载",
+    "serializationModel": "长篇连载",
+    "releaseCadence": "日更",
+    "chapterWordFloor": 2500,
+    "chapterWordTarget": 3500
+  },
+  "createdAt": "2026-04-29T19:15:19+08:00",
+  "updatedAt": "2026-04-29T21:33:05+08:00"
+}

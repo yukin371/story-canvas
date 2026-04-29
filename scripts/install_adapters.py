@@ -18,6 +18,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--skill-name", default="story-harness-writing")
     parser.add_argument("--workspace", help="Workspace root for Claude adapter installation.")
+    parser.add_argument(
+        "--repo-skill",
+        action="store_true",
+        help="Install the Codex adapter into <workspace>/.codex/skills or <repo>/.codex/skills instead of ~/.codex/skills.",
+    )
     parser.add_argument("--force", action="store_true", help="Replace target directories if they already exist.")
     parser.add_argument("--dry-run", action="store_true", help="Print resolved installs without copying files.")
     return parser
@@ -26,6 +31,8 @@ def build_parser() -> argparse.ArgumentParser:
 def resolve_hosts(args: argparse.Namespace) -> list[str]:
     if args.hosts:
         return args.hosts
+    if args.repo_skill and not args.workspace:
+        return ["codex"]
     if args.workspace:
         return ["codex", "claude"]
     return ["codex"]
@@ -40,6 +47,8 @@ def run_install(host: str, args: argparse.Namespace) -> None:
     ]
     if args.workspace:
         argv.extend(["--workspace", args.workspace])
+    if args.repo_skill and host == "codex":
+        argv.append("--repo-skill")
     if args.force:
         argv.append("--force")
     if args.dry_run:
@@ -59,6 +68,7 @@ def main(argv: list[str] | None = None) -> int:
         "hosts": hosts,
         "skillName": args.skill_name,
         "workspace": args.workspace,
+        "repoSkill": args.repo_skill,
         "mode": "dry-run" if args.dry_run else "install",
     }
     print(json.dumps(result, ensure_ascii=False, indent=2))

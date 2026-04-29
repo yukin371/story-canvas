@@ -18,7 +18,7 @@
 | `demo-short-story` | 通用短篇回归基线 | `chapter analyze`、`chapter suggest`、`review apply`、`projection apply`、`review chapter`、`review scene`、`export` | 当前有效 |
 | `demo-light-novel-short` | 西幻轻小说风格短篇基线 | `positioning.subGenre`、`styleTags`、`targetAudience` 进入 `review chapter` / `review scene` 的输出 | 当前有效 |
 | `demo-xuanhuan-short` | 玄幻网文短篇基线 | `xuanhuan + web-serial` 的定位层输出、推进/压制/反压制类短篇节奏 | 当前有效 |
-| `demo-urban-occult-long` | 商业化网站连载长篇基线 | 长篇项目结构、卷级方向、`urban-occult + web-serial` 定位层、一幕评审与长篇连载钩子 | 当前有效 |
+| `demo-urban-occult-long` | 商业化网站连载长篇基线 | 长篇项目结构、卷级方向、`urban-occult + web-serial` 定位层、场景评审与长篇连载钩子 | 当前有效 |
 
 ## 3. 如何选择
 
@@ -36,7 +36,7 @@
 
 - 更通用，不绑定强风格
 - 已作为短篇回归基线写入路线图
-- 适合先看章节分析、章节评审、一幕评审和导出闭环
+- 适合先看章节分析、章节评审、场景评审和导出闭环
 
 推荐命令：
 
@@ -115,7 +115,7 @@ python -m story_canvas export --root projects/demo-xuanhuan-short --format markd
 - 验证 `fantasy + urban-occult + web-serial + folk-occult + career-fiction` 的定位层是否进入评审
 - 展示“卷级骨架 + 前几章正文 + 后续章节 brief”的长篇样例形状
 - 适合检查单元案连续、主线钩子、`scenePlans` 显式场景边界和上下文刷新
-- 已跑通过 `doctor`、多章 `review chapter`、多幕 `review scene` 和导出链路
+- 已跑通过 `doctor`、多章 `review chapter`、多场景 `review scene` 和导出链路
 
 推荐命令：
 

@@ -79,17 +79,19 @@ flowchart TD
 4. 选定模板后，运行 `structure scaffold` 把结构模板直接落到具体章节方向和 `beats`；如有明确分配，再补 `structure map`
 5. 再细化 `outline.yaml`，补章节级 `scenePlans` 与手工方向
 6. 若进入下一章，优先用 `chapter create` 原子化创建章节文件、章节骨架并推进 `activeChapterId`
-7. 在开始正文或让 AI 继续细化前，先跑 `outline check`，确认章节已具备“项目契约 + direction + beats + scenePlans”
-8. 写 `chapters/*.md` 时保留清晰的实体标记
-9. 每写完一章先跑 `chapter analyze`
-10. 再跑 `chapter suggest`、`review apply`、`projection apply`
-11. 用 `context refresh` 生成下一轮上下文
-12. 用 `review chapter` 和 `review scene` 评审质量；商业连载项目要同时看 `contractAlignment`、`commercialAlignment` 和 `weightedScores.profile.targetPlatform`
-13. 用 `stats` 或 `doctor` 检查章节是否达到项目定义的字数区间；商业连载项目会优先读取 `commercialPositioning.chapterWordFloor/Target`
-14. 分数低、结构偏移或字数不足就改正文、结构映射或场景边界，再复评
-15. 如果当前卷已完成，先做一轮卷级 AI 自审，再进入人工审查
-16. 人工审查后按需修正并复检
-17. 最后 `export`
+7. `init` 后先跑 `status --chapter-id <id>`，读取 `startGuide` 给出的下一步命令；默认第一章是空白 stub，不再把说明文案塞进正文
+8. 在开始正文或让 AI 继续细化前，先跑 `outline check`，确认章节已具备“项目契约 + direction + beats + scenePlans”
+9. 如果当前章还没有正文段落，先在 `chapters/<chapter-id>.md` 里按计划场景写 1 段骨架，再运行 `outline scene-detect` 生成首版 `scenePlans`
+10. 写 `chapters/*.md` 时保留清晰的实体标记
+11. 每写完一章先跑 `chapter analyze`
+12. 再跑 `chapter suggest`、`review apply`、`projection apply`
+13. 用 `context refresh` 生成下一轮上下文
+14. 用 `review chapter` 和 `review scene` 评审质量；商业连载项目要同时看 `contractAlignment`、`commercialAlignment` 和 `weightedScores.profile.targetPlatform`
+15. 用 `stats` 或 `doctor` 检查章节是否达到项目定义的字数区间；商业连载项目会优先读取 `commercialPositioning.chapterWordFloor/Target`
+16. 分数低、结构偏移或字数不足就改正文、结构映射或场景边界，再复评
+17. 如果当前卷已完成，先做一轮卷级 AI 自审，再进入人工审查
+18. 人工审查后按需修正并复检
+19. 最后 `export`
 
 ## 5. 外部 AI 清单
 
@@ -97,21 +99,23 @@ flowchart TD
 2. 再读 `outline.yaml`
 3. 如果项目启用了结构模板，先看 `structures.yaml` 和章节 `beats` / `direction`
 4. 如果要推进下一章，优先用 `chapter create`，不要直接改 `project.yaml` / `outline.yaml`
-5. 跑 `outline check`，确认目标章节已具备大纲前置设计；未通过就先补结构信息，不要直接细化正文
-6. 读 `context-lens.yaml` 和目标章节
-7. 跑 `chapter analyze`
-8. 跑 `chapter suggest`
-9. 跑 `review apply`
-10. 跑 `projection apply`
-11. 跑 `context refresh`
-12. 跑 `review chapter`
-13. 跑 `review scene`
-14. 跑 `doctor` 或 `stats` 检查长度与结构落地情况
-15. 如果弱项仍然明显，先改正文再复评
-16. 若当前卷/小故事单元已写完，必须先做卷级 AI 自审，再交给人工审查
-17. 卷级自审前，优先用 `review volume-self-template` 生成当前卷的结构化自审模板
-18. 卷级自审时，要显式记录哪些问题属于 `generation_miss`、`self_review_miss`、`tooling_miss`
-19. 直到达标或明确接受风险再停
+5. 先跑 `status --chapter-id <id>`，优先消费 `startGuide`；如果当前章还是空白 stub，先补结构和场景骨架，不要直接评审空稿
+6. 跑 `outline check`，确认目标章节已具备大纲前置设计；未通过就先补结构信息，不要直接细化正文
+7. 如果当前章还没有正文段落，先在章节文件里按计划场景写 1 段骨架，再跑 `outline scene-detect`
+8. 读 `context-lens.yaml` 和目标章节
+9. 跑 `chapter analyze`
+10. 跑 `chapter suggest`
+11. 跑 `review apply`
+12. 跑 `projection apply`
+13. 跑 `context refresh`
+14. 跑 `review chapter`
+15. 跑 `review scene`
+16. 跑 `doctor` 或 `stats` 检查长度与结构落地情况
+17. 如果弱项仍然明显，先改正文再复评
+18. 若当前卷/小故事单元已写完，必须先做卷级 AI 自审，再交给人工审查
+19. 卷级自审前，优先用 `review volume-self-template` 生成当前卷的结构化自审模板
+20. 卷级自审时，要显式记录哪些问题属于 `generation_miss`、`self_review_miss`、`tooling_miss`
+21. 直到达标或明确接受风险再停
 
 ## 6. Stop Conditions
 
@@ -126,7 +130,7 @@ flowchart TD
 
 - `outline check` 仍未通过
 - `priorityActions` 仍然指向明确的结构性问题
-- 章节总分和一幕总分都明显偏低
+- 章节总分和场景评审总分都明显偏低
 - `contractAlignment` 仍然冲突
 - 商业项目的 `commercialAlignment` 仍然是 `at-risk` 或关键风险未清
 - 当前只是单章闭环完成，但整卷还没有做 AI 自审
@@ -150,7 +154,7 @@ python -m story_canvas <command> ...
 
 ## 9. 推荐样例工程
 
-- `demo-short-story`: 通用短篇回归基线，适合先验证章节分析、章节评审、一幕评审和导出闭环
+- `demo-short-story`: 通用短篇回归基线，适合先验证章节分析、章节评审、场景评审和导出闭环
 - `demo-light-novel-short`: 风格化短篇基线，适合验证 `subGenre`、`styleTags`、`targetAudience` 是否进入评审输出
 - `demo-xuanhuan-short`: 玄幻网文短篇基线，适合验证 `xuanhuan + web-serial` 的题材定位与节奏约束
 - `demo-urban-occult-long`: 商业化长篇基线，适合验证卷级结构、章节门禁、字数检查、平台加权和连载型 workflow

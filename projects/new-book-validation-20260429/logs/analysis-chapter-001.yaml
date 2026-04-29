@@ -1,0 +1,62 @@
+{
+  "chapterId": "chapter-001",
+  "chapterTitle": "第十三下雾钟",
+  "analyzedAt": "2026-04-30T00:53:12+08:00",
+  "activeEntities": [
+    {
+      "id": "lin-zhaoye",
+      "name": "林照夜",
+      "mentionCount": 15,
+      "source": "registry"
+    },
+    {
+      "id": "qiao-sheng",
+      "name": "乔声",
+      "mentionCount": 3,
+      "source": "registry"
+    },
+    {
+      "id": "yu-ren",
+      "name": "余仁",
+      "mentionCount": 3,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [
+    {
+      "candidateId": "snapshot::chapter-001::lin-zhaoye::35cae37624",
+      "entityId": "lin-zhaoye",
+      "entityName": "林照夜",
+      "proposedState": "疲惫",
+      "stateTags": [
+        "疲惫"
+      ],
+      "evidence": "一个穿黑色雨衣的年轻女人停在候车棚外，左手戴着黑线手套，手套指尖按在一枚银色证件上。她看了看工作包，又看了看@{林照夜}手里的退档通知，眼神没有惊讶，只有一种确认麻烦终于落地的疲惫。",
+      "confidence": 0.92
+    },
+    {
+      "candidateId": "snapshot::chapter-001::qiao-sheng::94d3571ec2",
+      "entityId": "qiao-sheng",
+      "entityName": "乔声",
+      "proposedState": "离开",
+      "stateTags": [
+        "离开"
+      ],
+      "evidence": "“@{乔声}，@{雾务局}旧案科见习外勤。”她亮证的动作很快，像怕证件也被雾咬掉，“从现在起，你不要离开我的视线。”",
+      "confidence": 0.92
+    }
+  ],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "lin-zhaoye",
+      "qiao-sheng",
+      "yu-ren"
+    ],
+    "activeEntityNames": [
+      "林照夜",
+      "乔声",
+      "余仁"
+    ]
+  }
+}

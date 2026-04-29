@@ -1,0 +1,893 @@
+{
+  "generatedAt": "2026-04-29T21:48:26+08:00",
+  "conclusion": {
+    "closureStatus": "not_closed",
+    "allowHumanReview": false,
+    "strongestPoint": "当前卷 3/3 章都已具备 direction / beats / scenePlans 中的至少一项结构信号。",
+    "biggestRisk": "检测到1项AI风格特征：段落可读性。扣2分。"
+  },
+  "editorPass": {
+    "completed": false,
+    "reviewerRole": "editor",
+    "mode": "independent_agent",
+    "contextIsolation": "no_context_proxy",
+    "notes": "待填写"
+  },
+  "editorAssessment": {
+    "overallVerdict": "revise",
+    "summaryComment": "待填写",
+    "topProblems": [],
+    "improvementPoints": [],
+    "scores": [
+      {
+        "dimensionId": "volumeClosure",
+        "score": 0,
+        "conclusion": "待填写",
+        "chapterRefs": [],
+        "evidenceRefs": []
+      },
+      {
+        "dimensionId": "openingOnboarding",
+        "score": 0,
+        "conclusion": "待填写",
+        "chapterRefs": [],
+        "evidenceRefs": []
+      },
+      {
+        "dimensionId": "worldLogic",
+        "score": 0,
+        "conclusion": "待填写",
+        "chapterRefs": [],
+        "evidenceRefs": []
+      },
+      {
+        "dimensionId": "chapterHandoff",
+        "score": 0,
+        "conclusion": "待填写",
+        "chapterRefs": [],
+        "evidenceRefs": []
+      },
+      {
+        "dimensionId": "characterContinuity",
+        "score": 0,
+        "conclusion": "待填写",
+        "chapterRefs": [],
+        "evidenceRefs": []
+      },
+      {
+        "dimensionId": "antagonistShaping",
+        "score": 0,
+        "conclusion": "待填写",
+        "chapterRefs": [],
+        "evidenceRefs": []
+      },
+      {
+        "dimensionId": "conflictEscalation",
+        "score": 0,
+        "conclusion": "待填写",
+        "chapterRefs": [],
+        "evidenceRefs": []
+      },
+      {
+        "dimensionId": "payoffDelivery",
+        "score": 0,
+        "conclusion": "待填写",
+        "chapterRefs": [],
+        "evidenceRefs": []
+      },
+      {
+        "dimensionId": "foreshadowRhythm",
+        "score": 0,
+        "conclusion": "待填写",
+        "chapterRefs": [],
+        "evidenceRefs": []
+      },
+      {
+        "dimensionId": "styleReadability",
+        "score": 0,
+        "conclusion": "待填写",
+        "chapterRefs": [],
+        "evidenceRefs": []
+      }
+    ]
+  },
+  "scores": [
+    {
+      "dimensionId": "volumeClosure",
+      "score": 3,
+      "conclusion": "当前卷 3/3 章都已具备 direction / beats / scenePlans 中的至少一项结构信号。",
+      "chapterRefs": [],
+      "evidenceRefs": []
+    },
+    {
+      "dimensionId": "openingOnboarding",
+      "score": 3,
+      "conclusion": "前几章没有暴露额外 world onboarding 缺口。",
+      "chapterRefs": [],
+      "evidenceRefs": []
+    },
+    {
+      "dimensionId": "worldLogic",
+      "score": 2,
+      "conclusion": "基于选定片段的正文与分析信号，这一幕总分 69/100。当前最稳的是逻辑性，最需要补强的是伏笔与回收。",
+      "chapterRefs": [
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-003#scene-1",
+        "review-packet:volume-001:chapter-003"
+      ]
+    },
+    {
+      "dimensionId": "chapterHandoff",
+      "score": 2,
+      "conclusion": "项目已声明情绪契约的核心情绪体验，但本章的压力、冲突或推进还不足以稳定承接。",
+      "chapterRefs": [],
+      "evidenceRefs": []
+    },
+    {
+      "dimensionId": "characterContinuity",
+      "score": 2,
+      "conclusion": "基于选定片段的正文与分析信号，这一幕总分 72/100。当前最稳的是连续性，最需要补强的是伏笔与回收。",
+      "chapterRefs": [
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-003#scene-2",
+        "review-packet:volume-001:chapter-003"
+      ]
+    },
+    {
+      "dimensionId": "antagonistShaping",
+      "score": 3,
+      "conclusion": "当前工具信号未暴露明确的 对手塑造 阻塞，但仍需结合卷目标人工复核。",
+      "chapterRefs": [],
+      "evidenceRefs": []
+    },
+    {
+      "dimensionId": "conflictEscalation",
+      "score": 2,
+      "conclusion": "基于选定片段的正文与分析信号，这一幕总分 71/100。当前最稳的是场景功能，最需要补强的是场景清晰度。",
+      "chapterRefs": [
+        "chapter-002"
+      ],
+      "evidenceRefs": [
+        "chapter-002#scene-3",
+        "review-packet:volume-001:chapter-002"
+      ]
+    },
+    {
+      "dimensionId": "payoffDelivery",
+      "score": 2,
+      "conclusion": "基于选定片段的正文与分析信号，这一幕总分 74/100。当前最稳的是场景清晰度，最需要补强的是伏笔与回收。",
+      "chapterRefs": [
+        "chapter-002"
+      ],
+      "evidenceRefs": [
+        "chapter-002#scene-2",
+        "review-packet:volume-001:chapter-002"
+      ]
+    },
+    {
+      "dimensionId": "foreshadowRhythm",
+      "score": 2,
+      "conclusion": "已声明商业 hook line，但本章的推进或章末追读牵引还不够强。",
+      "chapterRefs": [],
+      "evidenceRefs": []
+    },
+    {
+      "dimensionId": "styleReadability",
+      "score": 2,
+      "conclusion": "检测到2项AI风格特征：段落均质、段落可读性。扣4分。",
+      "chapterRefs": [
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "review-packet:volume-001:chapter-003"
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "issue": "检测到1项AI风格特征：段落可读性。扣2分。",
+      "evidence": [
+        "检测到1项AI风格特征：段落可读性。扣2分。"
+      ],
+      "impact": "会直接拉低风格与可读性，默认不建议把当前版本直接送入人工审查。",
+      "primaryCause": "generation_miss",
+      "secondaryCauses": [
+        "self_review_miss"
+      ],
+      "fixAction": "先处理重复出现的 AI 味、长段和可读性负担，再复检 style report。",
+      "whyToolingMissed": "现有工具已经给出相关风险信号，但还不能替代作者判断最终是否需要改稿或改到什么强度。",
+      "whySelfReviewMissed": "这一项已由模板预填，仍需要作者结合卷目标逐条确认而不是直接照抄。",
+      "optimizationAction": "把这类高频风险继续回灌到卷级自审模板和 workflow gate 的下一步提示里。",
+      "detectedBy": [
+        "style-aggregate"
+      ],
+      "ruleIds": [],
+      "verificationCommands": [
+        "workflow status --root <root> --volume-id volume-001",
+        "export --root <root> --format review-packet --volume-id volume-001"
+      ],
+      "chapterRefs": [
+        "chapter-001"
+      ],
+      "evidenceRefs": [
+        "review-packet:volume-001:chapter-001"
+      ]
+    },
+    {
+      "issue": "基于选定片段的正文与分析信号，这一幕总分 72/100。当前最稳的是连续性，最需要补强的是伏笔与回收。",
+      "evidence": [
+        "基于选定片段的正文与分析信号，这一幕总分 72/100。当前最稳的是连续性，最需要补强的是伏笔与回收。"
+      ],
+      "impact": "会直接拉低角色连续性，默认不建议把当前版本直接送入人工审查。",
+      "primaryCause": "generation_miss",
+      "secondaryCauses": [
+        "self_review_miss"
+      ],
+      "fixAction": "优先把低分 scene 的主要问题前推到卷级修稿清单。",
+      "whyToolingMissed": "现有工具已经给出相关风险信号，但还不能替代作者判断最终是否需要改稿或改到什么强度。",
+      "whySelfReviewMissed": "这一项已由模板预填，仍需要作者结合卷目标逐条确认而不是直接照抄。",
+      "optimizationAction": "把这类高频风险继续回灌到卷级自审模板和 workflow gate 的下一步提示里。",
+      "detectedBy": [
+        "scene-review"
+      ],
+      "ruleIds": [],
+      "verificationCommands": [
+        "workflow status --root <root> --volume-id volume-001",
+        "export --root <root> --format review-packet --volume-id volume-001"
+      ],
+      "chapterRefs": [
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-003#scene-2",
+        "review-packet:volume-001:chapter-003"
+      ]
+    },
+    {
+      "issue": "基于选定片段的正文与分析信号，这一幕总分 71/100。当前最稳的是场景功能，最需要补强的是场景清晰度。",
+      "evidence": [
+        "基于选定片段的正文与分析信号，这一幕总分 71/100。当前最稳的是场景功能，最需要补强的是场景清晰度。"
+      ],
+      "impact": "会直接拉低冲突升级，默认不建议把当前版本直接送入人工审查。",
+      "primaryCause": "generation_miss",
+      "secondaryCauses": [
+        "self_review_miss"
+      ],
+      "fixAction": "优先把低分 scene 的主要问题前推到卷级修稿清单。",
+      "whyToolingMissed": "现有工具已经给出相关风险信号，但还不能替代作者判断最终是否需要改稿或改到什么强度。",
+      "whySelfReviewMissed": "这一项已由模板预填，仍需要作者结合卷目标逐条确认而不是直接照抄。",
+      "optimizationAction": "把这类高频风险继续回灌到卷级自审模板和 workflow gate 的下一步提示里。",
+      "detectedBy": [
+        "scene-review"
+      ],
+      "ruleIds": [],
+      "verificationCommands": [
+        "workflow status --root <root> --volume-id volume-001",
+        "export --root <root> --format review-packet --volume-id volume-001"
+      ],
+      "chapterRefs": [
+        "chapter-002"
+      ],
+      "evidenceRefs": [
+        "chapter-002#scene-3",
+        "review-packet:volume-001:chapter-002"
+      ]
+    },
+    {
+      "issue": "基于选定片段的正文与分析信号，这一幕总分 74/100。当前最稳的是场景清晰度，最需要补强的是伏笔与回收。",
+      "evidence": [
+        "基于选定片段的正文与分析信号，这一幕总分 74/100。当前最稳的是场景清晰度，最需要补强的是伏笔与回收。"
+      ],
+      "impact": "会直接拉低爽点兑现，默认不建议把当前版本直接送入人工审查。",
+      "primaryCause": "generation_miss",
+      "secondaryCauses": [
+        "self_review_miss"
+      ],
+      "fixAction": "优先把低分 scene 的主要问题前推到卷级修稿清单。",
+      "whyToolingMissed": "现有工具已经给出相关风险信号，但还不能替代作者判断最终是否需要改稿或改到什么强度。",
+      "whySelfReviewMissed": "这一项已由模板预填，仍需要作者结合卷目标逐条确认而不是直接照抄。",
+      "optimizationAction": "把这类高频风险继续回灌到卷级自审模板和 workflow gate 的下一步提示里。",
+      "detectedBy": [
+        "scene-review"
+      ],
+      "ruleIds": [],
+      "verificationCommands": [
+        "workflow status --root <root> --volume-id volume-001",
+        "export --root <root> --format review-packet --volume-id volume-001"
+      ],
+      "chapterRefs": [
+        "chapter-002"
+      ],
+      "evidenceRefs": [
+        "chapter-002#scene-2",
+        "review-packet:volume-001:chapter-002"
+      ]
+    }
+  ],
+  "closureAssessment": {
+    "mainProblem": "检测到1项AI风格特征：段落可读性。扣2分。",
+    "delivered": [
+      "当前卷 3/3 章都已具备 direction / beats / scenePlans 中的至少一项结构信号。",
+      "前几章没有暴露额外 world onboarding 缺口。",
+      "当前工具信号未暴露明确的 对手塑造 阻塞，但仍需结合卷目标人工复核。"
+    ],
+    "missing": [
+      "检测到1项AI风格特征：段落可读性。扣2分。",
+      "基于选定片段的正文与分析信号，这一幕总分 72/100。当前最稳的是连续性，最需要补强的是伏笔与回收。",
+      "基于选定片段的正文与分析信号，这一幕总分 71/100。当前最稳的是场景功能，最需要补强的是场景清晰度。"
+    ],
+    "reasoning": "当前模板已根据 preflight 与 review evidence 预填。从工具信号看，较强项集中在：当前卷 3/3 章都已具备 direction / beats / scenePlans 中的至少一项结构信号。；但当前最需要先确认的是：检测到1项AI风格特征：段落可读性。扣2分。。因此默认保持 `not_closed`，需要作者补完或明确接受风险后再决定是否放行。"
+  },
+  "repairSuggestions": [
+    "先判断这一卷是否已经形成完整小故事闭环。",
+    "再逐项补写最影响人工审查的结构或解释缺口。"
+  ],
+  "acceptedRisks": [],
+  "_templateHints": {
+    "scoreScale": "all score fields must be integers in 0..5",
+    "rootScoresPurpose": "author or primary volume self-review scores; use the shared 10-dimension rubric",
+    "editorScoresPurpose": "independent editor scores; usually mirrors the same 10 dimensions with editor conclusions",
+    "autofillPolicy": "root scores / issues / closureAssessment are heuristically prefilled from current preflight and review evidence; review before saving.",
+    "topProblemsType": "string[]",
+    "improvementPointsType": "string[]",
+    "issuesType": "object[]",
+    "issuesRequiredFields": [
+      "issue",
+      "evidence",
+      "impact",
+      "primaryCause",
+      "fixAction"
+    ],
+    "issuesOptionalButRecommendedFields": [
+      "secondaryCauses",
+      "whyToolingMissed",
+      "whySelfReviewMissed",
+      "optimizationAction",
+      "detectedBy",
+      "ruleIds",
+      "verificationCommands",
+      "chapterRefs",
+      "evidenceRefs"
+    ],
+    "issueExample": {
+      "issue": "卷尾阶段性交付不足",
+      "evidence": [
+        "第二章结尾更像抬出下一条主线，而不是完成本卷回合。"
+      ],
+      "impact": "会削弱本卷闭环感，暂不适合进入人工终审。",
+      "primaryCause": "generation_miss",
+      "secondaryCauses": [
+        "self_review_miss",
+        "tooling_miss"
+      ],
+      "fixAction": "补一层明确的阶段性兑现或输赢结果。",
+      "whyToolingMissed": "现有工具更擅长判断前提是否齐备，不够擅长判断卷尾兑现厚度。",
+      "whySelfReviewMissed": "AI 自审容易把继续抬线索误判为已完成闭环。",
+      "optimizationAction": "把 promised / delivered / missing 的对照写进卷审模板。",
+      "chapterRefs": [
+        "chapter-002"
+      ],
+      "evidenceRefs": [
+        "chapter-002#scene-2",
+        "review-packet:volume-001:chapter-002"
+      ]
+    }
+  },
+  "_templateContext": {
+    "scope": "volume",
+    "volumeId": "volume-001",
+    "volumeTitle": "第一卷 摆烂露馅",
+    "chapterCount": 3,
+    "projectAdvisories": [],
+    "preflightSummary": {
+      "chapterPreflightCount": 3,
+      "chapterFileMissingCount": 0,
+      "knownUnwrappedActionCount": 0,
+      "taggedMissingActionCount": 0,
+      "mentionActionCount": 0,
+      "dueForeshadowCount": 0,
+      "overdueForeshadowCount": 0,
+      "unresolvedWithoutScheduleCount": 0,
+      "worldOnboardingGapCount": 0,
+      "factionRegistryGapCount": 0,
+      "capabilityTaskRiskCount": 0,
+      "powerProgressionConflictCount": 0
+    },
+    "volumeStructureCheck": {
+      "role": "intro-volume",
+      "phaseAssignments": [
+        {
+          "chapterId": "chapter-001",
+          "chapterTitle": "扫地也算修行",
+          "phase": "opening"
+        },
+        {
+          "chapterId": "chapter-002",
+          "chapterTitle": "东井也要扫干净",
+          "phase": "build"
+        },
+        {
+          "chapterId": "chapter-003",
+          "chapterTitle": "扫帚把脸抽回去",
+          "phase": "close"
+        }
+      ],
+      "checklist": [
+        {
+          "id": "outline-coverage",
+          "label": "卷级结构明示度",
+          "status": "pass",
+          "message": "当前卷 3/3 章都已具备 direction / beats / scenePlans 中的至少一项结构信号。",
+          "evidence": [],
+          "targetChapterIds": [],
+          "suggestion": ""
+        },
+        {
+          "id": "intro-world-onboarding",
+          "label": "引入卷 onboarding",
+          "status": "pass",
+          "message": "前几章没有暴露额外 world onboarding 缺口。",
+          "evidence": [],
+          "targetChapterIds": [],
+          "suggestion": ""
+        },
+        {
+          "id": "foreshadow-debt",
+          "label": "伏笔债务",
+          "status": "pass",
+          "message": "当前卷没有积压的到窗 / 逾期 / 未排期伏笔。",
+          "evidence": [],
+          "targetChapterIds": [],
+          "suggestion": ""
+        },
+        {
+          "id": "closure-readiness",
+          "label": "卷尾收束准备度",
+          "status": "pass",
+          "message": "卷尾章节已落正文且没有明显逾期/未排期伏笔，具备进入卷级闭环判断的最低前提。",
+          "evidence": [
+            "扫帚把脸抽回去"
+          ],
+          "targetChapterIds": [],
+          "suggestion": ""
+        }
+      ],
+      "summary": {
+        "passCount": 4,
+        "riskCount": 0,
+        "missingCount": 0,
+        "notApplicableCount": 0
+      }
+    },
+    "blockingSignals": [],
+    "chapterSignals": [
+      {
+        "chapterId": "chapter-001",
+        "chapterTitle": "扫地也算修行",
+        "chapterFileExists": true,
+        "mentionActionCount": 0,
+        "dueForeshadowCount": 0,
+        "overdueForeshadowCount": 0,
+        "worldOnboardingGapCount": 0,
+        "factionRegistryGapCount": 0,
+        "capabilityTaskRiskCount": 0,
+        "powerProgressionConflictCount": 0
+      },
+      {
+        "chapterId": "chapter-002",
+        "chapterTitle": "东井也要扫干净",
+        "chapterFileExists": true,
+        "mentionActionCount": 0,
+        "dueForeshadowCount": 0,
+        "overdueForeshadowCount": 0,
+        "worldOnboardingGapCount": 0,
+        "factionRegistryGapCount": 0,
+        "capabilityTaskRiskCount": 0,
+        "powerProgressionConflictCount": 0
+      },
+      {
+        "chapterId": "chapter-003",
+        "chapterTitle": "扫帚把脸抽回去",
+        "chapterFileExists": true,
+        "mentionActionCount": 0,
+        "dueForeshadowCount": 0,
+        "overdueForeshadowCount": 0,
+        "worldOnboardingGapCount": 0,
+        "factionRegistryGapCount": 0,
+        "capabilityTaskRiskCount": 0,
+        "powerProgressionConflictCount": 0
+      }
+    ],
+    "chapterReviewSummaries": [
+      {
+        "chapterId": "chapter-001",
+        "chapterTitle": "扫地也算修行",
+        "generatedAt": "2026-04-29T20:24:22+08:00",
+        "rating": "solid",
+        "totalScore": 79,
+        "weightedTotal": 79.0,
+        "summary": "结合分析结果和正文信号，本章总分 79/100。当前强项在人物压力，最需要补强的是冲突张力。",
+        "priorityActions": [
+          "确认本章产生的新设定候选是否应写入世界真相层。",
+          "补一个明确阻力：对手、风险、时间压力或信息缺口，避免章节太平。",
+          "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+        ],
+        "styleSummary": "检测到1项AI风格特征：段落可读性。扣2分。",
+        "ruleJudgementIds": [
+          "paragraphReadability"
+        ]
+      },
+      {
+        "chapterId": "chapter-002",
+        "chapterTitle": "东井也要扫干净",
+        "generatedAt": "2026-04-29T21:28:22+08:00",
+        "rating": "workable",
+        "totalScore": 67,
+        "weightedTotal": 67.0,
+        "summary": "结合分析结果和正文信号，本章总分 67/100。当前强项在表达控制，最需要补强的是冲突张力。",
+        "priorityActions": [
+          "补一个明确阻力：对手、风险、时间压力或信息缺口，避免章节太平。",
+          "补一个明确的状态变化、关系变化或决定性动作，让章节前后产生落差。",
+          "补一处人物状态变化或代价反馈，让角色不是只在场而是真的被事件推动。"
+        ],
+        "styleSummary": "检测到2项AI风格特征：段落均质、段落可读性。扣3分。",
+        "ruleJudgementIds": [
+          "paragraphUniformity",
+          "paragraphReadability",
+          "outlineDeviation",
+          "outlineDeviation",
+          "outlineDeviation"
+        ]
+      },
+      {
+        "chapterId": "chapter-003",
+        "chapterTitle": "扫帚把脸抽回去",
+        "generatedAt": "2026-04-29T21:33:14+08:00",
+        "rating": "workable",
+        "totalScore": 63,
+        "weightedTotal": 63.0,
+        "summary": "结合分析结果和正文信号，本章总分 63/100。当前强项在表达控制，最需要补强的是冲突张力。",
+        "priorityActions": [
+          "确认本章产生的新设定候选是否应写入世界真相层。",
+          "补一个明确阻力：对手、风险、时间压力或信息缺口，避免章节太平。",
+          "补一处人物状态变化或代价反馈，让角色不是只在场而是真的被事件推动。"
+        ],
+        "styleSummary": "检测到2项AI风格特征：段落均质、段落可读性。扣4分。",
+        "ruleJudgementIds": [
+          "paragraphUniformity",
+          "paragraphReadability",
+          "outlineDeviation",
+          "outlineDeviation",
+          "outlineDeviation"
+        ]
+      }
+    ],
+    "lowSceneReviews": [
+      {
+        "chapterId": "chapter-003",
+        "generatedAt": "2026-04-29T21:33:26+08:00",
+        "rating": "workable",
+        "totalScore": 69,
+        "summary": "基于选定片段的正文与分析信号，这一幕总分 69/100。当前最稳的是逻辑性，最需要补强的是伏笔与回收。",
+        "sceneIndex": 1,
+        "startParagraph": 1,
+        "endParagraph": 10,
+        "priorityActions": [
+          "结尾可以留下一个未解答的问题，增强这一幕的牵引力。",
+          "开头补一个时间、地点或环境锚点，帮助读者快速抓到镜头。"
+        ]
+      },
+      {
+        "chapterId": "chapter-001",
+        "generatedAt": "2026-04-29T20:07:12+08:00",
+        "rating": "solid",
+        "totalScore": 71,
+        "summary": "基于选定片段的正文与分析信号，这一幕总分 71/100。当前最稳的是伏笔与回收，最需要补强的是逻辑性。",
+        "sceneIndex": 3,
+        "startParagraph": 15,
+        "endParagraph": 27,
+        "priorityActions": [
+          "补清楚“为什么现在发生这件事”，避免角色像被作者硬推着走。",
+          "开头补一个时间、地点或环境锚点，帮助读者快速抓到镜头。",
+          "结尾补一个钩子、未完成动作或状态余波，让下一幕更自然接上。"
+        ]
+      },
+      {
+        "chapterId": "chapter-002",
+        "generatedAt": "2026-04-29T21:30:24+08:00",
+        "rating": "solid",
+        "totalScore": 71,
+        "summary": "基于选定片段的正文与分析信号，这一幕总分 71/100。当前最稳的是场景功能，最需要补强的是场景清晰度。",
+        "sceneIndex": 3,
+        "startParagraph": 28,
+        "endParagraph": 35,
+        "priorityActions": [
+          "开头补一个时间、地点或环境锚点，帮助读者快速抓到镜头。"
+        ]
+      },
+      {
+        "chapterId": "chapter-002",
+        "generatedAt": "2026-04-29T21:28:51+08:00",
+        "rating": "solid",
+        "totalScore": 72,
+        "summary": "基于选定片段的正文与分析信号，这一幕总分 72/100。当前最稳的是逻辑性，最需要补强的是伏笔与回收。",
+        "sceneIndex": 1,
+        "startParagraph": 1,
+        "endParagraph": 15,
+        "priorityActions": [
+          "考虑种下一个后续要兑现的信息点，或让当前冲突形成更明确的回收钩子。"
+        ]
+      },
+      {
+        "chapterId": "chapter-003",
+        "generatedAt": "2026-04-29T21:33:35+08:00",
+        "rating": "solid",
+        "totalScore": 72,
+        "summary": "基于选定片段的正文与分析信号，这一幕总分 72/100。当前最稳的是连续性，最需要补强的是伏笔与回收。",
+        "sceneIndex": 2,
+        "startParagraph": 11,
+        "endParagraph": 20,
+        "priorityActions": [
+          "考虑种下一个后续要兑现的信息点，或让当前冲突形成更明确的回收钩子。"
+        ]
+      },
+      {
+        "chapterId": "chapter-003",
+        "generatedAt": "2026-04-29T21:33:45+08:00",
+        "rating": "solid",
+        "totalScore": 73,
+        "summary": "基于选定片段的正文与分析信号，这一幕总分 73/100。当前最稳的是逻辑性，最需要补强的是场景清晰度。",
+        "sceneIndex": 3,
+        "startParagraph": 21,
+        "endParagraph": 33,
+        "priorityActions": [
+          "确认本章产生的新设定候选是否应写入世界真相层。",
+          "开头补一个时间、地点或环境锚点，帮助读者快速抓到镜头。"
+        ]
+      },
+      {
+        "chapterId": "chapter-002",
+        "generatedAt": "2026-04-29T21:29:26+08:00",
+        "rating": "solid",
+        "totalScore": 74,
+        "summary": "基于选定片段的正文与分析信号，这一幕总分 74/100。当前最稳的是场景清晰度，最需要补强的是伏笔与回收。",
+        "sceneIndex": 2,
+        "startParagraph": 16,
+        "endParagraph": 27,
+        "priorityActions": [
+          "考虑种下一个后续要兑现的信息点，或让当前冲突形成更明确的回收钩子。",
+          "结尾补一个钩子、未完成动作或状态余波，让下一幕更自然接上。"
+        ]
+      },
+      {
+        "chapterId": "chapter-001",
+        "generatedAt": "2026-04-29T20:25:53+08:00",
+        "rating": "solid",
+        "totalScore": 77,
+        "summary": "基于选定片段的正文与分析信号，这一幕总分 77/100。当前最稳的是逻辑性，最需要补强的是伏笔与回收。",
+        "sceneIndex": 1,
+        "startParagraph": 1,
+        "endParagraph": 14,
+        "priorityActions": [
+          "确认本章产生的新设定候选是否应写入世界真相层。"
+        ]
+      }
+    ],
+    "styleAggregate": {
+      "profile": "default",
+      "volumeId": "volume-001",
+      "chapterCount": 3,
+      "averageOverallScore": 17.0,
+      "averageDeduction": 3.0,
+      "flaggedChapters": [
+        {
+          "chapterId": "chapter-003",
+          "overallScore": 16,
+          "totalDeduction": 4,
+          "detectedPatterns": [
+            "段落均质",
+            "段落可读性"
+          ]
+        },
+        {
+          "chapterId": "chapter-002",
+          "overallScore": 17,
+          "totalDeduction": 3,
+          "detectedPatterns": [
+            "段落均质",
+            "段落可读性"
+          ]
+        },
+        {
+          "chapterId": "chapter-001",
+          "overallScore": 18,
+          "totalDeduction": 2,
+          "detectedPatterns": [
+            "段落可读性"
+          ]
+        }
+      ],
+      "patternCounts": [
+        {
+          "label": "段落可读性",
+          "chapterHits": 3
+        },
+        {
+          "label": "段落均质",
+          "chapterHits": 2
+        }
+      ]
+    },
+    "styleFlaggedChapters": [
+      {
+        "chapterId": "chapter-003",
+        "overallScore": 16,
+        "totalDeduction": 4,
+        "detectedPatterns": [
+          "段落均质",
+          "段落可读性"
+        ],
+        "summary": "检测到2项AI风格特征：段落均质、段落可读性。扣4分。"
+      },
+      {
+        "chapterId": "chapter-002",
+        "overallScore": 17,
+        "totalDeduction": 3,
+        "detectedPatterns": [
+          "段落均质",
+          "段落可读性"
+        ],
+        "summary": "检测到2项AI风格特征：段落均质、段落可读性。扣3分。"
+      },
+      {
+        "chapterId": "chapter-001",
+        "overallScore": 18,
+        "totalDeduction": 2,
+        "detectedPatterns": [
+          "段落可读性"
+        ],
+        "summary": "检测到1项AI风格特征：段落可读性。扣2分。"
+      }
+    ],
+    "topRuleJudgements": [
+      {
+        "ruleId": "outlineDeviation",
+        "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+        "severity": "warning",
+        "hits": 24
+      },
+      {
+        "ruleId": "paragraphUniformity",
+        "message": "检测到段落均质问题。",
+        "severity": "medium",
+        "hits": 8
+      },
+      {
+        "ruleId": "paragraphReadability",
+        "message": "检测到段落可读性问题，例如 第10段约105字：屋檐上还蹲着个啃青果的五师姐苏雀，听见“黑沙门”三个字就朝山门吐...。",
+        "severity": "medium",
+        "hits": 2
+      },
+      {
+        "ruleId": "paragraphReadability",
+        "message": "检测到段落可读性问题，例如 第1段约127字：第二天天还没亮，青岚宗山门前就先热闹了起来。旧石阶上挤满了来看试...。",
+        "severity": "high",
+        "hits": 2
+      },
+      {
+        "ruleId": "paragraphReadability",
+        "message": "检测到段落可读性问题，例如 第1段约91字：祝红绫一路拎着陆闲的后领往正殿走，速度快得像怕他半路长腿跑了。陆...。",
+        "severity": "medium",
+        "hits": 2
+      },
+      {
+        "ruleId": "sensoryVariety",
+        "message": "检测到感官单一问题。",
+        "severity": "medium",
+        "hits": 2
+      },
+      {
+        "ruleId": "paragraphReadability",
+        "message": "检测到段落可读性问题，例如 第1段约104字：被两次拧歪节奏后，霍飞脸上的轻蔑已经彻底不见，剩下的只是一股下不...。",
+        "severity": "high",
+        "hits": 1
+      },
+      {
+        "ruleId": "paragraphReadability",
+        "message": "检测到段落可读性问题，例如 第1段约111字：夜色压到山门东侧时，东侧水井边只剩风吹辘轳的吱呀声。井台用旧青石...。",
+        "severity": "medium",
+        "hits": 1
+      }
+    ],
+    "contractAlignmentRisks": [
+      "核心承诺“每个主要小单元都交付清晰打脸、反转或破防爽点”：悬疑/反转承诺在本章里的张力兑现偏弱。",
+      "核心承诺“师姐们各有能力和性格缺陷，围绕主角形成欢乐护短和误会升级”：成长/升级承诺在本章里的兑现信号偏弱。",
+      "项目已声明情绪契约的核心情绪体验，但本章的压力、冲突或推进还不足以稳定承接。",
+      "已声明情绪契约的章节情绪底线，但本章仍偏信息说明，情绪推进不足。"
+    ],
+    "commercialAlignmentRisks": [
+      "已声明商业 hook line，但本章的推进或章末追读牵引还不够强。"
+    ],
+    "reviewPacketRefs": [
+      "review-packet:volume-001:chapter-001",
+      "review-packet:volume-001:chapter-002",
+      "review-packet:volume-001:chapter-003"
+    ],
+    "draftAutofill": {
+      "used": true,
+      "strongestPointSource": "volume-structure:outline-coverage",
+      "biggestRiskSource": "style-aggregate",
+      "issueCount": 4,
+      "weakDimensionIds": [
+        "worldLogic",
+        "chapterHandoff",
+        "characterContinuity",
+        "conflictEscalation",
+        "payoffDelivery",
+        "foreshadowRhythm",
+        "styleReadability"
+      ]
+    },
+    "incrementalReviewOnly": {
+      "latestPersistedReview": {
+        "generatedAt": "2026-04-29T21:05:06+08:00",
+        "closureStatus": "not_closed",
+        "declaredAllowHumanReview": false,
+        "finalAllowHumanReview": false,
+        "editorPassCompleted": true,
+        "editorMode": "same_agent_fallback",
+        "editorContextIsolation": "same_thread",
+        "editorVerdict": "block",
+        "strongestPoint": "第一章已经把反常修炼机制、破落宗门处境和师姐误判链拉起来，开篇 onboarding 基本成立。",
+        "biggestRisk": "项目契约明确要求前三章完成第一次外部挑衅、一次轻松打脸和至少两位师姐强记忆点登场，但当前卷只有一章，卷级闭环尚未成立。",
+        "averageScore": 2.2,
+        "lowestDimensions": [
+          "卷级闭环",
+          "章间承接"
+        ],
+        "topRepairSuggestions": [
+          "先补 chapter-002 和 chapter-003，完成 paceContract 承诺的第一次外部挑衅后续、一次清晰打脸和至少两位师姐的强记忆点。",
+          "再优先补对手塑造和冲突升级：给霍飞或黑沙门一处主动反制动作，再回修 chapter-001 的第三幕逻辑、阻力和章末钩子，让当前起势章本身更硬。",
+          "最后处理长段和可读性，再复跑 chapter review、scene review 与 volume workflow。"
+        ]
+      },
+      "warning": "独立盲审模式默认不要先读取上一轮自审摘要；只有增量复审才使用这里的上下文。"
+    },
+    "evidenceRefExamples": [
+      "chapter-001#scene-1",
+      "chapter-001#paragraph-4",
+      "chapter-001#world-rule-onboarding",
+      "chapter-002#handoff-gap",
+      "review-packet:volume-001:chapter-001"
+    ],
+    "independentEditorExpectation": {
+      "requiredRole": "editor",
+      "preferredMode": "independent_agent",
+      "preferredContextIsolation": "no_context_proxy",
+      "fallbackModes": [
+        "human_editor",
+        "fresh_thread",
+        "same_agent_fallback"
+      ],
+      "fallbackContextIsolation": [
+        "human_manual",
+        "fresh_thread",
+        "not_available"
+      ],
+      "checklist": [
+        "独立编辑评分与 AI 自审评分使用同一套 10 维 rubric。",
+        "优先使用无上下文代理；若宿主不支持，至少切到新线程或明确记录 fallback。",
+        "每个主要问题都要补‘为什么工具没报’、‘为什么 AI 自审漏看’、‘怎么优化’。"
+      ]
+    },
+    "recommendedCommands": [
+      "review preflight --root <root> --volume-id volume-001",
+      "workflow status --root <root> --volume-id volume-001",
+      "export --root <root> --format review-packet --volume-id volume-001"
+    ]
+  }
+}

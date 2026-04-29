@@ -23,7 +23,7 @@
 - `context_lens.py`: 写作上下文构建（活跃角色/关系 + 情绪契约 + 题材模板 + 世界约束 + 线索/伏笔切片），并产出 `previous/current/next chapter` 承接摘要与可延续的角色变化 / 线程信号
 - `context_lens.py`: 当命令层传入当前章节的新 analysis 时，优先使用 analysis 的 scene scope，并只采纳仍由本次 analysis 支撑的同章 snapshot，避免旧 projection 污染新上下文
 - `outline_guard.py`: 章节大纲前置检查，判断是否具备项目定位 / 故事契约 + direction / beats / scenePlans 进入写作或细化
-- `story_review.py`: 章节回顾评分、一幕评审、类型/平台加权评分、评论、改稿建议、契约对齐与商业连载对齐检查，并开始消费情绪契约、揭露偏好、模板关注点、伏笔窗口、世界规则、角色动态状态，以及 style/consistency 护栏信号；对高置信“方案文档腔”会进入 `priorityActions` 与 `contractAlignment.risks`；chapter 级 review 现还会消费章节承接摘要，对“上一章结果 -> 本章开头承接偏弱”输出 `chapterHandoffSignals`、`priorityActions`、`contractAlignment.risks` 与 `chapterHandoffWeak` rule judgement；chapter/scene 共用的 `projectContext`、`priorityActions` 与对齐后处理已收敛到共享 helper，避免两条评审路径长期并行漂移；章节评分现会把禁令、异议、担保、限水、原始日志、接管链路、提交期限等程序/证据张力计入推进、压力与冲突维度；一幕伏笔评分与章末商业 hook 对齐现会把陌生号码、日志异常、接管链路、被截断输入等悬念物证信号计入钩子
+- `story_review.py`: 章节回顾评分、场景评审、类型/平台加权评分、评论、改稿建议、契约对齐与商业连载对齐检查，并开始消费情绪契约、揭露偏好、模板关注点、伏笔窗口、世界规则、角色动态状态，以及 style/consistency 护栏信号；对高置信“方案文档腔”会进入 `priorityActions` 与 `contractAlignment.risks`；chapter 级 review 现还会消费章节承接摘要，对“上一章结果 -> 本章开头承接偏弱”输出 `chapterHandoffSignals`、`priorityActions`、`contractAlignment.risks` 与 `chapterHandoffWeak` rule judgement；chapter/scene 共用的 `projectContext`、`priorityActions` 与对齐后处理已收敛到共享 helper，避免两条评审路径长期并行漂移；章节评分现会把禁令、异议、担保、限水、原始日志、接管链路、提交期限等程序/证据张力计入推进、压力与冲突维度；场景伏笔评分与章末商业 hook 对齐现会把陌生号码、日志异常、接管链路、被截断输入等悬念物证信号计入钩子
 - `style_detector.py`: AI 风格启发式检测与约束生成；允许通过外部注入 scorer 增强句式近似判断，但默认保持 builtin fallback，并支持基于 profile 的术语观察词、重复白名单、词级阈值、题材语域失真词表、叙事支架复用检测，以及连续 `目标：/风险：/约束：/时间窗口：` 这类结构化方案块识别；`planBlockPolicy` 可对标签白名单与命中阈值做题材级放宽；当前还内建了中文高频 AI 句式簇（`不是……是……`、`不像……更像……`、`真正……从来都是……` / `还有什么？`）、移动端段落可读性信号，以及 `clusteredAIPhrasing` 聚合层，用于把多项轻度 AI 句式/可读性问题收敛成统一风险；同时会消费 `review_rule_detector.py` 返回的规则信号，把 `review-rules.yaml` 驱动的检测结果并入 `patternResults/judgements`
 - `illustration_prompting.py`: chapter / entity 插图 prompt 构造、template/modifier/policy/lexicon 解析后的 prompt snapshot 组装、目标元数据整理与 dry-run request 组装；当前 entity prompt 优先抽取角色卡外貌/视觉锚点，chapter prompt 则避免直接注入章节正文摘要，并把模板从标签式拼接收敛成更自然的美术 brief；chapter / entity / temporary 当前都可显式选择首批 use-case 矩阵，并额外支持“纯绘图 / 文字设计”这组正交文本版式参数
 - `illustration_prompting.py`: 当前还支持 freeform / temporary 目标 payload；当图片不绑定具体章节或角色时，仍走相同 pack/template 展开，但 target type 会标记为 `temporary`；pack 没有专用模板时，服务层会按同类 use-case fallback 解析模板与词库
@@ -31,6 +31,7 @@
 - `reference_mentions.py`: 章节内结构化引用 mention 的纯分析，负责已建档引用目录、已包裹/未包裹/未建档分组、plain mention 的确定性 tag replacement 候选，以及最小 related context
 - `workflow_engine.py`: workflow 状态机纯函数，负责阶段推断、状态 hydration/build、gate 决策推进、reset 与导出快照；章节级 `context_ready` 会消费命令层传入的章节正文指纹，对新生成的 context lens 做过期判断，并通过 `contextHashStatus/contextHashTracked` 显式区分 fresh、stale 与旧 lens 兼容状态
 - `workflow_engine.py`: workflow gate 现会为阻塞项补统一 `ruleJudgements` 与 `gateDecision`，让门禁结果能引用具体规则 id，而不是只返回散乱说明
+- `workflow_engine.py` 的卷级 tooling gate 当前还会消费 command 层透传的 `volumeClosureContract` / `closure-readiness`；当项目已明示“X 章首卷”但当前卷章数未满足时，会直接阻塞在 `volume_tooling_gate`
 - `workflow_engine.py` 现还负责卷级 gate 的纯推断：先消费卷级 `review preflight` 聚合结果，再结合最新 `review volume-self` 结论，输出“工具侧是否清障 / 是否可进入人工审查”的只读 workflow 视图
 - `workflow_engine.py` 的卷级摘要当前还会透出 `repairCoverage` 紧凑字段，供 `workflow status/export --volume-id` 直接显示弱项覆盖状态，而不必额外反查原始自审记录
 - `workflow_engine.py` 的卷级摘要当前还会直接透出 `volumeStructureCheck`，把 preflight 已有的卷级结构检查提升到 workflow 顶层，避免 UI / agent 只能从嵌套 preflight 中取值
@@ -73,7 +74,7 @@
 - `evaluate_chapter_outline_readiness(state, chapter_id, require_beats=True, require_scene_plans=True, require_project_gate=True)`: 检查单章是否已具备严格大纲前置设计
 - `evaluate_project_outline_readiness(state, chapter_id=None, require_beats=True, require_scene_plans=True, require_project_gate=True)`: 生成项目级或章节级大纲门禁报告
 - `build_chapter_review(state, chapter_id, chapter_text, analysis)`: 章节质量回顾，输出通用 `scores`、类型/平台加权 `weightedScores`、`contractAlignment` 与 `commercialAlignment`
-- `build_scene_review(state, chapter_id, chapter_text, start_paragraph, end_paragraph, analysis)`: 一幕质量回顾，输出功能性、连续性、逻辑、伏笔、清晰度，以及一幕级 `contractAlignment` 与 `commercialAlignment`
+- `build_scene_review(state, chapter_id, chapter_text, start_paragraph, end_paragraph, analysis)`: 场景质量回顾，输出功能性、连续性、逻辑、伏笔、清晰度，以及场景级 `contractAlignment` 与 `commercialAlignment`
 - `list_scene_candidates(chapter_text)`: 基于正文段落启发式切分候选 scene 范围，供 `review scene --list-scenes/--scene-index` 使用
 - `resolve_scene_candidates(chapter_entry, chapter_text)`: 优先读取显式 `scenePlans`，否则回退到启发式候选 scene
 - `detect_scene_plans(chapter_id, chapter_text)`: 把启发式候选 scene 转成可持久化的显式 `scenePlans`
@@ -127,7 +128,7 @@
 - `detect_scene_plans` 只是把启发式切分结果显式化，不代表作者意图已完全确认
 - `refresh_context_lens` 现在会优先保留紧凑切片而不是整份状态；新增字段应继续遵守“够写当前章即可”的边界
 - `context_lens.py` 的 `chapterHandoff` 是启发式摘要，不等于完整章节摘要；它优先服务“写前知道上一章余波 / 本章承接 / 下一章交付”，而不是替代人工章节梳理
-- 一幕级 `contractAlignment` 复用了章节级契约思想，但阈值更偏向“局部兑现/局部钩子”，不等同于整章判断
+- 场景级 `contractAlignment` 复用了章节级契约思想，但阈值更偏向“局部兑现/局部钩子”，不等同于整章判断
 - `story_review.py` 现在还会输出 `storyConstraintSignals`，用于暴露当前章评审实际消费到的情绪契约、世界规则、到窗伏笔和角色状态切片
 - `story_review.py` 现在还会在 chapter review 中输出 `chapterHandoffSignals`，用于暴露“上一章结果 -> 本章起点”的承接风险；它是软规则，误报应优先通过真实样例回灌，而不是继续硬编码更重的剧情证明器
 - `chapterHandoffSignals` 当前只在存在明确前章负载时触发：前章需要留下角色状态变化、活跃线程或章节方向负载；检测会同时看角色/状态/线程锚点、前章 direction / beat / scene goal 的语义锚点、“那句还没散 / 从某处脱身不过半个时辰”这类直接接续句式，以及命令层传入的上一章结尾窗口中是否存在当前章开头短对白 / 短句的高置信承接；单个弱语义锚点只算辅助证据，开头前两段没有接住但前四段内自然回接，会记录 `delayedBridge=true` 并避免误报，不要求每章开头机械复述上一章

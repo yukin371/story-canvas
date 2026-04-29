@@ -38,6 +38,10 @@ class PromptPackProtocolSmokeTest(unittest.TestCase):
         default_pack = next(pack for pack in packs if pack["id"] == "story-canvas/default")
         light_novel_pack = next(pack for pack in packs if pack["id"] == "story-canvas/light-novel")
         web_serial_pack = next(pack for pack in packs if pack["id"] == "story-canvas/web-serial")
+        xuanhuan_pack = next(pack for pack in packs if pack["id"] == "story-canvas/玄幻")
+        romance_pack = next(pack for pack in packs if pack["id"] == "story-canvas/言情")
+        western_fantasy_pack = next(pack for pack in packs if pack["id"] == "story-canvas/西幻")
+        science_fiction_pack = next(pack for pack in packs if pack["id"] == "story-canvas/科幻")
 
         default_template_ids = {item["id"] for item in default_pack["templates"]}
         light_novel_template_ids = {item["id"] for item in light_novel_pack["templates"]}
@@ -57,6 +61,13 @@ class PromptPackProtocolSmokeTest(unittest.TestCase):
         self.assertIn("cover-poster-standard", web_serial_template_ids)
         self.assertIn("ensemble-key-visual-standard", web_serial_template_ids)
         self.assertIn("chase-escape-standard", web_serial_template_ids)
+
+        self.assertIn("duel-scene-standard", {item["id"] for item in xuanhuan_pack["templates"]})
+        self.assertIn("promo-standard", {item["id"] for item in romance_pack["templates"]})
+        self.assertIn("creature-sheet-standard", {item["id"] for item in western_fantasy_pack["templates"]})
+        self.assertIn("chase-escape-standard", {item["id"] for item in science_fiction_pack["templates"]})
+        self.assertEqual(default_pack_ref_from_name("xuanhuan")["packId"], "story-canvas/玄幻")
+        self.assertEqual(default_pack_ref_from_name("science-fiction")["packId"], "story-canvas/科幻")
 
     def test_load_available_prompt_packs_normalizes_project_pack(self) -> None:
         raw_pack = {
@@ -266,6 +277,28 @@ class PromptPackProtocolSmokeTest(unittest.TestCase):
         self.assertEqual(on_disk["lexicon"]["subjectPhrases"]["chapter-scene"], ["巷口对峙", "旧城冷调"])
         self.assertIn("{subjectPhrases}", on_disk["templates"][0]["promptTemplate"])
         self.assertEqual(on_disk["modifierGroups"][0]["promptFragment"], "hard shadow")
+
+    def test_save_prompt_pack_document_preserves_chinese_file_name_and_pack_id(self) -> None:
+        saved = save_prompt_pack_document(
+            self.temp_dir,
+            {
+                "label": "玄幻海报包",
+                "templates": [
+                    {
+                        "id": "封面海报",
+                        "label": "玄幻封面",
+                        "useCase": "cover-poster",
+                        "mode": "text-to-image",
+                        "promptTemplate": "",
+                    }
+                ],
+            },
+            file_name="玄幻海报模板",
+        )
+
+        self.assertEqual(saved["id"], "project/玄幻海报模板")
+        self.assertTrue((self.packs_dir / "玄幻海报模板.yaml").exists())
+        self.assertEqual(serialize_prompt_pack_document(saved)["name"], "玄幻海报模板")
 
     def test_save_prompt_pack_document_rejects_builtin_pack_id(self) -> None:
         with self.assertRaisesRegex(ValueError, "系统 pack id"):

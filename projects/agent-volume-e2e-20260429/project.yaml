@@ -1,0 +1,52 @@
+{
+  "title": "灰灯巡夜",
+  "genre": "都市奇幻",
+  "defaultMode": "driving",
+  "activeChapterId": "chapter-002",
+  "positioning": {
+    "primaryGenre": "fantasy",
+    "subGenre": "urban-occult",
+    "styleTags": [
+      "web-serial"
+    ],
+    "targetAudience": [
+      "qidian-reader"
+    ]
+  },
+  "storyContract": {
+    "corePromises": [
+      "每章都推进旧城异案并逼近主角父亲失踪真相"
+    ],
+    "avoidances": [],
+    "endingContract": "",
+    "paceContract": "中快节奏，每章必须有明确推进或代价"
+  },
+  "emotionalContract": {
+    "coreEmotions": [],
+    "chapterEmotionFloor": [],
+    "forbiddenEmotions": [],
+    "revealPreference": {
+      "defaultMode": "",
+      "allowDirectExplainAtClimax": false
+    }
+  },
+  "storyTemplate": {
+    "id": "",
+    "label": "",
+    "modulePolicy": {},
+    "reviewFocus": []
+  },
+  "commercialPositioning": {
+    "premise": "殡仪馆夜班青年顾迟在处理一具空棺遗体时被旧城城隍的灰灯认主，被迫接手只在夜里开放的异案巡查。",
+    "hookLine": "空棺里没有尸体，只有一盏会记名字的灰灯。",
+    "hookStack": [],
+    "benchmarkWorks": [],
+    "targetPlatform": "qidian",
+    "serializationModel": "两章完成一个小型异案闭环，并抬升主线失踪谜团",
+    "releaseCadence": "日更两章",
+    "chapterWordFloor": 1200,
+    "chapterWordTarget": 1800
+  },
+  "createdAt": "2026-04-29T11:30:30+08:00",
+  "updatedAt": "2026-04-29T12:05:50+08:00"
+}

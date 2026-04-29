@@ -1,0 +1,275 @@
+{
+  "conclusion": {
+    "closureStatus": "closed",
+    "allowHumanReview": true,
+    "strongestPoint": "三章首卷已经完成从雾钟点名、旧站追查到缺页归档的局部小案：余仁失踪从空号变为缺页待补，林照夜从未录取考生变为临时外勤协查。",
+    "biggestRisk": "当前版本仍是能力验证用短卷，部分 scene 评分停在 workable，且 stats 命令仍把章节底线显示为 2000/3000，和项目商业配置 1200/1800 不一致。"
+  },
+  "scores": [
+    {
+      "dimensionId": "volumeClosure",
+      "score": 4,
+      "conclusion": "卷主问题已局部回答：雾钟第十三下点名活见证人，余仁案完成缺页待补归档，林照夜获得临时外勤资格。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "review-packet:volume-001:chapter-003",
+        "chapter-003#scene-3"
+      ]
+    },
+    {
+      "dimensionId": "openingOnboarding",
+      "score": 4,
+      "conclusion": "雾钟、活见证人、缺页和雾务局旧案科在前三章内给出最低可读定义，没有继续只堆名词。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002"
+      ],
+      "evidenceRefs": [
+        "review-packet:volume-001:chapter-001",
+        "review-packet:volume-001:chapter-002"
+      ]
+    },
+    {
+      "dimensionId": "worldLogic",
+      "score": 4,
+      "conclusion": "世界规则能支撑本卷：被遗忘者触发雾钟，活见证人会缺页，旧案编号和封存号把案件带入雾务局。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-002#scene-3",
+        "chapter-003#scene-2"
+      ]
+    },
+    {
+      "dimensionId": "chapterHandoff",
+      "score": 3,
+      "conclusion": "章节承接可用：第一章黑色纸夹引到第二章回站查线，第二章旧案编号直接引到第三章旧案科，但仍可在章首增加更强情绪余波。",
+      "chapterRefs": [
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "review-packet:volume-001:chapter-002",
+        "review-packet:volume-001:chapter-003"
+      ]
+    },
+    {
+      "dimensionId": "characterContinuity",
+      "score": 4,
+      "conclusion": "林照夜保持用冷笑话压恐惧的自证姿态，乔声从监视到违规担保的变化由父亲缺页线索支撑。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-003#scene-1",
+        "chapter-003#scene-3"
+      ]
+    },
+    {
+      "dimensionId": "antagonistShaping",
+      "score": 3,
+      "conclusion": "本卷对手更多是雾务局制度、缺页规则和灰帽人残影，功能成立但实体反派还只是露尾巴。",
+      "chapterRefs": [
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-003#scene-2"
+      ]
+    },
+    {
+      "dimensionId": "conflictEscalation",
+      "score": 3,
+      "conclusion": "冲突从异常点名升级到身份缺页，再到旧案科污染判定和临时外勤监管，阶梯清楚但中段压迫还能更尖锐。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-001#scene-2",
+        "chapter-002#scene-2",
+        "chapter-003#scene-1"
+      ]
+    },
+    {
+      "dimensionId": "payoffDelivery",
+      "score": 4,
+      "conclusion": "首卷交付一次明确体验兑现：林照夜听完整第十三下，补回余仁缺页名单，并获得临时外勤协查证。",
+      "chapterRefs": [
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-003#scene-2",
+        "chapter-003#scene-3"
+      ]
+    },
+    {
+      "dimensionId": "foreshadowRhythm",
+      "score": 3,
+      "conclusion": "短线伏笔完成回收，名单第二人和第十四页作为卷后尾巴保留；下一卷需要尽快回应乔姓线索，避免只加谜。",
+      "chapterRefs": [
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-002#scene-3",
+        "chapter-003#scene-3"
+      ]
+    },
+    {
+      "dimensionId": "styleReadability",
+      "score": 4,
+      "conclusion": "风格已基本收敛到潮湿、冷幽默、雾档意象；style report 平均 19.7，仅余轻度句式/感官提示。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "review-packet:volume-001:chapter-001",
+        "review-packet:volume-001:chapter-002",
+        "review-packet:volume-001:chapter-003"
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "issue": "stats 字数目标与项目商业配置不一致",
+      "evidence": [
+        "project.yaml commercialPositioning.chapterWordFloor=1200, chapterWordTarget=1800",
+        "stats 输出 minimumPerChapter=2000, recommendedPerChapter=3000，三章仍被标为 below-minimum",
+        "review preflight 的 commercialAlignmentRisks 不再按 1200 字报告缺字数"
+      ],
+      "impact": "会误导 agent 继续注水到 2000 字，而不是按当前测试卷配置判断是否足够。",
+      "primaryCause": "tooling_miss",
+      "secondaryCauses": [],
+      "fixAction": "后续修 stats 的字数目标读取路径，让它与 review/commercialAlignment 使用同一配置源。",
+      "whyToolingMissed": "stats 与 review preflight 显然读取了不同的目标来源，当前 gate 没有把这种配置分叉作为错误报告。",
+      "whySelfReviewMissed": "早期章节复检只看 review commercial risk，直到单独跑 stats 才暴露。",
+      "optimizationAction": "把 stats/review 字数目标一致性纳入 doctor 或 workflow volume preflight。",
+      "detectedBy": [
+        "stats",
+        "review preflight"
+      ],
+      "ruleIds": [
+        "json-compatible-yaml",
+        "commercial-word-target-source"
+      ],
+      "verificationCommands": [
+        "PYTHONPATH=src python -m story_canvas stats --root projects\\\\new-book-validation-20260429",
+        "PYTHONPATH=src python -m story_canvas review preflight --root projects\\\\new-book-validation-20260429 --volume-id volume-001"
+      ],
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "review-packet:volume-001:chapter-001",
+        "review-packet:volume-001:chapter-002",
+        "review-packet:volume-001:chapter-003"
+      ]
+    },
+    {
+      "issue": "scene-detect --replace 把三幕章节压成单一场景",
+      "evidence": [
+        "chapter-001、chapter-002、chapter-003 在 --replace 后均 detected=1",
+        "随后需要手工 scene-update / scene-add 恢复每章 3 个 scenePlans"
+      ],
+      "impact": "会破坏 scene review 粒度，让卷审看不到章节内部起承转收，也容易让用户误以为工具只能检查到单一章节或单一场景。",
+      "primaryCause": "tooling_miss",
+      "secondaryCauses": [
+        "self_review_miss"
+      ],
+      "fixAction": "后续改进 scene-detect 的中文小说分幕启发式，并在覆盖前提示将从 3 scenes 变成 1 scene 的风险。",
+      "whyToolingMissed": "当前 scene-detect 启发式对无显式分隔符的中文连续正文过于保守。",
+      "whySelfReviewMissed": "首次执行 --replace 后如果只看命令成功码，容易忽略 detected=1 造成的审查粒度退化。",
+      "optimizationAction": "把 scene count regression 纳入 outline check 或 scene-detect 输出的 warning。",
+      "detectedBy": [
+        "outline scene-detect --replace",
+        "manual scene boundary review"
+      ],
+      "ruleIds": [
+        "scene-plan-granularity"
+      ],
+      "verificationCommands": [
+        "PYTHONPATH=src python -m story_canvas outline scene-list --root projects\\\\new-book-validation-20260429 --chapter-id chapter-001"
+      ],
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-001#scene-1",
+        "chapter-002#scene-1",
+        "chapter-003#scene-1"
+      ]
+    },
+    {
+      "issue": "中段追读牵引仍可增强",
+      "evidence": [
+        "review preflight 仍提示已声明商业 hook line，但章节推进或章末追读牵引还不够强",
+        "部分 scene review 停在 workable，而非 solid"
+      ],
+      "impact": "不阻塞本轮能力验证和人工审查，但如果作为正式连载开篇，第二章的危机压迫还可以更尖锐。",
+      "primaryCause": "generation_miss",
+      "secondaryCauses": [
+        "self_review_miss"
+      ],
+      "fixAction": "人工审查后若要继续打磨，优先强化第二章旧库门和第三章灰帽人的主动威胁。",
+      "whyToolingMissed": "工具已给出商业 hook risk，但不能判断当前测试卷是否接受该风险。",
+      "whySelfReviewMissed": "作者侧修稿优先清理字数、scene 粒度和闭环，未继续扩写正式连载强度。",
+      "optimizationAction": "把测试卷和正式连载卷的追读强度门槛区分为不同 profile。",
+      "detectedBy": [
+        "review preflight",
+        "review scene"
+      ],
+      "ruleIds": [
+        "commercial-hook-strength"
+      ],
+      "verificationCommands": [
+        "PYTHONPATH=src python -m story_canvas review preflight --root projects\\\\new-book-validation-20260429 --volume-id volume-001",
+        "PYTHONPATH=src python -m story_canvas review scene --root projects\\\\new-book-validation-20260429 --chapter-id chapter-002 --scene-index 3"
+      ],
+      "chapterRefs": [
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-002#scene-3",
+        "chapter-003#scene-2"
+      ]
+    }
+  ],
+  "closureAssessment": {
+    "mainProblem": "雾钟为什么点名林照夜，以及余仁为什么会从档案中消失。",
+    "delivered": [
+      "第十三下雾钟点名活见证人，并让林照夜开始缺页。",
+      "余仁案从空号推进到缺页待补，局部真相落定。",
+      "林照夜获得临时外勤协查证，角色状态完成阶段变化。",
+      "乔声父亲和名单第二人留下下一卷尾巴。"
+    ],
+    "missing": [],
+    "reasoning": "本卷已经完成一个三章小故事单元：起点是点名和身份消失，承段是旧站追查与旧案编号，收束是余仁缺页归档和临时外勤资格。剩余问题主要是正式连载强度和工具口径，不改变本卷局部闭环判断。"
+  },
+  "repairSuggestions": [
+    "若进入正式连载打磨，优先增强第二章旧库门处的主动威胁。",
+    "修复 stats 字数目标来源，避免后续 agent 被错误 2000/3000 目标诱导注水。",
+    "改进 scene-detect 对中文连续正文的分幕识别，避免覆盖已有三幕粒度。"
+  ],
+  "acceptedRisks": [
+    "本轮是能力验证用三章短卷，接受部分 scene 仅为 workable 而非 solid。",
+    "未为了 stats 当前 2000/3000 错误目标继续注水，按 project.yaml 的 1200/1800 和 review preflight 口径判断字数足够。",
+    "独立编辑审查使用 same_agent_fallback，因为当前用户未要求启动 subagent；该限制已在 editorPass 中明示。"
+  ]
+}

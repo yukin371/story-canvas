@@ -1,0 +1,19 @@
+{
+  "premiseFacts": [
+    {
+      "id": "wf-236c5ce875",
+      "label": "巡夜不是见鬼就砍",
+      "fact": "灰灯悬到她头顶，火光一亮，井边地面立刻显出一圈极浅的旧字，像有人多年前拿灯油写过规矩：见名引路，无名止步；欠命先偿，欠案后查。顾迟胸口那页巡簿突然发热，父亲的批注在他脑子里接成了完整的意思。他这才明白，所谓巡夜不是见鬼就砍，也不是替城隍当苦力乱收魂，而是先把失序的规矩找回来。",
+      "sourceChapterId": "chapter-002",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-29T11:48:07+08:00",
+      "createdAt": "2026-04-29T11:48:07+08:00"
+    }
+  ],
+  "worldRules": [],
+  "powerProgressions": [],
+  "factions": [],
+  "locations": [],
+  "artifacts": [],
+  "mysteries": []
+}

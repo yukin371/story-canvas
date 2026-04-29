@@ -1,0 +1,46 @@
+{
+  "title": "小师弟只想摆烂，师姐们却全疯了",
+  "genre": "玄幻宗门 / 欢乐爽文 / 伪后宫",
+  "defaultMode": "driving",
+  "activeChapterId": "chapter-001",
+  "positioning": {
+    "primaryGenre": "玄幻宗门-/-欢乐爽文-/-伪后宫",
+    "subGenre": "",
+    "styleTags": [],
+    "targetAudience": []
+  },
+  "storyContract": {
+    "corePromises": [],
+    "avoidances": [],
+    "endingContract": "",
+    "paceContract": ""
+  },
+  "emotionalContract": {
+    "coreEmotions": [],
+    "chapterEmotionFloor": [],
+    "forbiddenEmotions": [],
+    "revealPreference": {
+      "defaultMode": "",
+      "allowDirectExplainAtClimax": false
+    }
+  },
+  "storyTemplate": {
+    "id": "",
+    "label": "",
+    "modulePolicy": {},
+    "reviewFocus": []
+  },
+  "commercialPositioning": {
+    "premise": "",
+    "hookLine": "",
+    "hookStack": [],
+    "benchmarkWorks": [],
+    "targetPlatform": "",
+    "serializationModel": "",
+    "releaseCadence": "",
+    "chapterWordFloor": 0,
+    "chapterWordTarget": 0
+  },
+  "createdAt": "2026-04-29T19:14:26+08:00",
+  "updatedAt": "2026-04-29T19:14:26+08:00"
+}

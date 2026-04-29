@@ -1,0 +1,138 @@
+{
+  "entities": [
+    {
+      "id": "lin-zhaoye",
+      "name": "林照夜",
+      "type": "protagonist",
+      "source": "manual",
+      "aliases": [
+        "照夜"
+      ],
+      "summary": "落榜档案员，能听见死人记忆里的雾钟，习惯用冷笑话掩饰自卑。",
+      "seed": {
+        "archetype": "失败考生 / 被异常点名者",
+        "personality": "嘴硬、观察细、对制度不信任但怕被彻底排除",
+        "motivation": "查清准考证号为何出现在失踪者尸记里，证明自己不是雾灾污染源",
+        "background": "三年前雾务局招考落榜，靠整理旧档案维持生计"
+      },
+      "profile": {
+        "appearance": [],
+        "abilities": [],
+        "speech": [],
+        "relationships": []
+      },
+      "state": {
+        "statusTags": [],
+        "powerLevel": {
+          "publicLevel": "无正式外勤资格",
+          "trueLevel": "能听见尸记钟声中的缺页"
+        },
+        "injuries": []
+      },
+      "currentState": {
+        "status": "被雾钟点名",
+        "physicalState": [
+          "长期失眠，右耳会在雾钟响后短暂失聪"
+        ],
+        "emotionalState": [
+          "压着恐惧的自嘲"
+        ],
+        "location": "旧公交总站",
+        "lastUpdatedChapter": null,
+        "powerLevel": "无正式外勤资格"
+      },
+      "changeLog": [],
+      "createdAt": "2026-04-29T23:54:35+08:00",
+      "updatedAt": "2026-04-29T23:54:35+08:00"
+    },
+    {
+      "id": "qiao-sheng",
+      "name": "乔声",
+      "type": "deuteragonist",
+      "source": "manual",
+      "aliases": [
+        "乔外勤"
+      ],
+      "summary": "雾务局见习外勤，负责把林照夜从异常现场带走，也负责监视他。",
+      "seed": {
+        "archetype": "制度内的年轻执行者",
+        "personality": "语气干净，动作克制，习惯先看证据再相信人",
+        "motivation": "证明自己不是靠家族进入雾务局，也想找出父亲当年被除名的原因",
+        "background": "雾务局旧案科见习外勤，父亲曾因雾灾案被撤档"
+      },
+      "profile": {
+        "appearance": [],
+        "abilities": [],
+        "speech": [],
+        "relationships": []
+      },
+      "state": {
+        "statusTags": [],
+        "powerLevel": {
+          "publicLevel": "雾痕取证",
+          "trueLevel": "能在物件上看见最后一次被遗忘的名字"
+        },
+        "injuries": []
+      },
+      "currentState": {
+        "status": "临时监护林照夜",
+        "physicalState": [
+          "左手常戴黑线手套隔绝雾痕"
+        ],
+        "emotionalState": [
+          "戒备中带一点好奇"
+        ],
+        "location": "雾务局旧案科",
+        "lastUpdatedChapter": null,
+        "powerLevel": "雾痕取证"
+      },
+      "changeLog": [],
+      "createdAt": "2026-04-29T23:54:55+08:00",
+      "updatedAt": "2026-04-29T23:54:55+08:00"
+    },
+    {
+      "id": "yu-ren",
+      "name": "余仁",
+      "type": "victim",
+      "source": "manual",
+      "aliases": [
+        "老余"
+      ],
+      "summary": "失踪公交司机，尸记里留下林照夜的准考证号。",
+      "seed": {
+        "archetype": "第一案失踪者",
+        "personality": "谨慎、怕麻烦、习惯给车厢最后一排留灯",
+        "motivation": "生前想把一份旧档案交出，却不敢直接进雾务局",
+        "background": "三年前雾灾夜驾驶末班车进入雾墙，只有他活着回来"
+      },
+      "profile": {
+        "appearance": [],
+        "abilities": [],
+        "speech": [],
+        "relationships": []
+      },
+      "state": {
+        "statusTags": [],
+        "powerLevel": {
+          "publicLevel": "",
+          "trueLevel": ""
+        },
+        "injuries": []
+      },
+      "currentState": {
+        "status": "失踪 / 尸记残留",
+        "physicalState": [],
+        "emotionalState": [
+          "求救和愧疚混杂"
+        ],
+        "location": "十三路旧站",
+        "lastUpdatedChapter": null,
+        "powerLevel": ""
+      },
+      "changeLog": [],
+      "createdAt": "2026-04-29T23:55:11+08:00",
+      "updatedAt": "2026-04-29T23:55:11+08:00"
+    }
+  ],
+  "enrichmentProposals": []
+}

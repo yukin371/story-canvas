@@ -103,6 +103,7 @@ Install adapters with:
 
 ```powershell
 uv run python scripts/install_adapter.py --host codex --force
+uv run python scripts/install_adapter.py --host codex --repo-skill --force
 uv run python scripts/install_adapter.py --host claude --workspace <workspace-root> --force
 uv run python scripts/install_adapters.py --workspace <workspace-root> --force
 uv run python scripts/install_adapter.py --host codex --skill-name story-harness-brainstorm --force
@@ -112,7 +113,8 @@ uv run python scripts/install_adapter.py --host codex --skill-name story-canvas-
 Rules:
 
 1. Codex installs to `~/.codex/skills/<skill-name>` by default.
-2. Claude installs to `<workspace>/.claude/skills/<skill-name>` by default.
-3. Use `--target-dir` to override the default target.
-4. Use `--dry-run` to inspect the resolved source and target without copying files.
-5. `install_adapters.py` defaults to `codex` only, or `codex + claude` when `--workspace` is provided.
+2. `--repo-skill` makes Codex install to `<workspace>/.codex/skills/<skill-name>`; without `--workspace`, it uses the current repository root.
+3. Claude installs to `<workspace>/.claude/skills/<skill-name>` by default.
+4. Use `--target-dir` to override the default target.
+5. Use `--dry-run` to inspect the resolved source and target without copying files.
+6. `install_adapters.py` defaults to `codex` only, or `codex + claude` when `--workspace` is provided.

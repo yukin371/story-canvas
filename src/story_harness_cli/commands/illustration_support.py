@@ -71,6 +71,27 @@ def _entity_ids(state: dict[str, Any]) -> set[str]:
     }
 
 
+def _target_name_from_state(state: dict[str, Any], entry: dict[str, Any]) -> str:
+    chapter_id = str(entry.get("chapterId") or "").strip()
+    if chapter_id:
+        for chapter in state.get("outline", {}).get("chapters", []):
+            if str(chapter.get("id") or "").strip() == chapter_id:
+                return str(chapter.get("title") or chapter_id).strip() or chapter_id
+        return chapter_id
+
+    entity_id = str(entry.get("entityId") or "").strip()
+    if entity_id:
+        for entity in state.get("entities", {}).get("entities", []):
+            if str(entity.get("id") or "").strip() == entity_id:
+                return str(entity.get("name") or entity_id).strip() or entity_id
+        return entity_id
+
+    temp_label = str(entry.get("tempLabel") or "").strip()
+    if temp_label:
+        return temp_label
+    return ""
+
+
 def target_record_from_entry(root: Path, state: dict[str, Any], entry: dict[str, Any]) -> dict[str, Any]:
     chapter_id = entry.get("chapterId")
     entity_id = entry.get("entityId")
@@ -144,4 +165,5 @@ def decorate_generated_entry(root: Path, state: dict[str, Any], entry: dict[str,
     decorated["allAssetsPresent"] = bool(assets) and decorated["assetCount"] == decorated["existingAssetCount"]
     decorated["allInputsPresent"] = all(item["exists"] for item in inputs) if inputs else True
     decorated["maskPresent"] = mask["exists"] if mask["filePath"] else True
+    decorated["targetName"] = str(decorated.get("targetName") or "").strip() or _target_name_from_state(state, entry)
     return decorated

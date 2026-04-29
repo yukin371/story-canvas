@@ -1,0 +1,692 @@
+{
+  "currentChapterId": "chapter-003",
+  "lenses": [
+    {
+      "chapterId": "chapter-001",
+      "chapterTitle": "扫地也算修行",
+      "emotionalContract": {
+        "coreEmotions": [
+          "欢乐",
+          "爽快",
+          "轻松期待",
+          "暧昧但不沉重",
+          "反派破防的喜感"
+        ],
+        "chapterEmotionFloor": [
+          "每章至少一个明确笑点",
+          "每章至少一个读者可感知的爽点或期待钩子"
+        ],
+        "forbiddenEmotions": [
+          "长期憋屈",
+          "沉重虐恋",
+          "无意义羞辱",
+          "阴湿背刺主调"
+        ],
+        "revealPreference": {
+          "defaultMode": "先误会后揭示，让旁人脑补主角深不可测",
+          "allowDirectExplainAtClimax": true
+        }
+      },
+      "storyTemplate": {
+        "id": "cheerful-xuanhuan-sect-power-fantasy",
+        "label": "欢乐玄幻宗门爽文",
+        "modulePolicy": {},
+        "reviewFocus": [
+          "爽点是否清晰",
+          "笑点是否自然",
+          "主角摆烂与破局是否同时成立",
+          "师姐群像是否各有能动性",
+          "伪后宫边界是否轻松不油腻"
+        ]
+      },
+      "chapterHandoff": {
+        "previousChapter": null,
+        "currentChapter": {
+          "id": "chapter-001",
+          "title": "扫地也算修行",
+          "direction": "用一次躲早课失败和杂役场挑衅，建立主角的反常修炼机制、破落宗门处境，以及师姐对他第一次严重误判。",
+          "beatHints": [
+            "陆闲想躲过早课，却被二师姐拎去杂役坡，建立破落宗门处境和他只想摆烂的异常状态。",
+            "黑沙门上门挑衅时，陆闲在挨骂做杂活中反而进入最适合自己的顿悟状态。",
+            "陆闲为保住早饭无意破掉试探，被二师姐误认成故意藏锋的宗门底牌。"
+          ],
+          "sceneGoals": [
+            "陆闲躲早课失败，被祝红绫拎出来，建立破落宗门与主角摆烂状态。",
+            "陆闲为保住肉包无意破掉霍飞试探，被祝红绫误认成故意藏锋的宗门底牌。",
+            "陆闲在祖师崖下扫地搬铁，黑沙门上山挑衅，他在挨骂做杂活时反而进入顿悟状态。"
+          ]
+        },
+        "nextChapter": null,
+        "carryOverEntityChanges": [],
+        "activeThreadLabels": []
+      },
+      "activeCharacters": [
+        {
+          "id": "lu-xian",
+          "name": "陆闲",
+          "currentState": {
+            "status": "杂役坡扫地中",
+            "physicalState": [],
+            "emotionalState": [
+              "躲事、警觉、想保住肉包"
+            ],
+            "location": "青岚宗",
+            "lastUpdatedChapter": "chapter-001",
+            "powerLevel": "外人眼里的废柴小师弟"
+          },
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "外人眼里的废柴小师弟",
+            "trueLevel": "拥有与常人相反、会在摆烂和杂活中触发的异常修炼机制"
+          },
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "zhu-hongling",
+          "name": "祝红绫",
+          "currentState": {
+            "status": "迎战前压着火气",
+            "physicalState": [],
+            "emotionalState": [
+              "恼火、护短、逐渐转为郑重"
+            ],
+            "location": "青岚宗",
+            "lastUpdatedChapter": "chapter-001",
+            "powerLevel": "青岚宗最能打也最会骂人的二师姐"
+          },
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "青岚宗最能打也最会骂人的二师姐",
+            "trueLevel": "已开始怀疑陆闲一直在藏锋"
+          },
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "huo-fei",
+          "name": "霍飞",
+          "currentState": "紧张",
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "黑沙门来踩场的得意弟子",
+            "trueLevel": "只是奉命试压，并未预料陆闲的异常反击"
+          },
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "han-zhanglao",
+          "name": "韩长老",
+          "currentState": "紧张",
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "会骂人也要守门面的长老",
+            "trueLevel": "承担宗门对外博弈压力"
+          },
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "su-que",
+          "name": "苏雀",
+          "currentState": {
+            "status": "在前院观望局势",
+            "physicalState": [],
+            "emotionalState": [
+              "轻松、促狭、站队明确"
+            ],
+            "location": "青岚宗",
+            "lastUpdatedChapter": "chapter-001",
+            "powerLevel": "爱啃青果看热闹的五师姐"
+          },
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "爱啃青果看热闹的五师姐",
+            "trueLevel": "对同门的护短态度非常坚决"
+          },
+          "injuries": [],
+          "recentChange": null
+        }
+      ],
+      "activeRelations": [],
+      "activeWorldRules": [
+        {
+          "id": "qinglan-wager-rule",
+          "label": "外门小比赌约规则",
+          "rule": "小比再败，青岚宗将失去半坡灵田与东侧水井的控制权。",
+          "scope": ""
+        },
+        {
+          "id": "reverse-cultivation-rule",
+          "label": "反常修炼机制",
+          "rule": "对陆闲而言，摆烂、劳作和受压比常规打坐更容易触发灵气流动与短暂顿悟。",
+          "scope": ""
+        }
+      ],
+      "activeFactions": [
+        {
+          "id": "qinglan-zong",
+          "name": "青岚宗",
+          "type": "玄门宗派",
+          "status": "资源濒危但仍维持山门"
+        },
+        {
+          "id": "heisha-men",
+          "name": "黑沙门",
+          "type": "魔门旁支宗派",
+          "status": "借赌约持续扩张"
+        }
+      ],
+      "activeThreads": [],
+      "activeForeshadows": [],
+      "dueForeshadows": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-29T20:59:00+08:00",
+      "chapterContentHash": "503e94a16e"
+    },
+    {
+      "chapterId": "chapter-002",
+      "chapterTitle": "东井也要扫干净",
+      "emotionalContract": {
+        "coreEmotions": [
+          "欢乐",
+          "爽快",
+          "轻松期待",
+          "暧昧但不沉重",
+          "反派破防的喜感"
+        ],
+        "chapterEmotionFloor": [
+          "每章至少一个明确笑点",
+          "每章至少一个读者可感知的爽点或期待钩子"
+        ],
+        "forbiddenEmotions": [
+          "长期憋屈",
+          "沉重虐恋",
+          "无意义羞辱",
+          "阴湿背刺主调"
+        ],
+        "revealPreference": {
+          "defaultMode": "先误会后揭示，让旁人脑补主角深不可测",
+          "allowDirectExplainAtClimax": true
+        }
+      },
+      "storyTemplate": {
+        "id": "cheerful-xuanhuan-sect-power-fantasy",
+        "label": "欢乐玄幻宗门爽文",
+        "modulePolicy": {},
+        "reviewFocus": [
+          "爽点是否清晰",
+          "笑点是否自然",
+          "主角摆烂与破局是否同时成立",
+          "师姐群像是否各有能动性",
+          "伪后宫边界是否轻松不油腻"
+        ]
+      },
+      "chapterHandoff": {
+        "previousChapter": {
+          "id": "chapter-001",
+          "title": "扫地也算修行",
+          "direction": "用一次躲早课失败和杂役场挑衅，建立主角的反常修炼机制、破落宗门处境，以及师姐对他第一次严重误判。",
+          "beatHints": [
+            "陆闲想躲过早课，却被二师姐拎去杂役坡，建立破落宗门处境和他只想摆烂的异常状态。",
+            "黑沙门上门挑衅时，陆闲在挨骂做杂活中反而进入最适合自己的顿悟状态。",
+            "陆闲为保住早饭无意破掉试探，被二师姐误认成故意藏锋的宗门底牌。"
+          ],
+          "sceneGoals": [
+            "陆闲躲早课失败，被祝红绫拎出来，建立破落宗门与主角摆烂状态。",
+            "陆闲为保住肉包无意破掉霍飞试探，被祝红绫误认成故意藏锋的宗门底牌。",
+            "陆闲在祖师崖下扫地搬铁，黑沙门上山挑衅，他在挨骂做杂活时反而进入顿悟状态。"
+          ]
+        },
+        "currentChapter": {
+          "id": "chapter-002",
+          "title": "东井也要扫干净",
+          "direction": "承接祖师崖误判后果，让大师姐把陆闲推到东侧水井守局；黑沙门再试一手，陆闲在被迫杂役中意外反打，师姐团误会继续升级。",
+          "beatHints": [
+            "陆闲被带去见大师姐，失去继续躲在杂役坡混日子的空间。",
+            "黑沙门借东侧水井做手脚，想在小比前先压垮青岚宗气势。",
+            "陆闲在擦井台搬桶时误触旧阵，反把对方的暗手揪出来。"
+          ],
+          "sceneGoals": [
+            "祖师崖余波传到正殿，大师姐出面接管陆闲。",
+            "陆闲被按到东侧水井看守，黑沙门暗手开始落子。",
+            "陆闲在保命和保井之间被迫出手，误会继续升级。"
+          ]
+        },
+        "nextChapter": {
+          "id": "chapter-003",
+          "title": "扫帚把脸抽回去",
+          "direction": "承接东井翻盘后的公开压力，让霍飞把试探抬到台前；陆闲想继续摆烂却被师姐们推上场，最终完成第一次清晰打脸和宗门内身份反转。",
+          "beatHints": [
+            "东井丢脸后霍飞要求当众再验陆闲，宗门众人被迫接招。",
+            "陆闲想输得不显眼，却在连环压力下把杂役动作变成真正破局。",
+            "霍飞当众吃瘪，核心师姐团正式确认陆闲是青岚宗底牌。"
+          ],
+          "sceneGoals": [
+            "黑沙门借东井事件逼宫，要求提前看青岚宗底牌。",
+            "陆闲被推上临时试手台，越想糊弄越把霍飞打懵。",
+            "宗门内部彻底认定陆闲深藏不露，陆闲的摆烂生涯宣告破产。"
+          ]
+        },
+        "carryOverEntityChanges": [],
+        "activeThreadLabels": []
+      },
+      "activeCharacters": [
+        {
+          "id": "lu-xian",
+          "name": "陆闲",
+          "currentState": {
+            "status": "杂役坡扫地中",
+            "physicalState": [],
+            "emotionalState": [
+              "躲事、警觉、想保住肉包"
+            ],
+            "location": "青岚宗",
+            "lastUpdatedChapter": "chapter-001",
+            "powerLevel": "外人眼里的废柴小师弟"
+          },
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "外人眼里的废柴小师弟",
+            "trueLevel": "拥有与常人相反、会在摆烂和杂活中触发的异常修炼机制"
+          },
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "su-que",
+          "name": "苏雀",
+          "currentState": {
+            "status": "在前院观望局势",
+            "physicalState": [],
+            "emotionalState": [
+              "轻松、促狭、站队明确"
+            ],
+            "location": "青岚宗",
+            "lastUpdatedChapter": "chapter-001",
+            "powerLevel": "爱啃青果看热闹的五师姐"
+          },
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "爱啃青果看热闹的五师姐",
+            "trueLevel": "对同门的护短态度非常坚决"
+          },
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "shen-tinglan",
+          "name": "沈听岚",
+          "currentState": {
+            "status": "把陆闲列为宗门隐藏底牌",
+            "physicalState": [],
+            "emotionalState": [
+              "冷静、审慎、压着喜色"
+            ],
+            "location": "青岚宗",
+            "lastUpdatedChapter": "chapter-003",
+            "powerLevel": "青岚宗最能稳局的大师姐"
+          },
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "青岚宗最能稳局的大师姐",
+            "trueLevel": "已经确认陆闲的异常价值，并开始围绕他重排小比布局"
+          },
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "huo-fei",
+          "name": "霍飞",
+          "currentState": {
+            "status": "带着试探和羞辱意味上山",
+            "physicalState": [],
+            "emotionalState": [
+              "轻蔑、挑衅、随后惊疑不定"
+            ],
+            "location": "青岚宗",
+            "lastUpdatedChapter": "chapter-001",
+            "powerLevel": "黑沙门来踩场的得意弟子"
+          },
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "黑沙门来踩场的得意弟子",
+            "trueLevel": "只是奉命试压，并未预料陆闲的异常反击"
+          },
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "zhu-hongling",
+          "name": "祝红绫",
+          "currentState": {
+            "status": "迎战前压着火气",
+            "physicalState": [],
+            "emotionalState": [
+              "恼火、护短、逐渐转为郑重"
+            ],
+            "location": "青岚宗",
+            "lastUpdatedChapter": "chapter-001",
+            "powerLevel": "青岚宗最能打也最会骂人的二师姐"
+          },
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "青岚宗最能打也最会骂人的二师姐",
+            "trueLevel": "已开始怀疑陆闲一直在藏锋"
+          },
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "han-zhanglao",
+          "name": "韩长老",
+          "currentState": {
+            "status": "应对黑沙门来人",
+            "physicalState": [],
+            "emotionalState": [
+              "焦躁、强撑体面"
+            ],
+            "location": "青岚宗",
+            "lastUpdatedChapter": "chapter-001",
+            "powerLevel": "会骂人也要守门面的长老"
+          },
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "会骂人也要守门面的长老",
+            "trueLevel": "承担宗门对外博弈压力"
+          },
+          "injuries": [],
+          "recentChange": null
+        }
+      ],
+      "activeRelations": [],
+      "activeWorldRules": [
+        {
+          "id": "qinglan-wager-rule",
+          "label": "外门小比赌约规则",
+          "rule": "小比再败，青岚宗将失去半坡灵田与东侧水井的控制权。",
+          "scope": ""
+        },
+        {
+          "id": "reverse-cultivation-rule",
+          "label": "反常修炼机制",
+          "rule": "对陆闲而言，摆烂、劳作和受压比常规打坐更容易触发灵气流动与短暂顿悟。",
+          "scope": ""
+        },
+        {
+          "id": "broken-guard-array-rule",
+          "label": "残护山阵支路规则",
+          "rule": "祖师崖旧剑路与东侧水井同属青岚宗残缺护山阵支路，顺势劳作、搬运和牵引旧器物时，偶尔会把残纹短暂带活。",
+          "scope": ""
+        }
+      ],
+      "activeFactions": [
+        {
+          "id": "qinglan-zong",
+          "name": "青岚宗",
+          "type": "玄门宗派",
+          "status": "资源濒危但仍维持山门"
+        },
+        {
+          "id": "heisha-men",
+          "name": "黑沙门",
+          "type": "魔门旁支宗派",
+          "status": "借赌约持续扩张"
+        }
+      ],
+      "activeThreads": [],
+      "activeForeshadows": [],
+      "dueForeshadows": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-29T21:27:51+08:00",
+      "chapterContentHash": "a3240d7b7f"
+    },
+    {
+      "chapterId": "chapter-003",
+      "chapterTitle": "扫帚把脸抽回去",
+      "emotionalContract": {
+        "coreEmotions": [
+          "欢乐",
+          "爽快",
+          "轻松期待",
+          "暧昧但不沉重",
+          "反派破防的喜感"
+        ],
+        "chapterEmotionFloor": [
+          "每章至少一个明确笑点",
+          "每章至少一个读者可感知的爽点或期待钩子"
+        ],
+        "forbiddenEmotions": [
+          "长期憋屈",
+          "沉重虐恋",
+          "无意义羞辱",
+          "阴湿背刺主调"
+        ],
+        "revealPreference": {
+          "defaultMode": "先误会后揭示，让旁人脑补主角深不可测",
+          "allowDirectExplainAtClimax": true
+        }
+      },
+      "storyTemplate": {
+        "id": "cheerful-xuanhuan-sect-power-fantasy",
+        "label": "欢乐玄幻宗门爽文",
+        "modulePolicy": {},
+        "reviewFocus": [
+          "爽点是否清晰",
+          "笑点是否自然",
+          "主角摆烂与破局是否同时成立",
+          "师姐群像是否各有能动性",
+          "伪后宫边界是否轻松不油腻"
+        ]
+      },
+      "chapterHandoff": {
+        "previousChapter": {
+          "id": "chapter-002",
+          "title": "东井也要扫干净",
+          "direction": "承接祖师崖误判后果，让大师姐把陆闲推到东侧水井守局；黑沙门再试一手，陆闲在被迫杂役中意外反打，师姐团误会继续升级。",
+          "beatHints": [
+            "陆闲被带去见大师姐，失去继续躲在杂役坡混日子的空间。",
+            "黑沙门借东侧水井做手脚，想在小比前先压垮青岚宗气势。",
+            "陆闲在擦井台搬桶时误触旧阵，反把对方的暗手揪出来。"
+          ],
+          "sceneGoals": [
+            "祖师崖余波传到正殿，大师姐出面接管陆闲。",
+            "陆闲被按到东侧水井看守，黑沙门暗手开始落子。",
+            "陆闲在保命和保井之间被迫出手，误会继续升级。"
+          ]
+        },
+        "currentChapter": {
+          "id": "chapter-003",
+          "title": "扫帚把脸抽回去",
+          "direction": "承接东井翻盘后的公开压力，让霍飞把试探抬到台前；陆闲想继续摆烂却被师姐们推上场，最终完成第一次清晰打脸和宗门内身份反转。",
+          "beatHints": [
+            "东井丢脸后霍飞要求当众再验陆闲，宗门众人被迫接招。",
+            "陆闲想输得不显眼，却在连环压力下把杂役动作变成真正破局。",
+            "霍飞当众吃瘪，核心师姐团正式确认陆闲是青岚宗底牌。"
+          ],
+          "sceneGoals": [
+            "黑沙门借东井事件逼宫，要求提前看青岚宗底牌。",
+            "陆闲被推上临时试手台，越想糊弄越把霍飞打懵。",
+            "宗门内部彻底认定陆闲深藏不露，陆闲的摆烂生涯宣告破产。"
+          ]
+        },
+        "nextChapter": null,
+        "carryOverEntityChanges": [],
+        "activeThreadLabels": []
+      },
+      "activeCharacters": [
+        {
+          "id": "lu-xian",
+          "name": "陆闲",
+          "currentState": {
+            "status": "杂役坡扫地中",
+            "physicalState": [],
+            "emotionalState": [
+              "躲事、警觉、想保住肉包"
+            ],
+            "location": "青岚宗",
+            "lastUpdatedChapter": "chapter-001",
+            "powerLevel": "外人眼里的废柴小师弟"
+          },
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "外人眼里的废柴小师弟",
+            "trueLevel": "拥有与常人相反、会在摆烂和杂活中触发的异常修炼机制"
+          },
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "huo-fei",
+          "name": "霍飞",
+          "currentState": {
+            "status": "带着试探和羞辱意味上山",
+            "physicalState": [],
+            "emotionalState": [
+              "轻蔑、挑衅、随后惊疑不定"
+            ],
+            "location": "青岚宗",
+            "lastUpdatedChapter": "chapter-001",
+            "powerLevel": "黑沙门来踩场的得意弟子"
+          },
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "黑沙门来踩场的得意弟子",
+            "trueLevel": "只是奉命试压，并未预料陆闲的异常反击"
+          },
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "su-que",
+          "name": "苏雀",
+          "currentState": {
+            "status": "在前院观望局势",
+            "physicalState": [],
+            "emotionalState": [
+              "轻松、促狭、站队明确"
+            ],
+            "location": "青岚宗",
+            "lastUpdatedChapter": "chapter-001",
+            "powerLevel": "爱啃青果看热闹的五师姐"
+          },
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "爱啃青果看热闹的五师姐",
+            "trueLevel": "对同门的护短态度非常坚决"
+          },
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "shen-tinglan",
+          "name": "沈听岚",
+          "currentState": {
+            "status": "把陆闲列为宗门隐藏底牌",
+            "physicalState": [],
+            "emotionalState": [
+              "冷静、审慎、压着喜色"
+            ],
+            "location": "青岚宗",
+            "lastUpdatedChapter": "chapter-003",
+            "powerLevel": "青岚宗最能稳局的大师姐"
+          },
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "青岚宗最能稳局的大师姐",
+            "trueLevel": "已经确认陆闲的异常价值，并开始围绕他重排小比布局"
+          },
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "zhu-hongling",
+          "name": "祝红绫",
+          "currentState": {
+            "status": "迎战前压着火气",
+            "physicalState": [],
+            "emotionalState": [
+              "恼火、护短、逐渐转为郑重"
+            ],
+            "location": "青岚宗",
+            "lastUpdatedChapter": "chapter-001",
+            "powerLevel": "青岚宗最能打也最会骂人的二师姐"
+          },
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "青岚宗最能打也最会骂人的二师姐",
+            "trueLevel": "已开始怀疑陆闲一直在藏锋"
+          },
+          "injuries": [],
+          "recentChange": null
+        },
+        {
+          "id": "han-zhanglao",
+          "name": "韩长老",
+          "currentState": {
+            "status": "应对黑沙门来人",
+            "physicalState": [],
+            "emotionalState": [
+              "焦躁、强撑体面"
+            ],
+            "location": "青岚宗",
+            "lastUpdatedChapter": "chapter-001",
+            "powerLevel": "会骂人也要守门面的长老"
+          },
+          "stateTags": [],
+          "powerLevel": {
+            "publicLevel": "会骂人也要守门面的长老",
+            "trueLevel": "承担宗门对外博弈压力"
+          },
+          "injuries": [],
+          "recentChange": null
+        }
+      ],
+      "activeRelations": [],
+      "activeWorldRules": [
+        {
+          "id": "qinglan-wager-rule",
+          "label": "外门小比赌约规则",
+          "rule": "小比再败，青岚宗将失去半坡灵田与东侧水井的控制权。",
+          "scope": ""
+        },
+        {
+          "id": "reverse-cultivation-rule",
+          "label": "反常修炼机制",
+          "rule": "对陆闲而言，摆烂、劳作和受压比常规打坐更容易触发灵气流动与短暂顿悟。",
+          "scope": ""
+        },
+        {
+          "id": "broken-guard-array-rule",
+          "label": "残护山阵支路规则",
+          "rule": "祖师崖旧剑路与东侧水井同属青岚宗残缺护山阵支路，顺势劳作、搬运和牵引旧器物时，偶尔会把残纹短暂带活。",
+          "scope": ""
+        }
+      ],
+      "activeFactions": [
+        {
+          "id": "qinglan-zong",
+          "name": "青岚宗",
+          "type": "玄门宗派",
+          "status": "资源濒危但仍维持山门"
+        },
+        {
+          "id": "heisha-men",
+          "name": "黑沙门",
+          "type": "魔门旁支宗派",
+          "status": "借赌约持续扩张"
+        }
+      ],
+      "activeThreads": [],
+      "activeForeshadows": [],
+      "dueForeshadows": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-29T21:33:05+08:00",
+      "chapterContentHash": "5029404edb"
+    }
+  ]
+}

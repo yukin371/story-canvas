@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from story_harness_cli.commands.project_support import build_project_advisories
+from story_harness_cli.commands.project_support import build_chapter_start_guide, build_project_advisories
 from story_harness_cli.protocol import chapter_path, ensure_project_root, load_project_state, save_state
 from story_harness_cli.services import detect_scene_plans, evaluate_project_outline_readiness
 from story_harness_cli.utils.text import paragraphs_from_text
@@ -114,6 +114,9 @@ def command_outline_check(args) -> int:
         require_project_gate=not args.allow_missing_project_gate,
     )
     result["projectAdvisories"] = build_project_advisories(root, include_prd_content=True)
+    if args.chapter_id and result.get("chapters"):
+        missing_codes = [item.get("code", "") for item in result["chapters"][0].get("missing", []) if item.get("code")]
+        result["startGuide"] = build_chapter_start_guide(root, args.chapter_id, missing_codes=missing_codes)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if result["ready"] else 1
 
@@ -250,6 +253,8 @@ def command_outline_scene_detect(args) -> int:
         raise SystemExit(f"章节不存在: {target_chapter}")
 
     chapter_text = target_chapter.read_text(encoding="utf-8")
+    if not paragraphs_from_text(chapter_text):
+        raise SystemExit("当前章节还没有正文段落；请先在章节文件中按场景写 1 段骨架，再运行 outline scene-detect。")
     detected_scenes = detect_scene_plans(args.chapter_id, chapter_text)
     if not detected_scenes:
         raise SystemExit("未检测到可用场景，请先补充章节正文")

@@ -74,6 +74,8 @@ Layout is auto-detected: if `spec/` directory exists, layered paths are used. No
 8. Context refresh in layered layout only loads the active volume's outline, saving AI context tokens.
 9. `detailed_outlines.yaml` stores per-chapter direction, beats, and scenePlans separately from the global outline.
 10. Use `outline detail-init` to create a detailed plan for a chapter, and `outline detail-show` to view it.
+11. `init` now creates a blank chapter stub; startup guidance lives in CLI output such as `status.targetChapter.startGuide`, not in fake prose inside `chapters/*.md`.
+12. `outline scene-detect` is for chapters that already have body paragraphs; it is not a substitute for creating initial chapter skeleton prose.
 
 ## Outline Hierarchy
 

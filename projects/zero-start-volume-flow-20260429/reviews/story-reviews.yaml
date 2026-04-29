@@ -1,0 +1,6324 @@
+{
+  "rubricVersion": "chapter-review-v1",
+  "sceneRubricVersion": "scene-review-v1",
+  "volumeSelfReviewRubricVersion": "volume-self-review-v1",
+  "chapterReviews": [
+    {
+      "reviewId": "chapter-review-c2b9b4cb2f",
+      "fingerprint": "chapter-review-v1:chapter-001:3c407bb5062b5665",
+      "rubricVersion": "chapter-review-v1",
+      "generatedAt": "2026-04-29T00:37:33+08:00",
+      "chapterId": "chapter-001",
+      "chapterTitle": "第一章",
+      "summary": "结合分析结果和正文信号，本章总分 62/100。当前强项在场景清晰度，最需要补强的是冲突张力。",
+      "rating": "workable",
+      "scores": {
+        "total": 62,
+        "maxScore": 100,
+        "dimensions": [
+          {
+            "id": "plotMomentum",
+            "label": "情节推进",
+            "score": 12,
+            "maxScore": 20,
+            "comment": "这一章更像铺垫，推进信号偏弱。",
+            "signals": [
+              "状态/关系推进信号 0 处",
+              "段落 5 段",
+              "转折连接词 1 处"
+            ],
+            "suggestions": [
+              "补一个明确的状态变化、关系变化或决定性动作，让章节前后产生落差。"
+            ]
+          },
+          {
+            "id": "characterPressure",
+            "label": "人物压力",
+            "score": 12,
+            "maxScore": 20,
+            "comment": "人物出场了，但被逼到变化的力度还不够。",
+            "signals": [
+              "活跃角色 3 个",
+              "状态候选 0 个",
+              "心理/压力词 0 个"
+            ],
+            "suggestions": [
+              "补一处人物状态变化或代价反馈，让角色不是只在场而是真的被事件推动。"
+            ]
+          },
+          {
+            "id": "conflictTension",
+            "label": "冲突张力",
+            "score": 3,
+            "maxScore": 20,
+            "comment": "冲突张力偏平，读者的追读理由还不够强。",
+            "signals": [
+              "高风险关系变化 0 处",
+              "张力关键词 0 个",
+              "疑问/感叹标记 0 个"
+            ],
+            "suggestions": [
+              "补一个明确阻力：对手、风险、时间压力或信息缺口，避免章节太平。",
+              "考虑留下一个未解答的问题或悬念钩子，提高章末牵引力。"
+            ]
+          },
+          {
+            "id": "sceneClarity",
+            "label": "场景清晰度",
+            "score": 20,
+            "maxScore": 20,
+            "comment": "这一幕的镜头和焦点比较清楚。",
+            "signals": [
+              "环境锚点 5 个",
+              "出场角色 3 个",
+              "开头带锚点 是"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "proseControl",
+            "label": "表达控制",
+            "score": 15,
+            "maxScore": 20,
+            "comment": "基础节奏可读，但 AI 风格信号额外扣了 6 分。",
+            "signals": [
+              "平均段长 114",
+              "长段落 0 段",
+              "对话段 2 段",
+              "风格额外扣分 6"
+            ],
+            "suggestions": [
+              "“不像……更像……”类翻转句偏多（每千字1.9次），优先写清人物实际观察到的事实，不要总靠抽象换挡",
+              "感官描写单一，缺少tactile和gustatory描写"
+            ]
+          }
+        ]
+      },
+      "weightedScores": {
+        "profile": {
+          "primaryGenre": "mystery",
+          "subGenre": "urban-occult",
+          "styleTags": [
+            "web-serial"
+          ],
+          "targetPlatform": "qidian"
+        },
+        "appliedWeights": {
+          "plotMomentum": 30,
+          "characterPressure": 15,
+          "conflictTension": 45,
+          "sceneClarity": 5,
+          "proseControl": 5
+        },
+        "adjustments": [
+          {
+            "source": "styleTag:web-serial",
+            "dimension": "plotMomentum",
+            "delta": 5
+          },
+          {
+            "source": "styleTag:web-serial",
+            "dimension": "conflictTension",
+            "delta": 5
+          },
+          {
+            "source": "styleTag:web-serial",
+            "dimension": "proseControl",
+            "delta": -5
+          },
+          {
+            "source": "styleTag:web-serial",
+            "dimension": "sceneClarity",
+            "delta": -5
+          },
+          {
+            "source": "targetPlatform:qidian",
+            "dimension": "plotMomentum",
+            "delta": 5
+          },
+          {
+            "source": "targetPlatform:qidian",
+            "dimension": "conflictTension",
+            "delta": 5
+          },
+          {
+            "source": "targetPlatform:qidian",
+            "dimension": "proseControl",
+            "delta": -5
+          },
+          {
+            "source": "targetPlatform:qidian",
+            "dimension": "sceneClarity",
+            "delta": -5
+          }
+        ],
+        "total": 42.5,
+        "maxScore": 100,
+        "rating": "needs-revision",
+        "breakdown": [
+          {
+            "id": "plotMomentum",
+            "label": "情节推进",
+            "rawScore": 12,
+            "weight": 30,
+            "contribution": 18.0
+          },
+          {
+            "id": "characterPressure",
+            "label": "人物压力",
+            "rawScore": 12,
+            "weight": 15,
+            "contribution": 9.0
+          },
+          {
+            "id": "conflictTension",
+            "label": "冲突张力",
+            "rawScore": 3,
+            "weight": 45,
+            "contribution": 6.75
+          },
+          {
+            "id": "sceneClarity",
+            "label": "场景清晰度",
+            "rawScore": 20,
+            "weight": 5,
+            "contribution": 5.0
+          },
+          {
+            "id": "proseControl",
+            "label": "表达控制",
+            "rawScore": 15,
+            "weight": 5,
+            "contribution": 3.75
+          }
+        ]
+      },
+      "strengths": [
+        "场景清晰度：这一幕的镜头和焦点比较清楚。"
+      ],
+      "priorityActions": [
+        "多组轻度 AI 句式和阅读负担已经叠加，优先删减翻转句、追问式套话与抽象情绪句，把表达改成可见动作、结果和更短的推进段落。",
+        "补一个明确阻力：对手、风险、时间压力或信息缺口，避免章节太平。",
+        "考虑留下一个未解答的问题或悬念钩子，提高章末牵引力。",
+        "补一个明确的状态变化、关系变化或决定性动作，让章节前后产生落差。"
+      ],
+      "textMetrics": {
+        "wordCount": 521,
+        "paragraphCount": 5,
+        "averageParagraphLength": 114,
+        "dialogueParagraphs": 2,
+        "tagMentions": [
+          "周晚",
+          "林舟",
+          "郑叔"
+        ]
+      },
+      "analysisSignals": {
+        "analysisBacked": true,
+        "activeEntityCount": 3,
+        "snapshotCandidateCount": 0,
+        "relationCandidateCount": 0,
+        "settingCandidateCount": 0,
+        "settingConflictCount": 0,
+        "unintroducedNameRevealCount": 0,
+        "capabilityTaskRiskCount": 0,
+        "powerProgressionConflictCount": 0,
+        "wrappedEntityCount": 3,
+        "wrappedEntityMissingCount": 0,
+        "chapterHandoffRiskCount": 0,
+        "sceneEntityNames": [
+          "林舟",
+          "周晚",
+          "郑叔"
+        ]
+      },
+      "chapterHandoffSignals": {
+        "detected": false,
+        "severity": "none",
+        "loadStrength": 0,
+        "openingAnchorScore": 1,
+        "earlyAnchorScore": 1,
+        "delayedBridge": false,
+        "previousChapterId": "",
+        "previousChapterTitle": "上一章",
+        "currentDirection": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头",
+        "nextChapterTitle": "第二章 空名仓单",
+        "openingEntityAnchors": [],
+        "openingStateAnchors": [],
+        "openingThreadAnchors": [],
+        "openingContextAnchors": [],
+        "earlyEntityAnchors": [],
+        "earlyStateAnchors": [],
+        "earlyThreadAnchors": [],
+        "earlyContextAnchors": [],
+        "openingContinuityHits": 1,
+        "earlyContinuityHits": 1,
+        "openingDirectContinuationHits": 0,
+        "earlyDirectContinuationHits": 0,
+        "previousEndingBridgeHits": [],
+        "closingHookHits": 0,
+        "loadSummary": [],
+        "openingAnchorSummary": [
+          "连续性词命中：1"
+        ],
+        "earlyAnchorSummary": [
+          "连续性词命中：1"
+        ],
+        "gapReasons": [
+          "上一章没有足够明确的承接负载"
+        ],
+        "suggestion": "",
+        "evidence": [
+          "开章前两段：连续性词命中：1",
+          "开章原文：林舟蹲在旧书铺后屋的工作台前，指尖被潮气泡得发白"
+        ]
+      },
+      "styleAnalysis": {
+        "profile": "web-serial-zh",
+        "reviewRuleProfile": "default",
+        "reviewRuleEnabledRules": [],
+        "styleAnalysis": {
+          "overallScore": 14,
+          "totalDeduction": 6,
+          "patternResults": [
+            {
+              "id": "simileDensity",
+              "label": "比喻密度",
+              "detected": true,
+              "count": 2,
+              "perThousand": 3.8,
+              "threshold": 3.0,
+              "severity": "low",
+              "evidence": [
+                "像被账目抹掉一样",
+                "像钉子一样"
+              ],
+              "suggestion": "比喻密度偏高（每千字3.8次，建议<3），尝试用具体动作或白描替代部分比喻"
+            },
+            {
+              "id": "hedgeAdverbs",
+              "label": "模糊副词",
+              "detected": false,
+              "count": 2,
+              "perThousand": 3.8,
+              "threshold": 6.0,
+              "severity": "none",
+              "evidence": [
+                "慢慢"
+              ],
+              "suggestion": ""
+            },
+            {
+              "id": "tellingEmotion",
+              "label": "叙述性情感",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 2.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "formulaicTransition",
+              "label": "程式化过渡",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 3.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "contrastFlipPattern",
+              "label": "翻转句式",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 1.2,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "analogicalPivotPattern",
+              "label": "类比翻转句",
+              "detected": true,
+              "count": 1,
+              "perThousand": 1.9,
+              "threshold": 0.8,
+              "severity": "medium",
+              "evidence": [
+                "不是周晚，更像有人在学她的声线引他往里走"
+              ],
+              "suggestion": "“不像……更像……”类翻转句偏多（每千字1.9次），优先写清人物实际观察到的事实，不要总靠抽象换挡"
+            },
+            {
+              "id": "templateCatchphrasePattern",
+              "label": "模板化口癖",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "sensoryVariety",
+              "label": "感官单一",
+              "detected": true,
+              "count": 3,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "medium",
+              "evidence": [],
+              "suggestion": "感官描写单一，缺少tactile和gustatory描写"
+            },
+            {
+              "id": "paragraphUniformity",
+              "label": "段落均质",
+              "detected": true,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "medium",
+              "evidence": [],
+              "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感"
+            },
+            {
+              "id": "paragraphReadability",
+              "label": "段落可读性",
+              "detected": true,
+              "count": 3,
+              "perThousand": 0,
+              "threshold": 90,
+              "severity": "medium",
+              "evidence": [
+                "第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像...",
+                "第3段约130字：门外忽然传来敲门声，不急，却一下比一下重。对门巡夜的郑叔隔着门板...",
+                "第4段约99字：他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库..."
+              ],
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+            },
+            {
+              "id": "sentenceRepetition",
+              "label": "句式重复",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "source": "builtin",
+              "suggestion": ""
+            },
+            {
+              "id": "specialTermRepetition",
+              "label": "特殊术语复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "narrativeFrameRepetition",
+              "label": "叙事支架复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "registerDrift",
+              "label": "题材语域失真",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "structuredPlanBlock",
+              "label": "方案文档腔",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "clusteredAIPhrasing",
+              "label": "AI句群叠加",
+              "detected": true,
+              "count": 3,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "medium",
+              "evidence": [
+                "比喻密度：像被账目抹掉一样",
+                "类比翻转句：不是周晚，更像有人在学她的声线引他往里走",
+                "段落可读性：第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像..."
+              ],
+              "suggestion": "多组轻度 AI 句式和阅读负担已经叠加，优先删减翻转句、追问式套话与抽象情绪句，把表达改成可见动作、结果和更短的推进段落。"
+            }
+          ],
+          "sensoryDistribution": {
+            "visual": 2,
+            "auditory": 6,
+            "tactile": 0,
+            "olfactory": 2,
+            "gustatory": 0,
+            "dominantSense": "auditory",
+            "missingSenses": [
+              "tactile",
+              "gustatory"
+            ]
+          },
+          "paragraphUniformity": {
+            "lengthStdDev": 19.5,
+            "avgLength": 113.6,
+            "isUniform": true,
+            "score": 1
+          },
+          "paragraphReadability": {
+            "detected": true,
+            "severity": "medium",
+            "count": 3,
+            "threshold": 90,
+            "veryLongThreshold": 150,
+            "maxLength": 130,
+            "evidence": [
+              "第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像...",
+              "第3段约130字：门外忽然传来敲门声，不急，却一下比一下重。对门巡夜的郑叔隔着门板...",
+              "第4段约99字：他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库..."
+            ],
+            "overlongParagraphs": [
+              {
+                "paragraphIndex": 2,
+                "length": 118,
+                "snippet": "他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像..."
+              },
+              {
+                "paragraphIndex": 3,
+                "length": 130,
+                "snippet": "门外忽然传来敲门声，不急，却一下比一下重。对门巡夜的郑叔隔着门板..."
+              },
+              {
+                "paragraphIndex": 4,
+                "length": 99,
+                "snippet": "他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库..."
+              }
+            ]
+          },
+          "sentenceRepetition": {
+            "repeatedStructures": [],
+            "hasRepetition": false,
+            "score": 3,
+            "source": "builtin"
+          },
+          "specialTermRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topTerms": []
+          },
+          "narrativeFrameRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topFrames": []
+          },
+          "registerDrift": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedCategories": [],
+            "suggestion": ""
+          },
+          "structuredPlanBlock": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedLabels": [],
+            "suggestion": ""
+          },
+          "clusteredAIPhrasing": {
+            "detected": true,
+            "severity": "medium",
+            "count": 3,
+            "threshold": 3,
+            "signalScore": 4,
+            "signalIds": [
+              "analogicalPivotPattern",
+              "simileDensity",
+              "paragraphReadability"
+            ],
+            "anchorIds": [
+              "analogicalPivotPattern"
+            ],
+            "evidence": [
+              "比喻密度：像被账目抹掉一样",
+              "类比翻转句：不是周晚，更像有人在学她的声线引他往里走",
+              "段落可读性：第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像..."
+            ],
+            "suggestion": "多组轻度 AI 句式和阅读负担已经叠加，优先删减翻转句、追问式套话与抽象情绪句，把表达改成可见动作、结果和更短的推进段落。"
+          },
+          "metaLeakage": {},
+          "sources": {
+            "sentenceRepetition": "builtin"
+          },
+          "judgements": [
+            {
+              "ruleId": "simileDensity",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "low",
+              "status": "triggered",
+              "message": "检测到比喻密度问题，例如 像被账目抹掉一样。",
+              "suggestion": "比喻密度偏高（每千字3.8次，建议<3），尝试用具体动作或白描替代部分比喻",
+              "evidence": [
+                "像被账目抹掉一样",
+                "像钉子一样"
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style"
+              ]
+            },
+            {
+              "ruleId": "analogicalPivotPattern",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到类比翻转句问题，例如 不是周晚，更像有人在学她的声线引他往里走。",
+              "suggestion": "“不像……更像……”类翻转句偏多（每千字1.9次），优先写清人物实际观察到的事实，不要总靠抽象换挡",
+              "evidence": [
+                "不是周晚，更像有人在学她的声线引他往里走"
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style",
+                "ai-phrasing"
+              ]
+            },
+            {
+              "ruleId": "sensoryVariety",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到感官单一问题。",
+              "suggestion": "感官描写单一，缺少tactile和gustatory描写",
+              "evidence": [],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style"
+              ]
+            },
+            {
+              "ruleId": "paragraphUniformity",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到段落均质问题。",
+              "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+              "evidence": [],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style"
+              ]
+            },
+            {
+              "ruleId": "paragraphReadability",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到段落可读性问题，例如 第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像...。",
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+              "evidence": [
+                "第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像...",
+                "第3段约130字：门外忽然传来敲门声，不急，却一下比一下重。对门巡夜的郑叔隔着门板...",
+                "第4段约99字：他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库..."
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style",
+                "readability",
+                "mobile-reading"
+              ]
+            },
+            {
+              "ruleId": "clusteredAIPhrasing",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到AI句群叠加问题，例如 比喻密度：像被账目抹掉一样。",
+              "suggestion": "多组轻度 AI 句式和阅读负担已经叠加，优先删减翻转句、追问式套话与抽象情绪句，把表达改成可见动作、结果和更短的推进段落。",
+              "evidence": [
+                "比喻密度：像被账目抹掉一样",
+                "类比翻转句：不是周晚，更像有人在学她的声线引他往里走",
+                "段落可读性：第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像..."
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style",
+                "ai-phrasing",
+                "aggregate"
+              ]
+            }
+          ],
+          "summary": "检测到6项AI风格特征：比喻密度、类比翻转句、感官单一、段落均质、段落可读性、AI句群叠加。扣6分。",
+          "suggestions": [
+            "比喻密度偏高（每千字3.8次，建议<3），尝试用具体动作或白描替代部分比喻",
+            "“不像……更像……”类翻转句偏多（每千字1.9次），优先写清人物实际观察到的事实，不要总靠抽象换挡",
+            "感官描写单一，缺少tactile和gustatory描写",
+            "段落长度过于均匀，可调整长短交替制造节奏感",
+            "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+          ]
+        },
+        "judgements": [
+          {
+            "ruleId": "simileDensity",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "low",
+            "status": "triggered",
+            "message": "检测到比喻密度问题，例如 像被账目抹掉一样。",
+            "suggestion": "比喻密度偏高（每千字3.8次，建议<3），尝试用具体动作或白描替代部分比喻",
+            "evidence": [
+              "像被账目抹掉一样",
+              "像钉子一样"
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style"
+            ]
+          },
+          {
+            "ruleId": "analogicalPivotPattern",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到类比翻转句问题，例如 不是周晚，更像有人在学她的声线引他往里走。",
+            "suggestion": "“不像……更像……”类翻转句偏多（每千字1.9次），优先写清人物实际观察到的事实，不要总靠抽象换挡",
+            "evidence": [
+              "不是周晚，更像有人在学她的声线引他往里走"
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style",
+              "ai-phrasing"
+            ]
+          },
+          {
+            "ruleId": "sensoryVariety",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到感官单一问题。",
+            "suggestion": "感官描写单一，缺少tactile和gustatory描写",
+            "evidence": [],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style"
+            ]
+          },
+          {
+            "ruleId": "paragraphUniformity",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到段落均质问题。",
+            "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+            "evidence": [],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style"
+            ]
+          },
+          {
+            "ruleId": "paragraphReadability",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到段落可读性问题，例如 第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像...。",
+            "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+            "evidence": [
+              "第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像...",
+              "第3段约130字：门外忽然传来敲门声，不急，却一下比一下重。对门巡夜的郑叔隔着门板...",
+              "第4段约99字：他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库..."
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style",
+              "readability",
+              "mobile-reading"
+            ]
+          },
+          {
+            "ruleId": "clusteredAIPhrasing",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到AI句群叠加问题，例如 比喻密度：像被账目抹掉一样。",
+            "suggestion": "多组轻度 AI 句式和阅读负担已经叠加，优先删减翻转句、追问式套话与抽象情绪句，把表达改成可见动作、结果和更短的推进段落。",
+            "evidence": [
+              "比喻密度：像被账目抹掉一样",
+              "类比翻转句：不是周晚，更像有人在学她的声线引他往里走",
+              "段落可读性：第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像..."
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style",
+              "ai-phrasing",
+              "aggregate"
+            ]
+          }
+        ],
+        "constraints": [
+          "“不像……更像……”类翻转句偏多（每千字1.9次），优先写清人物实际观察到的事实，不要总靠抽象换挡",
+          "感官描写单一，缺少tactile和gustatory描写",
+          "段落长度过于均匀，可调整长短交替制造节奏感",
+          "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+          "多组轻度 AI 句式和阅读负担已经叠加，优先删减翻转句、追问式套话与抽象情绪句，把表达改成可见动作、结果和更短的推进段落。"
+        ],
+        "textMetrics": {
+          "wordCount": 521,
+          "paragraphCount": 5,
+          "averageParagraphLength": 114
+        },
+        "profileSource": "builtin",
+        "reviewRuleProfileSource": "builtin"
+      },
+      "projectContext": {
+        "genre": "Mystery",
+        "positioning": {
+          "primaryGenre": "mystery",
+          "subGenre": "urban-occult",
+          "styleTags": [
+            "web-serial"
+          ],
+          "targetAudience": [
+            "qidian-reader"
+          ]
+        },
+        "storyContract": {
+          "corePromises": [
+            "每章推进一层异案与主线真相",
+            "主角靠职业能力而不是全知外挂破局"
+          ],
+          "avoidances": [],
+          "endingContract": "",
+          "paceContract": "中快节奏"
+        },
+        "emotionalContract": {
+          "coreEmotions": [],
+          "chapterEmotionFloor": [],
+          "forbiddenEmotions": [],
+          "revealPreference": {
+            "defaultMode": "",
+            "allowDirectExplainAtClimax": false
+          }
+        },
+        "storyTemplate": {
+          "id": "",
+          "label": "",
+          "modulePolicy": {},
+          "reviewFocus": []
+        },
+        "commercialPositioning": {
+          "premise": "账簿修复师在港城追查会吞掉名字的失踪案。",
+          "hookLine": "他只是修一本旧账簿，却先在账页里看见了自己的死期。",
+          "hookStack": [
+            "career-entry-hook",
+            "cliffhanger-end"
+          ],
+          "benchmarkWorks": [],
+          "targetPlatform": "qidian",
+          "serializationModel": "2到3章一个单元异案，持续抬升主线阴谋",
+          "releaseCadence": "日更",
+          "chapterWordFloor": 1800,
+          "chapterWordTarget": 2600
+        }
+      },
+      "storyConstraintSignals": {
+        "emotionalContract": {
+          "coreEmotions": [],
+          "chapterEmotionFloor": [],
+          "forbiddenEmotions": []
+        },
+        "worldRules": [],
+        "dueForeshadows": [],
+        "trackedEntities": [],
+        "chapterHandoff": {
+          "previousChapter": null,
+          "currentChapter": {
+            "id": "chapter-001",
+            "title": "第一章",
+            "direction": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头",
+            "beatHints": [
+              "开场：建立日常世界",
+              "触发事件：打破平衡的事件",
+              "第一幕转折：主角做出选择，无法回头"
+            ],
+            "sceneGoals": [
+              "林舟蹲在旧书铺后屋的工作台前，指尖被潮气泡得发白。今晚送来的旧账簿比往常更沉，封皮像是浸过海水，翻开第一页时却没有霉味，",
+              "他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库门口挂着褪色的封条，封条中央却被人用香灰画了一枚歪斜的记"
+            ]
+          },
+          "nextChapter": {
+            "id": "chapter-002",
+            "title": "第二章 空名仓单",
+            "direction": "结构指引：中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡",
+            "beatHints": [
+              "中点：从被动变主动 / 虚假胜利",
+              "灵魂暗夜：最低点，失去一切",
+              "高潮：最终对决 / 真相揭露"
+            ],
+            "sceneGoals": [
+              "仓库里堆满发潮木箱，最里面那盏小灯只照出半张女人侧脸。林舟没有立刻往前走，他先把账簿贴到胸口，逼自己去听周围的水声和脚步",
+              "半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一页又多出一串陌生名字，最末那个却被墨团硬生生抹去，只剩下"
+            ]
+          },
+          "carryOverEntityChanges": [],
+          "activeThreadLabels": []
+        }
+      },
+      "wrappedEntitySignals": {
+        "count": 3,
+        "wrappedNames": [
+          "周晚",
+          "林舟",
+          "郑叔"
+        ],
+        "covered": [
+          {
+            "name": "周晚",
+            "kind": "character",
+            "id": "inferred::周晚",
+            "source": "entities"
+          },
+          {
+            "name": "林舟",
+            "kind": "character",
+            "id": "inferred::林舟",
+            "source": "entities"
+          },
+          {
+            "name": "郑叔",
+            "kind": "character",
+            "id": "inferred::郑叔",
+            "source": "entities"
+          }
+        ],
+        "missing": []
+      },
+      "consistencySignals": {
+        "specialTermRepetition": {
+          "detected": false,
+          "severity": "none",
+          "evidence": [],
+          "suggestion": ""
+        },
+        "settingCandidates": [],
+        "settingConflicts": [],
+        "unintroducedNameReveals": [],
+        "capabilityTaskRisks": [],
+        "powerProgressionConflicts": []
+      },
+      "ruleJudgements": [
+        {
+          "ruleId": "simileDensity",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "low",
+          "status": "triggered",
+          "message": "检测到比喻密度问题，例如 像被账目抹掉一样。",
+          "suggestion": "比喻密度偏高（每千字3.8次，建议<3），尝试用具体动作或白描替代部分比喻",
+          "evidence": [
+            "像被账目抹掉一样",
+            "像钉子一样"
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {},
+          "tags": [
+            "style"
+          ]
+        },
+        {
+          "ruleId": "analogicalPivotPattern",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到类比翻转句问题，例如 不是周晚，更像有人在学她的声线引他往里走。",
+          "suggestion": "“不像……更像……”类翻转句偏多（每千字1.9次），优先写清人物实际观察到的事实，不要总靠抽象换挡",
+          "evidence": [
+            "不是周晚，更像有人在学她的声线引他往里走"
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {},
+          "tags": [
+            "style",
+            "ai-phrasing"
+          ]
+        },
+        {
+          "ruleId": "sensoryVariety",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到感官单一问题。",
+          "suggestion": "感官描写单一，缺少tactile和gustatory描写",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {},
+          "tags": [
+            "style"
+          ]
+        },
+        {
+          "ruleId": "paragraphUniformity",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到段落均质问题。",
+          "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {},
+          "tags": [
+            "style"
+          ]
+        },
+        {
+          "ruleId": "paragraphReadability",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到段落可读性问题，例如 第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像...。",
+          "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+          "evidence": [
+            "第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像...",
+            "第3段约130字：门外忽然传来敲门声，不急，却一下比一下重。对门巡夜的郑叔隔着门板...",
+            "第4段约99字：他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库..."
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {},
+          "tags": [
+            "style",
+            "readability",
+            "mobile-reading"
+          ]
+        },
+        {
+          "ruleId": "clusteredAIPhrasing",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到AI句群叠加问题，例如 比喻密度：像被账目抹掉一样。",
+          "suggestion": "多组轻度 AI 句式和阅读负担已经叠加，优先删减翻转句、追问式套话与抽象情绪句，把表达改成可见动作、结果和更短的推进段落。",
+          "evidence": [
+            "比喻密度：像被账目抹掉一样",
+            "类比翻转句：不是周晚，更像有人在学她的声线引他往里走",
+            "段落可读性：第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像..."
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {},
+          "tags": [
+            "style",
+            "ai-phrasing",
+            "aggregate"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "beatId": "beat-a05ab6facafa",
+            "summary": "开场：建立日常世界",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "beatId": "beat-ce46f8fc5fae",
+            "summary": "触发事件：打破平衡的事件",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "beatId": "beat-cdab8f9de889",
+            "summary": "第一幕转折：主角做出选择，无法回头",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        }
+      ],
+      "contractAlignment": {
+        "status": "at-risk",
+        "matched": [],
+        "risks": [
+          "当前主类型偏悬疑/惊悚，但章节张力还不够稳定。",
+          "核心承诺“每章推进一层异案与主线真相”：悬疑/反转承诺在本章里的张力兑现偏弱。",
+          "检测到多组轻度 AI 句式与可读性问题叠加，例如 比喻密度：像被账目抹掉一样，整体读感容易偏模板化。"
+        ],
+        "notes": [
+          "已记录节奏承诺：中快节奏。",
+          "核心承诺“主角靠职业能力而不是全知外挂破局”目前仅记录，尚未接入自动判定。",
+          "本章共有 3 个已包裹实体引用，其中 3 个已能对齐到角色卡或世界设定。"
+        ]
+      },
+      "commercialAlignment": {
+        "status": "at-risk",
+        "matched": [],
+        "risks": [
+          "章节字数仅 521，低于商业交付底线 1800 字。",
+          "已声明商业 hook line，但本章的推进或章末追读牵引还不够强。",
+          "核心承诺“career-entry-hook”：职业入口钩子还不够清晰。",
+          "核心承诺“cliffhanger-end”：章末追读钩子还不够强。"
+        ],
+        "notes": [
+          "章节字数 521，距建议目标 2600 字仍有差距。",
+          "已记录目标平台：qidian。",
+          "已记录连载模型：2到3章一个单元异案，持续抬升主线阴谋。",
+          "已记录更新节奏：日更。"
+        ]
+      },
+      "rubric": [
+        {
+          "id": "plotMomentum",
+          "label": "情节推进",
+          "maxScore": 20,
+          "focus": "这一章是否产生了明确推进或落点"
+        },
+        {
+          "id": "characterPressure",
+          "label": "人物压力",
+          "maxScore": 20,
+          "focus": "人物是否承受了新的压力、状态变化或选择"
+        },
+        {
+          "id": "conflictTension",
+          "label": "冲突张力",
+          "maxScore": 20,
+          "focus": "文本里是否存在阻力、风险、悬念或对抗"
+        },
+        {
+          "id": "sceneClarity",
+          "label": "场景清晰度",
+          "maxScore": 20,
+          "focus": "读者能否快速抓到场景、角色和叙事焦点"
+        },
+        {
+          "id": "proseControl",
+          "label": "表达控制",
+          "maxScore": 20,
+          "focus": "段落节奏、句式负担和强调是否受控"
+        }
+      ]
+    },
+    {
+      "reviewId": "chapter-review-1853744607",
+      "fingerprint": "chapter-review-v1:chapter-002:b3fa194a24a3c6d3",
+      "rubricVersion": "chapter-review-v1",
+      "generatedAt": "2026-04-29T00:40:53+08:00",
+      "chapterId": "chapter-002",
+      "chapterTitle": "第二章 空名仓单",
+      "summary": "结合分析结果和正文信号，本章总分 65/100。当前强项在场景清晰度，最需要补强的是冲突张力。",
+      "rating": "workable",
+      "scores": {
+        "total": 65,
+        "maxScore": 100,
+        "dimensions": [
+          {
+            "id": "plotMomentum",
+            "label": "情节推进",
+            "score": 13,
+            "maxScore": 20,
+            "comment": "这一章更像铺垫，推进信号偏弱。",
+            "signals": [
+              "状态/关系推进信号 0 处",
+              "段落 5 段",
+              "转折连接词 3 处"
+            ],
+            "suggestions": [
+              "补一个明确的状态变化、关系变化或决定性动作，让章节前后产生落差。"
+            ]
+          },
+          {
+            "id": "characterPressure",
+            "label": "人物压力",
+            "score": 10,
+            "maxScore": 20,
+            "comment": "人物出场了，但被逼到变化的力度还不够。",
+            "signals": [
+              "活跃角色 2 个",
+              "状态候选 0 个",
+              "心理/压力词 0 个"
+            ],
+            "suggestions": [
+              "补一处人物状态变化或代价反馈，让角色不是只在场而是真的被事件推动。"
+            ]
+          },
+          {
+            "id": "conflictTension",
+            "label": "冲突张力",
+            "score": 5,
+            "maxScore": 20,
+            "comment": "冲突张力偏平，读者的追读理由还不够强。",
+            "signals": [
+              "高风险关系变化 0 处",
+              "张力关键词 0 个",
+              "疑问/感叹标记 1 个"
+            ],
+            "suggestions": [
+              "补一个明确阻力：对手、风险、时间压力或信息缺口，避免章节太平。"
+            ]
+          },
+          {
+            "id": "sceneClarity",
+            "label": "场景清晰度",
+            "score": 20,
+            "maxScore": 20,
+            "comment": "这一幕的镜头和焦点比较清楚。",
+            "signals": [
+              "环境锚点 3 个",
+              "出场角色 2 个",
+              "开头带锚点 是"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "proseControl",
+            "label": "表达控制",
+            "score": 17,
+            "maxScore": 20,
+            "comment": "基础节奏可读，但 AI 风格信号额外扣了 4 分。",
+            "signals": [
+              "平均段长 103",
+              "长段落 0 段",
+              "对话段 3 段",
+              "风格额外扣分 4"
+            ],
+            "suggestions": [
+              "感官描写单一，缺少tactile和gustatory描写",
+              "段落长度过于均匀，可调整长短交替制造节奏感"
+            ]
+          }
+        ]
+      },
+      "weightedScores": {
+        "profile": {
+          "primaryGenre": "mystery",
+          "subGenre": "urban-occult",
+          "styleTags": [
+            "web-serial"
+          ],
+          "targetPlatform": "qidian"
+        },
+        "appliedWeights": {
+          "plotMomentum": 30,
+          "characterPressure": 15,
+          "conflictTension": 45,
+          "sceneClarity": 5,
+          "proseControl": 5
+        },
+        "adjustments": [
+          {
+            "source": "styleTag:web-serial",
+            "dimension": "plotMomentum",
+            "delta": 5
+          },
+          {
+            "source": "styleTag:web-serial",
+            "dimension": "conflictTension",
+            "delta": 5
+          },
+          {
+            "source": "styleTag:web-serial",
+            "dimension": "proseControl",
+            "delta": -5
+          },
+          {
+            "source": "styleTag:web-serial",
+            "dimension": "sceneClarity",
+            "delta": -5
+          },
+          {
+            "source": "targetPlatform:qidian",
+            "dimension": "plotMomentum",
+            "delta": 5
+          },
+          {
+            "source": "targetPlatform:qidian",
+            "dimension": "conflictTension",
+            "delta": 5
+          },
+          {
+            "source": "targetPlatform:qidian",
+            "dimension": "proseControl",
+            "delta": -5
+          },
+          {
+            "source": "targetPlatform:qidian",
+            "dimension": "sceneClarity",
+            "delta": -5
+          }
+        ],
+        "total": 47.5,
+        "maxScore": 100,
+        "rating": "needs-revision",
+        "breakdown": [
+          {
+            "id": "plotMomentum",
+            "label": "情节推进",
+            "rawScore": 13,
+            "weight": 30,
+            "contribution": 19.5
+          },
+          {
+            "id": "characterPressure",
+            "label": "人物压力",
+            "rawScore": 10,
+            "weight": 15,
+            "contribution": 7.5
+          },
+          {
+            "id": "conflictTension",
+            "label": "冲突张力",
+            "rawScore": 5,
+            "weight": 45,
+            "contribution": 11.25
+          },
+          {
+            "id": "sceneClarity",
+            "label": "场景清晰度",
+            "rawScore": 20,
+            "weight": 5,
+            "contribution": 5.0
+          },
+          {
+            "id": "proseControl",
+            "label": "表达控制",
+            "rawScore": 17,
+            "weight": 5,
+            "contribution": 4.25
+          }
+        ]
+      },
+      "strengths": [
+        "场景清晰度：这一幕的镜头和焦点比较清楚。",
+        "表达控制：基础节奏可读，但 AI 风格信号额外扣了 4 分。"
+      ],
+      "priorityActions": [
+        "补一个明确阻力：对手、风险、时间压力或信息缺口，避免章节太平。",
+        "补一处人物状态变化或代价反馈，让角色不是只在场而是真的被事件推动。",
+        "补一个明确的状态变化、关系变化或决定性动作，让章节前后产生落差。",
+        "感官描写单一，缺少tactile和gustatory描写"
+      ],
+      "textMetrics": {
+        "wordCount": 471,
+        "paragraphCount": 5,
+        "averageParagraphLength": 103,
+        "dialogueParagraphs": 3,
+        "tagMentions": [
+          "周晚",
+          "林舟"
+        ]
+      },
+      "analysisSignals": {
+        "analysisBacked": true,
+        "activeEntityCount": 2,
+        "snapshotCandidateCount": 0,
+        "relationCandidateCount": 0,
+        "settingCandidateCount": 0,
+        "settingConflictCount": 0,
+        "unintroducedNameRevealCount": 0,
+        "capabilityTaskRiskCount": 0,
+        "powerProgressionConflictCount": 0,
+        "wrappedEntityCount": 2,
+        "wrappedEntityMissingCount": 0,
+        "chapterHandoffRiskCount": 0,
+        "sceneEntityNames": [
+          "林舟",
+          "周晚"
+        ]
+      },
+      "chapterHandoffSignals": {
+        "detected": false,
+        "severity": "none",
+        "loadStrength": 1,
+        "openingAnchorScore": 1,
+        "earlyAnchorScore": 3,
+        "delayedBridge": true,
+        "previousChapterId": "chapter-001",
+        "previousChapterTitle": "第一章",
+        "currentDirection": "结构指引：中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡",
+        "nextChapterTitle": "",
+        "openingEntityAnchors": [],
+        "openingStateAnchors": [],
+        "openingThreadAnchors": [],
+        "openingContextAnchors": [],
+        "earlyEntityAnchors": [],
+        "earlyStateAnchors": [],
+        "earlyThreadAnchors": [],
+        "earlyContextAnchors": [
+          "旧账簿",
+          "铜纽扣"
+        ],
+        "openingContinuityHits": 1,
+        "earlyContinuityHits": 3,
+        "openingDirectContinuationHits": 0,
+        "earlyDirectContinuationHits": 0,
+        "previousEndingBridgeHits": [],
+        "closingHookHits": 0,
+        "loadSummary": [
+          "前章方向：结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转"
+        ],
+        "openingAnchorSummary": [
+          "连续性词命中：1"
+        ],
+        "earlyAnchorSummary": [
+          "前章语义锚点：旧账簿 / 铜纽扣",
+          "连续性词命中：3"
+        ],
+        "gapReasons": [
+          "前两段承接偏弱，但前 4 段内已自然回接"
+        ],
+        "suggestion": "",
+        "evidence": [
+          "前章负载：前章方向：结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转",
+          "开章前两段：连续性词命中：1",
+          "前 4 段回接：前章语义锚点：旧账簿 / 铜纽扣；连续性词命中：3",
+          "开章原文：仓库里堆满发潮木箱，最里面那盏小灯只照出半张女人"
+        ]
+      },
+      "styleAnalysis": {
+        "profile": "web-serial-zh",
+        "reviewRuleProfile": "default",
+        "reviewRuleEnabledRules": [],
+        "styleAnalysis": {
+          "overallScore": 16,
+          "totalDeduction": 4,
+          "patternResults": [
+            {
+              "id": "simileDensity",
+              "label": "比喻密度",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 3.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "hedgeAdverbs",
+              "label": "模糊副词",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 6.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "tellingEmotion",
+              "label": "叙述性情感",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 2.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "formulaicTransition",
+              "label": "程式化过渡",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 3.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "contrastFlipPattern",
+              "label": "翻转句式",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 1.2,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "analogicalPivotPattern",
+              "label": "类比翻转句",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "templateCatchphrasePattern",
+              "label": "模板化口癖",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "sensoryVariety",
+              "label": "感官单一",
+              "detected": true,
+              "count": 3,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "medium",
+              "evidence": [],
+              "suggestion": "感官描写单一，缺少tactile和gustatory描写"
+            },
+            {
+              "id": "paragraphUniformity",
+              "label": "段落均质",
+              "detected": true,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "medium",
+              "evidence": [],
+              "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感"
+            },
+            {
+              "id": "paragraphReadability",
+              "label": "段落可读性",
+              "detected": true,
+              "count": 3,
+              "perThousand": 0,
+              "threshold": 90,
+              "severity": "medium",
+              "evidence": [
+                "第3段约99字：林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对...",
+                "第4段约93字：半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一...",
+                "第5段约107字：他原本只想先保住自己的命，可仓单把线索直接推到了另一个更大的名字..."
+              ],
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+            },
+            {
+              "id": "sentenceRepetition",
+              "label": "句式重复",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "source": "builtin",
+              "suggestion": ""
+            },
+            {
+              "id": "specialTermRepetition",
+              "label": "特殊术语复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "narrativeFrameRepetition",
+              "label": "叙事支架复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "registerDrift",
+              "label": "题材语域失真",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "structuredPlanBlock",
+              "label": "方案文档腔",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "clusteredAIPhrasing",
+              "label": "AI句群叠加",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            }
+          ],
+          "sensoryDistribution": {
+            "visual": 3,
+            "auditory": 4,
+            "tactile": 0,
+            "olfactory": 3,
+            "gustatory": 0,
+            "dominantSense": "auditory",
+            "missingSenses": [
+              "tactile",
+              "gustatory"
+            ]
+          },
+          "paragraphUniformity": {
+            "lengthStdDev": 10.1,
+            "avgLength": 102.8,
+            "isUniform": true,
+            "score": 1
+          },
+          "paragraphReadability": {
+            "detected": true,
+            "severity": "medium",
+            "count": 3,
+            "threshold": 90,
+            "veryLongThreshold": 150,
+            "maxLength": 107,
+            "evidence": [
+              "第3段约99字：林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对...",
+              "第4段约93字：半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一...",
+              "第5段约107字：他原本只想先保住自己的命，可仓单把线索直接推到了另一个更大的名字..."
+            ],
+            "overlongParagraphs": [
+              {
+                "paragraphIndex": 3,
+                "length": 99,
+                "snippet": "林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对..."
+              },
+              {
+                "paragraphIndex": 4,
+                "length": 93,
+                "snippet": "半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一..."
+              },
+              {
+                "paragraphIndex": 5,
+                "length": 107,
+                "snippet": "他原本只想先保住自己的命，可仓单把线索直接推到了另一个更大的名字..."
+              }
+            ]
+          },
+          "sentenceRepetition": {
+            "repeatedStructures": [],
+            "hasRepetition": false,
+            "score": 3,
+            "source": "builtin"
+          },
+          "specialTermRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topTerms": []
+          },
+          "narrativeFrameRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topFrames": []
+          },
+          "registerDrift": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedCategories": [],
+            "suggestion": ""
+          },
+          "structuredPlanBlock": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedLabels": [],
+            "suggestion": ""
+          },
+          "clusteredAIPhrasing": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "threshold": 3,
+            "signalScore": 1,
+            "signalIds": [
+              "paragraphReadability"
+            ],
+            "evidence": [],
+            "suggestion": ""
+          },
+          "metaLeakage": {},
+          "sources": {
+            "sentenceRepetition": "builtin"
+          },
+          "judgements": [
+            {
+              "ruleId": "sensoryVariety",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到感官单一问题。",
+              "suggestion": "感官描写单一，缺少tactile和gustatory描写",
+              "evidence": [],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style"
+              ]
+            },
+            {
+              "ruleId": "paragraphUniformity",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到段落均质问题。",
+              "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+              "evidence": [],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style"
+              ]
+            },
+            {
+              "ruleId": "paragraphReadability",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到段落可读性问题，例如 第3段约99字：林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对...。",
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+              "evidence": [
+                "第3段约99字：林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对...",
+                "第4段约93字：半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一...",
+                "第5段约107字：他原本只想先保住自己的命，可仓单把线索直接推到了另一个更大的名字..."
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style",
+                "readability",
+                "mobile-reading"
+              ]
+            }
+          ],
+          "summary": "检测到3项AI风格特征：感官单一、段落均质、段落可读性。扣4分。",
+          "suggestions": [
+            "感官描写单一，缺少tactile和gustatory描写",
+            "段落长度过于均匀，可调整长短交替制造节奏感",
+            "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+          ]
+        },
+        "judgements": [
+          {
+            "ruleId": "sensoryVariety",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到感官单一问题。",
+            "suggestion": "感官描写单一，缺少tactile和gustatory描写",
+            "evidence": [],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style"
+            ]
+          },
+          {
+            "ruleId": "paragraphUniformity",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到段落均质问题。",
+            "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+            "evidence": [],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style"
+            ]
+          },
+          {
+            "ruleId": "paragraphReadability",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到段落可读性问题，例如 第3段约99字：林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对...。",
+            "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+            "evidence": [
+              "第3段约99字：林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对...",
+              "第4段约93字：半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一...",
+              "第5段约107字：他原本只想先保住自己的命，可仓单把线索直接推到了另一个更大的名字..."
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style",
+              "readability",
+              "mobile-reading"
+            ]
+          }
+        ],
+        "constraints": [
+          "感官描写单一，缺少tactile和gustatory描写",
+          "段落长度过于均匀，可调整长短交替制造节奏感",
+          "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+        ],
+        "textMetrics": {
+          "wordCount": 471,
+          "paragraphCount": 5,
+          "averageParagraphLength": 103
+        },
+        "profileSource": "builtin",
+        "reviewRuleProfileSource": "builtin"
+      },
+      "projectContext": {
+        "genre": "Mystery",
+        "positioning": {
+          "primaryGenre": "mystery",
+          "subGenre": "urban-occult",
+          "styleTags": [
+            "web-serial"
+          ],
+          "targetAudience": [
+            "qidian-reader"
+          ]
+        },
+        "storyContract": {
+          "corePromises": [
+            "每章推进一层异案与主线真相",
+            "主角靠职业能力而不是全知外挂破局"
+          ],
+          "avoidances": [],
+          "endingContract": "",
+          "paceContract": "中快节奏"
+        },
+        "emotionalContract": {
+          "coreEmotions": [],
+          "chapterEmotionFloor": [],
+          "forbiddenEmotions": [],
+          "revealPreference": {
+            "defaultMode": "",
+            "allowDirectExplainAtClimax": false
+          }
+        },
+        "storyTemplate": {
+          "id": "",
+          "label": "",
+          "modulePolicy": {},
+          "reviewFocus": []
+        },
+        "commercialPositioning": {
+          "premise": "账簿修复师在港城追查会吞掉名字的失踪案。",
+          "hookLine": "他只是修一本旧账簿，却先在账页里看见了自己的死期。",
+          "hookStack": [
+            "career-entry-hook",
+            "cliffhanger-end"
+          ],
+          "benchmarkWorks": [],
+          "targetPlatform": "qidian",
+          "serializationModel": "2到3章一个单元异案，持续抬升主线阴谋",
+          "releaseCadence": "日更",
+          "chapterWordFloor": 1800,
+          "chapterWordTarget": 2600
+        }
+      },
+      "storyConstraintSignals": {
+        "emotionalContract": {
+          "coreEmotions": [],
+          "chapterEmotionFloor": [],
+          "forbiddenEmotions": []
+        },
+        "worldRules": [],
+        "dueForeshadows": [],
+        "trackedEntities": [],
+        "chapterHandoff": {
+          "previousChapter": {
+            "id": "chapter-001",
+            "title": "第一章",
+            "direction": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头",
+            "beatHints": [
+              "开场：建立日常世界",
+              "触发事件：打破平衡的事件",
+              "第一幕转折：主角做出选择，无法回头"
+            ],
+            "sceneGoals": [
+              "林舟蹲在旧书铺后屋的工作台前，指尖被潮气泡得发白。今晚送来的旧账簿比往常更沉，封皮像是浸过海水，翻开第一页时却没有霉味，",
+              "他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库门口挂着褪色的封条，封条中央却被人用香灰画了一枚歪斜的记"
+            ]
+          },
+          "currentChapter": {
+            "id": "chapter-002",
+            "title": "第二章 空名仓单",
+            "direction": "结构指引：中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡",
+            "beatHints": [
+              "中点：从被动变主动 / 虚假胜利",
+              "灵魂暗夜：最低点，失去一切",
+              "高潮：最终对决 / 真相揭露"
+            ],
+            "sceneGoals": [
+              "仓库里堆满发潮木箱，最里面那盏小灯只照出半张女人侧脸。林舟没有立刻往前走，他先把账簿贴到胸口，逼自己去听周围的水声和脚步",
+              "半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一页又多出一串陌生名字，最末那个却被墨团硬生生抹去，只剩下"
+            ]
+          },
+          "nextChapter": null,
+          "carryOverEntityChanges": [],
+          "activeThreadLabels": []
+        }
+      },
+      "wrappedEntitySignals": {
+        "count": 2,
+        "wrappedNames": [
+          "周晚",
+          "林舟"
+        ],
+        "covered": [
+          {
+            "name": "周晚",
+            "kind": "character",
+            "id": "inferred::周晚",
+            "source": "entities"
+          },
+          {
+            "name": "林舟",
+            "kind": "character",
+            "id": "inferred::林舟",
+            "source": "entities"
+          }
+        ],
+        "missing": []
+      },
+      "consistencySignals": {
+        "specialTermRepetition": {
+          "detected": false,
+          "severity": "none",
+          "evidence": [],
+          "suggestion": ""
+        },
+        "settingCandidates": [],
+        "settingConflicts": [],
+        "unintroducedNameReveals": [],
+        "capabilityTaskRisks": [],
+        "powerProgressionConflicts": []
+      },
+      "ruleJudgements": [
+        {
+          "ruleId": "sensoryVariety",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到感官单一问题。",
+          "suggestion": "感官描写单一，缺少tactile和gustatory描写",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002"
+          },
+          "payload": {},
+          "tags": [
+            "style"
+          ]
+        },
+        {
+          "ruleId": "paragraphUniformity",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到段落均质问题。",
+          "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002"
+          },
+          "payload": {},
+          "tags": [
+            "style"
+          ]
+        },
+        {
+          "ruleId": "paragraphReadability",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到段落可读性问题，例如 第3段约99字：林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对...。",
+          "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+          "evidence": [
+            "第3段约99字：林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对...",
+            "第4段约93字：半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一...",
+            "第5段约107字：他原本只想先保住自己的命，可仓单把线索直接推到了另一个更大的名字..."
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-002"
+          },
+          "payload": {},
+          "tags": [
+            "style",
+            "readability",
+            "mobile-reading"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002"
+          },
+          "payload": {
+            "beatId": "beat-2e023dd861aa",
+            "summary": "中点：从被动变主动 / 虚假胜利",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002"
+          },
+          "payload": {
+            "beatId": "beat-d7703f812da7",
+            "summary": "灵魂暗夜：最低点，失去一切",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002"
+          },
+          "payload": {
+            "beatId": "beat-7e737c623cb7",
+            "summary": "高潮：最终对决 / 真相揭露",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002"
+          },
+          "payload": {
+            "beatId": "beat-a72b5ca22197",
+            "summary": "结局：新平衡",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        }
+      ],
+      "contractAlignment": {
+        "status": "at-risk",
+        "matched": [],
+        "risks": [
+          "当前主类型偏悬疑/惊悚，但章节张力还不够稳定。",
+          "核心承诺“每章推进一层异案与主线真相”：悬疑/反转承诺在本章里的张力兑现偏弱。"
+        ],
+        "notes": [
+          "已记录节奏承诺：中快节奏。",
+          "核心承诺“主角靠职业能力而不是全知外挂破局”目前仅记录，尚未接入自动判定。",
+          "本章共有 2 个已包裹实体引用，其中 2 个已能对齐到角色卡或世界设定。"
+        ]
+      },
+      "commercialAlignment": {
+        "status": "at-risk",
+        "matched": [],
+        "risks": [
+          "章节字数仅 471，低于商业交付底线 1800 字。",
+          "已声明商业 hook line，但本章的推进或章末追读牵引还不够强。",
+          "核心承诺“career-entry-hook”：职业入口钩子还不够清晰。",
+          "核心承诺“cliffhanger-end”：章末追读钩子还不够强。"
+        ],
+        "notes": [
+          "章节字数 471，距建议目标 2600 字仍有差距。",
+          "已记录目标平台：qidian。",
+          "已记录连载模型：2到3章一个单元异案，持续抬升主线阴谋。",
+          "已记录更新节奏：日更。"
+        ]
+      },
+      "rubric": [
+        {
+          "id": "plotMomentum",
+          "label": "情节推进",
+          "maxScore": 20,
+          "focus": "这一章是否产生了明确推进或落点"
+        },
+        {
+          "id": "characterPressure",
+          "label": "人物压力",
+          "maxScore": 20,
+          "focus": "人物是否承受了新的压力、状态变化或选择"
+        },
+        {
+          "id": "conflictTension",
+          "label": "冲突张力",
+          "maxScore": 20,
+          "focus": "文本里是否存在阻力、风险、悬念或对抗"
+        },
+        {
+          "id": "sceneClarity",
+          "label": "场景清晰度",
+          "maxScore": 20,
+          "focus": "读者能否快速抓到场景、角色和叙事焦点"
+        },
+        {
+          "id": "proseControl",
+          "label": "表达控制",
+          "maxScore": 20,
+          "focus": "段落节奏、句式负担和强调是否受控"
+        }
+      ]
+    }
+  ],
+  "sceneReviews": [
+    {
+      "reviewId": "scene-review-250ea2d0e5",
+      "fingerprint": "scene-review-v1:chapter-001:1:3:ee06275a5dfce440",
+      "rubricVersion": "scene-review-v1",
+      "generatedAt": "2026-04-29T00:39:37+08:00",
+      "chapterId": "chapter-001",
+      "chapterTitle": "第一章",
+      "sceneRange": {
+        "startParagraph": 1,
+        "endParagraph": 3,
+        "paragraphCount": 3,
+        "totalChapterParagraphs": 5,
+        "sceneIndex": 1,
+        "source": "explicit",
+        "scenePlanId": "scene-cb5963518e"
+      },
+      "summary": "基于选定片段的正文与分析信号，这一幕总分 64/100。当前最稳的是场景清晰度，最需要补强的是逻辑性。",
+      "rating": "workable",
+      "scores": {
+        "total": 64,
+        "maxScore": 100,
+        "dimensions": [
+          {
+            "id": "sceneFunction",
+            "label": "场景功能",
+            "score": 10,
+            "maxScore": 20,
+            "comment": "这一幕更像气氛切片，功能性还不够明确。",
+            "signals": [
+              "推进/变化信号 0 处",
+              "状态候选 0 个",
+              "关系候选 0 个"
+            ],
+            "suggestions": [
+              "补一个明确变化：决定、冲突升级、信息揭示或关系转向，让这一幕承担任务。"
+            ]
+          },
+          {
+            "id": "continuity",
+            "label": "连续性",
+            "score": 13,
+            "maxScore": 20,
+            "comment": "这一幕单独可读，但与前后文的承接还可以更明显。",
+            "signals": [
+              "承接角色重合 0 个",
+              "后续角色重合 0 个",
+              "承接/过渡词 1 个"
+            ],
+            "suggestions": [
+              "结尾补一个钩子、未完成动作或状态余波，让下一幕更自然接上。"
+            ]
+          },
+          {
+            "id": "logic",
+            "label": "逻辑性",
+            "score": 7,
+            "maxScore": 20,
+            "comment": "事件能看懂，但因果或动机还可以再明示一点。",
+            "signals": [
+              "因果词 0 个",
+              "动机词 1 个",
+              "决定/变化词 0 个"
+            ],
+            "suggestions": [
+              "补清楚“为什么现在发生这件事”，避免角色像被作者硬推着走。"
+            ]
+          },
+          {
+            "id": "foreshadowing",
+            "label": "伏笔与回收",
+            "score": 14,
+            "maxScore": 20,
+            "comment": "这一幕完成了当前动作，但伏笔/回收信号还偏弱。",
+            "signals": [
+              "伏笔信号 1 个",
+              "回收信号 1 个",
+              "疑问钩子 0 个"
+            ],
+            "suggestions": [
+              "结尾可以留下一个未解答的问题，增强这一幕的牵引力。"
+            ]
+          },
+          {
+            "id": "sceneClarity",
+            "label": "场景清晰度",
+            "score": 20,
+            "maxScore": 20,
+            "comment": "这一幕的镜头和焦点比较清楚。",
+            "signals": [
+              "环境锚点 4 个",
+              "出场角色 3 个",
+              "开头带锚点 是"
+            ],
+            "suggestions": []
+          }
+        ]
+      },
+      "strengths": [
+        "场景清晰度：这一幕的镜头和焦点比较清楚。"
+      ],
+      "priorityActions": [
+        "补清楚“为什么现在发生这件事”，避免角色像被作者硬推着走。",
+        "补一个明确变化：决定、冲突升级、信息揭示或关系转向，让这一幕承担任务。",
+        "结尾补一个钩子、未完成动作或状态余波，让下一幕更自然接上。",
+        "结尾可以留下一个未解答的问题，增强这一幕的牵引力。"
+      ],
+      "textMetrics": {
+        "wordCount": 337,
+        "paragraphCount": 3,
+        "averageParagraphLength": 123,
+        "tagMentions": [
+          "周晚",
+          "林舟",
+          "郑叔"
+        ],
+        "totalChapterParagraphs": 5
+      },
+      "analysisSignals": {
+        "analysisBacked": true,
+        "activeEntityCount": 3,
+        "snapshotCandidateCount": 0,
+        "relationCandidateCount": 0,
+        "settingCandidateCount": 0,
+        "settingConflictCount": 0,
+        "unintroducedNameRevealCount": 0,
+        "capabilityTaskRiskCount": 0,
+        "powerProgressionConflictCount": 0,
+        "wrappedEntityCount": 3,
+        "wrappedEntityMissingCount": 0
+      },
+      "styleAnalysis": {
+        "profile": "web-serial-zh",
+        "reviewRuleProfile": "default",
+        "reviewRuleEnabledRules": [],
+        "styleAnalysis": {
+          "overallScore": 14,
+          "totalDeduction": 6,
+          "patternResults": [
+            {
+              "id": "simileDensity",
+              "label": "比喻密度",
+              "detected": true,
+              "count": 2,
+              "perThousand": 5.9,
+              "threshold": 3.0,
+              "severity": "medium",
+              "evidence": [
+                "像被账目抹掉一样",
+                "像钉子一样"
+              ],
+              "suggestion": "比喻密度偏高（每千字5.9次，建议<3），尝试用具体动作或白描替代部分比喻"
+            },
+            {
+              "id": "hedgeAdverbs",
+              "label": "模糊副词",
+              "detected": false,
+              "count": 1,
+              "perThousand": 3.0,
+              "threshold": 6.0,
+              "severity": "none",
+              "evidence": [
+                "慢慢"
+              ],
+              "suggestion": ""
+            },
+            {
+              "id": "tellingEmotion",
+              "label": "叙述性情感",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 2.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "formulaicTransition",
+              "label": "程式化过渡",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 3.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "contrastFlipPattern",
+              "label": "翻转句式",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 1.2,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "analogicalPivotPattern",
+              "label": "类比翻转句",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "templateCatchphrasePattern",
+              "label": "模板化口癖",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "sensoryVariety",
+              "label": "感官单一",
+              "detected": true,
+              "count": 2,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "medium",
+              "evidence": [],
+              "suggestion": "感官描写单一，缺少visual和tactile和gustatory描写"
+            },
+            {
+              "id": "paragraphUniformity",
+              "label": "段落均质",
+              "detected": true,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "medium",
+              "evidence": [],
+              "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感"
+            },
+            {
+              "id": "paragraphReadability",
+              "label": "段落可读性",
+              "detected": true,
+              "count": 2,
+              "perThousand": 0,
+              "threshold": 90,
+              "severity": "medium",
+              "evidence": [
+                "第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像...",
+                "第3段约130字：门外忽然传来敲门声，不急，却一下比一下重。对门巡夜的郑叔隔着门板..."
+              ],
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+            },
+            {
+              "id": "sentenceRepetition",
+              "label": "句式重复",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "source": "builtin",
+              "suggestion": ""
+            },
+            {
+              "id": "specialTermRepetition",
+              "label": "特殊术语复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "narrativeFrameRepetition",
+              "label": "叙事支架复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "registerDrift",
+              "label": "题材语域失真",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "structuredPlanBlock",
+              "label": "方案文档腔",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "clusteredAIPhrasing",
+              "label": "AI句群叠加",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            }
+          ],
+          "sensoryDistribution": {
+            "visual": 0,
+            "auditory": 3,
+            "tactile": 0,
+            "olfactory": 1,
+            "gustatory": 0,
+            "dominantSense": "auditory",
+            "missingSenses": [
+              "visual",
+              "tactile",
+              "gustatory"
+            ]
+          },
+          "paragraphUniformity": {
+            "lengthStdDev": 18.8,
+            "avgLength": 123.3,
+            "isUniform": true,
+            "score": 1
+          },
+          "paragraphReadability": {
+            "detected": true,
+            "severity": "medium",
+            "count": 2,
+            "threshold": 90,
+            "veryLongThreshold": 150,
+            "maxLength": 130,
+            "evidence": [
+              "第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像...",
+              "第3段约130字：门外忽然传来敲门声，不急，却一下比一下重。对门巡夜的郑叔隔着门板..."
+            ],
+            "overlongParagraphs": [
+              {
+                "paragraphIndex": 2,
+                "length": 118,
+                "snippet": "他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像..."
+              },
+              {
+                "paragraphIndex": 3,
+                "length": 130,
+                "snippet": "门外忽然传来敲门声，不急，却一下比一下重。对门巡夜的郑叔隔着门板..."
+              }
+            ]
+          },
+          "sentenceRepetition": {
+            "repeatedStructures": [],
+            "hasRepetition": false,
+            "score": 3,
+            "source": "builtin"
+          },
+          "specialTermRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topTerms": []
+          },
+          "narrativeFrameRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topFrames": []
+          },
+          "registerDrift": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedCategories": [],
+            "suggestion": ""
+          },
+          "structuredPlanBlock": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedLabels": [],
+            "suggestion": ""
+          },
+          "clusteredAIPhrasing": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "threshold": 3,
+            "signalScore": 3,
+            "signalIds": [
+              "simileDensity",
+              "paragraphReadability"
+            ],
+            "evidence": [],
+            "suggestion": ""
+          },
+          "metaLeakage": {},
+          "sources": {
+            "sentenceRepetition": "builtin"
+          },
+          "judgements": [
+            {
+              "ruleId": "simileDensity",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到比喻密度问题，例如 像被账目抹掉一样。",
+              "suggestion": "比喻密度偏高（每千字5.9次，建议<3），尝试用具体动作或白描替代部分比喻",
+              "evidence": [
+                "像被账目抹掉一样",
+                "像钉子一样"
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style"
+              ]
+            },
+            {
+              "ruleId": "sensoryVariety",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到感官单一问题。",
+              "suggestion": "感官描写单一，缺少visual和tactile和gustatory描写",
+              "evidence": [],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style"
+              ]
+            },
+            {
+              "ruleId": "paragraphUniformity",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到段落均质问题。",
+              "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+              "evidence": [],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style"
+              ]
+            },
+            {
+              "ruleId": "paragraphReadability",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到段落可读性问题，例如 第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像...。",
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+              "evidence": [
+                "第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像...",
+                "第3段约130字：门外忽然传来敲门声，不急，却一下比一下重。对门巡夜的郑叔隔着门板..."
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style",
+                "readability",
+                "mobile-reading"
+              ]
+            }
+          ],
+          "summary": "检测到4项AI风格特征：比喻密度、感官单一、段落均质、段落可读性。扣6分。",
+          "suggestions": [
+            "比喻密度偏高（每千字5.9次，建议<3），尝试用具体动作或白描替代部分比喻",
+            "感官描写单一，缺少visual和tactile和gustatory描写",
+            "段落长度过于均匀，可调整长短交替制造节奏感",
+            "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+          ]
+        },
+        "judgements": [
+          {
+            "ruleId": "simileDensity",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到比喻密度问题，例如 像被账目抹掉一样。",
+            "suggestion": "比喻密度偏高（每千字5.9次，建议<3），尝试用具体动作或白描替代部分比喻",
+            "evidence": [
+              "像被账目抹掉一样",
+              "像钉子一样"
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style"
+            ]
+          },
+          {
+            "ruleId": "sensoryVariety",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到感官单一问题。",
+            "suggestion": "感官描写单一，缺少visual和tactile和gustatory描写",
+            "evidence": [],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style"
+            ]
+          },
+          {
+            "ruleId": "paragraphUniformity",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到段落均质问题。",
+            "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+            "evidence": [],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style"
+            ]
+          },
+          {
+            "ruleId": "paragraphReadability",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到段落可读性问题，例如 第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像...。",
+            "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+            "evidence": [
+              "第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像...",
+              "第3段约130字：门外忽然传来敲门声，不急，却一下比一下重。对门巡夜的郑叔隔着门板..."
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style",
+              "readability",
+              "mobile-reading"
+            ]
+          }
+        ],
+        "constraints": [
+          "比喻密度偏高（每千字5.9次，建议<3），尝试用具体动作或白描替代部分比喻",
+          "感官描写单一，缺少visual和tactile和gustatory描写",
+          "段落长度过于均匀，可调整长短交替制造节奏感",
+          "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+        ],
+        "textMetrics": {
+          "wordCount": 337,
+          "paragraphCount": 3,
+          "averageParagraphLength": 123
+        },
+        "profileSource": "builtin",
+        "reviewRuleProfileSource": "builtin"
+      },
+      "projectContext": {
+        "genre": "Mystery",
+        "positioning": {
+          "primaryGenre": "mystery",
+          "subGenre": "urban-occult",
+          "styleTags": [
+            "web-serial"
+          ],
+          "targetAudience": [
+            "qidian-reader"
+          ]
+        },
+        "storyContract": {
+          "corePromises": [
+            "每章推进一层异案与主线真相",
+            "主角靠职业能力而不是全知外挂破局"
+          ],
+          "avoidances": [],
+          "endingContract": "",
+          "paceContract": "中快节奏"
+        },
+        "emotionalContract": {
+          "coreEmotions": [],
+          "chapterEmotionFloor": [],
+          "forbiddenEmotions": [],
+          "revealPreference": {
+            "defaultMode": "",
+            "allowDirectExplainAtClimax": false
+          }
+        },
+        "storyTemplate": {
+          "id": "",
+          "label": "",
+          "modulePolicy": {},
+          "reviewFocus": []
+        },
+        "commercialPositioning": {
+          "premise": "账簿修复师在港城追查会吞掉名字的失踪案。",
+          "hookLine": "他只是修一本旧账簿，却先在账页里看见了自己的死期。",
+          "hookStack": [
+            "career-entry-hook",
+            "cliffhanger-end"
+          ],
+          "benchmarkWorks": [],
+          "targetPlatform": "qidian",
+          "serializationModel": "2到3章一个单元异案，持续抬升主线阴谋",
+          "releaseCadence": "日更",
+          "chapterWordFloor": 1800,
+          "chapterWordTarget": 2600
+        }
+      },
+      "storyConstraintSignals": {
+        "emotionalContract": {
+          "coreEmotions": [],
+          "chapterEmotionFloor": [],
+          "forbiddenEmotions": []
+        },
+        "worldRules": [],
+        "dueForeshadows": [],
+        "trackedEntities": [],
+        "chapterHandoff": {
+          "previousChapter": null,
+          "currentChapter": {
+            "id": "chapter-001",
+            "title": "第一章",
+            "direction": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头",
+            "beatHints": [
+              "开场：建立日常世界",
+              "触发事件：打破平衡的事件",
+              "第一幕转折：主角做出选择，无法回头"
+            ],
+            "sceneGoals": [
+              "林舟蹲在旧书铺后屋的工作台前，指尖被潮气泡得发白。今晚送来的旧账簿比往常更沉，封皮像是浸过海水，翻开第一页时却没有霉味，",
+              "他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库门口挂着褪色的封条，封条中央却被人用香灰画了一枚歪斜的记"
+            ]
+          },
+          "nextChapter": {
+            "id": "chapter-002",
+            "title": "第二章 空名仓单",
+            "direction": "结构指引：中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡",
+            "beatHints": [
+              "中点：从被动变主动 / 虚假胜利",
+              "灵魂暗夜：最低点，失去一切",
+              "高潮：最终对决 / 真相揭露"
+            ],
+            "sceneGoals": [
+              "仓库里堆满发潮木箱，最里面那盏小灯只照出半张女人侧脸。林舟没有立刻往前走，他先把账簿贴到胸口，逼自己去听周围的水声和脚步",
+              "半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一页又多出一串陌生名字，最末那个却被墨团硬生生抹去，只剩下"
+            ]
+          },
+          "carryOverEntityChanges": [],
+          "activeThreadLabels": []
+        }
+      },
+      "wrappedEntitySignals": {
+        "count": 3,
+        "wrappedNames": [
+          "周晚",
+          "林舟",
+          "郑叔"
+        ],
+        "covered": [
+          {
+            "name": "周晚",
+            "kind": "character",
+            "id": "inferred::周晚",
+            "source": "entities"
+          },
+          {
+            "name": "林舟",
+            "kind": "character",
+            "id": "inferred::林舟",
+            "source": "entities"
+          },
+          {
+            "name": "郑叔",
+            "kind": "character",
+            "id": "inferred::郑叔",
+            "source": "entities"
+          }
+        ],
+        "missing": []
+      },
+      "consistencySignals": {
+        "specialTermRepetition": {
+          "detected": false,
+          "severity": "none",
+          "evidence": [],
+          "suggestion": ""
+        },
+        "settingCandidates": [],
+        "settingConflicts": [],
+        "unintroducedNameReveals": [],
+        "capabilityTaskRisks": [],
+        "powerProgressionConflicts": []
+      },
+      "ruleJudgements": [
+        {
+          "ruleId": "simileDensity",
+          "source": "core",
+          "scope": "scene",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到比喻密度问题，例如 像被账目抹掉一样。",
+          "suggestion": "比喻密度偏高（每千字5.9次，建议<3），尝试用具体动作或白描替代部分比喻",
+          "evidence": [
+            "像被账目抹掉一样",
+            "像钉子一样"
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 3
+          },
+          "payload": {},
+          "tags": [
+            "style"
+          ]
+        },
+        {
+          "ruleId": "sensoryVariety",
+          "source": "core",
+          "scope": "scene",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到感官单一问题。",
+          "suggestion": "感官描写单一，缺少visual和tactile和gustatory描写",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 3
+          },
+          "payload": {},
+          "tags": [
+            "style"
+          ]
+        },
+        {
+          "ruleId": "paragraphUniformity",
+          "source": "core",
+          "scope": "scene",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到段落均质问题。",
+          "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 3
+          },
+          "payload": {},
+          "tags": [
+            "style"
+          ]
+        },
+        {
+          "ruleId": "paragraphReadability",
+          "source": "core",
+          "scope": "scene",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到段落可读性问题，例如 第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像...。",
+          "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+          "evidence": [
+            "第2段约118字：他先以为是哪位客人拿死人玩笑吓唬自己，可那行字在灯下慢慢洇开，像...",
+            "第3段约130字：门外忽然传来敲门声，不急，却一下比一下重。对门巡夜的郑叔隔着门板..."
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 3
+          },
+          "payload": {},
+          "tags": [
+            "style",
+            "readability",
+            "mobile-reading"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 3
+          },
+          "payload": {
+            "beatId": "beat-a05ab6facafa",
+            "summary": "开场：建立日常世界",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 3
+          },
+          "payload": {
+            "beatId": "beat-ce46f8fc5fae",
+            "summary": "触发事件：打破平衡的事件",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 1,
+            "endParagraph": 3
+          },
+          "payload": {
+            "beatId": "beat-cdab8f9de889",
+            "summary": "第一幕转折：主角做出选择，无法回头",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        }
+      ],
+      "contractAlignment": {
+        "status": "at-risk",
+        "matched": [],
+        "risks": [
+          "主类型偏悬疑/惊悚，但这一幕的悬念维持还不够强。",
+          "核心承诺“每章推进一层异案与主线真相”：悬疑/反转承诺在这一幕里的钩子偏弱。"
+        ],
+        "notes": [
+          "已记录节奏承诺：中快节奏。",
+          "核心承诺“主角靠职业能力而不是全知外挂破局”目前仅记录，尚未接入一幕级自动判定。",
+          "本章共有 3 个已包裹实体引用，其中 3 个已能对齐到角色卡或世界设定。"
+        ]
+      },
+      "commercialAlignment": {
+        "status": "at-risk",
+        "matched": [],
+        "risks": [
+          "核心承诺“career-entry-hook”：这一幕的职业/规则入口锚点偏弱。"
+        ],
+        "notes": [
+          "项目已声明商业 hook line；当前片段不是章末场景，优先检查局部推进。",
+          "当前片段不是章末场景，未强行判定 cliffhanger-end。",
+          "已记录连载模型：2到3章一个单元异案，持续抬升主线阴谋。"
+        ]
+      },
+      "rubric": [
+        {
+          "id": "sceneFunction",
+          "label": "场景功能",
+          "maxScore": 20,
+          "focus": "这一幕是否承担推进、转折、铺垫或兑现任务"
+        },
+        {
+          "id": "continuity",
+          "label": "连续性",
+          "maxScore": 20,
+          "focus": "这一幕是否与前后文形成承接，而不是孤立切片"
+        },
+        {
+          "id": "logic",
+          "label": "逻辑性",
+          "maxScore": 20,
+          "focus": "人物行动、因果链和信息流是否说得通"
+        },
+        {
+          "id": "foreshadowing",
+          "label": "伏笔与回收",
+          "maxScore": 20,
+          "focus": "这一幕是否种下信息、维持悬念或完成局部兑现"
+        },
+        {
+          "id": "sceneClarity",
+          "label": "场景清晰度",
+          "maxScore": 20,
+          "focus": "读者能否迅速抓到时间、地点、角色和冲突焦点"
+        }
+      ]
+    },
+    {
+      "reviewId": "scene-review-b76a35d0f8",
+      "fingerprint": "scene-review-v1:chapter-001:4:5:eff81f48de71574f",
+      "rubricVersion": "scene-review-v1",
+      "generatedAt": "2026-04-29T00:39:48+08:00",
+      "chapterId": "chapter-001",
+      "chapterTitle": "第一章",
+      "sceneRange": {
+        "startParagraph": 4,
+        "endParagraph": 5,
+        "paragraphCount": 2,
+        "totalChapterParagraphs": 5,
+        "sceneIndex": 2,
+        "source": "explicit",
+        "scenePlanId": "scene-5830c70484"
+      },
+      "summary": "基于选定片段的正文与分析信号，这一幕总分 53/100。当前最稳的是场景清晰度，最需要补强的是伏笔与回收。",
+      "rating": "needs-revision",
+      "scores": {
+        "total": 53,
+        "maxScore": 100,
+        "dimensions": [
+          {
+            "id": "sceneFunction",
+            "label": "场景功能",
+            "score": 10,
+            "maxScore": 20,
+            "comment": "这一幕更像气氛切片，功能性还不够明确。",
+            "signals": [
+              "推进/变化信号 0 处",
+              "状态候选 0 个",
+              "关系候选 0 个"
+            ],
+            "suggestions": [
+              "补一个明确变化：决定、冲突升级、信息揭示或关系转向，让这一幕承担任务。"
+            ]
+          },
+          {
+            "id": "continuity",
+            "label": "连续性",
+            "score": 16,
+            "maxScore": 20,
+            "comment": "这一幕与前后文的接缝基本顺。",
+            "signals": [
+              "承接角色重合 1 个",
+              "后续角色重合 0 个",
+              "承接/过渡词 0 个"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "logic",
+            "label": "逻辑性",
+            "score": 5,
+            "maxScore": 20,
+            "comment": "事件能看懂，但因果或动机还可以再明示一点。",
+            "signals": [
+              "因果词 0 个",
+              "动机词 0 个",
+              "决定/变化词 0 个"
+            ],
+            "suggestions": [
+              "补清楚“为什么现在发生这件事”，避免角色像被作者硬推着走。",
+              "给角色一个更直白的动机或顾虑提示，读者更容易跟上行动逻辑。"
+            ]
+          },
+          {
+            "id": "foreshadowing",
+            "label": "伏笔与回收",
+            "score": 4,
+            "maxScore": 20,
+            "comment": "这一幕完成了当前动作，但伏笔/回收信号还偏弱。",
+            "signals": [
+              "伏笔信号 0 个",
+              "回收信号 0 个",
+              "疑问钩子 0 个"
+            ],
+            "suggestions": [
+              "考虑种下一个后续要兑现的信息点，或让当前冲突形成更明确的回收钩子。",
+              "结尾可以留下一个未解答的问题，增强这一幕的牵引力。"
+            ]
+          },
+          {
+            "id": "sceneClarity",
+            "label": "场景清晰度",
+            "score": 18,
+            "maxScore": 20,
+            "comment": "这一幕的镜头和焦点比较清楚。",
+            "signals": [
+              "环境锚点 3 个",
+              "出场角色 1 个",
+              "开头带锚点 是"
+            ],
+            "suggestions": [
+              "把这一幕里最关键的角色关系点得更明确，减少“有人在说话但局面不清”的感觉。"
+            ]
+          }
+        ]
+      },
+      "strengths": [
+        "连续性：这一幕与前后文的接缝基本顺。",
+        "场景清晰度：这一幕的镜头和焦点比较清楚。"
+      ],
+      "priorityActions": [
+        "考虑种下一个后续要兑现的信息点，或让当前冲突形成更明确的回收钩子。",
+        "结尾可以留下一个未解答的问题，增强这一幕的牵引力。",
+        "补清楚“为什么现在发生这件事”，避免角色像被作者硬推着走。",
+        "给角色一个更直白的动机或顾虑提示，读者更容易跟上行动逻辑。"
+      ],
+      "textMetrics": {
+        "wordCount": 181,
+        "paragraphCount": 2,
+        "averageParagraphLength": 99,
+        "tagMentions": [
+          "林舟"
+        ],
+        "totalChapterParagraphs": 5
+      },
+      "analysisSignals": {
+        "analysisBacked": true,
+        "activeEntityCount": 1,
+        "snapshotCandidateCount": 0,
+        "relationCandidateCount": 0,
+        "settingCandidateCount": 0,
+        "settingConflictCount": 0,
+        "unintroducedNameRevealCount": 0,
+        "capabilityTaskRiskCount": 0,
+        "powerProgressionConflictCount": 0,
+        "wrappedEntityCount": 1,
+        "wrappedEntityMissingCount": 0
+      },
+      "styleAnalysis": {
+        "profile": "web-serial-zh",
+        "reviewRuleProfile": "default",
+        "reviewRuleEnabledRules": [],
+        "styleAnalysis": {
+          "overallScore": 15,
+          "totalDeduction": 5,
+          "patternResults": [
+            {
+              "id": "simileDensity",
+              "label": "比喻密度",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 3.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "hedgeAdverbs",
+              "label": "模糊副词",
+              "detected": false,
+              "count": 1,
+              "perThousand": 5.5,
+              "threshold": 6.0,
+              "severity": "none",
+              "evidence": [
+                "慢慢"
+              ],
+              "suggestion": ""
+            },
+            {
+              "id": "tellingEmotion",
+              "label": "叙述性情感",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 2.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "formulaicTransition",
+              "label": "程式化过渡",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 3.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "contrastFlipPattern",
+              "label": "翻转句式",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 1.2,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "analogicalPivotPattern",
+              "label": "类比翻转句",
+              "detected": true,
+              "count": 1,
+              "perThousand": 5.5,
+              "threshold": 0.8,
+              "severity": "high",
+              "evidence": [
+                "不是周晚，更像有人在学她的声线引他往里走"
+              ],
+              "suggestion": "“不像……更像……”类翻转句偏多（每千字5.5次），优先写清人物实际观察到的事实，不要总靠抽象换挡"
+            },
+            {
+              "id": "templateCatchphrasePattern",
+              "label": "模板化口癖",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "sensoryVariety",
+              "label": "感官单一",
+              "detected": true,
+              "count": 3,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "medium",
+              "evidence": [],
+              "suggestion": "感官描写单一，缺少tactile和gustatory描写"
+            },
+            {
+              "id": "paragraphUniformity",
+              "label": "段落均质",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "paragraphReadability",
+              "label": "段落可读性",
+              "detected": true,
+              "count": 1,
+              "perThousand": 0,
+              "threshold": 90,
+              "severity": "low",
+              "evidence": [
+                "第1段约99字：他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库..."
+              ],
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+            },
+            {
+              "id": "sentenceRepetition",
+              "label": "句式重复",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "source": "builtin",
+              "suggestion": ""
+            },
+            {
+              "id": "specialTermRepetition",
+              "label": "特殊术语复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "narrativeFrameRepetition",
+              "label": "叙事支架复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "registerDrift",
+              "label": "题材语域失真",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "structuredPlanBlock",
+              "label": "方案文档腔",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "clusteredAIPhrasing",
+              "label": "AI句群叠加",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            }
+          ],
+          "sensoryDistribution": {
+            "visual": 2,
+            "auditory": 3,
+            "tactile": 0,
+            "olfactory": 1,
+            "gustatory": 0,
+            "dominantSense": "auditory",
+            "missingSenses": [
+              "tactile",
+              "gustatory"
+            ]
+          },
+          "paragraphUniformity": {
+            "lengthStdDev": 0,
+            "avgLength": 0,
+            "isUniform": false,
+            "score": 3
+          },
+          "paragraphReadability": {
+            "detected": true,
+            "severity": "low",
+            "count": 1,
+            "threshold": 90,
+            "veryLongThreshold": 150,
+            "maxLength": 99,
+            "evidence": [
+              "第1段约99字：他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库..."
+            ],
+            "overlongParagraphs": [
+              {
+                "paragraphIndex": 1,
+                "length": 99,
+                "snippet": "他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库..."
+              }
+            ]
+          },
+          "sentenceRepetition": {
+            "repeatedStructures": [],
+            "hasRepetition": false,
+            "score": 3,
+            "source": "builtin"
+          },
+          "specialTermRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topTerms": []
+          },
+          "narrativeFrameRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topFrames": []
+          },
+          "registerDrift": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedCategories": [],
+            "suggestion": ""
+          },
+          "structuredPlanBlock": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedLabels": [],
+            "suggestion": ""
+          },
+          "clusteredAIPhrasing": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "threshold": 3,
+            "signalScore": 4,
+            "signalIds": [
+              "analogicalPivotPattern",
+              "paragraphReadability"
+            ],
+            "evidence": [],
+            "suggestion": ""
+          },
+          "metaLeakage": {},
+          "sources": {
+            "sentenceRepetition": "builtin"
+          },
+          "judgements": [
+            {
+              "ruleId": "analogicalPivotPattern",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "high",
+              "status": "triggered",
+              "message": "检测到类比翻转句问题，例如 不是周晚，更像有人在学她的声线引他往里走。",
+              "suggestion": "“不像……更像……”类翻转句偏多（每千字5.5次），优先写清人物实际观察到的事实，不要总靠抽象换挡",
+              "evidence": [
+                "不是周晚，更像有人在学她的声线引他往里走"
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style",
+                "ai-phrasing"
+              ]
+            },
+            {
+              "ruleId": "sensoryVariety",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到感官单一问题。",
+              "suggestion": "感官描写单一，缺少tactile和gustatory描写",
+              "evidence": [],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style"
+              ]
+            },
+            {
+              "ruleId": "paragraphReadability",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "low",
+              "status": "triggered",
+              "message": "检测到段落可读性问题，例如 第1段约99字：他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库...。",
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+              "evidence": [
+                "第1段约99字：他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库..."
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style",
+                "readability",
+                "mobile-reading"
+              ]
+            }
+          ],
+          "summary": "检测到3项AI风格特征：类比翻转句、感官单一、段落可读性。扣5分。",
+          "suggestions": [
+            "“不像……更像……”类翻转句偏多（每千字5.5次），优先写清人物实际观察到的事实，不要总靠抽象换挡",
+            "感官描写单一，缺少tactile和gustatory描写",
+            "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+          ]
+        },
+        "judgements": [
+          {
+            "ruleId": "analogicalPivotPattern",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "high",
+            "status": "triggered",
+            "message": "检测到类比翻转句问题，例如 不是周晚，更像有人在学她的声线引他往里走。",
+            "suggestion": "“不像……更像……”类翻转句偏多（每千字5.5次），优先写清人物实际观察到的事实，不要总靠抽象换挡",
+            "evidence": [
+              "不是周晚，更像有人在学她的声线引他往里走"
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style",
+              "ai-phrasing"
+            ]
+          },
+          {
+            "ruleId": "sensoryVariety",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到感官单一问题。",
+            "suggestion": "感官描写单一，缺少tactile和gustatory描写",
+            "evidence": [],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style"
+            ]
+          },
+          {
+            "ruleId": "paragraphReadability",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "low",
+            "status": "triggered",
+            "message": "检测到段落可读性问题，例如 第1段约99字：他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库...。",
+            "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+            "evidence": [
+              "第1段约99字：他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库..."
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style",
+              "readability",
+              "mobile-reading"
+            ]
+          }
+        ],
+        "constraints": [
+          "“不像……更像……”类翻转句偏多（每千字5.5次），优先写清人物实际观察到的事实，不要总靠抽象换挡",
+          "感官描写单一，缺少tactile和gustatory描写"
+        ],
+        "textMetrics": {
+          "wordCount": 181,
+          "paragraphCount": 2,
+          "averageParagraphLength": 99
+        },
+        "profileSource": "builtin",
+        "reviewRuleProfileSource": "builtin"
+      },
+      "projectContext": {
+        "genre": "Mystery",
+        "positioning": {
+          "primaryGenre": "mystery",
+          "subGenre": "urban-occult",
+          "styleTags": [
+            "web-serial"
+          ],
+          "targetAudience": [
+            "qidian-reader"
+          ]
+        },
+        "storyContract": {
+          "corePromises": [
+            "每章推进一层异案与主线真相",
+            "主角靠职业能力而不是全知外挂破局"
+          ],
+          "avoidances": [],
+          "endingContract": "",
+          "paceContract": "中快节奏"
+        },
+        "emotionalContract": {
+          "coreEmotions": [],
+          "chapterEmotionFloor": [],
+          "forbiddenEmotions": [],
+          "revealPreference": {
+            "defaultMode": "",
+            "allowDirectExplainAtClimax": false
+          }
+        },
+        "storyTemplate": {
+          "id": "",
+          "label": "",
+          "modulePolicy": {},
+          "reviewFocus": []
+        },
+        "commercialPositioning": {
+          "premise": "账簿修复师在港城追查会吞掉名字的失踪案。",
+          "hookLine": "他只是修一本旧账簿，却先在账页里看见了自己的死期。",
+          "hookStack": [
+            "career-entry-hook",
+            "cliffhanger-end"
+          ],
+          "benchmarkWorks": [],
+          "targetPlatform": "qidian",
+          "serializationModel": "2到3章一个单元异案，持续抬升主线阴谋",
+          "releaseCadence": "日更",
+          "chapterWordFloor": 1800,
+          "chapterWordTarget": 2600
+        }
+      },
+      "storyConstraintSignals": {
+        "emotionalContract": {
+          "coreEmotions": [],
+          "chapterEmotionFloor": [],
+          "forbiddenEmotions": []
+        },
+        "worldRules": [],
+        "dueForeshadows": [],
+        "trackedEntities": [],
+        "chapterHandoff": {
+          "previousChapter": null,
+          "currentChapter": {
+            "id": "chapter-001",
+            "title": "第一章",
+            "direction": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头",
+            "beatHints": [
+              "开场：建立日常世界",
+              "触发事件：打破平衡的事件",
+              "第一幕转折：主角做出选择，无法回头"
+            ],
+            "sceneGoals": [
+              "林舟蹲在旧书铺后屋的工作台前，指尖被潮气泡得发白。今晚送来的旧账簿比往常更沉，封皮像是浸过海水，翻开第一页时却没有霉味，",
+              "他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库门口挂着褪色的封条，封条中央却被人用香灰画了一枚歪斜的记"
+            ]
+          },
+          "nextChapter": {
+            "id": "chapter-002",
+            "title": "第二章 空名仓单",
+            "direction": "结构指引：中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡",
+            "beatHints": [
+              "中点：从被动变主动 / 虚假胜利",
+              "灵魂暗夜：最低点，失去一切",
+              "高潮：最终对决 / 真相揭露"
+            ],
+            "sceneGoals": [
+              "仓库里堆满发潮木箱，最里面那盏小灯只照出半张女人侧脸。林舟没有立刻往前走，他先把账簿贴到胸口，逼自己去听周围的水声和脚步",
+              "半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一页又多出一串陌生名字，最末那个却被墨团硬生生抹去，只剩下"
+            ]
+          },
+          "carryOverEntityChanges": [],
+          "activeThreadLabels": []
+        }
+      },
+      "wrappedEntitySignals": {
+        "count": 1,
+        "wrappedNames": [
+          "林舟"
+        ],
+        "covered": [
+          {
+            "name": "林舟",
+            "kind": "character",
+            "id": "inferred::林舟",
+            "source": "entities"
+          }
+        ],
+        "missing": []
+      },
+      "consistencySignals": {
+        "specialTermRepetition": {
+          "detected": false,
+          "severity": "none",
+          "evidence": [],
+          "suggestion": ""
+        },
+        "settingCandidates": [],
+        "settingConflicts": [],
+        "unintroducedNameReveals": [],
+        "capabilityTaskRisks": [],
+        "powerProgressionConflicts": []
+      },
+      "ruleJudgements": [
+        {
+          "ruleId": "analogicalPivotPattern",
+          "source": "core",
+          "scope": "scene",
+          "kind": "style",
+          "severity": "high",
+          "status": "triggered",
+          "message": "检测到类比翻转句问题，例如 不是周晚，更像有人在学她的声线引他往里走。",
+          "suggestion": "“不像……更像……”类翻转句偏多（每千字5.5次），优先写清人物实际观察到的事实，不要总靠抽象换挡",
+          "evidence": [
+            "不是周晚，更像有人在学她的声线引他往里走"
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 4,
+            "endParagraph": 5
+          },
+          "payload": {},
+          "tags": [
+            "style",
+            "ai-phrasing"
+          ]
+        },
+        {
+          "ruleId": "sensoryVariety",
+          "source": "core",
+          "scope": "scene",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到感官单一问题。",
+          "suggestion": "感官描写单一，缺少tactile和gustatory描写",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 4,
+            "endParagraph": 5
+          },
+          "payload": {},
+          "tags": [
+            "style"
+          ]
+        },
+        {
+          "ruleId": "paragraphReadability",
+          "source": "core",
+          "scope": "scene",
+          "kind": "style",
+          "severity": "low",
+          "status": "triggered",
+          "message": "检测到段落可读性问题，例如 第1段约99字：他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库...。",
+          "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+          "evidence": [
+            "第1段约99字：他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库..."
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 4,
+            "endParagraph": 5
+          },
+          "payload": {},
+          "tags": [
+            "style",
+            "readability",
+            "mobile-reading"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 4,
+            "endParagraph": 5
+          },
+          "payload": {
+            "beatId": "beat-a05ab6facafa",
+            "summary": "开场：建立日常世界",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 4,
+            "endParagraph": 5
+          },
+          "payload": {
+            "beatId": "beat-ce46f8fc5fae",
+            "summary": "触发事件：打破平衡的事件",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-001",
+            "startParagraph": 4,
+            "endParagraph": 5
+          },
+          "payload": {
+            "beatId": "beat-cdab8f9de889",
+            "summary": "第一幕转折：主角做出选择，无法回头",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        }
+      ],
+      "contractAlignment": {
+        "status": "at-risk",
+        "matched": [],
+        "risks": [
+          "主类型偏悬疑/惊悚，但这一幕的悬念维持还不够强。",
+          "核心承诺“每章推进一层异案与主线真相”：悬疑/反转承诺在这一幕里的钩子偏弱。"
+        ],
+        "notes": [
+          "已记录节奏承诺：中快节奏。",
+          "核心承诺“主角靠职业能力而不是全知外挂破局”目前仅记录，尚未接入一幕级自动判定。",
+          "本章共有 1 个已包裹实体引用，其中 1 个已能对齐到角色卡或世界设定。"
+        ]
+      },
+      "commercialAlignment": {
+        "status": "at-risk",
+        "matched": [],
+        "risks": [
+          "这一幕处于章末，但追读钩子还不够强。",
+          "核心承诺“career-entry-hook”：这一幕的职业/规则入口锚点偏弱。",
+          "核心承诺“cliffhanger-end”：章末钩子偏弱。"
+        ],
+        "notes": [
+          "这一幕的商业钩子信号较弱，如用作章节关键场景可考虑补一层追读问题。",
+          "已记录连载模型：2到3章一个单元异案，持续抬升主线阴谋。"
+        ]
+      },
+      "rubric": [
+        {
+          "id": "sceneFunction",
+          "label": "场景功能",
+          "maxScore": 20,
+          "focus": "这一幕是否承担推进、转折、铺垫或兑现任务"
+        },
+        {
+          "id": "continuity",
+          "label": "连续性",
+          "maxScore": 20,
+          "focus": "这一幕是否与前后文形成承接，而不是孤立切片"
+        },
+        {
+          "id": "logic",
+          "label": "逻辑性",
+          "maxScore": 20,
+          "focus": "人物行动、因果链和信息流是否说得通"
+        },
+        {
+          "id": "foreshadowing",
+          "label": "伏笔与回收",
+          "maxScore": 20,
+          "focus": "这一幕是否种下信息、维持悬念或完成局部兑现"
+        },
+        {
+          "id": "sceneClarity",
+          "label": "场景清晰度",
+          "maxScore": 20,
+          "focus": "读者能否迅速抓到时间、地点、角色和冲突焦点"
+        }
+      ]
+    },
+    {
+      "reviewId": "scene-review-0704c91310",
+      "fingerprint": "scene-review-v1:chapter-002:1:3:8b702c21a8f4d50a",
+      "rubricVersion": "scene-review-v1",
+      "generatedAt": "2026-04-29T00:41:05+08:00",
+      "chapterId": "chapter-002",
+      "chapterTitle": "第二章 空名仓单",
+      "sceneRange": {
+        "startParagraph": 1,
+        "endParagraph": 3,
+        "paragraphCount": 3,
+        "totalChapterParagraphs": 5,
+        "sceneIndex": 1,
+        "source": "explicit",
+        "scenePlanId": "scene-113b10c475"
+      },
+      "summary": "基于选定片段的正文与分析信号，这一幕总分 66/100。当前最稳的是场景清晰度，最需要补强的是伏笔与回收。",
+      "rating": "workable",
+      "scores": {
+        "total": 66,
+        "maxScore": 100,
+        "dimensions": [
+          {
+            "id": "sceneFunction",
+            "label": "场景功能",
+            "score": 16,
+            "maxScore": 20,
+            "comment": "这一幕承担了清楚的推进或转折功能。",
+            "signals": [
+              "推进/变化信号 2 处",
+              "状态候选 0 个",
+              "关系候选 0 个"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "continuity",
+            "label": "连续性",
+            "score": 16,
+            "maxScore": 20,
+            "comment": "这一幕与前后文的接缝基本顺。",
+            "signals": [
+              "承接角色重合 0 个",
+              "后续角色重合 1 个",
+              "承接/过渡词 2 个"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "logic",
+            "label": "逻辑性",
+            "score": 10,
+            "maxScore": 20,
+            "comment": "事件能看懂，但因果或动机还可以再明示一点。",
+            "signals": [
+              "因果词 0 个",
+              "动机词 1 个",
+              "决定/变化词 2 个"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "foreshadowing",
+            "label": "伏笔与回收",
+            "score": 4,
+            "maxScore": 20,
+            "comment": "这一幕完成了当前动作，但伏笔/回收信号还偏弱。",
+            "signals": [
+              "伏笔信号 0 个",
+              "回收信号 0 个",
+              "疑问钩子 0 个"
+            ],
+            "suggestions": [
+              "考虑种下一个后续要兑现的信息点，或让当前冲突形成更明确的回收钩子。",
+              "结尾可以留下一个未解答的问题，增强这一幕的牵引力。"
+            ]
+          },
+          {
+            "id": "sceneClarity",
+            "label": "场景清晰度",
+            "score": 20,
+            "maxScore": 20,
+            "comment": "这一幕的镜头和焦点比较清楚。",
+            "signals": [
+              "环境锚点 2 个",
+              "出场角色 2 个",
+              "开头带锚点 是"
+            ],
+            "suggestions": []
+          }
+        ]
+      },
+      "strengths": [
+        "场景功能：这一幕承担了清楚的推进或转折功能。",
+        "连续性：这一幕与前后文的接缝基本顺。",
+        "场景清晰度：这一幕的镜头和焦点比较清楚。"
+      ],
+      "priorityActions": [
+        "考虑种下一个后续要兑现的信息点，或让当前冲突形成更明确的回收钩子。",
+        "结尾可以留下一个未解答的问题，增强这一幕的牵引力。"
+      ],
+      "textMetrics": {
+        "wordCount": 264,
+        "paragraphCount": 3,
+        "averageParagraphLength": 98,
+        "tagMentions": [
+          "周晚",
+          "林舟"
+        ],
+        "totalChapterParagraphs": 5
+      },
+      "analysisSignals": {
+        "analysisBacked": true,
+        "activeEntityCount": 2,
+        "snapshotCandidateCount": 0,
+        "relationCandidateCount": 0,
+        "settingCandidateCount": 0,
+        "settingConflictCount": 0,
+        "unintroducedNameRevealCount": 0,
+        "capabilityTaskRiskCount": 0,
+        "powerProgressionConflictCount": 0,
+        "wrappedEntityCount": 2,
+        "wrappedEntityMissingCount": 0
+      },
+      "styleAnalysis": {
+        "profile": "web-serial-zh",
+        "reviewRuleProfile": "default",
+        "reviewRuleEnabledRules": [],
+        "styleAnalysis": {
+          "overallScore": 17,
+          "totalDeduction": 3,
+          "patternResults": [
+            {
+              "id": "simileDensity",
+              "label": "比喻密度",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 3.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "hedgeAdverbs",
+              "label": "模糊副词",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 6.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "tellingEmotion",
+              "label": "叙述性情感",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 2.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "formulaicTransition",
+              "label": "程式化过渡",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 3.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "contrastFlipPattern",
+              "label": "翻转句式",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 1.2,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "analogicalPivotPattern",
+              "label": "类比翻转句",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "templateCatchphrasePattern",
+              "label": "模板化口癖",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "sensoryVariety",
+              "label": "感官单一",
+              "detected": true,
+              "count": 2,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "medium",
+              "evidence": [],
+              "suggestion": "感官描写单一，缺少tactile和olfactory和gustatory描写"
+            },
+            {
+              "id": "paragraphUniformity",
+              "label": "段落均质",
+              "detected": true,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "medium",
+              "evidence": [],
+              "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感"
+            },
+            {
+              "id": "paragraphReadability",
+              "label": "段落可读性",
+              "detected": true,
+              "count": 1,
+              "perThousand": 0,
+              "threshold": 90,
+              "severity": "low",
+              "evidence": [
+                "第3段约99字：林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对..."
+              ],
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+            },
+            {
+              "id": "sentenceRepetition",
+              "label": "句式重复",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "source": "builtin",
+              "suggestion": ""
+            },
+            {
+              "id": "specialTermRepetition",
+              "label": "特殊术语复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "narrativeFrameRepetition",
+              "label": "叙事支架复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "registerDrift",
+              "label": "题材语域失真",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "structuredPlanBlock",
+              "label": "方案文档腔",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "clusteredAIPhrasing",
+              "label": "AI句群叠加",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            }
+          ],
+          "sensoryDistribution": {
+            "visual": 2,
+            "auditory": 3,
+            "tactile": 0,
+            "olfactory": 0,
+            "gustatory": 0,
+            "dominantSense": "auditory",
+            "missingSenses": [
+              "tactile",
+              "olfactory",
+              "gustatory"
+            ]
+          },
+          "paragraphUniformity": {
+            "lengthStdDev": 9.2,
+            "avgLength": 97.7,
+            "isUniform": true,
+            "score": 1
+          },
+          "paragraphReadability": {
+            "detected": true,
+            "severity": "low",
+            "count": 1,
+            "threshold": 90,
+            "veryLongThreshold": 150,
+            "maxLength": 99,
+            "evidence": [
+              "第3段约99字：林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对..."
+            ],
+            "overlongParagraphs": [
+              {
+                "paragraphIndex": 3,
+                "length": 99,
+                "snippet": "林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对..."
+              }
+            ]
+          },
+          "sentenceRepetition": {
+            "repeatedStructures": [],
+            "hasRepetition": false,
+            "score": 3,
+            "source": "builtin"
+          },
+          "specialTermRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topTerms": []
+          },
+          "narrativeFrameRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topFrames": []
+          },
+          "registerDrift": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedCategories": [],
+            "suggestion": ""
+          },
+          "structuredPlanBlock": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedLabels": [],
+            "suggestion": ""
+          },
+          "clusteredAIPhrasing": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "threshold": 3,
+            "signalScore": 1,
+            "signalIds": [
+              "paragraphReadability"
+            ],
+            "evidence": [],
+            "suggestion": ""
+          },
+          "metaLeakage": {},
+          "sources": {
+            "sentenceRepetition": "builtin"
+          },
+          "judgements": [
+            {
+              "ruleId": "sensoryVariety",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到感官单一问题。",
+              "suggestion": "感官描写单一，缺少tactile和olfactory和gustatory描写",
+              "evidence": [],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style"
+              ]
+            },
+            {
+              "ruleId": "paragraphUniformity",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到段落均质问题。",
+              "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+              "evidence": [],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style"
+              ]
+            },
+            {
+              "ruleId": "paragraphReadability",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "low",
+              "status": "triggered",
+              "message": "检测到段落可读性问题，例如 第3段约99字：林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对...。",
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+              "evidence": [
+                "第3段约99字：林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对..."
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style",
+                "readability",
+                "mobile-reading"
+              ]
+            }
+          ],
+          "summary": "检测到3项AI风格特征：感官单一、段落均质、段落可读性。扣3分。",
+          "suggestions": [
+            "感官描写单一，缺少tactile和olfactory和gustatory描写",
+            "段落长度过于均匀，可调整长短交替制造节奏感",
+            "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+          ]
+        },
+        "judgements": [
+          {
+            "ruleId": "sensoryVariety",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到感官单一问题。",
+            "suggestion": "感官描写单一，缺少tactile和olfactory和gustatory描写",
+            "evidence": [],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style"
+            ]
+          },
+          {
+            "ruleId": "paragraphUniformity",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到段落均质问题。",
+            "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+            "evidence": [],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style"
+            ]
+          },
+          {
+            "ruleId": "paragraphReadability",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "low",
+            "status": "triggered",
+            "message": "检测到段落可读性问题，例如 第3段约99字：林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对...。",
+            "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+            "evidence": [
+              "第3段约99字：林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对..."
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style",
+              "readability",
+              "mobile-reading"
+            ]
+          }
+        ],
+        "constraints": [
+          "感官描写单一，缺少tactile和olfactory和gustatory描写",
+          "段落长度过于均匀，可调整长短交替制造节奏感"
+        ],
+        "textMetrics": {
+          "wordCount": 264,
+          "paragraphCount": 3,
+          "averageParagraphLength": 98
+        },
+        "profileSource": "builtin",
+        "reviewRuleProfileSource": "builtin"
+      },
+      "projectContext": {
+        "genre": "Mystery",
+        "positioning": {
+          "primaryGenre": "mystery",
+          "subGenre": "urban-occult",
+          "styleTags": [
+            "web-serial"
+          ],
+          "targetAudience": [
+            "qidian-reader"
+          ]
+        },
+        "storyContract": {
+          "corePromises": [
+            "每章推进一层异案与主线真相",
+            "主角靠职业能力而不是全知外挂破局"
+          ],
+          "avoidances": [],
+          "endingContract": "",
+          "paceContract": "中快节奏"
+        },
+        "emotionalContract": {
+          "coreEmotions": [],
+          "chapterEmotionFloor": [],
+          "forbiddenEmotions": [],
+          "revealPreference": {
+            "defaultMode": "",
+            "allowDirectExplainAtClimax": false
+          }
+        },
+        "storyTemplate": {
+          "id": "",
+          "label": "",
+          "modulePolicy": {},
+          "reviewFocus": []
+        },
+        "commercialPositioning": {
+          "premise": "账簿修复师在港城追查会吞掉名字的失踪案。",
+          "hookLine": "他只是修一本旧账簿，却先在账页里看见了自己的死期。",
+          "hookStack": [
+            "career-entry-hook",
+            "cliffhanger-end"
+          ],
+          "benchmarkWorks": [],
+          "targetPlatform": "qidian",
+          "serializationModel": "2到3章一个单元异案，持续抬升主线阴谋",
+          "releaseCadence": "日更",
+          "chapterWordFloor": 1800,
+          "chapterWordTarget": 2600
+        }
+      },
+      "storyConstraintSignals": {
+        "emotionalContract": {
+          "coreEmotions": [],
+          "chapterEmotionFloor": [],
+          "forbiddenEmotions": []
+        },
+        "worldRules": [],
+        "dueForeshadows": [],
+        "trackedEntities": [],
+        "chapterHandoff": {
+          "previousChapter": {
+            "id": "chapter-001",
+            "title": "第一章",
+            "direction": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头",
+            "beatHints": [
+              "开场：建立日常世界",
+              "触发事件：打破平衡的事件",
+              "第一幕转折：主角做出选择，无法回头"
+            ],
+            "sceneGoals": [
+              "林舟蹲在旧书铺后屋的工作台前，指尖被潮气泡得发白。今晚送来的旧账簿比往常更沉，封皮像是浸过海水，翻开第一页时却没有霉味，",
+              "他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库门口挂着褪色的封条，封条中央却被人用香灰画了一枚歪斜的记"
+            ]
+          },
+          "currentChapter": {
+            "id": "chapter-002",
+            "title": "第二章 空名仓单",
+            "direction": "结构指引：中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡",
+            "beatHints": [
+              "中点：从被动变主动 / 虚假胜利",
+              "灵魂暗夜：最低点，失去一切",
+              "高潮：最终对决 / 真相揭露"
+            ],
+            "sceneGoals": [
+              "仓库里堆满发潮木箱，最里面那盏小灯只照出半张女人侧脸。林舟没有立刻往前走，他先把账簿贴到胸口，逼自己去听周围的水声和脚步",
+              "半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一页又多出一串陌生名字，最末那个却被墨团硬生生抹去，只剩下"
+            ]
+          },
+          "nextChapter": null,
+          "carryOverEntityChanges": [],
+          "activeThreadLabels": []
+        }
+      },
+      "wrappedEntitySignals": {
+        "count": 2,
+        "wrappedNames": [
+          "周晚",
+          "林舟"
+        ],
+        "covered": [
+          {
+            "name": "周晚",
+            "kind": "character",
+            "id": "inferred::周晚",
+            "source": "entities"
+          },
+          {
+            "name": "林舟",
+            "kind": "character",
+            "id": "inferred::林舟",
+            "source": "entities"
+          }
+        ],
+        "missing": []
+      },
+      "consistencySignals": {
+        "specialTermRepetition": {
+          "detected": false,
+          "severity": "none",
+          "evidence": [],
+          "suggestion": ""
+        },
+        "settingCandidates": [],
+        "settingConflicts": [],
+        "unintroducedNameReveals": [],
+        "capabilityTaskRisks": [],
+        "powerProgressionConflicts": []
+      },
+      "ruleJudgements": [
+        {
+          "ruleId": "sensoryVariety",
+          "source": "core",
+          "scope": "scene",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到感官单一问题。",
+          "suggestion": "感官描写单一，缺少tactile和olfactory和gustatory描写",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002",
+            "startParagraph": 1,
+            "endParagraph": 3
+          },
+          "payload": {},
+          "tags": [
+            "style"
+          ]
+        },
+        {
+          "ruleId": "paragraphUniformity",
+          "source": "core",
+          "scope": "scene",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到段落均质问题。",
+          "suggestion": "段落长度过于均匀，可调整长短交替制造节奏感",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002",
+            "startParagraph": 1,
+            "endParagraph": 3
+          },
+          "payload": {},
+          "tags": [
+            "style"
+          ]
+        },
+        {
+          "ruleId": "paragraphReadability",
+          "source": "core",
+          "scope": "scene",
+          "kind": "style",
+          "severity": "low",
+          "status": "triggered",
+          "message": "检测到段落可读性问题，例如 第3段约99字：林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对...。",
+          "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+          "evidence": [
+            "第3段约99字：林舟弯腰去捞，发现印章缺了一角，缺口形状正好和铜纽扣背面的刻痕对..."
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-002",
+            "startParagraph": 1,
+            "endParagraph": 3
+          },
+          "payload": {},
+          "tags": [
+            "style",
+            "readability",
+            "mobile-reading"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002",
+            "startParagraph": 1,
+            "endParagraph": 3
+          },
+          "payload": {
+            "beatId": "beat-2e023dd861aa",
+            "summary": "中点：从被动变主动 / 虚假胜利",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002",
+            "startParagraph": 1,
+            "endParagraph": 3
+          },
+          "payload": {
+            "beatId": "beat-d7703f812da7",
+            "summary": "灵魂暗夜：最低点，失去一切",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002",
+            "startParagraph": 1,
+            "endParagraph": 3
+          },
+          "payload": {
+            "beatId": "beat-7e737c623cb7",
+            "summary": "高潮：最终对决 / 真相揭露",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002",
+            "startParagraph": 1,
+            "endParagraph": 3
+          },
+          "payload": {
+            "beatId": "beat-a72b5ca22197",
+            "summary": "结局：新平衡",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        }
+      ],
+      "contractAlignment": {
+        "status": "at-risk",
+        "matched": [],
+        "risks": [
+          "主类型偏悬疑/惊悚，但这一幕的悬念维持还不够强。",
+          "核心承诺“每章推进一层异案与主线真相”：悬疑/反转承诺在这一幕里的钩子偏弱。"
+        ],
+        "notes": [
+          "已记录节奏承诺：中快节奏。",
+          "核心承诺“主角靠职业能力而不是全知外挂破局”目前仅记录，尚未接入一幕级自动判定。",
+          "本章共有 2 个已包裹实体引用，其中 2 个已能对齐到角色卡或世界设定。"
+        ]
+      },
+      "commercialAlignment": {
+        "status": "aligned",
+        "matched": [
+          "核心承诺“career-entry-hook”：这一幕维持住了职业/规则入口的可读性。"
+        ],
+        "risks": [],
+        "notes": [
+          "项目已声明商业 hook line；当前片段不是章末场景，优先检查局部推进。",
+          "当前片段不是章末场景，未强行判定 cliffhanger-end。",
+          "这一幕的商业钩子信号较弱，如用作章节关键场景可考虑补一层追读问题。",
+          "已记录连载模型：2到3章一个单元异案，持续抬升主线阴谋。"
+        ]
+      },
+      "rubric": [
+        {
+          "id": "sceneFunction",
+          "label": "场景功能",
+          "maxScore": 20,
+          "focus": "这一幕是否承担推进、转折、铺垫或兑现任务"
+        },
+        {
+          "id": "continuity",
+          "label": "连续性",
+          "maxScore": 20,
+          "focus": "这一幕是否与前后文形成承接，而不是孤立切片"
+        },
+        {
+          "id": "logic",
+          "label": "逻辑性",
+          "maxScore": 20,
+          "focus": "人物行动、因果链和信息流是否说得通"
+        },
+        {
+          "id": "foreshadowing",
+          "label": "伏笔与回收",
+          "maxScore": 20,
+          "focus": "这一幕是否种下信息、维持悬念或完成局部兑现"
+        },
+        {
+          "id": "sceneClarity",
+          "label": "场景清晰度",
+          "maxScore": 20,
+          "focus": "读者能否迅速抓到时间、地点、角色和冲突焦点"
+        }
+      ]
+    },
+    {
+      "reviewId": "scene-review-3c70fc2ac2",
+      "fingerprint": "scene-review-v1:chapter-002:4:5:68e72a739f010724",
+      "rubricVersion": "scene-review-v1",
+      "generatedAt": "2026-04-29T00:41:19+08:00",
+      "chapterId": "chapter-002",
+      "chapterTitle": "第二章 空名仓单",
+      "sceneRange": {
+        "startParagraph": 4,
+        "endParagraph": 5,
+        "paragraphCount": 2,
+        "totalChapterParagraphs": 5,
+        "sceneIndex": 2,
+        "source": "explicit",
+        "scenePlanId": "scene-60e1c168e3"
+      },
+      "summary": "基于选定片段的正文与分析信号，这一幕总分 67/100。当前最稳的是连续性，最需要补强的是逻辑性。",
+      "rating": "workable",
+      "scores": {
+        "total": 67,
+        "maxScore": 100,
+        "dimensions": [
+          {
+            "id": "sceneFunction",
+            "label": "场景功能",
+            "score": 14,
+            "maxScore": 20,
+            "comment": "这一幕承担了清楚的推进或转折功能。",
+            "signals": [
+              "推进/变化信号 1 处",
+              "状态候选 0 个",
+              "关系候选 0 个"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "continuity",
+            "label": "连续性",
+            "score": 16,
+            "maxScore": 20,
+            "comment": "这一幕与前后文的接缝基本顺。",
+            "signals": [
+              "承接角色重合 1 个",
+              "后续角色重合 0 个",
+              "承接/过渡词 2 个"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "logic",
+            "label": "逻辑性",
+            "score": 10,
+            "maxScore": 20,
+            "comment": "事件能看懂，但因果或动机还可以再明示一点。",
+            "signals": [
+              "因果词 0 个",
+              "动机词 1 个",
+              "决定/变化词 1 个"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "foreshadowing",
+            "label": "伏笔与回收",
+            "score": 11,
+            "maxScore": 20,
+            "comment": "这一幕完成了当前动作，但伏笔/回收信号还偏弱。",
+            "signals": [
+              "伏笔信号 1 个",
+              "回收信号 0 个",
+              "疑问钩子 1 个"
+            ],
+            "suggestions": []
+          },
+          {
+            "id": "sceneClarity",
+            "label": "场景清晰度",
+            "score": 16,
+            "maxScore": 20,
+            "comment": "这一幕的镜头和焦点比较清楚。",
+            "signals": [
+              "环境锚点 1 个",
+              "出场角色 1 个",
+              "开头带锚点 是"
+            ],
+            "suggestions": [
+              "把这一幕里最关键的角色关系点得更明确，减少“有人在说话但局面不清”的感觉。"
+            ]
+          }
+        ]
+      },
+      "strengths": [
+        "连续性：这一幕与前后文的接缝基本顺。",
+        "场景清晰度：这一幕的镜头和焦点比较清楚。"
+      ],
+      "priorityActions": [
+        "把这一幕里最关键的角色关系点得更明确，减少“有人在说话但局面不清”的感觉。"
+      ],
+      "textMetrics": {
+        "wordCount": 200,
+        "paragraphCount": 2,
+        "averageParagraphLength": 110,
+        "tagMentions": [
+          "林舟"
+        ],
+        "totalChapterParagraphs": 5
+      },
+      "analysisSignals": {
+        "analysisBacked": true,
+        "activeEntityCount": 1,
+        "snapshotCandidateCount": 0,
+        "relationCandidateCount": 0,
+        "settingCandidateCount": 0,
+        "settingConflictCount": 0,
+        "unintroducedNameRevealCount": 0,
+        "capabilityTaskRiskCount": 0,
+        "powerProgressionConflictCount": 0,
+        "wrappedEntityCount": 1,
+        "wrappedEntityMissingCount": 0
+      },
+      "styleAnalysis": {
+        "profile": "web-serial-zh",
+        "reviewRuleProfile": "default",
+        "reviewRuleEnabledRules": [],
+        "styleAnalysis": {
+          "overallScore": 17,
+          "totalDeduction": 3,
+          "patternResults": [
+            {
+              "id": "simileDensity",
+              "label": "比喻密度",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 3.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "hedgeAdverbs",
+              "label": "模糊副词",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 6.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "tellingEmotion",
+              "label": "叙述性情感",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 2.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "formulaicTransition",
+              "label": "程式化过渡",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 3.0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "contrastFlipPattern",
+              "label": "翻转句式",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 1.2,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "analogicalPivotPattern",
+              "label": "类比翻转句",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "templateCatchphrasePattern",
+              "label": "模板化口癖",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "sensoryVariety",
+              "label": "感官单一",
+              "detected": true,
+              "count": 3,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "medium",
+              "evidence": [],
+              "suggestion": "感官描写单一，缺少tactile和gustatory描写"
+            },
+            {
+              "id": "paragraphUniformity",
+              "label": "段落均质",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "paragraphReadability",
+              "label": "段落可读性",
+              "detected": true,
+              "count": 2,
+              "perThousand": 0,
+              "threshold": 90,
+              "severity": "medium",
+              "evidence": [
+                "第1段约93字：半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一...",
+                "第2段约107字：他原本只想先保住自己的命，可仓单把线索直接推到了另一个更大的名字..."
+              ],
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+            },
+            {
+              "id": "sentenceRepetition",
+              "label": "句式重复",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "source": "builtin",
+              "suggestion": ""
+            },
+            {
+              "id": "specialTermRepetition",
+              "label": "特殊术语复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "narrativeFrameRepetition",
+              "label": "叙事支架复用",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "registerDrift",
+              "label": "题材语域失真",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "structuredPlanBlock",
+              "label": "方案文档腔",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "clusteredAIPhrasing",
+              "label": "AI句群叠加",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            }
+          ],
+          "sensoryDistribution": {
+            "visual": 1,
+            "auditory": 1,
+            "tactile": 0,
+            "olfactory": 3,
+            "gustatory": 0,
+            "dominantSense": "olfactory",
+            "missingSenses": [
+              "tactile",
+              "gustatory"
+            ]
+          },
+          "paragraphUniformity": {
+            "lengthStdDev": 0,
+            "avgLength": 0,
+            "isUniform": false,
+            "score": 3
+          },
+          "paragraphReadability": {
+            "detected": true,
+            "severity": "medium",
+            "count": 2,
+            "threshold": 90,
+            "veryLongThreshold": 150,
+            "maxLength": 107,
+            "evidence": [
+              "第1段约93字：半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一...",
+              "第2段约107字：他原本只想先保住自己的命，可仓单把线索直接推到了另一个更大的名字..."
+            ],
+            "overlongParagraphs": [
+              {
+                "paragraphIndex": 1,
+                "length": 93,
+                "snippet": "半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一..."
+              },
+              {
+                "paragraphIndex": 2,
+                "length": 107,
+                "snippet": "他原本只想先保住自己的命，可仓单把线索直接推到了另一个更大的名字..."
+              }
+            ]
+          },
+          "sentenceRepetition": {
+            "repeatedStructures": [],
+            "hasRepetition": false,
+            "score": 3,
+            "source": "builtin"
+          },
+          "specialTermRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topTerms": []
+          },
+          "narrativeFrameRepetition": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "topFrames": []
+          },
+          "registerDrift": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedCategories": [],
+            "suggestion": ""
+          },
+          "structuredPlanBlock": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "evidence": [],
+            "matchedLabels": [],
+            "suggestion": ""
+          },
+          "clusteredAIPhrasing": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "threshold": 3,
+            "signalScore": 1,
+            "signalIds": [
+              "paragraphReadability"
+            ],
+            "evidence": [],
+            "suggestion": ""
+          },
+          "metaLeakage": {},
+          "sources": {
+            "sentenceRepetition": "builtin"
+          },
+          "judgements": [
+            {
+              "ruleId": "sensoryVariety",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到感官单一问题。",
+              "suggestion": "感官描写单一，缺少tactile和gustatory描写",
+              "evidence": [],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style"
+              ]
+            },
+            {
+              "ruleId": "paragraphReadability",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到段落可读性问题，例如 第1段约93字：半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一...。",
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+              "evidence": [
+                "第1段约93字：半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一...",
+                "第2段约107字：他原本只想先保住自己的命，可仓单把线索直接推到了另一个更大的名字..."
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style",
+                "readability",
+                "mobile-reading"
+              ]
+            }
+          ],
+          "summary": "检测到2项AI风格特征：感官单一、段落可读性。扣3分。",
+          "suggestions": [
+            "感官描写单一，缺少tactile和gustatory描写",
+            "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+          ]
+        },
+        "judgements": [
+          {
+            "ruleId": "sensoryVariety",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到感官单一问题。",
+            "suggestion": "感官描写单一，缺少tactile和gustatory描写",
+            "evidence": [],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style"
+            ]
+          },
+          {
+            "ruleId": "paragraphReadability",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到段落可读性问题，例如 第1段约93字：半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一...。",
+            "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+            "evidence": [
+              "第1段约93字：半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一...",
+              "第2段约107字：他原本只想先保住自己的命，可仓单把线索直接推到了另一个更大的名字..."
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style",
+              "readability",
+              "mobile-reading"
+            ]
+          }
+        ],
+        "constraints": [
+          "感官描写单一，缺少tactile和gustatory描写",
+          "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+        ],
+        "textMetrics": {
+          "wordCount": 200,
+          "paragraphCount": 2,
+          "averageParagraphLength": 110
+        },
+        "profileSource": "builtin",
+        "reviewRuleProfileSource": "builtin"
+      },
+      "projectContext": {
+        "genre": "Mystery",
+        "positioning": {
+          "primaryGenre": "mystery",
+          "subGenre": "urban-occult",
+          "styleTags": [
+            "web-serial"
+          ],
+          "targetAudience": [
+            "qidian-reader"
+          ]
+        },
+        "storyContract": {
+          "corePromises": [
+            "每章推进一层异案与主线真相",
+            "主角靠职业能力而不是全知外挂破局"
+          ],
+          "avoidances": [],
+          "endingContract": "",
+          "paceContract": "中快节奏"
+        },
+        "emotionalContract": {
+          "coreEmotions": [],
+          "chapterEmotionFloor": [],
+          "forbiddenEmotions": [],
+          "revealPreference": {
+            "defaultMode": "",
+            "allowDirectExplainAtClimax": false
+          }
+        },
+        "storyTemplate": {
+          "id": "",
+          "label": "",
+          "modulePolicy": {},
+          "reviewFocus": []
+        },
+        "commercialPositioning": {
+          "premise": "账簿修复师在港城追查会吞掉名字的失踪案。",
+          "hookLine": "他只是修一本旧账簿，却先在账页里看见了自己的死期。",
+          "hookStack": [
+            "career-entry-hook",
+            "cliffhanger-end"
+          ],
+          "benchmarkWorks": [],
+          "targetPlatform": "qidian",
+          "serializationModel": "2到3章一个单元异案，持续抬升主线阴谋",
+          "releaseCadence": "日更",
+          "chapterWordFloor": 1800,
+          "chapterWordTarget": 2600
+        }
+      },
+      "storyConstraintSignals": {
+        "emotionalContract": {
+          "coreEmotions": [],
+          "chapterEmotionFloor": [],
+          "forbiddenEmotions": []
+        },
+        "worldRules": [],
+        "dueForeshadows": [],
+        "trackedEntities": [],
+        "chapterHandoff": {
+          "previousChapter": {
+            "id": "chapter-001",
+            "title": "第一章",
+            "direction": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头",
+            "beatHints": [
+              "开场：建立日常世界",
+              "触发事件：打破平衡的事件",
+              "第一幕转折：主角做出选择，无法回头"
+            ],
+            "sceneGoals": [
+              "林舟蹲在旧书铺后屋的工作台前，指尖被潮气泡得发白。今晚送来的旧账簿比往常更沉，封皮像是浸过海水，翻开第一页时却没有霉味，",
+              "他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库门口挂着褪色的封条，封条中央却被人用香灰画了一枚歪斜的记"
+            ]
+          },
+          "currentChapter": {
+            "id": "chapter-002",
+            "title": "第二章 空名仓单",
+            "direction": "结构指引：中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡",
+            "beatHints": [
+              "中点：从被动变主动 / 虚假胜利",
+              "灵魂暗夜：最低点，失去一切",
+              "高潮：最终对决 / 真相揭露"
+            ],
+            "sceneGoals": [
+              "仓库里堆满发潮木箱，最里面那盏小灯只照出半张女人侧脸。林舟没有立刻往前走，他先把账簿贴到胸口，逼自己去听周围的水声和脚步",
+              "半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一页又多出一串陌生名字，最末那个却被墨团硬生生抹去，只剩下"
+            ]
+          },
+          "nextChapter": null,
+          "carryOverEntityChanges": [],
+          "activeThreadLabels": []
+        }
+      },
+      "wrappedEntitySignals": {
+        "count": 1,
+        "wrappedNames": [
+          "林舟"
+        ],
+        "covered": [
+          {
+            "name": "林舟",
+            "kind": "character",
+            "id": "inferred::林舟",
+            "source": "entities"
+          }
+        ],
+        "missing": []
+      },
+      "consistencySignals": {
+        "specialTermRepetition": {
+          "detected": false,
+          "severity": "none",
+          "evidence": [],
+          "suggestion": ""
+        },
+        "settingCandidates": [],
+        "settingConflicts": [],
+        "unintroducedNameReveals": [],
+        "capabilityTaskRisks": [],
+        "powerProgressionConflicts": []
+      },
+      "ruleJudgements": [
+        {
+          "ruleId": "sensoryVariety",
+          "source": "core",
+          "scope": "scene",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到感官单一问题。",
+          "suggestion": "感官描写单一，缺少tactile和gustatory描写",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002",
+            "startParagraph": 4,
+            "endParagraph": 5
+          },
+          "payload": {},
+          "tags": [
+            "style"
+          ]
+        },
+        {
+          "ruleId": "paragraphReadability",
+          "source": "core",
+          "scope": "scene",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到段落可读性问题，例如 第1段约93字：半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一...。",
+          "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+          "evidence": [
+            "第1段约93字：半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一...",
+            "第2段约107字：他原本只想先保住自己的命，可仓单把线索直接推到了另一个更大的名字..."
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-002",
+            "startParagraph": 4,
+            "endParagraph": 5
+          },
+          "payload": {},
+          "tags": [
+            "style",
+            "readability",
+            "mobile-reading"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002",
+            "startParagraph": 4,
+            "endParagraph": 5
+          },
+          "payload": {
+            "beatId": "beat-2e023dd861aa",
+            "summary": "中点：从被动变主动 / 虚假胜利",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002",
+            "startParagraph": 4,
+            "endParagraph": 5
+          },
+          "payload": {
+            "beatId": "beat-d7703f812da7",
+            "summary": "灵魂暗夜：最低点，失去一切",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002",
+            "startParagraph": 4,
+            "endParagraph": 5
+          },
+          "payload": {
+            "beatId": "beat-7e737c623cb7",
+            "summary": "高潮：最终对决 / 真相揭露",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        },
+        {
+          "ruleId": "outlineDeviation",
+          "source": "core",
+          "scope": "scene",
+          "kind": "soft",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+          "suggestion": "",
+          "evidence": [],
+          "scopeRef": {
+            "chapterId": "chapter-002",
+            "startParagraph": 4,
+            "endParagraph": 5
+          },
+          "payload": {
+            "beatId": "beat-a72b5ca22197",
+            "summary": "结局：新平衡",
+            "status": "planned",
+            "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
+            "severity": "advisory"
+          },
+          "tags": [
+            "consistency",
+            "outline"
+          ]
+        }
+      ],
+      "contractAlignment": {
+        "status": "at-risk",
+        "matched": [],
+        "risks": [
+          "主类型偏悬疑/惊悚，但这一幕的悬念维持还不够强。",
+          "核心承诺“每章推进一层异案与主线真相”：悬疑/反转承诺在这一幕里的钩子偏弱。"
+        ],
+        "notes": [
+          "已记录节奏承诺：中快节奏。",
+          "核心承诺“主角靠职业能力而不是全知外挂破局”目前仅记录，尚未接入一幕级自动判定。",
+          "本章共有 1 个已包裹实体引用，其中 1 个已能对齐到角色卡或世界设定。"
+        ]
+      },
+      "commercialAlignment": {
+        "status": "mixed",
+        "matched": [
+          "核心承诺“career-entry-hook”：这一幕维持住了职业/规则入口的可读性。"
+        ],
+        "risks": [
+          "这一幕处于章末，但追读钩子还不够强。",
+          "核心承诺“cliffhanger-end”：章末钩子偏弱。"
+        ],
+        "notes": [
+          "这一幕的商业钩子信号较弱，如用作章节关键场景可考虑补一层追读问题。",
+          "已记录连载模型：2到3章一个单元异案，持续抬升主线阴谋。"
+        ]
+      },
+      "rubric": [
+        {
+          "id": "sceneFunction",
+          "label": "场景功能",
+          "maxScore": 20,
+          "focus": "这一幕是否承担推进、转折、铺垫或兑现任务"
+        },
+        {
+          "id": "continuity",
+          "label": "连续性",
+          "maxScore": 20,
+          "focus": "这一幕是否与前后文形成承接，而不是孤立切片"
+        },
+        {
+          "id": "logic",
+          "label": "逻辑性",
+          "maxScore": 20,
+          "focus": "人物行动、因果链和信息流是否说得通"
+        },
+        {
+          "id": "foreshadowing",
+          "label": "伏笔与回收",
+          "maxScore": 20,
+          "focus": "这一幕是否种下信息、维持悬念或完成局部兑现"
+        },
+        {
+          "id": "sceneClarity",
+          "label": "场景清晰度",
+          "maxScore": 20,
+          "focus": "读者能否迅速抓到时间、地点、角色和冲突焦点"
+        }
+      ]
+    }
+  ],
+  "volumeSelfReviews": [
+    {
+      "rubricVersion": "volume-self-review-v1",
+      "volumeId": "volume-001",
+      "volumeTitle": "第一卷 雾港吞名案",
+      "generatedAt": "2026-04-29T00:49:00+08:00",
+      "conclusion": {
+        "closureStatus": "not_closed",
+        "allowHumanReview": false,
+        "strongestPoint": "两章已经把主角从被动卷入推到主动追查，线索承接基本连贯。",
+        "biggestRisk": "卷尾主要是在抬出更大谜团，单元异案的阶段性交付、冲突升级和胜负感还不够明确。"
+      },
+      "editorPass": {
+        "completed": true,
+        "reviewerRole": "editor",
+        "mode": "same_agent_fallback",
+        "contextIsolation": "not_available",
+        "notes": "原计划使用 no_context_proxy 独立代理，但本地代理通道返回 503 无可用 provider；本次改为同线程 fallback，只依据卷级模板与 review packet 填写。"
+      },
+      "editorAssessment": {
+        "overallVerdict": "revise",
+        "summaryComment": "独立编辑标准下，这一卷已经具备继续写下去的方向感，但还没有形成足够完整的卷级闭环。工具能指出章节张力、AI味和字数风险，也能聚到卷级 gate；但“是否已经交付一个可交卷的小单元”这一点仍需要更明确的人类判断。",
+        "topProblems": [
+          "卷级闭环与阶段性交付不足，卷尾更像继续抬线索而不是完成一个小单元。",
+          "冲突升级和爽点兑现偏弱，读者能看到谜团变大，但胜负感不够。",
+          "风格与可读性问题持续存在，AI味和段落负担已跨章重复出现。"
+        ],
+        "improvementPoints": [
+          "补一个更明确的阶段性收束，让第二章末尾不只抛出闻潮会，还要给出一层阶段性输赢或代价。",
+          "把章节 review 里的张力弱项前推到写作阶段，要求每章至少有可感知的阻力、风险或选择代价。",
+          "把 style aggregate 里的重复问题转成卷级修稿顺序，先处理翻转句、长段和抽象悬念句，再谈细修。",
+          "在卷级自审模板里强制核对“本卷承诺了什么、实际交付了什么、还缺什么”，避免把新增线索误判成闭环。"
+        ],
+        "scores": [
+          {
+            "dimensionId": "volumeClosure",
+            "label": "卷级闭环",
+            "score": 2,
+            "conclusion": "主角方向已经立住，但当前更像第一段引案，卷级闭环和阶段性交付不足。",
+            "chapterRefs": [],
+            "evidenceRefs": []
+          },
+          {
+            "dimensionId": "openingOnboarding",
+            "label": "开篇 onboarding",
+            "score": 3,
+            "conclusion": "旧账簿、空名与雾港异案的入口已经成立，但世界信息仍偏薄。",
+            "chapterRefs": [
+              "chapter-001"
+            ],
+            "evidenceRefs": [
+              "chapter-001#scene-1"
+            ]
+          },
+          {
+            "dimensionId": "worldLogic",
+            "label": "世界与制度逻辑",
+            "score": 3,
+            "conclusion": "空名、账簿、仓单之间已有可跟踪联系，但制度层解释还不够。",
+            "chapterRefs": [
+              "chapter-001",
+              "chapter-002"
+            ],
+            "evidenceRefs": [
+              "chapter-001#paragraph-2",
+              "chapter-002#paragraph-3"
+            ]
+          },
+          {
+            "dimensionId": "chapterHandoff",
+            "label": "章间承接",
+            "score": 3,
+            "conclusion": "第一章到第二章的线索接力基本顺，但第二章结尾还缺更强的收束回推。",
+            "chapterRefs": [
+              "chapter-001",
+              "chapter-002"
+            ],
+            "evidenceRefs": [
+              "chapter-001#scene-2",
+              "chapter-002#scene-1"
+            ]
+          },
+          {
+            "dimensionId": "characterContinuity",
+            "label": "角色连续性",
+            "score": 3,
+            "conclusion": "林舟从保命到主动追查的动机线成立，但人物压力反馈还偏轻。",
+            "chapterRefs": [
+              "chapter-001",
+              "chapter-002"
+            ],
+            "evidenceRefs": [
+              "chapter-001#paragraph-3",
+              "chapter-002#paragraph-5"
+            ]
+          },
+          {
+            "dimensionId": "antagonistShaping",
+            "label": "对手塑造",
+            "score": 3,
+            "conclusion": "闻潮会和仓库女人留下了敌方存在感，但对手轮廓还处于钩子级别。",
+            "chapterRefs": [
+              "chapter-002"
+            ],
+            "evidenceRefs": [
+              "chapter-002#scene-1",
+              "chapter-002#paragraph-4"
+            ]
+          },
+          {
+            "dimensionId": "conflictEscalation",
+            "label": "冲突升级",
+            "score": 2,
+            "conclusion": "两章都有悬疑推进，但卷尾冲突升级和压迫感仍不足。",
+            "chapterRefs": [],
+            "evidenceRefs": []
+          },
+          {
+            "dimensionId": "payoffDelivery",
+            "label": "爽点兑现",
+            "score": 2,
+            "conclusion": "目前主要是抛出更大谜团，阶段性兑现和胜负感不够强。",
+            "chapterRefs": [],
+            "evidenceRefs": []
+          },
+          {
+            "dimensionId": "foreshadowRhythm",
+            "label": "伏笔与回收节奏",
+            "score": 3,
+            "conclusion": "账簿、铜纽扣、仓单和闻潮会形成了连续钩子，但回收仍偏少。",
+            "chapterRefs": [
+              "chapter-001",
+              "chapter-002"
+            ],
+            "evidenceRefs": [
+              "chapter-001#paragraph-2",
+              "chapter-002#paragraph-4"
+            ]
+          },
+          {
+            "dimensionId": "styleReadability",
+            "label": "风格与可读性",
+            "score": 2,
+            "conclusion": "跨章都出现 AI味、段落均质和可读性负担，修稿优先级应更高。",
+            "chapterRefs": [],
+            "evidenceRefs": []
+          }
+        ]
+      },
+      "scores": [
+        {
+          "dimensionId": "volumeClosure",
+          "label": "卷级闭环",
+          "score": 2,
+          "conclusion": "本卷更像起案段，不足以作为已闭环的小单元交卷。",
+          "chapterRefs": [],
+          "evidenceRefs": []
+        },
+        {
+          "dimensionId": "openingOnboarding",
+          "label": "开篇 onboarding",
+          "score": 3,
+          "conclusion": "核心谜面和主角处境已建立，最低 onboarding 可读。",
+          "chapterRefs": [
+            "chapter-001"
+          ],
+          "evidenceRefs": [
+            "chapter-001#scene-1"
+          ]
+        },
+        {
+          "dimensionId": "worldLogic",
+          "label": "世界与制度逻辑",
+          "score": 3,
+          "conclusion": "主要异象之间能互相勾连，但制度与运行逻辑还不厚。",
+          "chapterRefs": [
+            "chapter-001",
+            "chapter-002"
+          ],
+          "evidenceRefs": [
+            "chapter-001#paragraph-1",
+            "chapter-002#paragraph-3"
+          ]
+        },
+        {
+          "dimensionId": "chapterHandoff",
+          "label": "章间承接",
+          "score": 3,
+          "conclusion": "章间承接顺畅，仍缺把承接反压回卷尾收束的力度。",
+          "chapterRefs": [
+            "chapter-001",
+            "chapter-002"
+          ],
+          "evidenceRefs": [
+            "chapter-001#scene-2",
+            "chapter-002#scene-1"
+          ]
+        },
+        {
+          "dimensionId": "characterContinuity",
+          "label": "角色连续性",
+          "score": 3,
+          "conclusion": "林舟的选择线连续，但压力与代价反馈偏轻。",
+          "chapterRefs": [
+            "chapter-001",
+            "chapter-002"
+          ],
+          "evidenceRefs": [
+            "chapter-001#paragraph-3",
+            "chapter-002#paragraph-5"
+          ]
+        },
+        {
+          "dimensionId": "antagonistShaping",
+          "label": "对手塑造",
+          "score": 3,
+          "conclusion": "对手存在感已露出，但仍偏线索体而非角色体。",
+          "chapterRefs": [
+            "chapter-002"
+          ],
+          "evidenceRefs": [
+            "chapter-002#scene-1"
+          ]
+        },
+        {
+          "dimensionId": "conflictEscalation",
+          "label": "冲突升级",
+          "score": 2,
+          "conclusion": "冲突有推进，但升级和压迫没有形成明显台阶。",
+          "chapterRefs": [],
+          "evidenceRefs": []
+        },
+        {
+          "dimensionId": "payoffDelivery",
+          "label": "爽点兑现",
+          "score": 2,
+          "conclusion": "闻潮会线索更像下一步引子，当前卷爽点兑现和胜负感不足。",
+          "chapterRefs": [],
+          "evidenceRefs": []
+        },
+        {
+          "dimensionId": "foreshadowRhythm",
+          "label": "伏笔与回收节奏",
+          "score": 3,
+          "conclusion": "伏笔延续不断，但局部回收较少。",
+          "chapterRefs": [
+            "chapter-001",
+            "chapter-002"
+          ],
+          "evidenceRefs": [
+            "chapter-001#paragraph-5",
+            "chapter-002#paragraph-4"
+          ]
+        },
+        {
+          "dimensionId": "styleReadability",
+          "label": "风格与可读性",
+          "score": 2,
+          "conclusion": "AI味、长段与段落均质重复出现，卷级读感仍需清理。",
+          "chapterRefs": [],
+          "evidenceRefs": []
+        }
+      ],
+      "issues": [
+        {
+          "issue": "卷级闭环与阶段性交付不足，第二章结尾更像继续抬主线而不是完成一个小单元收束。",
+          "evidence": [
+            "第二章把线索推进到闻潮会，但没有同步给出更明确的阶段性输赢或回合结束感。",
+            "卷级审查包把当前卷定位为 intro-volume，也说明它更偏引入而非闭环。"
+          ],
+          "impact": "读者能理解故事会继续，但这一卷的完成感和阶段性交付不足，暂不适合直接进入人工终审。",
+          "primaryCause": "generation_miss",
+          "secondaryCauses": [
+            "self_review_miss",
+            "tooling_miss"
+          ],
+          "fixAction": "补一个更明确的卷尾收束或代价结算，让闭环、收束和阶段性交付真正落地。",
+          "whyToolingMissed": "现有工具能报章级张力、商业钩子和卷级 gate，但还不能稳定区分“拿到新线索”与“已经完成卷级闭环”。",
+          "whySelfReviewMissed": "AI 自审很容易把‘主角开始主动追查’误判成卷级完成感，而没有逐条核对本卷到底交付了什么。",
+          "optimizationAction": "增加卷级闭环/阶段性交付规则，并在模板里强制对照 promised vs delivered vs missing 三栏。",
+          "detectedBy": [
+            "review volume-self-template",
+            "workflow status --volume-id volume-001",
+            "same_agent_fallback"
+          ],
+          "ruleIds": [
+            "missing-volume-self-review"
+          ],
+          "verificationCommands": [
+            "story-canvas review volume-self --root <root> --volume-id volume-001 --input <file>",
+            "story-canvas workflow status --root <root> --volume-id volume-001"
+          ],
+          "chapterRefs": [
+            "chapter-002"
+          ],
+          "evidenceRefs": [
+            "chapter-002#scene-2",
+            "review-packet:volume-001:chapter-002"
+          ]
+        },
+        {
+          "issue": "冲突升级、爽点兑现和卷尾胜负感偏弱，当前推进有悬疑但缺少更强的压迫与爆发。",
+          "evidence": [
+            "两章 review 都把冲突张力列为优先弱项。",
+            "第二章结尾继续抛出闻潮会，但即时胜负感和兑现不足。"
+          ],
+          "impact": "追读欲有保留，但卷级读后感偏平，容易让人觉得只是把提纲往前搬了一步。",
+          "primaryCause": "generation_miss",
+          "secondaryCauses": [
+            "tooling_miss",
+            "self_review_miss"
+          ],
+          "fixAction": "在卷尾补明确阻力、冲突升级和阶段性胜负感，让爽点兑现至少完成一层。",
+          "whyToolingMissed": "工具已经分别报出章节张力偏弱和章末钩子不足，但还没有把这些信号自动汇总成卷级的升级/兑现缺口。",
+          "whySelfReviewMissed": "AI 自审容易把连续悬念误当成升级，把新增谜团误当成兑现，没有回看读者是否真正收到一轮回报。",
+          "optimizationAction": "把 chapter review 与 scene review 的张力信号聚合成卷级 escalation/payoff checklist，并要求卷尾必须回答‘本卷爆发点是什么’。",
+          "detectedBy": [
+            "review chapter",
+            "review scene",
+            "review preflight"
+          ],
+          "ruleIds": [
+            "outlineDeviation"
+          ],
+          "verificationCommands": [
+            "story-canvas review chapter --root <root> --chapter-id chapter-001",
+            "story-canvas review chapter --root <root> --chapter-id chapter-002"
+          ],
+          "chapterRefs": [
+            "chapter-001",
+            "chapter-002"
+          ],
+          "evidenceRefs": [
+            "chapter-001#scene-2",
+            "chapter-002#scene-2",
+            "review-packet:volume-001:chapter-001"
+          ]
+        },
+        {
+          "issue": "风格与可读性问题跨章重复，AI味、段落均质和长段负担已经从局部问题变成卷级读感问题。",
+          "evidence": [
+            "第一章出现比喻密度、类比翻转句、段落均质和 AI句群叠加。",
+            "第二章继续出现感官单一、段落均质和段落可读性问题。"
+          ],
+          "impact": "文本可读但不够利落，读者更容易感觉到模板化语句和机械推进痕迹。",
+          "primaryCause": "tooling_miss",
+          "secondaryCauses": [
+            "generation_miss",
+            "self_review_miss"
+          ],
+          "fixAction": "按卷级优先级统一修风格：先删 AI味翻转句和抽象悬念句，再拆长段、压段落均质、补更具体的动作表达。",
+          "whyToolingMissed": "工具能稳定报出单章 style 风险，但对‘哪些问题跨章重复、该先修哪类’的卷级修稿顺序提示仍不够强。",
+          "whySelfReviewMissed": "AI 自审容易逐章看得过去就停下，没有把重复出现的风格与可读性问题当成一个卷级风险。",
+          "optimizationAction": "在卷级模板里强制汇总跨章重复的 styleReadability 弱项，并输出修稿顺序而不只是 pattern 列表。",
+          "detectedBy": [
+            "review chapter",
+            "style aggregate",
+            "review volume-self-template"
+          ],
+          "ruleIds": [
+            "sensoryVariety",
+            "paragraphUniformity",
+            "paragraphReadability",
+            "analogicalPivotPattern",
+            "clusteredAIPhrasing"
+          ],
+          "verificationCommands": [
+            "story-canvas review chapter --root <root> --chapter-id chapter-001",
+            "story-canvas review chapter --root <root> --chapter-id chapter-002"
+          ],
+          "chapterRefs": [
+            "chapter-001",
+            "chapter-002"
+          ],
+          "evidenceRefs": [
+            "chapter-001#paragraph-2",
+            "chapter-002#paragraph-5",
+            "review-packet:volume-001:chapter-001",
+            "review-packet:volume-001:chapter-002"
+          ]
+        }
+      ],
+      "closureAssessment": {
+        "mainProblem": "当前卷已经把林舟推进到主动追查，但还没有把第一轮异案做出足够明确的阶段性闭环。",
+        "delivered": [
+          "建立了旧账簿吞名、周晚失踪和雾港异案的核心钩子。",
+          "让主角从被动保命转向主动追查闻潮会。",
+          "给出了账簿、铜纽扣、仓单与闻潮会之间的连续线索链。"
+        ],
+        "missing": [
+          "更明确的卷尾收束与阶段性交付。",
+          "更强的冲突升级、爽点兑现和胜负感。",
+          "对跨章 AI味与可读性问题的集中修整。"
+        ],
+        "reasoning": "作为起卷和继续写作的起点，这两章方向基本成立；但如果按卷级闭环和人工终审标准判断，它更像完成了起案而不是完成了一卷应有的小单元交付。"
+      },
+      "repairSuggestions": [
+        "先补第二章末尾的阶段性收束，至少给出一轮可感知的输赢、代价或局部真相兑现。",
+        "再回头增强两章里的阻力与压迫，让冲突升级不只靠新增线索。",
+        "最后统一清理跨章重复的 AI味、段落均质和长段问题，避免修完结构后读感仍旧发虚。"
+      ],
+      "acceptedRisks": [
+        "闻潮会背后的更大主谋可以留到下一卷，不要求本卷一次解释完。"
+      ],
+      "gateFailures": [
+        {
+          "code": "volume-self-review-not-closed",
+          "message": "卷级自审结论仍为未闭环，不能进入人工审查。"
+        },
+        {
+          "code": "volume-self-review-volumeClosure-below-threshold",
+          "message": "卷级闭环 当前仅 2/5，低于人工审查门槛 3/5。",
+          "dimensionId": "volumeClosure",
+          "score": 2,
+          "requiredScore": 3
+        },
+        {
+          "code": "volume-self-review-styleReadability-below-threshold",
+          "message": "风格与可读性 当前仅 2/5，低于人工审查门槛 3/5。",
+          "dimensionId": "styleReadability",
+          "score": 2,
+          "requiredScore": 3
+        },
+        {
+          "code": "volume-self-review-declared-blocked",
+          "message": "卷级自审明确判定当前版本暂不建议进入人工审查。"
+        },
+        {
+          "code": "volume-self-review-editor-verdict-blocking",
+          "message": "独立编辑审查尚未给出可放行结论，当前 verdict 为 revise。"
+        }
+      ],
+      "finalAllowHumanReview": false,
+      "scoreSummary": {
+        "average": 2.6,
+        "lowestScore": 2,
+        "lowestDimensions": [
+          "卷级闭环",
+          "冲突升级",
+          "爽点兑现",
+          "风格与可读性"
+        ],
+        "strongestDimension": {
+          "dimensionId": "openingOnboarding",
+          "label": "开篇 onboarding",
+          "score": 3
+        }
+      },
+      "repairCoverage": {
+        "weakDimensionIds": [
+          "volumeClosure",
+          "conflictEscalation",
+          "payoffDelivery",
+          "styleReadability"
+        ],
+        "weakDimensionLabels": [
+          "卷级闭环",
+          "冲突升级",
+          "爽点兑现",
+          "风格与可读性"
+        ],
+        "uncoveredWeakDimensionIds": [],
+        "uncoveredWeakDimensionLabels": [],
+        "issueCount": 3,
+        "repairSuggestionCount": 3,
+        "status": "complete"
+      }
+    }
+  ]
+}

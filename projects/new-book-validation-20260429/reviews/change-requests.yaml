@@ -1,0 +1,79 @@
+{
+  "changeRequests": [
+    {
+      "id": "cr-8b364bdc78",
+      "chapterId": "chapter-001",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 林照夜 当前状态",
+      "summary": "检测到 林照夜 可能进入状态：疲惫",
+      "evidence": "雾里传来鞋跟踩水的声音。一个穿黑色雨衣的年轻女人停在候车棚外，左手戴着黑线手套，手套指尖按在一枚银色证件上。她看了看工作包，又看了看@{林照夜}手里的退档通知，眼神没有惊讶，只有一种确认麻烦终于落地的疲惫。",
+      "targetIds": [
+        "lin-zhaoye"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "lin-zhaoye",
+        "entityName": "林照夜",
+        "state": "疲惫"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::lin-zhaoye::疲惫",
+      "createdAt": "2026-04-30T00:34:17+08:00",
+      "updatedAt": "2026-04-30T00:34:18+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-30T00:34:18+08:00"
+    },
+    {
+      "id": "cr-0a7475852c",
+      "chapterId": "chapter-001",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 林照夜 当前状态",
+      "summary": "检测到 林照夜 可能进入状态：离开",
+      "evidence": "“@{乔声}，@{雾务局}旧案科见习外勤。”她亮证的动作很快，像怕证件也被雾咬掉，“从现在起，你不要离开我的视线。”@{林照夜}低头看了眼自己被雨水泡皱的鞋，“如果我说我只是路过，你们局里有路过补贴吗？”",
+      "targetIds": [
+        "lin-zhaoye"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "lin-zhaoye",
+        "entityName": "林照夜",
+        "state": "离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::lin-zhaoye::离开",
+      "createdAt": "2026-04-30T00:34:17+08:00",
+      "updatedAt": "2026-04-30T00:34:18+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-30T00:34:18+08:00"
+    },
+    {
+      "id": "cr-6a4fd29693",
+      "chapterId": "chapter-001",
+      "kind": "snapshot",
+      "severity": "suggestion",
+      "title": "更新 乔声 当前状态",
+      "summary": "检测到 乔声 可能进入状态：离开",
+      "evidence": "“@{乔声}，@{雾务局}旧案科见习外勤。”她亮证的动作很快，像怕证件也被雾咬掉，“从现在起，你不要离开我的视线。”@{林照夜}低头看了眼自己被雨水泡皱的鞋，“如果我说我只是路过，你们局里有路过补贴吗？”",
+      "targetIds": [
+        "qiao-sheng"
+      ],
+      "confidence": 0.92,
+      "suggestedPayload": {
+        "entityId": "qiao-sheng",
+        "entityName": "乔声",
+        "state": "离开"
+      },
+      "status": "accepted",
+      "projectionStatus": "applied",
+      "fingerprint": "snapshot::qiao-sheng::离开",
+      "createdAt": "2026-04-30T00:34:17+08:00",
+      "updatedAt": "2026-04-30T00:34:18+08:00",
+      "decisionReason": "",
+      "projectionAppliedAt": "2026-04-30T00:34:18+08:00"
+    }
+  ]
+}

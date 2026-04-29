@@ -19,6 +19,11 @@ def build_entity_illustration_payload(
     default_modifier_refs: List[str] | None = None,
     input_images: List[str] | None = None,
     mask_path: str = "",
+    text_design_mode: str = "",
+    title_text: str = "",
+    subtitle_text: str = "",
+    body_text: str = "",
+    font_style_hint: str = "",
 ) -> Dict[str, Any]:
     project = state.get("project", {})
     positioning = project.get("positioning", {})
@@ -47,6 +52,11 @@ def build_entity_illustration_payload(
         default_modifier_refs=default_modifier_refs or [],
         input_images=input_images or [],
         mask_path=mask_path,
+        text_design_mode=text_design_mode,
+        title_text=title_text,
+        subtitle_text=subtitle_text,
+        body_text=body_text,
+        font_style_hint=font_style_hint,
     )
 
 
@@ -68,6 +78,11 @@ def build_chapter_illustration_payload(
     default_modifier_refs: List[str] | None = None,
     input_images: List[str] | None = None,
     mask_path: str = "",
+    text_design_mode: str = "",
+    title_text: str = "",
+    subtitle_text: str = "",
+    body_text: str = "",
+    font_style_hint: str = "",
 ) -> Dict[str, Any]:
     project = state.get("project", {})
     positioning = project.get("positioning", {})
@@ -98,6 +113,11 @@ def build_chapter_illustration_payload(
         default_modifier_refs=default_modifier_refs or [],
         input_images=input_images or [],
         mask_path=mask_path,
+        text_design_mode=text_design_mode,
+        title_text=title_text,
+        subtitle_text=subtitle_text,
+        body_text=body_text,
+        font_style_hint=font_style_hint,
     )
 
 
@@ -118,6 +138,11 @@ def build_freeform_illustration_payload(
     default_modifier_refs: List[str] | None = None,
     input_images: List[str] | None = None,
     mask_path: str = "",
+    text_design_mode: str = "",
+    title_text: str = "",
+    subtitle_text: str = "",
+    body_text: str = "",
+    font_style_hint: str = "",
 ) -> Dict[str, Any]:
     project = state.get("project", {})
     positioning = project.get("positioning", {})
@@ -144,6 +169,11 @@ def build_freeform_illustration_payload(
         default_modifier_refs=default_modifier_refs or [],
         input_images=input_images or [],
         mask_path=mask_path,
+        text_design_mode=text_design_mode,
+        title_text=title_text,
+        subtitle_text=subtitle_text,
+        body_text=body_text,
+        font_style_hint=font_style_hint,
     )
 
 
@@ -165,6 +195,11 @@ def _build_payload(
     default_modifier_refs: List[str],
     input_images: List[str],
     mask_path: str,
+    text_design_mode: str,
+    title_text: str,
+    subtitle_text: str,
+    body_text: str,
+    font_style_hint: str,
 ) -> Dict[str, Any]:
     resolved_template = _resolve_template(
         prompt_pack,
@@ -193,6 +228,11 @@ def _build_payload(
         user_extra_prompt=user_extra_prompt,
         subject=subject,
         commercial_prompt=policy_snapshot.get("commercialPrompt", ""),
+        text_design_mode=text_design_mode,
+        title_text=title_text,
+        subtitle_text=subtitle_text,
+        body_text=body_text,
+        font_style_hint=font_style_hint,
     )
 
     prompt_pack_name = str(pack_ref.get("packId", "")).rsplit("/", 1)[-1] if pack_ref.get("packId") else "default"
@@ -228,6 +268,7 @@ def _build_payload(
                 "templateRef": resolved_template.get("id", ""),
                 "modifierRefs": [item.get("id", "") for item in resolved_modifiers],
                 "commercialMode": resolved_commercial_mode,
+                "textDesignMode": (prompt_snapshot.get("textDesign", {}) if isinstance(prompt_snapshot.get("textDesign"), dict) else {}).get("mode", ""),
             },
         },
     }
@@ -339,6 +380,11 @@ def _build_prompt_snapshot(
     user_extra_prompt: str,
     subject: str,
     commercial_prompt: str,
+    text_design_mode: str,
+    title_text: str,
+    subtitle_text: str,
+    body_text: str,
+    font_style_hint: str,
 ) -> Dict[str, Any]:
     lexicon_snapshot = _resolve_lexicon_snapshot(
         prompt_pack,
@@ -351,6 +397,13 @@ def _build_prompt_snapshot(
         for item in modifiers
         if str(item.get("promptFragment") or "").strip()
     ]
+    text_design = _build_text_design_snapshot(
+        mode=text_design_mode,
+        title_text=title_text,
+        subtitle_text=subtitle_text,
+        body_text=body_text,
+        font_style_hint=font_style_hint,
+    )
     resolved_prompt = _render_prompt_template(
         str(template.get("promptTemplate") or _default_prompt_template(use_case)),
         {
@@ -368,13 +421,68 @@ def _build_prompt_snapshot(
             ),
         },
     )
+    text_design_hint = str(text_design.get("promptHint") or "").strip()
+    if text_design_hint:
+        resolved_prompt = _render_prompt_template(
+            "{basePrompt}\n{textDesignHint}",
+            {
+                "basePrompt": resolved_prompt,
+                "textDesignHint": text_design_hint,
+            },
+        )
     return {
         "packRef": pack_ref,
         "templateRef": template.get("id", ""),
         "modifierRefs": [item.get("id", "") for item in modifiers],
         "userExtraPrompt": str(user_extra_prompt or "").strip(),
         "lexiconSnapshot": lexicon_snapshot,
+        "textDesign": text_design,
         "resolvedPrompt": resolved_prompt,
+    }
+
+
+def _build_text_design_snapshot(
+    *,
+    mode: str,
+    title_text: str,
+    subtitle_text: str,
+    body_text: str,
+    font_style_hint: str,
+) -> Dict[str, str]:
+    normalized_mode = "designed" if str(mode or "").strip() == "designed" else "none"
+    normalized_title = str(title_text or "").strip()
+    normalized_subtitle = str(subtitle_text or "").strip()
+    normalized_body = str(body_text or "").strip()
+    normalized_font = str(font_style_hint or "").strip()
+    if normalized_mode != "designed":
+        return {
+            "mode": "none",
+            "titleText": "",
+            "subtitleText": "",
+            "bodyText": "",
+            "fontStyleHint": "",
+            "promptHint": "画面保持纯绘图，不要出现可读标题、介绍文字、Logo 或封面排版字样。",
+        }
+
+    text_lines: List[str] = ["允许画面包含和主题统一的版式文字设计。"]
+    if normalized_title:
+        text_lines.append(f"标题文字使用“{normalized_title}”。")
+    if normalized_subtitle:
+        text_lines.append(f"副标题文字使用“{normalized_subtitle}”。")
+    if normalized_body:
+        text_lines.append(f"简介或导语使用“{normalized_body}”。")
+    if normalized_font:
+        text_lines.append(f"文字风格靠近{normalized_font}，但仍要保证整体高级、可读、与画面气质统一。")
+    if not any((normalized_title, normalized_subtitle, normalized_body)):
+        text_lines.append("本次不强制出现具体可读文字，但要允许保留标题区、导语区或装帧留白。")
+    text_lines.append("文字不是后贴标签，而是海报/封面设计的一部分，避免廉价拼贴字和杂乱排版。")
+    return {
+        "mode": "designed",
+        "titleText": normalized_title,
+        "subtitleText": normalized_subtitle,
+        "bodyText": normalized_body,
+        "fontStyleHint": normalized_font,
+        "promptHint": " ".join(text_lines),
     }
 
 

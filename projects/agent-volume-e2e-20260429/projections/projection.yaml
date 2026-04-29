@@ -1,0 +1,16 @@
+{
+  "snapshotProjections": [],
+  "relationProjections": [],
+  "sceneScopeProjections": [
+    {
+      "chapterId": "chapter-001",
+      "activeEntityIds": [
+        "inferred::顾迟"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-29T11:44:20+08:00"
+    }
+  ],
+  "timelineProjections": [],
+  "causalityProjections": []
+}

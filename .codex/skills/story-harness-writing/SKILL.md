@@ -46,6 +46,12 @@ Read `references/planning-primitives.md` only when:
 1. the task is about character cards, arc design, chapter direction, beats, or scene planning
 2. you need to translate old writing-template fields into Story Canvas-compatible planning
 
+Read `references/classic-structure-techniques.md` only when:
+
+1. the user asks for structural writing methods, opening hooks, suspense setup, reversal, dual-line plotting, nonlinear narration, or non-flat narration
+2. you need to choose a prose technique before drafting, rather than only filling `direction / beats / scenePlans`
+3. you need to distinguish volume / act templates from chapter-level scene planning
+
 Read [../../ADAPTER_ARCHITECTURE.md](../../ADAPTER_ARCHITECTURE.md) when you need the full layered design.
 
 ## Layer Model
@@ -140,6 +146,14 @@ When starting a brand-new chapter or project:
 ## Writing Policy
 
 Use this skill to improve fiction quality, not to mechanically pass rules.
+
+When corpus notes or genre overlays are involved, translate them into prose choices before drafting:
+
+1. infer narrative distance, prose tempo, sentence texture, dialogue pressure, image bank, and forbidden register
+2. keep this as a short working style brief; do not paste it into the chapter unless the user asks
+3. turn every checklist item into scene action, conflict, consequence, voice, or residue
+4. never let planning words such as `目标`, `风险`, `约束`, `推进`, `交付`, `兑现`, `钩子`, or `闭环` leak into prose unless a character would naturally say them
+5. if a required fix reads like a command, rewrite it as a changed object, reaction, silence, interruption, or irreversible result
 
 Preferred fixes:
 

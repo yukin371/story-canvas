@@ -1,0 +1,31 @@
+{
+  "chapterId": "chapter-002",
+  "chapterTitle": "第二章 空名仓单",
+  "analyzedAt": "2026-04-29T00:39:57+08:00",
+  "activeEntities": [
+    {
+      "id": "inferred::林舟",
+      "name": "林舟",
+      "mentionCount": 5,
+      "source": "inferred"
+    },
+    {
+      "id": "inferred::周晚",
+      "name": "周晚",
+      "mentionCount": 1,
+      "source": "inferred"
+    }
+  ],
+  "snapshotCandidates": [],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "inferred::林舟",
+      "inferred::周晚"
+    ],
+    "activeEntityNames": [
+      "林舟",
+      "周晚"
+    ]
+  }
+}

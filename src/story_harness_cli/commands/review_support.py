@@ -47,6 +47,20 @@ POWER_CUE_TERMS = (
     "金丹",
     "元婴",
 )
+_CHINESE_NUMBER_MAP = {
+    "零": 0,
+    "一": 1,
+    "二": 2,
+    "两": 2,
+    "三": 3,
+    "四": 4,
+    "五": 5,
+    "六": 6,
+    "七": 7,
+    "八": 8,
+    "九": 9,
+    "十": 10,
+}
 
 
 def find_volume(state: dict, volume_id: str | None) -> dict | None:
@@ -69,6 +83,84 @@ def build_mention_check_payload(state: dict, chapter_id: str, chapter_text: str)
         "ignoredQuotedKnownMentions": report["ignoredQuotedKnownMentions"],
         "relatedContext": report["relatedContext"],
         "summary": report["summary"],
+    }
+
+
+def _read_prd_focus_fields(root: Path) -> dict[str, str]:
+    prd_path = root / "PRD.md"
+    if not prd_path.exists():
+        return {}
+    focus_fields: dict[str, str] = {}
+    for line in prd_path.read_text(encoding="utf-8").splitlines():
+        match = re.match(r"^\s*-\s*([^:：]+)\s*[:：]\s*(.+?)\s*$", line)
+        if not match:
+            continue
+        label = match.group(1).strip()
+        value = match.group(2).strip()
+        if value:
+            focus_fields[label] = value
+    return focus_fields
+
+
+def _parse_chinese_number(text: str) -> int:
+    normalized = (text or "").strip()
+    if not normalized:
+        return 0
+    if normalized.isdigit():
+        return int(normalized)
+    if normalized == "十":
+        return 10
+    if normalized.startswith("十"):
+        return 10 + _CHINESE_NUMBER_MAP.get(normalized[1:], 0)
+    if normalized.endswith("十"):
+        return _CHINESE_NUMBER_MAP.get(normalized[:-1], 0) * 10
+    if "十" in normalized:
+        left, right = normalized.split("十", 1)
+        return _CHINESE_NUMBER_MAP.get(left, 0) * 10 + _CHINESE_NUMBER_MAP.get(right, 0)
+    value = 0
+    for char in normalized:
+        if char not in _CHINESE_NUMBER_MAP:
+            return 0
+        value = value * 10 + _CHINESE_NUMBER_MAP[char]
+    return value
+
+
+def _extract_required_chapter_count(text: str) -> int:
+    normalized = str(text or "").strip()
+    if not normalized:
+        return 0
+    match = re.search(r"([0-9]+)\s*章", normalized)
+    if match:
+        return int(match.group(1))
+    match = re.search(r"([零一二两三四五六七八九十]+)\s*章", normalized)
+    if match:
+        return _parse_chinese_number(match.group(1))
+    return 0
+
+
+def _build_volume_closure_contract_payload(
+    root: Path,
+    state: dict[str, Any],
+    volume: dict[str, Any],
+) -> dict[str, Any]:
+    commercial = state.get("project", {}).get("commercialPositioning", {})
+    release_cadence = str(commercial.get("releaseCadence", "")).strip()
+    prd_focus = _read_prd_focus_fields(root)
+    volume_goal = prd_focus.get("卷目标", "")
+    reader_hook = prd_focus.get("读者钩子", "")
+    chapter_delivery = prd_focus.get("本章交付点", "")
+    required_chapter_count = _extract_required_chapter_count(release_cadence)
+    required_count_source = "commercial.releaseCadence" if required_chapter_count > 0 else ""
+    volume_chapters = [item for item in volume.get("chapters", []) if isinstance(item, dict)]
+    actual_chapter_count = len(volume_chapters)
+    return {
+        "requiredChapterCount": required_chapter_count,
+        "requiredChapterCountSource": required_count_source,
+        "actualChapterCount": actual_chapter_count,
+        "releaseCadence": release_cadence,
+        "volumeGoal": "" if volume_goal == "TBD" else volume_goal,
+        "readerHook": "" if reader_hook == "TBD" else reader_hook,
+        "chapterDelivery": "" if chapter_delivery == "TBD" else chapter_delivery,
     }
 
 
@@ -888,7 +980,14 @@ def build_review_preflight_payload(
             summary["powerProgressionConflictCount"] += chapter_summary["powerProgressionConflictCount"]
             chapter_preflights.append(entry)
 
-        volume_structure_check = _build_volume_structure_check_payload(state, volume, chapter_preflights, summary)
+        volume_contract = _build_volume_closure_contract_payload(root, state, volume)
+        volume_structure_check = _build_volume_structure_check_payload(
+            state,
+            volume,
+            chapter_preflights,
+            summary,
+            volume_contract,
+        )
         review_evidence = _build_volume_review_evidence(root, state, volume)
         return {
             "scope": "volume",
@@ -898,6 +997,7 @@ def build_review_preflight_payload(
             "projectAdvisories": build_project_advisories(root, include_prd_content=True),
             "mentionPlan": mention_plan,
             "volumeWorldContext": build_volume_world_context_payload(root, state, volume),
+            "volumeClosureContract": volume_contract,
             "volumeStructureCheck": volume_structure_check,
             "chapterPreflights": chapter_preflights,
             "reviewEvidence": review_evidence,
@@ -1203,6 +1303,7 @@ def _build_volume_structure_check_payload(
     volume: dict[str, Any],
     chapter_preflights: list[dict[str, Any]],
     summary: dict[str, Any],
+    volume_contract: dict[str, Any],
 ) -> dict[str, Any]:
     ordered_volumes = state.get("outline", {}).get("volumes", [])
     volume_ids = [str(item.get("id", "")).strip() for item in ordered_volumes if isinstance(item, dict)]
@@ -1215,7 +1316,7 @@ def _build_volume_structure_check_payload(
         _build_outline_coverage_check(volume, chapter_preflights),
         _build_intro_onboarding_check(chapter_preflights, enabled=is_intro_volume),
         _build_foreshadow_debt_check(summary, chapter_preflights),
-        _build_closure_readiness_check(volume, chapter_preflights, summary),
+        _build_closure_readiness_check(volume, chapter_preflights, summary, volume_contract),
     ]
     summary_payload = {
         "passCount": sum(1 for item in checklist if item["status"] == "pass"),
@@ -1225,6 +1326,7 @@ def _build_volume_structure_check_payload(
     }
     return {
         "role": role,
+        "closureContract": volume_contract,
         "phaseAssignments": phase_assignments,
         "checklist": checklist,
         "summary": summary_payload,
@@ -1412,6 +1514,7 @@ def _build_closure_readiness_check(
     volume: dict[str, Any],
     chapter_preflights: list[dict[str, Any]],
     summary: dict[str, Any],
+    volume_contract: dict[str, Any],
 ) -> dict[str, Any]:
     if not chapter_preflights:
         return {
@@ -1429,6 +1532,11 @@ def _build_closure_readiness_check(
     last_outline_chapter = volume_chapters[-1] if volume_chapters else {}
     last_status = str(last_outline_chapter.get("status", "")).strip()
     last_file_exists = bool(last_chapter_entry.get("chapterFileExists"))
+    required_chapter_count = int(volume_contract.get("requiredChapterCount", 0) or 0)
+    actual_chapter_count = int(volume_contract.get("actualChapterCount", len(volume_chapters)) or 0)
+    required_count_source = str(volume_contract.get("requiredChapterCountSource", "")).strip()
+    release_cadence = str(volume_contract.get("releaseCadence", "")).strip()
+    volume_goal = str(volume_contract.get("volumeGoal", "")).strip()
     blocking_foreshadows = (
         int(summary.get("overdueForeshadowCount", 0) or 0)
         + int(summary.get("unresolvedWithoutScheduleCount", 0) or 0)
@@ -1442,6 +1550,32 @@ def _build_closure_readiness_check(
             "evidence": [str(last_chapter_entry.get("chapterTitle", last_chapter_entry.get("chapterId", "")))],
             "targetChapterIds": [last_chapter_id] if last_chapter_id else [],
             "suggestion": "先补齐卷尾正文，再判断这一卷是否形成完整小故事单元。",
+        }
+    if required_chapter_count > 0 and actual_chapter_count < required_chapter_count:
+        evidence = []
+        if release_cadence:
+            evidence.append(f"releaseCadence: {release_cadence}")
+        if volume_goal:
+            evidence.append(f"卷目标: {volume_goal[:80]}")
+        evidence.append(f"当前卷章节数: {actual_chapter_count}/{required_chapter_count}")
+        return {
+            "id": "closure-readiness",
+            "label": "卷尾收束准备度",
+            "status": "risk",
+            "message": (
+                f"当前卷只有 {actual_chapter_count} 章，但 {required_count_source or '卷级契约'}"
+                f" 明示至少按 {required_chapter_count} 章首卷判断，现阶段不应视为已具备卷级收束前提。"
+            ),
+            "evidence": evidence,
+            "targetChapterIds": [
+                str(item.get("id", "")).strip()
+                for item in volume_chapters
+                if str(item.get("id", "")).strip()
+            ],
+            "suggestion": "先补齐承诺章数或显式调整卷级契约，再进入卷级 AI 自审/人工审查判断。",
+            "requiredChapterCount": required_chapter_count,
+            "actualChapterCount": actual_chapter_count,
+            "requiredChapterCountSource": required_count_source,
         }
     if last_status != "completed" or blocking_foreshadows > 0:
         return {
@@ -1461,7 +1595,14 @@ def _build_closure_readiness_check(
         "label": "卷尾收束准备度",
         "status": "pass",
         "message": "卷尾章节已落正文且没有明显逾期/未排期伏笔，具备进入卷级闭环判断的最低前提。",
-        "evidence": [str(last_chapter_entry.get("chapterTitle", last_chapter_entry.get("chapterId", "")))],
+        "evidence": [
+            str(last_chapter_entry.get("chapterTitle", last_chapter_entry.get("chapterId", ""))),
+            *([f"卷目标: {volume_goal[:80]}"] if volume_goal else []),
+            *([f"章节承诺: {actual_chapter_count}/{required_chapter_count}"] if required_chapter_count > 0 else []),
+        ],
         "targetChapterIds": [],
         "suggestion": "",
+        "requiredChapterCount": required_chapter_count,
+        "actualChapterCount": actual_chapter_count,
+        "requiredChapterCountSource": required_count_source,
     }

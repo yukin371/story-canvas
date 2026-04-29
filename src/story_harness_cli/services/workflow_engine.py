@@ -345,6 +345,7 @@ def infer_volume_preflight_workflow(
             preflight_payload=preflight_payload,
             volume_self_review=volume_self_review or {},
         ),
+        "volumeClosureContract": preflight_payload.get("volumeClosureContract", {}),
         "volumeStructureCheck": preflight_payload.get("volumeStructureCheck", {}),
         "preflightSummary": {
             "chapterPreflightCount": summary.get("chapterPreflightCount", 0),
@@ -749,6 +750,7 @@ def _build_volume_preflight_stage(preflight_payload: Dict[str, Any]) -> Dict[str
 
 def _build_volume_tooling_gate(preflight_payload: Dict[str, Any]) -> Dict[str, Any]:
     summary = preflight_payload.get("summary", {})
+    structure_check = preflight_payload.get("volumeStructureCheck", {})
     issue_specs = [
         (
             "volume-mention-hygiene-pending",
@@ -813,6 +815,28 @@ def _build_volume_tooling_gate(preflight_payload: Dict[str, Any]) -> Dict[str, A
             }
         )
         next_actions.append(suggestion)
+
+    if isinstance(structure_check, dict):
+        for item in structure_check.get("checklist", []):
+            if not isinstance(item, dict):
+                continue
+            if str(item.get("id", "")).strip() != "closure-readiness":
+                continue
+            status = str(item.get("status", "")).strip()
+            if status not in {"risk", "missing"}:
+                continue
+            message = str(item.get("message", "")).strip()
+            suggestion = str(item.get("suggestion", "")).strip()
+            missing.append(
+                {
+                    "code": "volume-closure-contract-unmet",
+                    "message": message or "当前卷仍未满足卷级闭环前提。",
+                    "count": 1,
+                }
+            )
+            if suggestion:
+                next_actions.append(suggestion)
+            break
 
     if not next_actions:
         next_actions.append("工具侧卷级预检已清，可继续执行卷级 AI 自审，并在必要修正后进入人工审查。")

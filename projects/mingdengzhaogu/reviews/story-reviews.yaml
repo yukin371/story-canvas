@@ -2461,13 +2461,13 @@
       "reviewId": "chapter-review-3e90e6ebbe",
       "fingerprint": "chapter-review-v1:chapter-002:677ded651ebe9508",
       "rubricVersion": "chapter-review-v1",
-      "generatedAt": "2026-04-26T17:58:17+08:00",
+      "generatedAt": "2026-04-28T13:59:46+08:00",
       "chapterId": "chapter-002",
       "chapterTitle": "第二章 谁在照命",
-      "summary": "结合分析结果和正文信号，本章总分 72/100。当前强项在表达控制，最需要补强的是人物压力。",
+      "summary": "结合分析结果和正文信号，本章总分 71/100。当前强项在表达控制，最需要补强的是人物压力。",
       "rating": "solid",
       "scores": {
-        "total": 72,
+        "total": 71,
         "maxScore": 100,
         "dimensions": [
           {
@@ -2529,16 +2529,18 @@
           {
             "id": "proseControl",
             "label": "表达控制",
-            "score": 20,
+            "score": 19,
             "maxScore": 20,
-            "comment": "段落和强调基本受控。",
+            "comment": "基础节奏可读，但 AI 风格信号额外扣了 2 分。",
             "signals": [
               "平均段长 74",
               "长段落 0 段",
               "对话段 20 段",
-              "风格额外扣分 0"
+              "风格额外扣分 2"
             ],
-            "suggestions": []
+            "suggestions": [
+              "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+            ]
           }
         ]
       },
@@ -2606,7 +2608,7 @@
             "delta": -5
           }
         ],
-        "total": 67.95,
+        "total": 67.7,
         "maxScore": 100,
         "rating": "workable",
         "breakdown": [
@@ -2641,18 +2643,18 @@
           {
             "id": "proseControl",
             "label": "表达控制",
-            "rawScore": 20,
+            "rawScore": 19,
             "weight": 5,
-            "contribution": 5.0
+            "contribution": 4.75
           }
         ]
       },
       "strengths": [
-        "表达控制：段落和强调基本受控。"
+        "表达控制：基础节奏可读，但 AI 风格信号额外扣了 2 分。"
       ],
       "priorityActions": [
         "确认本章产生的新设定候选是否应写入世界真相层。",
-        "开章先接住上一章《第一章 灯尽人未绝》留下的不灭残灯来历，再推进“承接首章活下来的余波，展现沈照的记忆”，避免像直接执行细纲。",
+        "开章前两段先点回《第一章 灯尽人未绝》延续的线索或关系压力，再推进“承接首章活下来的余波，展现沈照的记忆”。",
         "补一处人物状态变化或代价反馈，让角色不是只在场而是真的被事件推动。",
         "补一个明确的状态变化、关系变化或决定性动作，让章节前后产生落差。"
       ],
@@ -2691,6 +2693,10 @@
       "chapterHandoffSignals": {
         "detected": true,
         "severity": "warning",
+        "loadStrength": 2,
+        "openingAnchorScore": 1,
+        "earlyAnchorScore": 1,
+        "delayedBridge": false,
         "previousChapterId": "chapter-001",
         "previousChapterTitle": "第一章 灯尽人未绝",
         "currentDirection": "承接首章活下来的余波，展现沈照的记忆缺口和异常灯息，同时让照命司与同门压力一起逼近，把他推上第一次公开测灯的场面。",
@@ -2698,20 +2704,45 @@
         "openingEntityAnchors": [],
         "openingStateAnchors": [],
         "openingThreadAnchors": [],
+        "openingContextAnchors": [],
+        "earlyEntityAnchors": [],
+        "earlyStateAnchors": [],
+        "earlyThreadAnchors": [],
+        "earlyContextAnchors": [],
         "openingContinuityHits": 1,
+        "earlyContinuityHits": 1,
+        "openingDirectContinuationHits": 0,
+        "earlyDirectContinuationHits": 1,
         "closingHookHits": 0,
-        "suggestion": "开章先接住上一章《第一章 灯尽人未绝》留下的不灭残灯来历，再推进“承接首章活下来的余波，展现沈照的记忆”，避免像直接执行细纲。",
+        "loadSummary": [
+          "延续线程：不灭残灯来历 / 借灯后的自我侵蚀 / 照命司锁定异常灯波",
+          "前章方向：先立住沈照命灯将熄的死局、青烬宗底层的燃命秩序，再让不灭残灯在濒"
+        ],
+        "openingAnchorSummary": [
+          "连续性词命中：1"
+        ],
+        "earlyAnchorSummary": [
+          "直接接续句式：1",
+          "连续性词命中：1"
+        ],
+        "gapReasons": [
+          "开章前两段没有点回前章延续线程",
+          "开章前两段没有复用前章方向或场景目标中的关键锚点"
+        ],
+        "suggestion": "开章前两段先点回《第一章 灯尽人未绝》延续的线索或关系压力，再推进“承接首章活下来的余波，展现沈照的记忆”。",
         "evidence": [
-          "上一章：第一章 灯尽人未绝",
-          "本章方向：承接首章活下来的余波，展现沈照的记忆缺口和异常灯",
-          "开章：天还没亮透，废照棚里已经有人醒了。"
+          "前章负载：延续线程：不灭残灯来历 / 借灯后的自我侵蚀 / 照命司锁定异常灯波；前章方向：先立住沈照命灯将熄的死局、青烬宗底层的燃命秩序，再让不灭残灯在濒",
+          "开章前两段：连续性词命中：1",
+          "开章原文：天还没亮透，废照棚里已经有人醒了。"
         ]
       },
       "styleAnalysis": {
         "profile": "xuanhuan-zh",
+        "reviewRuleProfile": "default",
+        "reviewRuleEnabledRules": [],
         "styleAnalysis": {
-          "overallScore": 20,
-          "totalDeduction": 0,
+          "overallScore": 18,
+          "totalDeduction": 2,
           "patternResults": [
             {
               "id": "simileDensity",
@@ -2768,6 +2799,41 @@
               "suggestion": ""
             },
             {
+              "id": "contrastFlipPattern",
+              "label": "翻转句式",
+              "detected": false,
+              "count": 1,
+              "perThousand": 0.3,
+              "threshold": 1.2,
+              "severity": "none",
+              "evidence": [
+                "不是去测灯，是去把胸口剖给别人看"
+              ],
+              "suggestion": ""
+            },
+            {
+              "id": "analogicalPivotPattern",
+              "label": "类比翻转句",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "templateCatchphrasePattern",
+              "label": "模板化口癖",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
               "id": "sensoryVariety",
               "label": "感官单一",
               "detected": false,
@@ -2788,6 +2854,21 @@
               "severity": "none",
               "evidence": [],
               "suggestion": ""
+            },
+            {
+              "id": "paragraphReadability",
+              "label": "段落可读性",
+              "detected": true,
+              "count": 18,
+              "perThousand": 0,
+              "threshold": 90,
+              "severity": "medium",
+              "evidence": [
+                "第2段约134字：不是因为睡饱，而是因为冻。夜里那场山风刮到后半夜，破棚四面漏得像...",
+                "第3段约111字：他靠着土墙坐着，眼睛已经睁开了，脸色还是白，却不再是昨夜那种将要...",
+                "第4段约124字：昨夜旧炉里的事一幕幕往回翻，火纹、裂响、那点冷白微光，还有一块被..."
+              ],
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
             },
             {
               "id": "sentenceRepetition",
@@ -2844,6 +2925,17 @@
               "severity": "none",
               "evidence": [],
               "suggestion": ""
+            },
+            {
+              "id": "clusteredAIPhrasing",
+              "label": "AI句群叠加",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
             }
           ],
           "sensoryDistribution": {
@@ -2862,6 +2954,46 @@
             "avgLength": 73.7,
             "isUniform": false,
             "score": 3
+          },
+          "paragraphReadability": {
+            "detected": true,
+            "severity": "medium",
+            "count": 18,
+            "threshold": 90,
+            "veryLongThreshold": 150,
+            "maxLength": 149,
+            "evidence": [
+              "第2段约134字：不是因为睡饱，而是因为冻。夜里那场山风刮到后半夜，破棚四面漏得像...",
+              "第3段约111字：他靠着土墙坐着，眼睛已经睁开了，脸色还是白，却不再是昨夜那种将要...",
+              "第4段约124字：昨夜旧炉里的事一幕幕往回翻，火纹、裂响、那点冷白微光，还有一块被..."
+            ],
+            "overlongParagraphs": [
+              {
+                "paragraphIndex": 2,
+                "length": 134,
+                "snippet": "不是因为睡饱，而是因为冻。夜里那场山风刮到后半夜，破棚四面漏得像..."
+              },
+              {
+                "paragraphIndex": 3,
+                "length": 111,
+                "snippet": "他靠着土墙坐着，眼睛已经睁开了，脸色还是白，却不再是昨夜那种将要..."
+              },
+              {
+                "paragraphIndex": 4,
+                "length": 124,
+                "snippet": "昨夜旧炉里的事一幕幕往回翻，火纹、裂响、那点冷白微光，还有一块被..."
+              },
+              {
+                "paragraphIndex": 7,
+                "length": 103,
+                "snippet": "那少年像见了鬼，眼珠都微微发直。棚里几个原本装睡的人也慢慢坐起来..."
+              },
+              {
+                "paragraphIndex": 9,
+                "length": 118,
+                "snippet": "棚门外脚步声一停，庄无烬掀开破帘子进来，身后还跟着两个抬尸的杂役..."
+              }
+            ]
           },
           "sentenceRepetition": {
             "repeatedStructures": [],
@@ -2899,21 +3031,85 @@
             "matchedLabels": [],
             "suggestion": ""
           },
+          "clusteredAIPhrasing": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "threshold": 3,
+            "signalScore": 1,
+            "signalIds": [
+              "paragraphReadability"
+            ],
+            "evidence": [],
+            "suggestion": ""
+          },
+          "metaLeakage": {},
           "sources": {
             "sentenceRepetition": "builtin"
           },
-          "judgements": [],
-          "summary": "未检测到明显AI风格特征。",
-          "suggestions": []
+          "judgements": [
+            {
+              "ruleId": "paragraphReadability",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到段落可读性问题，例如 第2段约134字：不是因为睡饱，而是因为冻。夜里那场山风刮到后半夜，破棚四面漏得像...。",
+              "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+              "evidence": [
+                "第2段约134字：不是因为睡饱，而是因为冻。夜里那场山风刮到后半夜，破棚四面漏得像...",
+                "第3段约111字：他靠着土墙坐着，眼睛已经睁开了，脸色还是白，却不再是昨夜那种将要...",
+                "第4段约124字：昨夜旧炉里的事一幕幕往回翻，火纹、裂响、那点冷白微光，还有一块被..."
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style",
+                "readability",
+                "mobile-reading"
+              ]
+            }
+          ],
+          "summary": "检测到1项AI风格特征：段落可读性。扣2分。",
+          "suggestions": [
+            "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+          ]
         },
-        "judgements": [],
-        "constraints": [],
+        "judgements": [
+          {
+            "ruleId": "paragraphReadability",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到段落可读性问题，例如 第2段约134字：不是因为睡饱，而是因为冻。夜里那场山风刮到后半夜，破棚四面漏得像...。",
+            "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+            "evidence": [
+              "第2段约134字：不是因为睡饱，而是因为冻。夜里那场山风刮到后半夜，破棚四面漏得像...",
+              "第3段约111字：他靠着土墙坐着，眼睛已经睁开了，脸色还是白，却不再是昨夜那种将要...",
+              "第4段约124字：昨夜旧炉里的事一幕幕往回翻，火纹、裂响、那点冷白微光，还有一块被..."
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style",
+              "readability",
+              "mobile-reading"
+            ]
+          }
+        ],
+        "constraints": [
+          "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位"
+        ],
         "textMetrics": {
           "wordCount": 3259,
           "paragraphCount": 50,
           "averageParagraphLength": 74
         },
-        "profileSource": "builtin"
+        "profileSource": "builtin",
+        "reviewRuleProfileSource": "builtin"
       },
       "projectContext": {
         "genre": "玄幻",
@@ -3197,6 +3393,30 @@
       },
       "ruleJudgements": [
         {
+          "ruleId": "paragraphReadability",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到段落可读性问题，例如 第2段约134字：不是因为睡饱，而是因为冻。夜里那场山风刮到后半夜，破棚四面漏得像...。",
+          "suggestion": "存在过长段落，移动端阅读压力偏大；可按动作、反应、信息点拆段，让每段只承载一个主要推进单位",
+          "evidence": [
+            "第2段约134字：不是因为睡饱，而是因为冻。夜里那场山风刮到后半夜，破棚四面漏得像...",
+            "第3段约111字：他靠着土墙坐着，眼睛已经睁开了，脸色还是白，却不再是昨夜那种将要...",
+            "第4段约124字：昨夜旧炉里的事一幕幕往回翻，火纹、裂响、那点冷白微光，还有一块被..."
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-002"
+          },
+          "payload": {},
+          "tags": [
+            "style",
+            "readability",
+            "mobile-reading"
+          ]
+        },
+        {
           "ruleId": "chapterHandoffWeak",
           "source": "core",
           "scope": "chapter",
@@ -3204,11 +3424,11 @@
           "severity": "warning",
           "status": "triggered",
           "message": "当前章开头没有明显承接上一章《第一章 灯尽人未绝》留下的状态或线索。",
-          "suggestion": "开章先接住上一章《第一章 灯尽人未绝》留下的不灭残灯来历，再推进“承接首章活下来的余波，展现沈照的记忆”，避免像直接执行细纲。",
+          "suggestion": "开章前两段先点回《第一章 灯尽人未绝》延续的线索或关系压力，再推进“承接首章活下来的余波，展现沈照的记忆”。",
           "evidence": [
-            "上一章：第一章 灯尽人未绝",
-            "本章方向：承接首章活下来的余波，展现沈照的记忆缺口和异常灯",
-            "开章：天还没亮透，废照棚里已经有人醒了。"
+            "前章负载：延续线程：不灭残灯来历 / 借灯后的自我侵蚀 / 照命司锁定异常灯波；前章方向：先立住沈照命灯将熄的死局、青烬宗底层的燃命秩序，再让不灭残灯在濒",
+            "开章前两段：连续性词命中：1",
+            "开章原文：天还没亮透，废照棚里已经有人醒了。"
           ],
           "scopeRef": {
             "chapterId": "chapter-002"
@@ -16478,13 +16698,13 @@
       "reviewId": "chapter-review-43580191bf",
       "fingerprint": "chapter-review-v1:chapter-010:873b3051838d3169",
       "rubricVersion": "chapter-review-v1",
-      "generatedAt": "2026-04-26T20:30:39+08:00",
+      "generatedAt": "2026-04-28T13:59:48+08:00",
       "chapterId": "chapter-010",
       "chapterTitle": "第十章 灰缝藏骨",
-      "summary": "结合分析结果和正文信号，本章总分 73/100。当前强项在人物压力，最需要补强的是冲突张力。",
+      "summary": "结合分析结果和正文信号，本章总分 71/100。当前强项在人物压力，最需要补强的是冲突张力。",
       "rating": "solid",
       "scores": {
-        "total": 73,
+        "total": 71,
         "maxScore": 100,
         "dimensions": [
           {
@@ -16544,17 +16764,18 @@
           {
             "id": "proseControl",
             "label": "表达控制",
-            "score": 15,
+            "score": 13,
             "maxScore": 20,
-            "comment": "基础节奏可读，但 AI 风格信号额外扣了 1 分。",
+            "comment": "基础节奏可读，但 AI 风格信号额外扣了 3 分。",
             "signals": [
               "平均段长 16",
               "长段落 0 段",
               "对话段 114 段",
-              "风格额外扣分 1"
+              "风格额外扣分 3"
             ],
             "suggestions": [
-              "段落普遍太短，建议增加承接句，避免阅读节奏过碎。"
+              "段落普遍太短，建议增加承接句，避免阅读节奏过碎。",
+              "“不是……是……”类翻转句偏多（每千字2.7次），优先改成直接动作、结果或判断，不要反复先否后立"
             ]
           }
         ]
@@ -16623,7 +16844,7 @@
             "delta": -5
           }
         ],
-        "total": 68.8,
+        "total": 68.3,
         "maxScore": 100,
         "rating": "workable",
         "breakdown": [
@@ -16658,9 +16879,9 @@
           {
             "id": "proseControl",
             "label": "表达控制",
-            "rawScore": 15,
+            "rawScore": 13,
             "weight": 5,
-            "contribution": 3.75
+            "contribution": 3.25
           }
         ]
       },
@@ -16670,9 +16891,10 @@
         "场景清晰度：这一幕的镜头和焦点比较清楚。"
       ],
       "priorityActions": [
-        "开章先接住上一章《第九章 转押灯廊》留下的不灭残灯来历，再推进“东坡门伪令局后，岳怀川当场封门扣人，”，避免像直接执行细纲。",
+        "开章前两段先点回《第九章 转押灯廊》延续的线索或关系压力，再推进“东坡门伪令局后，岳怀川当场封门扣人，”。",
         "补一个明确阻力：对手、风险、时间压力或信息缺口，避免章节太平。",
-        "段落普遍太短，建议增加承接句，避免阅读节奏过碎。"
+        "段落普遍太短，建议增加承接句，避免阅读节奏过碎。",
+        "“不是……是……”类翻转句偏多（每千字2.7次），优先改成直接动作、结果或判断，不要反复先否后立"
       ],
       "textMetrics": {
         "wordCount": 5908,
@@ -16708,27 +16930,52 @@
       "chapterHandoffSignals": {
         "detected": true,
         "severity": "warning",
+        "loadStrength": 2,
+        "openingAnchorScore": 0,
+        "earlyAnchorScore": 0,
+        "delayedBridge": false,
         "previousChapterId": "chapter-009",
         "previousChapterTitle": "第九章 转押灯廊",
         "currentDirection": "东坡门伪令局后，岳怀川当场封门扣人，不再把沈照交给明面转押。沈照借木片与“一号未转”的刻痕，逼出旧押灯路下的一处暗格，捞出与一号有关的焦骨旧牌和未交接痕迹，也在残灯回响里接到更痛的一段旧记忆；但照命司内线与青烬宗外门两边追索同时压来，岳怀川只能改走暗路，把沈照和这条旧案一起先藏起来。",
-        "nextChapterTitle": "",
+        "nextChapterTitle": "第十一章 北灰旧库",
         "openingEntityAnchors": [],
         "openingStateAnchors": [],
         "openingThreadAnchors": [],
+        "openingContextAnchors": [],
+        "earlyEntityAnchors": [],
+        "earlyStateAnchors": [],
+        "earlyThreadAnchors": [],
+        "earlyContextAnchors": [],
         "openingContinuityHits": 0,
+        "earlyContinuityHits": 0,
+        "openingDirectContinuationHits": 0,
+        "earlyDirectContinuationHits": 0,
         "closingHookHits": 0,
-        "suggestion": "开章先接住上一章《第九章 转押灯廊》留下的不灭残灯来历，再推进“东坡门伪令局后，岳怀川当场封门扣人，”，避免像直接执行细纲。",
+        "loadSummary": [
+          "延续线程：不灭残灯来历 / 借灯后的自我侵蚀 / 照命司锁定异常灯波",
+          "前章方向：沈照被一纸“留验转押”逼上照命司旧押灯路。岳怀川决定当夜挪人，路"
+        ],
+        "openingAnchorSummary": [],
+        "earlyAnchorSummary": [],
+        "gapReasons": [
+          "开章前两段没有点回前章延续线程",
+          "开章前两段没有复用前章方向或场景目标中的关键锚点",
+          "开章前两段缺少明显因果/时间延续词"
+        ],
+        "suggestion": "开章前两段先点回《第九章 转押灯廊》延续的线索或关系压力，再推进“东坡门伪令局后，岳怀川当场封门扣人，”。",
         "evidence": [
-          "上一章：第九章 转押灯廊",
-          "本章方向：东坡门伪令局后，岳怀川当场封门扣人，不再把沈照交",
-          "开章：“一号未转。”"
+          "前章负载：延续线程：不灭残灯来历 / 借灯后的自我侵蚀 / 照命司锁定异常灯波；前章方向：沈照被一纸“留验转押”逼上照命司旧押灯路。岳怀川决定当夜挪人，路",
+          "开章前两段：未命中实体、状态、线程或连续性锚点",
+          "开章原文：“一号未转。”"
         ]
       },
       "styleAnalysis": {
         "profile": "xuanhuan-zh",
+        "reviewRuleProfile": "default",
+        "reviewRuleEnabledRules": [],
         "styleAnalysis": {
-          "overallScore": 19,
-          "totalDeduction": 1,
+          "overallScore": 17,
+          "totalDeduction": 3,
           "patternResults": [
             {
               "id": "simileDensity",
@@ -16781,6 +17028,48 @@
               "suggestion": ""
             },
             {
+              "id": "contrastFlipPattern",
+              "label": "翻转句式",
+              "detected": true,
+              "count": 16,
+              "perThousand": 2.7,
+              "threshold": 1.2,
+              "severity": "medium",
+              "evidence": [
+                "不是因为凶。\n\n是因为所有人都听明白了",
+                "不是沈照这条“留验二号”的命。\n\n是那道砖缝下头压着的旧案",
+                "不是被人喝得。\n\n是掌心那道白痕抽得太狠",
+                "不是夜风。\n\n是积在地下许多年的湿冷灰气，被人撬开后",
+                "不是疼。\n\n是空"
+              ],
+              "suggestion": "“不是……是……”类翻转句偏多（每千字2.7次），优先改成直接动作、结果或判断，不要反复先否后立"
+            },
+            {
+              "id": "analogicalPivotPattern",
+              "label": "类比翻转句",
+              "detected": false,
+              "count": 2,
+              "perThousand": 0.3,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [
+                "不像藏财。\n\n更像临时塞押送文牍或小件物证的地方",
+                "不是血。\n\n更像旧灯油熬久了之后留下的苦腥"
+              ],
+              "suggestion": ""
+            },
+            {
+              "id": "templateCatchphrasePattern",
+              "label": "模板化口癖",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
               "id": "sensoryVariety",
               "label": "感官单一",
               "detected": false,
@@ -16798,6 +17087,17 @@
               "count": 0,
               "perThousand": 0,
               "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "paragraphReadability",
+              "label": "段落可读性",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 90,
               "severity": "none",
               "evidence": [],
               "suggestion": ""
@@ -16859,6 +17159,17 @@
               "severity": "none",
               "evidence": [],
               "suggestion": ""
+            },
+            {
+              "id": "clusteredAIPhrasing",
+              "label": "AI句群叠加",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
             }
           ],
           "sensoryDistribution": {
@@ -16875,6 +17186,16 @@
             "avgLength": 15.8,
             "isUniform": false,
             "score": 3
+          },
+          "paragraphReadability": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "threshold": 90,
+            "veryLongThreshold": 150,
+            "maxLength": 84,
+            "evidence": [],
+            "overlongParagraphs": []
           },
           "sentenceRepetition": {
             "repeatedStructures": [],
@@ -16919,10 +17240,46 @@
             "matchedLabels": [],
             "suggestion": ""
           },
+          "clusteredAIPhrasing": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "threshold": 3,
+            "signalScore": 2,
+            "signalIds": [
+              "contrastFlipPattern"
+            ],
+            "evidence": [],
+            "suggestion": ""
+          },
+          "metaLeakage": {},
           "sources": {
             "sentenceRepetition": "builtin"
           },
           "judgements": [
+            {
+              "ruleId": "contrastFlipPattern",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "medium",
+              "status": "triggered",
+              "message": "检测到翻转句式问题，例如 不是因为凶。\n\n是因为所有人都听明白了。",
+              "suggestion": "“不是……是……”类翻转句偏多（每千字2.7次），优先改成直接动作、结果或判断，不要反复先否后立",
+              "evidence": [
+                "不是因为凶。\n\n是因为所有人都听明白了",
+                "不是沈照这条“留验二号”的命。\n\n是那道砖缝下头压着的旧案",
+                "不是被人喝得。\n\n是掌心那道白痕抽得太狠",
+                "不是夜风。\n\n是积在地下许多年的湿冷灰气，被人撬开后",
+                "不是疼。\n\n是空"
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style",
+                "ai-phrasing"
+              ]
+            },
             {
               "ruleId": "specialTermRepetition",
               "source": "core",
@@ -16943,12 +17300,36 @@
               ]
             }
           ],
-          "summary": "检测到1项AI风格特征：特殊术语复用。扣1分。",
+          "summary": "检测到2项AI风格特征：翻转句式、特殊术语复用。扣3分。",
           "suggestions": [
+            "“不是……是……”类翻转句偏多（每千字2.7次），优先改成直接动作、结果或判断，不要反复先否后立",
             "特殊术语复用偏多（如 岳怀川。），可减少直呼其名的次数，改用动作结果、人物理解或上下文代称分散表达"
           ]
         },
         "judgements": [
+          {
+            "ruleId": "contrastFlipPattern",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "medium",
+            "status": "triggered",
+            "message": "检测到翻转句式问题，例如 不是因为凶。\n\n是因为所有人都听明白了。",
+            "suggestion": "“不是……是……”类翻转句偏多（每千字2.7次），优先改成直接动作、结果或判断，不要反复先否后立",
+            "evidence": [
+              "不是因为凶。\n\n是因为所有人都听明白了",
+              "不是沈照这条“留验二号”的命。\n\n是那道砖缝下头压着的旧案",
+              "不是被人喝得。\n\n是掌心那道白痕抽得太狠",
+              "不是夜风。\n\n是积在地下许多年的湿冷灰气，被人撬开后",
+              "不是疼。\n\n是空"
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style",
+              "ai-phrasing"
+            ]
+          },
           {
             "ruleId": "specialTermRepetition",
             "source": "core",
@@ -16969,13 +17350,16 @@
             ]
           }
         ],
-        "constraints": [],
+        "constraints": [
+          "“不是……是……”类翻转句偏多（每千字2.7次），优先改成直接动作、结果或判断，不要反复先否后立"
+        ],
         "textMetrics": {
           "wordCount": 5908,
           "paragraphCount": 439,
           "averageParagraphLength": 16
         },
-        "profileSource": "builtin"
+        "profileSource": "builtin",
+        "reviewRuleProfileSource": "builtin"
       },
       "projectContext": {
         "genre": "玄幻",
@@ -17176,7 +17560,21 @@
               "庄无烬与东坡门副司吏同时压场，岳怀川和沈照当众破局，转入排灰沟旧路，带着骨牌与残纸线索朝北灰库暗线撤走。"
             ]
           },
-          "nextChapter": null,
+          "nextChapter": {
+            "id": "chapter-011",
+            "title": "第十一章 北灰旧库",
+            "direction": "沈照与岳怀川顺着排灰沟旧路潜入北灰库外围，先切断官印追索，再在押送中转灰库里找到“补录二，候印未成”的残纸与更接近当年的记忆，确认一号曾在转押途中把“二”这个位置硬推给沈照；可照命司更深的一只手已经顺路追到门外，两人只能在旧库更深处开启暗匣，最后看见一张写着“补录二号：沈照”的旧名签，把沈照早在十二年前就被写进这桩旧案的事实彻底钉实。",
+            "beatHints": [
+              "沈照与岳怀川在排灰沟旧路里辨出这不是逃生道而是押送运物路，岳怀川为断掉照命司追印，亲手烧断裂灯官印，两人顺着焦骨旧牌的反应推开北灰库外围中转门。",
+              "两人在北灰库外围灰库里找到“乙路留灰未交”“补录二候印”的残纸与灰格记号；沈照借残灯回响接住更清楚的一段旧忆，确认有人曾逼他在点名到二时应声，等于把一号空出来的位置推给了他。",
+              "照命司追手已经摸到北灰库外门，岳怀川和沈照在前后夹压下撬开灰车后的暗匣，最终抽出写着“补录二号：沈照”的旧名签，被迫带着这份更致命的真相继续往北灰库更深处撤。"
+            ],
+            "sceneGoals": [
+              "沈照与岳怀川在排灰沟旧路里确认这条道是押送运物路，岳怀川当场烧断裂灯官印切断照命司追索，两人随焦骨旧牌的反应摸到北灰库外围中转门。",
+              "两人在北灰库外围灰库里翻出“补录二，候印未成”的残纸和灰格记号，沈照也在残灯回响里接到更近的一段旧忆，知道自己曾被人逼着去应那个“二”号。",
+              "照命司追手摸到北灰库外门，岳怀川和沈照被迫在灰车后的暗匣里抢出更深一层物证，并看见写着“补录二号：沈照”的旧名签，确认这桩旧案早就把沈照写了进去。"
+            ]
+          },
           "carryOverEntityChanges": [],
           "activeThreadLabels": [
             "不灭残灯来历",
@@ -17231,6 +17629,31 @@
       },
       "ruleJudgements": [
         {
+          "ruleId": "contrastFlipPattern",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "medium",
+          "status": "triggered",
+          "message": "检测到翻转句式问题，例如 不是因为凶。\n\n是因为所有人都听明白了。",
+          "suggestion": "“不是……是……”类翻转句偏多（每千字2.7次），优先改成直接动作、结果或判断，不要反复先否后立",
+          "evidence": [
+            "不是因为凶。\n\n是因为所有人都听明白了",
+            "不是沈照这条“留验二号”的命。\n\n是那道砖缝下头压着的旧案",
+            "不是被人喝得。\n\n是掌心那道白痕抽得太狠",
+            "不是夜风。\n\n是积在地下许多年的湿冷灰气，被人撬开后",
+            "不是疼。\n\n是空"
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-010"
+          },
+          "payload": {},
+          "tags": [
+            "style",
+            "ai-phrasing"
+          ]
+        },
+        {
           "ruleId": "specialTermRepetition",
           "source": "core",
           "scope": "chapter",
@@ -17259,11 +17682,11 @@
           "severity": "warning",
           "status": "triggered",
           "message": "当前章开头没有明显承接上一章《第九章 转押灯廊》留下的状态或线索。",
-          "suggestion": "开章先接住上一章《第九章 转押灯廊》留下的不灭残灯来历，再推进“东坡门伪令局后，岳怀川当场封门扣人，”，避免像直接执行细纲。",
+          "suggestion": "开章前两段先点回《第九章 转押灯廊》延续的线索或关系压力，再推进“东坡门伪令局后，岳怀川当场封门扣人，”。",
           "evidence": [
-            "上一章：第九章 转押灯廊",
-            "本章方向：东坡门伪令局后，岳怀川当场封门扣人，不再把沈照交",
-            "开章：“一号未转。”"
+            "前章负载：延续线程：不灭残灯来历 / 借灯后的自我侵蚀 / 照命司锁定异常灯波；前章方向：沈照被一纸“留验转押”逼上照命司旧押灯路。岳怀川决定当夜挪人，路",
+            "开章前两段：未命中实体、状态、线程或连续性锚点",
+            "开章原文：“一号未转。”"
           ],
           "scopeRef": {
             "chapterId": "chapter-010"
@@ -17271,7 +17694,7 @@
           "payload": {
             "previousChapterId": "chapter-009",
             "currentDirection": "东坡门伪令局后，岳怀川当场封门扣人，不再把沈照交给明面转押。沈照借木片与“一号未转”的刻痕，逼出旧押灯路下的一处暗格，捞出与一号有关的焦骨旧牌和未交接痕迹，也在残灯回响里接到更痛的一段旧记忆；但照命司内线与青烬宗外门两边追索同时压来，岳怀川只能改走暗路，把沈照和这条旧案一起先藏起来。",
-            "nextChapterTitle": ""
+            "nextChapterTitle": "第十一章 北灰旧库"
           },
           "tags": [
             "review",
@@ -30614,13 +31037,13 @@
       "reviewId": "chapter-review-11ac026ed6",
       "fingerprint": "chapter-review-v1:chapter-016:2b4abba662630afb",
       "rubricVersion": "chapter-review-v1",
-      "generatedAt": "2026-04-26T22:17:34+08:00",
+      "generatedAt": "2026-04-28T13:59:49+08:00",
       "chapterId": "chapter-016",
       "chapterTitle": "第十六章 养息腹",
-      "summary": "结合分析结果和正文信号，本章总分 61/100。当前强项在表达控制，最需要补强的是冲突张力。",
+      "summary": "结合分析结果和正文信号，本章总分 58/100。当前强项在场景清晰度，最需要补强的是冲突张力。",
       "rating": "workable",
       "scores": {
-        "total": 61,
+        "total": 58,
         "maxScore": 100,
         "dimensions": [
           {
@@ -30684,17 +31107,18 @@
           {
             "id": "proseControl",
             "label": "表达控制",
-            "score": 16,
+            "score": 13,
             "maxScore": 20,
-            "comment": "段落和强调基本受控。",
+            "comment": "基础节奏可读，但 AI 风格信号额外扣了 3 分。",
             "signals": [
               "平均段长 14",
               "长段落 0 段",
               "对话段 87 段",
-              "风格额外扣分 0"
+              "风格额外扣分 3"
             ],
             "suggestions": [
-              "段落普遍太短，建议增加承接句，避免阅读节奏过碎。"
+              "段落普遍太短，建议增加承接句，避免阅读节奏过碎。",
+              "“不是……是……”类翻转句偏多（每千字3.7次），优先改成直接动作、结果或判断，不要反复先否后立"
             ]
           }
         ]
@@ -30763,7 +31187,7 @@
             "delta": -5
           }
         ],
-        "total": 58.0,
+        "total": 57.25,
         "maxScore": 100,
         "rating": "workable",
         "breakdown": [
@@ -30798,19 +31222,19 @@
           {
             "id": "proseControl",
             "label": "表达控制",
-            "rawScore": 16,
+            "rawScore": 13,
             "weight": 5,
-            "contribution": 4.0
+            "contribution": 3.25
           }
         ]
       },
       "strengths": [
-        "表达控制：段落和强调基本受控。"
+        "场景清晰度：这一幕的镜头和焦点比较清楚。"
       ],
       "priorityActions": [
         "补足角色姓名的引介来源：坡不陡。",
         "确认本章产生的新设定候选是否应写入世界真相层。",
-        "开章先接住上一章《第十五章 丁井吊板》留下的不灭残灯来历，再推进“沈照与岳怀川钻入养息腹后的旧巡缝道与”，避免像直接执行细纲。",
+        "开章前两段先点回《第十五章 丁井吊板》延续的线索或关系压力，再推进“沈照与岳怀川钻入养息腹后的旧巡缝道与”。",
         "补一个明确阻力：对手、风险、时间压力或信息缺口，避免章节太平。"
       ],
       "textMetrics": {
@@ -30844,27 +31268,52 @@
       "chapterHandoffSignals": {
         "detected": true,
         "severity": "warning",
+        "loadStrength": 2,
+        "openingAnchorScore": 0,
+        "earlyAnchorScore": 0,
+        "delayedBridge": false,
         "previousChapterId": "chapter-015",
         "previousChapterTitle": "第十五章 丁井吊板",
         "currentDirection": "沈照与岳怀川钻入养息腹后的旧巡缝道与白池腹室，第一次看清“候承”不只是井上转灯流程，而是一整套会借白痕、旧规和点名把人认回册里的地下系统。章中既要让巡缝人补出一号主动撞位替沈照挡过一次“应二”的旁证，也要把主息槽的危险立住：更深处不仅藏着被抹掉的旧名残签，还会主动点名逼沈照自己答那一声。章尾要把钩子推进主息槽背后，形成“只要应一声就会被整座旧规认回去”的更强压迫。",
-        "nextChapterTitle": "",
+        "nextChapterTitle": "第十七章 主息槽背",
         "openingEntityAnchors": [],
         "openingStateAnchors": [],
         "openingThreadAnchors": [],
+        "openingContextAnchors": [],
+        "earlyEntityAnchors": [],
+        "earlyStateAnchors": [],
+        "earlyThreadAnchors": [],
+        "earlyContextAnchors": [],
         "openingContinuityHits": 0,
+        "earlyContinuityHits": 0,
+        "openingDirectContinuationHits": 0,
+        "earlyDirectContinuationHits": 0,
         "closingHookHits": 0,
-        "suggestion": "开章先接住上一章《第十五章 丁井吊板》留下的不灭残灯来历，再推进“沈照与岳怀川钻入养息腹后的旧巡缝道与”，避免像直接执行细纲。",
+        "loadSummary": [
+          "延续线程：不灭残灯来历 / 借灯后的自我侵蚀 / 照命司锁定异常灯波",
+          "前章方向：沈照与岳怀川顺着工索缝抢到转灯井半腰作业环，第一次正面看见“候承"
+        ],
+        "openingAnchorSummary": [],
+        "earlyAnchorSummary": [],
+        "gapReasons": [
+          "开章前两段没有点回前章延续线程",
+          "开章前两段没有复用前章方向或场景目标中的关键锚点",
+          "开章前两段缺少明显因果/时间延续词"
+        ],
+        "suggestion": "开章前两段先点回《第十五章 丁井吊板》延续的线索或关系压力，再推进“沈照与岳怀川钻入养息腹后的旧巡缝道与”。",
         "evidence": [
-          "上一章：第十五章 丁井吊板",
-          "本章方向：沈照与岳怀川钻入养息腹后的旧巡缝道与白池腹室，第",
-          "开章：“别应。”"
+          "前章负载：延续线程：不灭残灯来历 / 借灯后的自我侵蚀 / 照命司锁定异常灯波；前章方向：沈照与岳怀川顺着工索缝抢到转灯井半腰作业环，第一次正面看见“候承",
+          "开章前两段：未命中实体、状态、线程或连续性锚点",
+          "开章原文：“别应。”"
         ]
       },
       "styleAnalysis": {
         "profile": "xuanhuan-zh",
+        "reviewRuleProfile": "default",
+        "reviewRuleEnabledRules": [],
         "styleAnalysis": {
-          "overallScore": 20,
-          "totalDeduction": 0,
+          "overallScore": 17,
+          "totalDeduction": 3,
           "patternResults": [
             {
               "id": "simileDensity",
@@ -30922,6 +31371,48 @@
               "suggestion": ""
             },
             {
+              "id": "contrastFlipPattern",
+              "label": "翻转句式",
+              "detected": true,
+              "count": 18,
+              "perThousand": 3.7,
+              "threshold": 1.2,
+              "severity": "high",
+              "evidence": [
+                "不是我住的格，是旧巡缝道",
+                "不是为了压声，是为了乱它一拍",
+                "不是冷。\n\n是麻",
+                "不是路没了。\n\n是石缝中间，多出一块横卡出来的白骨门栓",
+                "不是拒。\n\n是松"
+              ],
+              "suggestion": "“不是……是……”类翻转句偏多（每千字3.7次），优先改成直接动作、结果或判断，不要反复先否后立"
+            },
+            {
+              "id": "analogicalPivotPattern",
+              "label": "类比翻转句",
+              "detected": false,
+              "count": 2,
+              "perThousand": 0.4,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [
+                "不像逃生暗道。\n\n更像给巡锁、补膏、换索的人专门留的背身小",
+                "不是整人。\n\n更像用膏、铜丝、细索和皮套拼起来的半身息"
+              ],
+              "suggestion": ""
+            },
+            {
+              "id": "templateCatchphrasePattern",
+              "label": "模板化口癖",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0.0,
+              "threshold": 0.8,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
               "id": "sensoryVariety",
               "label": "感官单一",
               "detected": false,
@@ -30939,6 +31430,17 @@
               "count": 0,
               "perThousand": 0,
               "threshold": 0,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
+            },
+            {
+              "id": "paragraphReadability",
+              "label": "段落可读性",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 90,
               "severity": "none",
               "evidence": [],
               "suggestion": ""
@@ -30998,6 +31500,17 @@
               "severity": "none",
               "evidence": [],
               "suggestion": ""
+            },
+            {
+              "id": "clusteredAIPhrasing",
+              "label": "AI句群叠加",
+              "detected": false,
+              "count": 0,
+              "perThousand": 0,
+              "threshold": 3,
+              "severity": "none",
+              "evidence": [],
+              "suggestion": ""
             }
           ],
           "sensoryDistribution": {
@@ -31016,6 +31529,16 @@
             "avgLength": 14.3,
             "isUniform": false,
             "score": 3
+          },
+          "paragraphReadability": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "threshold": 90,
+            "veryLongThreshold": 150,
+            "maxLength": 71,
+            "evidence": [],
+            "overlongParagraphs": []
           },
           "sentenceRepetition": {
             "repeatedStructures": [],
@@ -31053,21 +31576,87 @@
             "matchedLabels": [],
             "suggestion": ""
           },
+          "clusteredAIPhrasing": {
+            "detected": false,
+            "severity": "none",
+            "count": 0,
+            "threshold": 3,
+            "signalScore": 3,
+            "signalIds": [
+              "contrastFlipPattern"
+            ],
+            "evidence": [],
+            "suggestion": ""
+          },
+          "metaLeakage": {},
           "sources": {
             "sentenceRepetition": "builtin"
           },
-          "judgements": [],
-          "summary": "未检测到明显AI风格特征。",
-          "suggestions": []
+          "judgements": [
+            {
+              "ruleId": "contrastFlipPattern",
+              "source": "core",
+              "scope": "chapter",
+              "kind": "style",
+              "severity": "high",
+              "status": "triggered",
+              "message": "检测到翻转句式问题，例如 不是我住的格，是旧巡缝道。",
+              "suggestion": "“不是……是……”类翻转句偏多（每千字3.7次），优先改成直接动作、结果或判断，不要反复先否后立",
+              "evidence": [
+                "不是我住的格，是旧巡缝道",
+                "不是为了压声，是为了乱它一拍",
+                "不是冷。\n\n是麻",
+                "不是路没了。\n\n是石缝中间，多出一块横卡出来的白骨门栓",
+                "不是拒。\n\n是松"
+              ],
+              "scopeRef": {},
+              "payload": {},
+              "tags": [
+                "style",
+                "ai-phrasing"
+              ]
+            }
+          ],
+          "summary": "检测到1项AI风格特征：翻转句式。扣3分。",
+          "suggestions": [
+            "“不是……是……”类翻转句偏多（每千字3.7次），优先改成直接动作、结果或判断，不要反复先否后立"
+          ]
         },
-        "judgements": [],
-        "constraints": [],
+        "judgements": [
+          {
+            "ruleId": "contrastFlipPattern",
+            "source": "core",
+            "scope": "chapter",
+            "kind": "style",
+            "severity": "high",
+            "status": "triggered",
+            "message": "检测到翻转句式问题，例如 不是我住的格，是旧巡缝道。",
+            "suggestion": "“不是……是……”类翻转句偏多（每千字3.7次），优先改成直接动作、结果或判断，不要反复先否后立",
+            "evidence": [
+              "不是我住的格，是旧巡缝道",
+              "不是为了压声，是为了乱它一拍",
+              "不是冷。\n\n是麻",
+              "不是路没了。\n\n是石缝中间，多出一块横卡出来的白骨门栓",
+              "不是拒。\n\n是松"
+            ],
+            "scopeRef": {},
+            "payload": {},
+            "tags": [
+              "style",
+              "ai-phrasing"
+            ]
+          }
+        ],
+        "constraints": [
+          "“不是……是……”类翻转句偏多（每千字3.7次），优先改成直接动作、结果或判断，不要反复先否后立"
+        ],
         "textMetrics": {
           "wordCount": 4918,
           "paragraphCount": 403,
           "averageParagraphLength": 14
         },
-        "profileSource": "builtin"
+        "profileSource": "builtin",
+        "reviewRuleProfileSource": "builtin"
       },
       "projectContext": {
         "genre": "玄幻",
@@ -31248,7 +31837,21 @@
               "巡锁门外追兵与腹底回索同时合围，岳怀川和沈照被迫转入主息槽背后的旧巡缝道；主息槽一路点名逼沈照“应二”，把“只要应一声就会被旧规认回去”的新压迫推到章尾。"
             ]
           },
-          "nextChapter": null,
+          "nextChapter": {
+            "id": "chapter-017",
+            "title": "第十七章 主息槽背",
+            "direction": "沈照与岳怀川顺着主息槽背后的巡缝道硬抢更深一层的旧记签库，要把第十六章补出的旁证继续压成可带走的物证。章中既要让主息槽的点名从抽象压迫变成能直接逼沈照失声应位的现实机制，也要让“另一个被抹掉的名字”第一次留下可触碰的残字与骨片。章尾要把钩子推进更下面那道暗槽与活证真声：更深处不只是留着一号的某一部分，还在持续阻止沈照“回册”。",
+            "beatHints": [
+              "两人在主息槽背后的巡缝道里顶着不断逼近的“二候应位”点名和追兵，借巡缝辅钮短暂打断主息回声，确认这里有一整套会自动补全候承流程的旧规。",
+              "两人抢进主息槽背的记签旧库，从守库人和黑木夹里翻出“二免应”“改列：沈照”“……照”等残纸与旧签，把被抹掉的另一个名字第一次压成可带走的物证。",
+              "主息槽里出现真声与骨片线索，库房随即被井上追兵攻破；沈照借认灯皮套再次开出更下一层暗槽，章尾要明确更深处那口活证仍在持续阻止他“回册”。"
+            ],
+            "sceneGoals": [
+              "沈照与岳怀川在主息槽背后的巡缝道里硬顶点名压迫前进，借巡缝辅钮短暂打断“二候应位”的回声，也确认主息槽背后仍有人为看守与侧锁流程。",
+              "两人骗开记签旧库，从黑木夹、残纸和旧名签中坐实“二免应”“改列：沈照”等物证，也第一次看见带着“照”字的被抹名残签与留给“照”的骨片警告。",
+              "主息槽里的真声与外头攻破库房的追兵同时压到，两人被迫从主息背壁再开暗槽下潜；更深处那道活证真声开始明确劝沈照“别回册”，把下一层谜面与压迫一起推到章尾。"
+            ]
+          },
           "carryOverEntityChanges": [],
           "activeThreadLabels": [
             "不灭残灯来历",
@@ -31339,6 +31942,31 @@
         "powerProgressionConflicts": []
       },
       "ruleJudgements": [
+        {
+          "ruleId": "contrastFlipPattern",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "style",
+          "severity": "high",
+          "status": "triggered",
+          "message": "检测到翻转句式问题，例如 不是我住的格，是旧巡缝道。",
+          "suggestion": "“不是……是……”类翻转句偏多（每千字3.7次），优先改成直接动作、结果或判断，不要反复先否后立",
+          "evidence": [
+            "不是我住的格，是旧巡缝道",
+            "不是为了压声，是为了乱它一拍",
+            "不是冷。\n\n是麻",
+            "不是路没了。\n\n是石缝中间，多出一块横卡出来的白骨门栓",
+            "不是拒。\n\n是松"
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-016"
+          },
+          "payload": {},
+          "tags": [
+            "style",
+            "ai-phrasing"
+          ]
+        },
         {
           "ruleId": "unintroducedNameReveal",
           "source": "core",
@@ -31653,11 +32281,11 @@
           "severity": "warning",
           "status": "triggered",
           "message": "当前章开头没有明显承接上一章《第十五章 丁井吊板》留下的状态或线索。",
-          "suggestion": "开章先接住上一章《第十五章 丁井吊板》留下的不灭残灯来历，再推进“沈照与岳怀川钻入养息腹后的旧巡缝道与”，避免像直接执行细纲。",
+          "suggestion": "开章前两段先点回《第十五章 丁井吊板》延续的线索或关系压力，再推进“沈照与岳怀川钻入养息腹后的旧巡缝道与”。",
           "evidence": [
-            "上一章：第十五章 丁井吊板",
-            "本章方向：沈照与岳怀川钻入养息腹后的旧巡缝道与白池腹室，第",
-            "开章：“别应。”"
+            "前章负载：延续线程：不灭残灯来历 / 借灯后的自我侵蚀 / 照命司锁定异常灯波；前章方向：沈照与岳怀川顺着工索缝抢到转灯井半腰作业环，第一次正面看见“候承",
+            "开章前两段：未命中实体、状态、线程或连续性锚点",
+            "开章原文：“别应。”"
           ],
           "scopeRef": {
             "chapterId": "chapter-016"
@@ -31665,7 +32293,7 @@
           "payload": {
             "previousChapterId": "chapter-015",
             "currentDirection": "沈照与岳怀川钻入养息腹后的旧巡缝道与白池腹室，第一次看清“候承”不只是井上转灯流程，而是一整套会借白痕、旧规和点名把人认回册里的地下系统。章中既要让巡缝人补出一号主动撞位替沈照挡过一次“应二”的旁证，也要把主息槽的危险立住：更深处不仅藏着被抹掉的旧名残签，还会主动点名逼沈照自己答那一声。章尾要把钩子推进主息槽背后，形成“只要应一声就会被整座旧规认回去”的更强压迫。",
-            "nextChapterTitle": ""
+            "nextChapterTitle": "第十七章 主息槽背"
           },
           "tags": [
             "review",

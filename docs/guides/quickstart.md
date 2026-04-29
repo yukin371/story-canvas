@@ -30,6 +30,22 @@ uv run story-canvas init `
 
 `chapter suggest` 默认不会接受“先写再补约束”的流程。
 进入细化前，`outline check` 默认要求项目先具备 `primaryGenre`、`targetAudience`、`corePromises`、`paceContract`，章节再具备 `direction`、`beats`、`scenePlans`。
+`init` 只会创建空白章节 stub，不会再往正文里塞占位说明；初始化后优先跑 `status --chapter-id <id>` 看 `startGuide`，按提示补第一章结构。
+如果你要从零开始直接验证“写完一卷 -> 进入卷级 AI 自审”，初始化时就把首卷一起建出来：
+
+```powershell
+uv run story-canvas init `
+  --root .\demo `
+  --title "Fog Harbor" `
+  --genre "Mystery" `
+  --primary-genre mystery `
+  --target-audience mystery-reader `
+  --core-promise "每章推进账本谜团" `
+  --pace-contract "中快节奏" `
+  --volume-id volume-001 `
+  --volume-title "第一卷 雾港吞名案" `
+  --volume-theme "从被卷入到主动追查"
+```
 
 如果你做的是网站连载或商业长篇，不要只填基础定位，建议把 `commercialPositioning` 也在初始化时写上：
 
@@ -129,6 +145,7 @@ uv run story-canvas structure check --root .\demo
 默认会优先使用 `structure map` 的显式映射；没有映射时，会按 beat 位置自动建议章节。
 如果章节已经有手工 `direction`，默认保留；需要覆盖时加 `--replace-directions`。
 `outline check` 默认会检查“项目定位 / 故事契约 + 章节 direction + beats + scenePlans”是否齐备，再决定是否进入正文细化。
+如果当前章还没有正文段落，先在 `chapters/<chapter-id>.md` 里按计划场景写 1 段骨架，再运行 `outline scene-detect` 生成首版 `scenePlans`。
 只有在明确接受放宽约束时，才使用 `--allow-missing-project-gate`、`--allow-missing-beats`、`--allow-missing-scene-plans`。
 
 如果你在做网站连载，还建议把字数检查放进每轮闭环：

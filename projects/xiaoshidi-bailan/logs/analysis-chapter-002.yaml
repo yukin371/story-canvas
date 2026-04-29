@@ -1,0 +1,63 @@
+{
+  "chapterId": "chapter-002",
+  "chapterTitle": "东井也要扫干净",
+  "analyzedAt": "2026-04-29T21:26:14+08:00",
+  "activeEntities": [
+    {
+      "id": "lu-xian",
+      "name": "陆闲",
+      "mentionCount": 22,
+      "source": "registry"
+    },
+    {
+      "id": "su-que",
+      "name": "苏雀",
+      "mentionCount": 8,
+      "source": "registry"
+    },
+    {
+      "id": "shen-tinglan",
+      "name": "沈听岚",
+      "mentionCount": 7,
+      "source": "registry"
+    },
+    {
+      "id": "huo-fei",
+      "name": "霍飞",
+      "mentionCount": 6,
+      "source": "registry"
+    },
+    {
+      "id": "zhu-hongling",
+      "name": "祝红绫",
+      "mentionCount": 4,
+      "source": "registry"
+    },
+    {
+      "id": "han-zhanglao",
+      "name": "韩长老",
+      "mentionCount": 2,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "lu-xian",
+      "su-que",
+      "shen-tinglan",
+      "huo-fei",
+      "zhu-hongling",
+      "han-zhanglao"
+    ],
+    "activeEntityNames": [
+      "陆闲",
+      "苏雀",
+      "沈听岚",
+      "霍飞",
+      "祝红绫",
+      "韩长老"
+    ]
+  }
+}

@@ -19,6 +19,7 @@
 - `review preflight` 现负责章节 / 卷级只读预检聚合：把 mention hygiene、伏笔到窗 / 逾期、世界 onboarding / 势力与战力风险收敛成一个 AI 自审入口，减少在卷级闭环前来回手拼多个命令输出
 - `review preflight` 当前还会带出顶层 `projectAdvisories`；首个 advisory 为缺少 `PRD.md`，让 AI 在常规预检入口就能看到项目立项文档缺口
 - `review preflight --volume-id` 当前还会附带 `volumeStructureCheck`，用轻量阶段映射和检查项暴露卷级结构明示度、引入卷 onboarding、伏笔债务和卷尾收束准备度，先服务 AI 自审与人工审查
+- `review preflight --volume-id` 现在还会附带 `volumeClosureContract`；首批会消费 `commercialPositioning.releaseCadence` 中显式的“X 章首卷”承诺，并把 `PRD.md` 的 `卷目标` 带进 `closure-readiness` 证据，避免把 1/1 章误判成卷级闭环前提已满足
 - `review preflight --volume-id` 聚合 review evidence 时，chapter review 按章节取最新，scene review 按章节 + scene 范围取最新，避免历史低分评审继续污染卷级自审输入
 - `review volume-self-template` 现负责 repo-native 的卷级 AI 自审模板生成：基于卷级 `review preflight` 输出模板骨架、当前卷风险摘要、逐章信号、已持久化 chapter/scene review 摘要、卷级 style 风险摘要、独立编辑审查要求和建议修补方向，减少 AI/作者手拼输入文件
 - `review volume-self-template` 当前还会根据 `preflight`、`volumeStructureCheck`、chapter/scene review 与 style aggregate 启发式预填 root `scores/issues/closureAssessment`，把模板从“空骨架”收敛成可直接审阅的 draft 起点，但默认仍保持 `not_closed`
@@ -103,6 +104,7 @@
 - `workflow status/export --volume-id` 当前会输出派生的 `orchestrationPlan.suggestedCommands`，把当前卷级 gate 翻成下一组可执行 CLI，但不自动执行、不写入新的 volume workflow 状态源
 - `workflow status/export --volume-id` 当前还会带出卷级自审的 `repairCoverage` 紧凑摘要，便于 workflow 面板直接区分“已有自审”与“弱项是否真的进入修复动作”
 - `workflow status/export --volume-id` 当前还会把 `review preflight` 里的 `volumeStructureCheck` 直接抬到顶层输出，便于 UI / agent 不必先反查嵌套 preflight 才能消费卷级结构检查摘要
+- `workflow status/export --volume-id` 现在还会把 `volumeClosureContract` 直接抬到顶层输出；当 `closure-readiness` 因承诺章数未满足而转成 `risk/missing` 时，会直接进入 `volume_tooling_gate` 的 blocking rules，而不再只停留在结构草案
 - 当卷级自审里存在 `repairCoverage.uncoveredWeakDimensionLabels` 时，`workflow status/export --volume-id` 当前还会把这些未覆盖弱项直接翻成 gate 阻塞原因与 `nextActions`，减少人工自己解读 raw review
 - `workflow status/export --volume-id` 当前还会额外输出只读 `changeRequestDrafts`，把当前卷级 gate 的阻塞项收敛成带章节定位与 evidence 的 change-request 风格草案；若尚未进入卷级自审，也会附带 `volumeStructureCheck` 派生的结构修补草案，便于 UI 或 agent 直接组织修稿闭环
 - 当卷级自审的 `issues` 已带 `chapterRefs/evidenceRefs` 时，`workflow status/export --volume-id` 当前会优先复用这些结构化定位，而不是只靠 preflight 启发式推断

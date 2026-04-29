@@ -1,0 +1,135 @@
+{
+  "currentChapterId": "chapter-002",
+  "lenses": [
+    {
+      "chapterId": "chapter-001",
+      "chapterTitle": "第一章",
+      "emotionalContract": {
+        "coreEmotions": [],
+        "chapterEmotionFloor": [],
+        "forbiddenEmotions": [],
+        "revealPreference": {
+          "defaultMode": "",
+          "allowDirectExplainAtClimax": false
+        }
+      },
+      "storyTemplate": {
+        "id": "",
+        "label": "",
+        "modulePolicy": {},
+        "reviewFocus": []
+      },
+      "chapterHandoff": {
+        "previousChapter": null,
+        "currentChapter": {
+          "id": "chapter-001",
+          "title": "第一章",
+          "direction": "顾迟在空棺异动当夜被灰灯点名，必须接下第一次巡夜任务，否则会被当成逃差索命。",
+          "beatHints": [
+            "顾迟在尸车底层找到父亲旧巡簿的残页，只能带着灰灯出门。",
+            "顾迟发现空棺里只有会记名字的灰灯，被迫承认自己看见了不该看的东西。",
+            "灰灯借城隍旧差的口告诉顾迟，若今夜不巡井口失名案，他就会替空棺里的死人补名。"
+          ],
+          "sceneGoals": [
+            "殡仪馆负一层的冷气总带着铁锈味，可今夜最冷的不是风，是停在三号尸位上的那口空棺。顾迟把登记板翻到最后一页，死者姓名、送来"
+          ]
+        },
+        "nextChapter": {
+          "id": "chapter-002",
+          "title": "井口回声",
+          "direction": "顾迟按灰灯指示追到旧井，解开女尸执念，确认父亲失踪与巡夜旧案直接相关。",
+          "beatHints": [
+            "被灰灯逼去查旧井失踪案",
+            "顾迟循着灰灯去旧井，确认死者名字被人从册上抹掉。",
+            "顾迟利用父亲残页上的规矩与女尸谈判，换来第一次完整巡夜回报。"
+          ],
+          "sceneGoals": [
+            "顾迟踩出殡仪馆后门时，灰灯拖出的那条白火线还贴着地砖往前爬，像怕他半路反悔似的，一直没灭。父亲那页巡簿在胸口硌得生疼，纸"
+          ]
+        },
+        "carryOverEntityChanges": [],
+        "activeThreadLabels": []
+      },
+      "activeCharacters": [
+        {
+          "id": "inferred::顾迟",
+          "name": "顾迟",
+          "currentState": "",
+          "stateTags": [],
+          "powerLevel": {},
+          "injuries": [],
+          "recentChange": null
+        }
+      ],
+      "activeRelations": [],
+      "activeWorldRules": [],
+      "activeFactions": [],
+      "activeThreads": [],
+      "activeForeshadows": [],
+      "dueForeshadows": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-29T11:44:44+08:00"
+    },
+    {
+      "chapterId": "chapter-002",
+      "chapterTitle": "井口回声",
+      "emotionalContract": {
+        "coreEmotions": [],
+        "chapterEmotionFloor": [],
+        "forbiddenEmotions": [],
+        "revealPreference": {
+          "defaultMode": "",
+          "allowDirectExplainAtClimax": false
+        }
+      },
+      "storyTemplate": {
+        "id": "",
+        "label": "",
+        "modulePolicy": {},
+        "reviewFocus": []
+      },
+      "chapterHandoff": {
+        "previousChapter": {
+          "id": "chapter-001",
+          "title": "第一章",
+          "direction": "顾迟在空棺异动当夜被灰灯点名，必须接下第一次巡夜任务，否则会被当成逃差索命。",
+          "beatHints": [
+            "顾迟在尸车底层找到父亲旧巡簿的残页，只能带着灰灯出门。",
+            "顾迟发现空棺里只有会记名字的灰灯，被迫承认自己看见了不该看的东西。",
+            "灰灯借城隍旧差的口告诉顾迟，若今夜不巡井口失名案，他就会替空棺里的死人补名。"
+          ],
+          "sceneGoals": [
+            "殡仪馆负一层的冷气总带着铁锈味，可今夜最冷的不是风，是停在三号尸位上的那口空棺。顾迟把登记板翻到最后一页，死者姓名、送来"
+          ]
+        },
+        "currentChapter": {
+          "id": "chapter-002",
+          "title": "井口回声",
+          "direction": "顾迟按灰灯指示追到旧井，解开女尸执念，确认父亲失踪与巡夜旧案直接相关。",
+          "beatHints": [
+            "被灰灯逼去查旧井失踪案",
+            "顾迟循着灰灯去旧井，确认死者名字被人从册上抹掉。",
+            "顾迟利用父亲残页上的规矩与女尸谈判，换来第一次完整巡夜回报。"
+          ],
+          "sceneGoals": [
+            "顾迟踩出殡仪馆后门时，灰灯拖出的那条白火线还贴着地砖往前爬，像怕他半路反悔似的，一直没灭。父亲那页巡簿在胸口硌得生疼，纸"
+          ]
+        },
+        "nextChapter": null,
+        "carryOverEntityChanges": [],
+        "activeThreadLabels": []
+      },
+      "activeCharacters": [],
+      "activeRelations": [],
+      "activeWorldRules": [],
+      "activeFactions": [],
+      "activeThreads": [],
+      "activeForeshadows": [],
+      "dueForeshadows": [],
+      "pendingChangeRequestCount": 0,
+      "pendingChangeRequests": [],
+      "updatedAt": "2026-04-29T11:48:43+08:00"
+    }
+  ]
+}

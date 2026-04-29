@@ -243,6 +243,61 @@ class WorkflowCommandSmokeTest(unittest.TestCase):
             encoding="utf-8",
         )
 
+    def _prepare_required_three_chapter_volume_project(self) -> None:
+        self._init_project(ready_project_gate=True)
+        project_path = self.temp_dir / "project.yaml"
+        project = json.loads(project_path.read_text(encoding="utf-8"))
+        project["commercialPositioning"] = {
+            "releaseCadence": "测试用三章首卷",
+        }
+        project_path.write_text(json.dumps(project, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (self.temp_dir / "PRD.md").write_text(
+            "# PRD\n\n- 卷目标: 完成临时禁令听证前的证据争夺，并交出第一场程序胜负\n",
+            encoding="utf-8",
+        )
+        outline_path = self.temp_dir / "outline.yaml"
+        outline = json.loads(outline_path.read_text(encoding="utf-8"))
+        outline["chapters"] = []
+        outline["chapterDirections"] = []
+        outline["volumes"] = [
+            {
+                "id": "volume-001",
+                "title": "第一卷",
+                "theme": "临时禁令",
+                "chapters": [
+                    {
+                        "id": "chapter-001",
+                        "title": "停雨申请",
+                        "status": "completed",
+                        "direction": "许澄递交停雨申请，并暴露证据缺口。",
+                    }
+                ],
+            }
+        ]
+        outline_path.write_text(json.dumps(outline, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (self.temp_dir / "foreshadowing.yaml").write_text('{"foreshadows":[]}\n', encoding="utf-8")
+        (self.temp_dir / "worldbook.yaml").write_text(
+            json.dumps(
+                {
+                    "premiseFacts": [],
+                    "worldRules": [],
+                    "powerProgressions": [],
+                    "factions": [],
+                    "locations": [],
+                    "artifacts": [],
+                    "mysteries": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 第一章\n\n许澄递交停雨申请，但日志缺口还没有补上。\n",
+            encoding="utf-8",
+        )
+
     def _write_volume_self_review(self, *, allow_human_review: bool, closure_status: str = "closed", chapter_handoff_score: int = 4) -> None:
         input_path = self.temp_dir / "volume-self-review-input.yaml"
         input_path.write_text(
@@ -719,6 +774,26 @@ class WorkflowCommandSmokeTest(unittest.TestCase):
                 for item in payload["changeRequestDrafts"]
             )
         )
+
+    def test_workflow_volume_scope_blocks_when_required_chapter_contract_is_unmet(self) -> None:
+        self._prepare_required_three_chapter_volume_project()
+
+        exit_code, payload = self._run_json(
+            ["workflow", "status", "--root", str(self.temp_dir), "--volume-id", "volume-001"]
+        )
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["currentStage"], "volume_tooling_gate")
+        self.assertEqual(payload["workflowStatus"], "in_progress")
+        self.assertEqual(payload["volumeClosureContract"]["requiredChapterCount"], 3)
+        self.assertEqual(payload["volumeClosureContract"]["actualChapterCount"], 1)
+        self.assertIn("volume-closure-contract-unmet", payload["currentGateDecision"]["blockingRules"])
+        self.assertTrue(any("承诺章数" in item for item in payload["nextActions"]))
+        closure_check = next(
+            item for item in payload["volumeStructureCheck"]["checklist"] if item["id"] == "closure-readiness"
+        )
+        self.assertEqual(closure_check["status"], "risk")
+        self.assertEqual(closure_check["requiredChapterCount"], 3)
+        self.assertEqual(closure_check["actualChapterCount"], 1)
 
     def test_workflow_volume_scope_completes_after_passing_self_review(self) -> None:
         self._prepare_clean_volume_project()

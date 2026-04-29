@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import json
 import shutil
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stdout
+from io import StringIO
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -11,6 +14,7 @@ SRC_ROOT = REPO_ROOT / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
+from story_harness_cli.cli import main
 from story_harness_cli.commands.project import command_init
 
 
@@ -41,6 +45,9 @@ class _Args:
         self.chapter_word_target = kwargs.get("chapter_word_target", None)
         self.chapter_id = kwargs.get("chapter_id", "chapter-001")
         self.chapter_title = kwargs.get("chapter_title", "Chapter 1")
+        self.volume_id = kwargs.get("volume_id", None)
+        self.volume_title = kwargs.get("volume_title", None)
+        self.volume_theme = kwargs.get("volume_theme", None)
         self.volume_goal = kwargs.get("volume_goal", None)
         self.reader_hook = kwargs.get("reader_hook", None)
         self.suppression_source = kwargs.get("suppression_source", None)
@@ -79,6 +86,15 @@ class TestInitFlat(unittest.TestCase):
 
         # chapters/ at root
         self.assertTrue((self.temp_dir / "chapters").is_dir())
+
+    def test_init_flat_creates_blank_chapter_stub(self):
+        args = _Args(root=str(self.temp_dir))
+        result = command_init(args)
+        self.assertEqual(result, 0)
+
+        chapter_text = (self.temp_dir / "chapters" / "chapter-001.md").read_text(encoding="utf-8")
+        self.assertEqual(chapter_text, "# Chapter 1\n")
+        self.assertNotIn("先补章节方向", chapter_text)
 
 
 class TestInitLayered(unittest.TestCase):
@@ -157,6 +173,45 @@ class TestInitLayered(unittest.TestCase):
         self.assertIn("- 关键设定 onboarding: 命灯、压火制度、宗门层级与主角为何不能轻易脱离。", prd_text)
         self.assertIn("- 本章承接点: 从主角即将被送去压火的处境切入。", prd_text)
         self.assertIn("- 本章交付点: 让读者理解命灯危险，并留下主角第一次反抗的钩子。", prd_text)
+
+    def test_init_can_seed_first_volume_and_followup_chapter_create_joins_it(self):
+        args = _Args(
+            root=str(self.temp_dir),
+            volume_id="volume-001",
+            volume_title="第一卷 雾港吞名案",
+            volume_theme="从被卷入到主动追查",
+        )
+        result = command_init(args)
+        self.assertEqual(result, 0)
+
+        outline_path = self.temp_dir / "outline.yaml"
+        outline = json.loads(outline_path.read_text(encoding="utf-8"))
+        self.assertEqual(outline["chapters"], [])
+        self.assertEqual(outline["volumes"][0]["id"], "volume-001")
+        self.assertEqual(outline["volumes"][0]["title"], "第一卷 雾港吞名案")
+        self.assertEqual(outline["volumes"][0]["theme"], "从被卷入到主动追查")
+        self.assertEqual(outline["volumes"][0]["chapters"][0]["id"], "chapter-001")
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(
+                [
+                    "chapter",
+                    "create",
+                    "--root",
+                    str(self.temp_dir),
+                    "--chapter-id",
+                    "chapter-002",
+                    "--title",
+                    "Chapter 2",
+                ]
+            )
+        self.assertEqual(exit_code, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["volumeId"], "volume-001")
+
+        outline = json.loads(outline_path.read_text(encoding="utf-8"))
+        self.assertEqual([item["id"] for item in outline["volumes"][0]["chapters"]], ["chapter-001", "chapter-002"])
 
 
 if __name__ == "__main__":

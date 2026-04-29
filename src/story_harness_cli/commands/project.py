@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from typing import Dict
 
+from story_harness_cli.commands.project_support import build_chapter_start_guide
 from story_harness_cli.protocol import chapter_path, load_project_state, save_state
 from story_harness_cli.protocol.files import LAYOUT_FLAT, LAYOUT_LAYERED, resolve_state_path
 from story_harness_cli.protocol.io import dump_json_compatible_yaml
@@ -222,18 +223,31 @@ def command_init(args) -> int:
         "createdAt": now_iso(),
         "updatedAt": now_iso(),
     }
+    initial_chapter = {
+        "id": args.chapter_id,
+        "title": args.chapter_title,
+        "status": "draft",
+        "beats": [],
+        "scenePlans": [],
+    }
+    volume_id = getattr(args, "volume_id", "") or ""
+    volume_title = getattr(args, "volume_title", "") or ""
+    volume_theme = getattr(args, "volume_theme", "") or ""
     outline = {
-        "chapters": [
-            {
-                "id": args.chapter_id,
-                "title": args.chapter_title,
-                "status": "draft",
-                "beats": [],
-                "scenePlans": [],
-            }
-        ],
+        "chapters": [],
         "chapterDirections": [],
     }
+    if volume_id or volume_title or volume_theme:
+        outline["volumes"] = [
+            {
+                "id": volume_id or "volume-001",
+                "title": volume_title or "第一卷",
+                "theme": volume_theme,
+                "chapters": [initial_chapter],
+            }
+        ]
+    else:
+        outline["chapters"] = [initial_chapter]
 
     # project.yaml always at root
     dump_json_compatible_yaml(resolve_state_path(root, "project", layout=layout), project)
@@ -260,15 +274,7 @@ def command_init(args) -> int:
 
     chapter_file = chapter_path(root, args.chapter_id)
     if not chapter_file.exists() or args.force:
-        chapter_file.write_text(
-            (
-                f"# {args.chapter_title}\n\n"
-                "先补章节方向、beats 或 scenePlans，再开始细化正文。"
-                "建议在中文连续正文中使用 `@{实体}`，"
-                "或在有明确分隔符时使用 `@实体`，以便原型分析器识别。\n"
-            ),
-            encoding="utf-8",
-        )
+        chapter_file.write_text(f"# {args.chapter_title}\n", encoding="utf-8")
 
     prd_file = root / "PRD.md"
     if not prd_file.exists() or args.force:
@@ -287,6 +293,12 @@ def command_init(args) -> int:
             encoding="utf-8",
         )
 
+    start_guide = build_chapter_start_guide(
+        root,
+        args.chapter_id,
+        missing_codes=["missing-direction", "missing-beats", "missing-scene-plans"],
+    )
+
     print(
         json.dumps(
             {
@@ -299,8 +311,13 @@ def command_init(args) -> int:
                 "storyTemplate": project["storyTemplate"],
                 "commercialPositioning": project["commercialPositioning"],
                 "chapterId": args.chapter_id,
+                "volumeId": outline.get("volumes", [{}])[0].get("id", "") if outline.get("volumes") else "",
+                "volumeTitle": outline.get("volumes", [{}])[0].get("title", "") if outline.get("volumes") else "",
                 "chapterFile": str(chapter_file),
                 "prdFile": str(prd_file),
+                "nextActions": start_guide["notes"],
+                "suggestedCommands": start_guide["suggestedCommands"],
+                "startGuide": start_guide,
             },
             ensure_ascii=False,
             indent=2,
@@ -343,6 +360,9 @@ def register_project_commands(subparsers) -> None:
     init_parser.add_argument("--chapter-word-target", type=int)
     init_parser.add_argument("--chapter-id", default="chapter-001")
     init_parser.add_argument("--chapter-title", default="第一章")
+    init_parser.add_argument("--volume-id")
+    init_parser.add_argument("--volume-title")
+    init_parser.add_argument("--volume-theme")
     init_parser.add_argument("--volume-goal")
     init_parser.add_argument("--reader-hook")
     init_parser.add_argument("--suppression-source")

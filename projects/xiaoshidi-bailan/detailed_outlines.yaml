@@ -1,0 +1,166 @@
+{
+  "entries": [
+    {
+      "chapterId": "chapter-001",
+      "direction": "用一次躲早课失败和杂役场挑衅，建立主角的反常修炼机制、破落宗门处境，以及师姐对他第一次严重误判。",
+      "beats": [
+        {
+          "id": "beat-c001-01",
+          "summary": "陆闲想躲过早课，却被二师姐拎去杂役坡，建立破落宗门处境和他只想摆烂的异常状态。"
+        },
+        {
+          "id": "beat-c001-02",
+          "summary": "黑沙门上门挑衅时，陆闲在挨骂做杂活中反而进入最适合自己的顿悟状态。"
+        },
+        {
+          "id": "beat-c001-03",
+          "summary": "陆闲为保住早饭无意破掉试探，被二师姐误认成故意藏锋的宗门底牌。"
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-10b4b5adcd",
+          "title": "柴房里抓摆烂鬼",
+          "summary": "陆闲躲早课失败，被祝红绫拎出来，建立破落宗门与主角摆烂状态。",
+          "startParagraph": 1,
+          "endParagraph": 14,
+          "createdAt": "2026-04-29T19:33:46+08:00",
+          "updatedAt": "2026-04-29T19:38:53+08:00"
+        },
+        {
+          "id": "scene-18f72a0fdf",
+          "title": "为包子出手",
+          "summary": "陆闲为保住肉包无意破掉霍飞试探，被祝红绫误认成故意藏锋的宗门底牌。",
+          "startParagraph": 28,
+          "endParagraph": 39,
+          "createdAt": "2026-04-29T19:33:46+08:00",
+          "updatedAt": "2026-04-29T19:39:17+08:00"
+        },
+        {
+          "id": "scene-4117d26f68",
+          "title": "杂役坡上的倒霉顿悟",
+          "summary": "陆闲在祖师崖下扫地搬铁，黑沙门上山挑衅，他在挨骂做杂活时反而进入顿悟状态。",
+          "startParagraph": 15,
+          "endParagraph": 27,
+          "createdAt": "2026-04-29T19:34:03+08:00",
+          "updatedAt": "2026-04-29T19:39:05+08:00"
+        }
+      ],
+      "updatedAt": "2026-04-29T13:51:58.301773+00:00"
+    },
+    {
+      "chapterId": "chapter-002",
+      "beats": [
+        {
+          "id": "beat-97f6e0ac44",
+          "title": "误会后果落地",
+          "summary": "陆闲被带去见大师姐，失去继续躲在杂役坡混日子的空间。",
+          "status": "planned",
+          "createdAt": "2026-04-29T21:17:58+08:00"
+        },
+        {
+          "id": "beat-12cf702511",
+          "title": "夜井试探升级",
+          "summary": "黑沙门借东侧水井做手脚，想在小比前先压垮青岚宗气势。",
+          "status": "planned",
+          "createdAt": "2026-04-29T21:17:58+08:00"
+        },
+        {
+          "id": "beat-73e2ea9167",
+          "title": "杂役式反打",
+          "summary": "陆闲在擦井台搬桶时误触旧阵，反把对方的暗手揪出来。",
+          "status": "planned",
+          "createdAt": "2026-04-29T21:17:58+08:00"
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-1db6127623",
+          "title": "见大师姐",
+          "summary": "祖师崖余波传到正殿，大师姐出面接管陆闲。",
+          "startParagraph": 1,
+          "endParagraph": 15,
+          "createdAt": "2026-04-29T21:17:58+08:00",
+          "updatedAt": "2026-04-29T21:17:58+08:00"
+        },
+        {
+          "id": "scene-0df2931b59",
+          "title": "守井夜伏",
+          "summary": "陆闲被按到东侧水井看守，黑沙门暗手开始落子。",
+          "startParagraph": 16,
+          "endParagraph": 27,
+          "createdAt": "2026-04-29T21:17:58+08:00",
+          "updatedAt": "2026-04-29T21:17:58+08:00"
+        },
+        {
+          "id": "scene-ec5ef21bb5",
+          "title": "井台翻盘",
+          "summary": "陆闲在保命和保井之间被迫出手，误会继续升级。",
+          "startParagraph": 28,
+          "endParagraph": 35,
+          "createdAt": "2026-04-29T21:17:58+08:00",
+          "updatedAt": "2026-04-29T21:17:58+08:00"
+        }
+      ],
+      "updatedAt": "2026-04-29T13:51:58.301773+00:00",
+      "direction": "承接祖师崖误判后果，让大师姐把陆闲推到东侧水井守局；黑沙门再试一手，陆闲在被迫杂役中意外反打，师姐团误会继续升级。"
+    },
+    {
+      "chapterId": "chapter-003",
+      "beats": [
+        {
+          "id": "beat-fbf57dd4d0",
+          "title": "台前逼战",
+          "summary": "东井丢脸后霍飞要求当众再验陆闲，宗门众人被迫接招。",
+          "status": "planned",
+          "createdAt": "2026-04-29T21:18:22+08:00"
+        },
+        {
+          "id": "beat-a602503a4b",
+          "title": "摆烂失控",
+          "summary": "陆闲想输得不显眼，却在连环压力下把杂役动作变成真正破局。",
+          "status": "planned",
+          "createdAt": "2026-04-29T21:18:22+08:00"
+        },
+        {
+          "id": "beat-b262c9a013",
+          "title": "身份反转",
+          "summary": "霍飞当众吃瘪，核心师姐团正式确认陆闲是青岚宗底牌。",
+          "status": "planned",
+          "createdAt": "2026-04-29T21:18:22+08:00"
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-ca0fa4a039",
+          "title": "山门加码",
+          "summary": "黑沙门借东井事件逼宫，要求提前看青岚宗底牌。",
+          "startParagraph": 1,
+          "endParagraph": 10,
+          "createdAt": "2026-04-29T21:18:22+08:00",
+          "updatedAt": "2026-04-29T21:18:22+08:00"
+        },
+        {
+          "id": "scene-8cfd7b1e8d",
+          "title": "台上乱战",
+          "summary": "陆闲被推上临时试手台，越想糊弄越把霍飞打懵。",
+          "startParagraph": 11,
+          "endParagraph": 20,
+          "createdAt": "2026-04-29T21:18:22+08:00",
+          "updatedAt": "2026-04-29T21:18:22+08:00"
+        },
+        {
+          "id": "scene-1d8c84d73d",
+          "title": "师姐们全疯了",
+          "summary": "宗门内部彻底认定陆闲深藏不露，陆闲的摆烂生涯宣告破产。",
+          "startParagraph": 21,
+          "endParagraph": 33,
+          "createdAt": "2026-04-29T21:18:22+08:00",
+          "updatedAt": "2026-04-29T21:18:22+08:00"
+        }
+      ],
+      "updatedAt": "2026-04-29T13:51:58.301773+00:00",
+      "direction": "承接东井翻盘后的公开压力，让霍飞把试探抬到台前；陆闲想继续摆烂却被师姐们推上场，最终完成第一次清晰打脸和宗门内身份反转。"
+    }
+  ]
+}

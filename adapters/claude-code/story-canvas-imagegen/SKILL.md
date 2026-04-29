@@ -1,6 +1,6 @@
 ---
 name: story-canvas-imagegen
-description: Thin Story Canvas image generation adapter for Claude Code. Use when Claude Code needs to export illustration batch manifests, generate images through WebUI-manual or external-agent mode, and record outputs back into the project.
+description: Story Canvas illustration generation adapter for Claude Code. Use only when the task is about image generation, illustration batch export, WebUI-manual image work, or external-agent image execution. Keep this skill separate from prose-only novel writing; do not load it when the task is only chapter or volume writing/review.
 ---
 
 # Story Canvas Image Generation
@@ -20,6 +20,13 @@ This skill stays thin:
 1. it decides whether to use `webui-manual` or `external-agent`
 2. it routes image work through `story-canvas illustration ...`
 3. it does not invent a parallel image job database or write `illustrations.yaml` directly
+
+In the repository adapter architecture, this is a separate skill family from writing. It participates in two usage forms:
+
+1. CLI-only / external-agent mode
+2. human-assisted `webui-manual` mode
+
+WebUI is optional. It helps humans participate more easily, but the main workflow must still be executable without requiring WebUI.
 
 ## Decision Rule
 
@@ -66,6 +73,7 @@ Important:
 2. Treat batch manifests as derived artifacts, not long-term state.
 3. Do not change manifest structure inside the skill.
 4. Do not bypass `batch-record`.
+5. Do not describe WebUI as the required default path; it is only one participation mode.
 
 ## References
 

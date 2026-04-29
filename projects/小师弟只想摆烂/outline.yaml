@@ -1,0 +1,12 @@
+{
+  "chapters": [
+    {
+      "id": "chapter-001",
+      "title": "第一章",
+      "status": "draft",
+      "beats": [],
+      "scenePlans": []
+    }
+  ],
+  "chapterDirections": []
+}

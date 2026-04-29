@@ -1,0 +1,39 @@
+{
+  "chapterId": "chapter-002",
+  "chapterTitle": "旧站缺页",
+  "analyzedAt": "2026-04-30T00:51:28+08:00",
+  "activeEntities": [
+    {
+      "id": "lin-zhaoye",
+      "name": "林照夜",
+      "mentionCount": 18,
+      "source": "registry"
+    },
+    {
+      "id": "qiao-sheng",
+      "name": "乔声",
+      "mentionCount": 14,
+      "source": "registry"
+    },
+    {
+      "id": "yu-ren",
+      "name": "余仁",
+      "mentionCount": 3,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "lin-zhaoye",
+      "qiao-sheng",
+      "yu-ren"
+    ],
+    "activeEntityNames": [
+      "林照夜",
+      "乔声",
+      "余仁"
+    ]
+  }
+}

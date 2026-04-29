@@ -1,0 +1,35 @@
+{
+  "entities": [
+    {
+      "id": "inferred::林舟",
+      "name": "林舟",
+      "type": "character",
+      "aliases": [],
+      "summary": "",
+      "currentState": "",
+      "source": "inferred",
+      "registeredAt": "2026-04-29T00:36:01+08:00"
+    },
+    {
+      "id": "inferred::周晚",
+      "name": "周晚",
+      "type": "character",
+      "aliases": [],
+      "summary": "",
+      "currentState": "",
+      "source": "inferred",
+      "registeredAt": "2026-04-29T00:36:01+08:00"
+    },
+    {
+      "id": "inferred::郑叔",
+      "name": "郑叔",
+      "type": "character",
+      "aliases": [],
+      "summary": "",
+      "currentState": "",
+      "source": "inferred",
+      "registeredAt": "2026-04-29T00:36:01+08:00"
+    }
+  ],
+  "enrichmentProposals": []
+}

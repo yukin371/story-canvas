@@ -1,0 +1,70 @@
+{
+  "snapshotProjections": [
+    {
+      "entityId": "han-zhanglao",
+      "entityName": "韩长老",
+      "scopeRef": "chapter-001",
+      "currentState": "紧张",
+      "sourceChangeIds": [
+        "cr-7adbca8265"
+      ],
+      "updatedAt": "2026-04-29T20:06:19+08:00"
+    },
+    {
+      "entityId": "huo-fei",
+      "entityName": "霍飞",
+      "scopeRef": "chapter-001",
+      "currentState": "紧张",
+      "sourceChangeIds": [
+        "cr-04d397b92c"
+      ],
+      "updatedAt": "2026-04-29T20:06:19+08:00"
+    }
+  ],
+  "relationProjections": [],
+  "sceneScopeProjections": [
+    {
+      "chapterId": "chapter-001",
+      "activeEntityIds": [
+        "lu-xian",
+        "zhu-hongling",
+        "huo-fei",
+        "han-zhanglao",
+        "su-que"
+      ],
+      "sourceChangeIds": [
+        "cr-7adbca8265",
+        "cr-04d397b92c"
+      ],
+      "updatedAt": "2026-04-29T20:15:04+08:00"
+    },
+    {
+      "chapterId": "chapter-002",
+      "activeEntityIds": [
+        "lu-xian",
+        "su-que",
+        "shen-tinglan",
+        "huo-fei",
+        "zhu-hongling",
+        "han-zhanglao"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-29T21:27:33+08:00"
+    },
+    {
+      "chapterId": "chapter-003",
+      "activeEntityIds": [
+        "lu-xian",
+        "huo-fei",
+        "su-que",
+        "shen-tinglan",
+        "zhu-hongling",
+        "han-zhanglao"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-29T21:32:54+08:00"
+    }
+  ],
+  "timelineProjections": [],
+  "causalityProjections": []
+}

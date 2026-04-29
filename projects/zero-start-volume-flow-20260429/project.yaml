@@ -1,0 +1,56 @@
+{
+  "title": "雾港账簿",
+  "genre": "Mystery",
+  "defaultMode": "driving",
+  "activeChapterId": "chapter-002",
+  "positioning": {
+    "primaryGenre": "mystery",
+    "subGenre": "urban-occult",
+    "styleTags": [
+      "web-serial"
+    ],
+    "targetAudience": [
+      "qidian-reader"
+    ]
+  },
+  "storyContract": {
+    "corePromises": [
+      "每章推进一层异案与主线真相",
+      "主角靠职业能力而不是全知外挂破局"
+    ],
+    "avoidances": [],
+    "endingContract": "",
+    "paceContract": "中快节奏"
+  },
+  "emotionalContract": {
+    "coreEmotions": [],
+    "chapterEmotionFloor": [],
+    "forbiddenEmotions": [],
+    "revealPreference": {
+      "defaultMode": "",
+      "allowDirectExplainAtClimax": false
+    }
+  },
+  "storyTemplate": {
+    "id": "",
+    "label": "",
+    "modulePolicy": {},
+    "reviewFocus": []
+  },
+  "commercialPositioning": {
+    "premise": "账簿修复师在港城追查会吞掉名字的失踪案。",
+    "hookLine": "他只是修一本旧账簿，却先在账页里看见了自己的死期。",
+    "hookStack": [
+      "career-entry-hook",
+      "cliffhanger-end"
+    ],
+    "benchmarkWorks": [],
+    "targetPlatform": "qidian",
+    "serializationModel": "2到3章一个单元异案，持续抬升主线阴谋",
+    "releaseCadence": "日更",
+    "chapterWordFloor": 1800,
+    "chapterWordTarget": 2600
+  },
+  "createdAt": "2026-04-29T00:31:27+08:00",
+  "updatedAt": "2026-04-29T00:40:40+08:00"
+}

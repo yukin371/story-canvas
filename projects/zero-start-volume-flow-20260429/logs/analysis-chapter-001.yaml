@@ -1,0 +1,39 @@
+{
+  "chapterId": "chapter-001",
+  "chapterTitle": "第一章",
+  "analyzedAt": "2026-04-29T00:36:01+08:00",
+  "activeEntities": [
+    {
+      "id": "inferred::林舟",
+      "name": "林舟",
+      "mentionCount": 4,
+      "source": "inferred"
+    },
+    {
+      "id": "inferred::周晚",
+      "name": "周晚",
+      "mentionCount": 1,
+      "source": "inferred"
+    },
+    {
+      "id": "inferred::郑叔",
+      "name": "郑叔",
+      "mentionCount": 1,
+      "source": "inferred"
+    }
+  ],
+  "snapshotCandidates": [],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "inferred::林舟",
+      "inferred::周晚",
+      "inferred::郑叔"
+    ],
+    "activeEntityNames": [
+      "林舟",
+      "周晚",
+      "郑叔"
+    ]
+  }
+}

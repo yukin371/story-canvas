@@ -1,0 +1,31 @@
+{
+  "adapter": {
+    "name": "openai",
+    "model": "gpt-image-2",
+    "defaultSize": "1024x1024",
+    "quality": "standard"
+  },
+  "promptPack": {
+    "name": "default",
+    "version": "builtin"
+  },
+  "promptSystem": {
+    "defaultPack": {
+      "source": "builtin",
+      "packId": "story-canvas/default",
+      "version": "1.0"
+    },
+    "defaultTemplateByUseCase": {
+      "character": "character-standard",
+      "chapter-scene": "scene-standard",
+      "promo": "promo-standard"
+    },
+    "defaultModifierRefs": [],
+    "commercialMode": "personal"
+  },
+  "batchSystem": {
+    "defaultDeliveryMode": "webui-manual",
+    "externalAgentSkill": "story-canvas-imagegen"
+  },
+  "generated": []
+}

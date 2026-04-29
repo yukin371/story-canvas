@@ -41,6 +41,12 @@ Codex adapter install:
 uv run python scripts/install_adapter.py --host codex --force
 ```
 
+Codex repo-local skill install:
+
+```powershell
+uv run python scripts/install_adapter.py --host codex --repo-skill --force
+```
+
 Claude Code adapter install:
 
 ```powershell
@@ -61,6 +67,7 @@ Use `--dry-run` before copying when you only want to inspect resolved paths.
 2. Run `uv run python -m unittest discover -s tests`.
 3. Run `uv run story-canvas doctor --root .\examples\minimal-project`.
 4. If you changed adapters or install scripts, run at least one adapter install in `--dry-run` mode.
+   For repo-local Codex discovery, prefer `uv run python scripts/install_adapter.py --host codex --repo-skill --dry-run`.
 5. Update `README.md` or `docs/` when command contract or workflow semantics change.
 6. Fill `.github/pull_request_template.md`, especially `Applicable Rules`, checked review checklist items, `Validation`, and `Risks`.
 

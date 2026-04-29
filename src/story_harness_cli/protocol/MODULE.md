@@ -21,12 +21,12 @@
 - `project.yaml` 默认结构：包含 `positioning`、`storyContract`、`emotionalContract`、`storyTemplate` 与 `commercialPositioning`
 - `worldbook.yaml`: 世界/背景/规则/势力真相层状态文件（可缺省，缺失时回退 schema 默认值）
 - `worldbook.yaml`: 世界/背景/规则/势力真相层状态文件（可缺省，缺失时回退 schema 默认值）；当前还可选承载 `powerProgressions[]`，记录玄幻/仙侠等题材的“当前境界 -> 下一阶段 -> 突破条件/瓶颈”最小链条
-- `reviews/story-reviews.yaml`: 章节/一幕评审报告状态文件；当前还承载卷级 AI 自审结果 `volumeSelfReviews[]`
+- `reviews/story-reviews.yaml`: 章节/场景评审报告状态文件；当前还承载卷级 AI 自审结果 `volumeSelfReviews[]`
 - `workflow.yaml`: workflow 状态机进度文件（可缺省，缺失时回退 schema 默认值；持久化 `currentStage`、`workflowStatus`、`gateHistory`、`stageResults` 等决策快照）
 - `illustrations.yaml`: 插图配置与生成记录文件（可缺省，缺失时回退 schema 默认值）
 - `illustrations.yaml`: 插图配置与生成记录文件（可缺省，缺失时回退 schema 默认值）；当前还承载 `promptSystem` 默认 pack / template / modifier / commercialMode，以及 `batchSystem.defaultDeliveryMode/externalAgentSkill`
 - `protocol/illustration_batches.py`: 插画 batch manifest 默认目录与默认文件名约定，避免 commands / adapter / UI 各自发明导出路径
-- `prompt_packs.py`: builtin prompt pack 真相源、项目级 `prompts/illustration-packs/*.yaml` 加载，以及旧版 `promptPack` 到新版 `promptSystem.defaultPack` 的兼容映射辅助；当前还负责首批插画 use-case 矩阵、pack/template/modifier/policy/lexicon 的最小规范化、坏条目过滤、来源元数据补齐，以及用户 pack 文档的序列化/保存/导出
+- `prompt_packs.py`: builtin prompt pack 真相源、项目级 `prompts/illustration-packs/*.yaml` 加载，以及旧版 `promptPack` 到新版 `promptSystem.defaultPack` 的兼容映射辅助；当前还负责首批插画 use-case 矩阵、pack/template/modifier/policy/lexicon 的最小规范化、坏条目过滤、来源元数据补齐，以及用户 pack 文档的序列化/保存/导出；项目 pack 文件名与派生 pack id 现允许保留中文
 - `_sync_outline()`: volumes → flat chapters 自动同步
 
 ## 3. Must Not Own
@@ -78,7 +78,7 @@
 - `workflow.yaml` 保存的是“推断结果 + 决策元数据”的组合快照，不能把 gate 是否完成仅理解为人工决策结果
 - `illustrations.yaml` 当前保存的是配置、主图路径和资产元数据摘要，不等于图片二进制资产本身；图片文件仍存放在 `assets/illustrations/`
 - batch manifest 本身不是长期状态真相源；它是由 CLI 基于 project state + prompt pack 解析出来的派生产物，真正历史仍回录到 `illustrations.yaml`
-- `prompt_packs.py` 当前优先级为：显式指定 pack > `promptSystem.defaultPack` > builtin `default`；项目自定义 pack 与 builtin pack 允许并存，但 pack 文件本身仍必须是 JSON-compatible YAML
+- `prompt_packs.py` 当前优先级为：显式指定 pack > `promptSystem.defaultPack` > builtin `default`；项目自定义 pack 与 builtin pack 允许并存，但 pack 文件本身仍必须是 JSON-compatible YAML；文件名与派生 `project/<name>` id 可以使用中文，仅清理非法路径字符
 - `prompt_packs.py` 当前会为 project pack 补最小规范化：缺失 `id` 时按文件名派生 `project/<slug>`，缺失 `version` 时回填 `project`，并过滤缺少关键字段的 template / modifier / policy 条目；`lexicon` 缺失或坏结构时必须安全回退为空，而不是让 pack 整体失效
 - `prompt_packs.py` 当前还会把常见 legacy prompt template（如 `visual direction:` / `user direction:` / `commercial direction:` 和旧 placeholder）迁到新 placeholder 风格；该迁移只作用于模板资源层，不回写历史生成记录
 - `prompt_packs.py` 当前维护首批 use-case 模板矩阵；pack 没有专用模板时必须先走同类 fallback，而不是退成 pack 第一条模板，避免 `duel-scene`、`cover-concept`、`product` 这类用途退错模板

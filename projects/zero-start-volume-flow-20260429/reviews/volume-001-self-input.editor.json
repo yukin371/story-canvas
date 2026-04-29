@@ -1,0 +1,381 @@
+{
+  "generatedAt": "2026-04-29T00:49:00+08:00",
+  "conclusion": {
+    "closureStatus": "not_closed",
+    "allowHumanReview": false,
+    "strongestPoint": "两章已经把主角从被动卷入推到主动追查，线索承接基本连贯。",
+    "biggestRisk": "卷尾主要是在抬出更大谜团，单元异案的阶段性交付、冲突升级和胜负感还不够明确。"
+  },
+  "editorPass": {
+    "completed": true,
+    "reviewerRole": "editor",
+    "mode": "same_agent_fallback",
+    "contextIsolation": "not_available",
+    "notes": "原计划使用 no_context_proxy 独立代理，但本地代理通道返回 503 无可用 provider；本次改为同线程 fallback，只依据卷级模板与 review packet 填写。"
+  },
+  "editorAssessment": {
+    "overallVerdict": "revise",
+    "summaryComment": "独立编辑标准下，这一卷已经具备继续写下去的方向感，但还没有形成足够完整的卷级闭环。工具能指出章节张力、AI味和字数风险，也能聚到卷级 gate；但“是否已经交付一个可交卷的小单元”这一点仍需要更明确的人类判断。",
+    "topProblems": [
+      "卷级闭环与阶段性交付不足，卷尾更像继续抬线索而不是完成一个小单元。",
+      "冲突升级和爽点兑现偏弱，读者能看到谜团变大，但胜负感不够。",
+      "风格与可读性问题持续存在，AI味和段落负担已跨章重复出现。"
+    ],
+    "improvementPoints": [
+      "补一个更明确的阶段性收束，让第二章末尾不只抛出闻潮会，还要给出一层阶段性输赢或代价。",
+      "把章节 review 里的张力弱项前推到写作阶段，要求每章至少有可感知的阻力、风险或选择代价。",
+      "把 style aggregate 里的重复问题转成卷级修稿顺序，先处理翻转句、长段和抽象悬念句，再谈细修。",
+      "在卷级自审模板里强制核对“本卷承诺了什么、实际交付了什么、还缺什么”，避免把新增线索误判成闭环。"
+    ],
+    "scores": [
+      {
+        "dimensionId": "volumeClosure",
+        "score": 2,
+        "conclusion": "主角方向已经立住，但当前更像第一段引案，卷级闭环和阶段性交付不足。",
+        "chapterRefs": [],
+        "evidenceRefs": []
+      },
+      {
+        "dimensionId": "openingOnboarding",
+        "score": 3,
+        "conclusion": "旧账簿、空名与雾港异案的入口已经成立，但世界信息仍偏薄。",
+        "chapterRefs": [
+          "chapter-001"
+        ],
+        "evidenceRefs": [
+          "chapter-001#scene-1"
+        ]
+      },
+      {
+        "dimensionId": "worldLogic",
+        "score": 3,
+        "conclusion": "空名、账簿、仓单之间已有可跟踪联系，但制度层解释还不够。",
+        "chapterRefs": [
+          "chapter-001",
+          "chapter-002"
+        ],
+        "evidenceRefs": [
+          "chapter-001#paragraph-2",
+          "chapter-002#paragraph-3"
+        ]
+      },
+      {
+        "dimensionId": "chapterHandoff",
+        "score": 3,
+        "conclusion": "第一章到第二章的线索接力基本顺，但第二章结尾还缺更强的收束回推。",
+        "chapterRefs": [
+          "chapter-001",
+          "chapter-002"
+        ],
+        "evidenceRefs": [
+          "chapter-001#scene-2",
+          "chapter-002#scene-1"
+        ]
+      },
+      {
+        "dimensionId": "characterContinuity",
+        "score": 3,
+        "conclusion": "林舟从保命到主动追查的动机线成立，但人物压力反馈还偏轻。",
+        "chapterRefs": [
+          "chapter-001",
+          "chapter-002"
+        ],
+        "evidenceRefs": [
+          "chapter-001#paragraph-3",
+          "chapter-002#paragraph-5"
+        ]
+      },
+      {
+        "dimensionId": "antagonistShaping",
+        "score": 3,
+        "conclusion": "闻潮会和仓库女人留下了敌方存在感，但对手轮廓还处于钩子级别。",
+        "chapterRefs": [
+          "chapter-002"
+        ],
+        "evidenceRefs": [
+          "chapter-002#scene-1",
+          "chapter-002#paragraph-4"
+        ]
+      },
+      {
+        "dimensionId": "conflictEscalation",
+        "score": 2,
+        "conclusion": "两章都有悬疑推进，但卷尾冲突升级和压迫感仍不足。",
+        "chapterRefs": [],
+        "evidenceRefs": []
+      },
+      {
+        "dimensionId": "payoffDelivery",
+        "score": 2,
+        "conclusion": "目前主要是抛出更大谜团，阶段性兑现和胜负感不够强。",
+        "chapterRefs": [],
+        "evidenceRefs": []
+      },
+      {
+        "dimensionId": "foreshadowRhythm",
+        "score": 3,
+        "conclusion": "账簿、铜纽扣、仓单和闻潮会形成了连续钩子，但回收仍偏少。",
+        "chapterRefs": [
+          "chapter-001",
+          "chapter-002"
+        ],
+        "evidenceRefs": [
+          "chapter-001#paragraph-2",
+          "chapter-002#paragraph-4"
+        ]
+      },
+      {
+        "dimensionId": "styleReadability",
+        "score": 2,
+        "conclusion": "跨章都出现 AI味、段落均质和可读性负担，修稿优先级应更高。",
+        "chapterRefs": [],
+        "evidenceRefs": []
+      }
+    ]
+  },
+  "scores": [
+    {
+      "dimensionId": "volumeClosure",
+      "score": 2,
+      "conclusion": "本卷更像起案段，不足以作为已闭环的小单元交卷。",
+      "chapterRefs": [],
+      "evidenceRefs": []
+    },
+    {
+      "dimensionId": "openingOnboarding",
+      "score": 3,
+      "conclusion": "核心谜面和主角处境已建立，最低 onboarding 可读。",
+      "chapterRefs": [
+        "chapter-001"
+      ],
+      "evidenceRefs": [
+        "chapter-001#scene-1"
+      ]
+    },
+    {
+      "dimensionId": "worldLogic",
+      "score": 3,
+      "conclusion": "主要异象之间能互相勾连，但制度与运行逻辑还不厚。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002"
+      ],
+      "evidenceRefs": [
+        "chapter-001#paragraph-1",
+        "chapter-002#paragraph-3"
+      ]
+    },
+    {
+      "dimensionId": "chapterHandoff",
+      "score": 3,
+      "conclusion": "章间承接顺畅，仍缺把承接反压回卷尾收束的力度。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002"
+      ],
+      "evidenceRefs": [
+        "chapter-001#scene-2",
+        "chapter-002#scene-1"
+      ]
+    },
+    {
+      "dimensionId": "characterContinuity",
+      "score": 3,
+      "conclusion": "林舟的选择线连续，但压力与代价反馈偏轻。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002"
+      ],
+      "evidenceRefs": [
+        "chapter-001#paragraph-3",
+        "chapter-002#paragraph-5"
+      ]
+    },
+    {
+      "dimensionId": "antagonistShaping",
+      "score": 3,
+      "conclusion": "对手存在感已露出，但仍偏线索体而非角色体。",
+      "chapterRefs": [
+        "chapter-002"
+      ],
+      "evidenceRefs": [
+        "chapter-002#scene-1"
+      ]
+    },
+    {
+      "dimensionId": "conflictEscalation",
+      "score": 2,
+      "conclusion": "冲突有推进，但升级和压迫没有形成明显台阶。",
+      "chapterRefs": [],
+      "evidenceRefs": []
+    },
+    {
+      "dimensionId": "payoffDelivery",
+      "score": 2,
+      "conclusion": "闻潮会线索更像下一步引子，当前卷爽点兑现和胜负感不足。",
+      "chapterRefs": [],
+      "evidenceRefs": []
+    },
+    {
+      "dimensionId": "foreshadowRhythm",
+      "score": 3,
+      "conclusion": "伏笔延续不断，但局部回收较少。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002"
+      ],
+      "evidenceRefs": [
+        "chapter-001#paragraph-5",
+        "chapter-002#paragraph-4"
+      ]
+    },
+    {
+      "dimensionId": "styleReadability",
+      "score": 2,
+      "conclusion": "AI味、长段与段落均质重复出现，卷级读感仍需清理。",
+      "chapterRefs": [],
+      "evidenceRefs": []
+    }
+  ],
+  "issues": [
+    {
+      "issue": "卷级闭环与阶段性交付不足，第二章结尾更像继续抬主线而不是完成一个小单元收束。",
+      "evidence": [
+        "第二章把线索推进到闻潮会，但没有同步给出更明确的阶段性输赢或回合结束感。",
+        "卷级审查包把当前卷定位为 intro-volume，也说明它更偏引入而非闭环。"
+      ],
+      "impact": "读者能理解故事会继续，但这一卷的完成感和阶段性交付不足，暂不适合直接进入人工终审。",
+      "primaryCause": "generation_miss",
+      "secondaryCauses": [
+        "self_review_miss",
+        "tooling_miss"
+      ],
+      "fixAction": "补一个更明确的卷尾收束或代价结算，让闭环、收束和阶段性交付真正落地。",
+      "whyToolingMissed": "现有工具能报章级张力、商业钩子和卷级 gate，但还不能稳定区分“拿到新线索”与“已经完成卷级闭环”。",
+      "whySelfReviewMissed": "AI 自审很容易把‘主角开始主动追查’误判成卷级完成感，而没有逐条核对本卷到底交付了什么。",
+      "optimizationAction": "增加卷级闭环/阶段性交付规则，并在模板里强制对照 promised vs delivered vs missing 三栏。",
+      "detectedBy": [
+        "review volume-self-template",
+        "workflow status --volume-id volume-001",
+        "same_agent_fallback"
+      ],
+      "ruleIds": [
+        "missing-volume-self-review"
+      ],
+      "verificationCommands": [
+        "story-canvas review volume-self --root <root> --volume-id volume-001 --input <file>",
+        "story-canvas workflow status --root <root> --volume-id volume-001"
+      ],
+      "chapterRefs": [
+        "chapter-002"
+      ],
+      "evidenceRefs": [
+        "chapter-002#scene-2",
+        "review-packet:volume-001:chapter-002"
+      ]
+    },
+    {
+      "issue": "冲突升级、爽点兑现和卷尾胜负感偏弱，当前推进有悬疑但缺少更强的压迫与爆发。",
+      "evidence": [
+        "两章 review 都把冲突张力列为优先弱项。",
+        "第二章结尾继续抛出闻潮会，但即时胜负感和兑现不足。"
+      ],
+      "impact": "追读欲有保留，但卷级读后感偏平，容易让人觉得只是把提纲往前搬了一步。",
+      "primaryCause": "generation_miss",
+      "secondaryCauses": [
+        "tooling_miss",
+        "self_review_miss"
+      ],
+      "fixAction": "在卷尾补明确阻力、冲突升级和阶段性胜负感，让爽点兑现至少完成一层。",
+      "whyToolingMissed": "工具已经分别报出章节张力偏弱和章末钩子不足，但还没有把这些信号自动汇总成卷级的升级/兑现缺口。",
+      "whySelfReviewMissed": "AI 自审容易把连续悬念误当成升级，把新增谜团误当成兑现，没有回看读者是否真正收到一轮回报。",
+      "optimizationAction": "把 chapter review 与 scene review 的张力信号聚合成卷级 escalation/payoff checklist，并要求卷尾必须回答‘本卷爆发点是什么’。",
+      "detectedBy": [
+        "review chapter",
+        "review scene",
+        "review preflight"
+      ],
+      "ruleIds": [
+        "outlineDeviation"
+      ],
+      "verificationCommands": [
+        "story-canvas review chapter --root <root> --chapter-id chapter-001",
+        "story-canvas review chapter --root <root> --chapter-id chapter-002"
+      ],
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002"
+      ],
+      "evidenceRefs": [
+        "chapter-001#scene-2",
+        "chapter-002#scene-2",
+        "review-packet:volume-001:chapter-001"
+      ]
+    },
+    {
+      "issue": "风格与可读性问题跨章重复，AI味、段落均质和长段负担已经从局部问题变成卷级读感问题。",
+      "evidence": [
+        "第一章出现比喻密度、类比翻转句、段落均质和 AI句群叠加。",
+        "第二章继续出现感官单一、段落均质和段落可读性问题。"
+      ],
+      "impact": "文本可读但不够利落，读者更容易感觉到模板化语句和机械推进痕迹。",
+      "primaryCause": "tooling_miss",
+      "secondaryCauses": [
+        "generation_miss",
+        "self_review_miss"
+      ],
+      "fixAction": "按卷级优先级统一修风格：先删 AI味翻转句和抽象悬念句，再拆长段、压段落均质、补更具体的动作表达。",
+      "whyToolingMissed": "工具能稳定报出单章 style 风险，但对‘哪些问题跨章重复、该先修哪类’的卷级修稿顺序提示仍不够强。",
+      "whySelfReviewMissed": "AI 自审容易逐章看得过去就停下，没有把重复出现的风格与可读性问题当成一个卷级风险。",
+      "optimizationAction": "在卷级模板里强制汇总跨章重复的 styleReadability 弱项，并输出修稿顺序而不只是 pattern 列表。",
+      "detectedBy": [
+        "review chapter",
+        "style aggregate",
+        "review volume-self-template"
+      ],
+      "ruleIds": [
+        "sensoryVariety",
+        "paragraphUniformity",
+        "paragraphReadability",
+        "analogicalPivotPattern",
+        "clusteredAIPhrasing"
+      ],
+      "verificationCommands": [
+        "story-canvas review chapter --root <root> --chapter-id chapter-001",
+        "story-canvas review chapter --root <root> --chapter-id chapter-002"
+      ],
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002"
+      ],
+      "evidenceRefs": [
+        "chapter-001#paragraph-2",
+        "chapter-002#paragraph-5",
+        "review-packet:volume-001:chapter-001",
+        "review-packet:volume-001:chapter-002"
+      ]
+    }
+  ],
+  "closureAssessment": {
+    "mainProblem": "当前卷已经把林舟推进到主动追查，但还没有把第一轮异案做出足够明确的阶段性闭环。",
+    "delivered": [
+      "建立了旧账簿吞名、周晚失踪和雾港异案的核心钩子。",
+      "让主角从被动保命转向主动追查闻潮会。",
+      "给出了账簿、铜纽扣、仓单与闻潮会之间的连续线索链。"
+    ],
+    "missing": [
+      "更明确的卷尾收束与阶段性交付。",
+      "更强的冲突升级、爽点兑现和胜负感。",
+      "对跨章 AI味与可读性问题的集中修整。"
+    ],
+    "reasoning": "作为起卷和继续写作的起点，这两章方向基本成立；但如果按卷级闭环和人工终审标准判断，它更像完成了起案而不是完成了一卷应有的小单元交付。"
+  },
+  "repairSuggestions": [
+    "先补第二章末尾的阶段性收束，至少给出一轮可感知的输赢、代价或局部真相兑现。",
+    "再回头增强两章里的阻力与压迫，让冲突升级不只靠新增线索。",
+    "最后统一清理跨章重复的 AI味、段落均质和长段问题，避免修完结构后读感仍旧发虚。"
+  ],
+  "acceptedRisks": [
+    "闻潮会背后的更大主谋可以留到下一卷，不要求本卷一次解释完。"
+  ]
+}

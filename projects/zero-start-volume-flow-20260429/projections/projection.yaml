@@ -1,0 +1,27 @@
+{
+  "snapshotProjections": [],
+  "relationProjections": [],
+  "sceneScopeProjections": [
+    {
+      "chapterId": "chapter-001",
+      "activeEntityIds": [
+        "inferred::林舟",
+        "inferred::周晚",
+        "inferred::郑叔"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-29T00:37:01+08:00"
+    },
+    {
+      "chapterId": "chapter-002",
+      "activeEntityIds": [
+        "inferred::林舟",
+        "inferred::周晚"
+      ],
+      "sourceChangeIds": [],
+      "updatedAt": "2026-04-29T00:40:29+08:00"
+    }
+  ],
+  "timelineProjections": [],
+  "causalityProjections": []
+}

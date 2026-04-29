@@ -84,6 +84,17 @@ def _normalize_delivery_mode(value: str) -> str:
         raise SystemExit(str(exc)) from exc
 
 
+def _normalize_output_group(value: str, fallback: str) -> str:
+    normalized = []
+    for char in str(value or "").strip().lower():
+        if char.isalnum() or char in {"-", "_"}:
+            normalized.append(char)
+        else:
+            normalized.append("-")
+    result = "".join(normalized).strip("-_")
+    return result or fallback
+
+
 def _resolve_entity(state: dict[str, Any], entity_id_or_name: str) -> dict[str, Any]:
     for entity in state.get("entities", {}).get("entities", []):
         if entity.get("id") == entity_id_or_name or entity.get("name") == entity_id_or_name:
@@ -133,6 +144,11 @@ def _build_payload(root: Path, state: dict[str, Any], args) -> dict[str, Any]:
             default_modifier_refs=default_modifier_refs,
             input_images=input_images,
             mask_path=mask_path,
+            text_design_mode=str(getattr(args, "text_design_mode", "") or ""),
+            title_text=str(getattr(args, "title_text", "") or ""),
+            subtitle_text=str(getattr(args, "subtitle_text", "") or ""),
+            body_text=str(getattr(args, "body_text", "") or ""),
+            font_style_hint=str(getattr(args, "font_style_hint", "") or ""),
         )
         payload["batch"] = batch_payload
         return _apply_negative_prompt_override(payload, str(getattr(args, "negative_prompt", "") or ""))
@@ -154,6 +170,11 @@ def _build_payload(root: Path, state: dict[str, Any], args) -> dict[str, Any]:
             default_modifier_refs=default_modifier_refs,
             input_images=input_images,
             mask_path=mask_path,
+            text_design_mode=str(getattr(args, "text_design_mode", "") or ""),
+            title_text=str(getattr(args, "title_text", "") or ""),
+            subtitle_text=str(getattr(args, "subtitle_text", "") or ""),
+            body_text=str(getattr(args, "body_text", "") or ""),
+            font_style_hint=str(getattr(args, "font_style_hint", "") or ""),
         )
         payload["batch"] = batch_payload
         return _apply_negative_prompt_override(payload, str(getattr(args, "negative_prompt", "") or ""))
@@ -181,6 +202,11 @@ def _build_payload(root: Path, state: dict[str, Any], args) -> dict[str, Any]:
         default_modifier_refs=default_modifier_refs,
         input_images=input_images,
         mask_path=mask_path,
+        text_design_mode=str(getattr(args, "text_design_mode", "") or ""),
+        title_text=str(getattr(args, "title_text", "") or ""),
+        subtitle_text=str(getattr(args, "subtitle_text", "") or ""),
+        body_text=str(getattr(args, "body_text", "") or ""),
+        font_style_hint=str(getattr(args, "font_style_hint", "") or ""),
     )
     payload["batch"] = batch_payload
     return _apply_negative_prompt_override(payload, str(getattr(args, "negative_prompt", "") or ""))
@@ -250,11 +276,12 @@ def _prepare_generation_request(args) -> tuple[Path, dict[str, Any], dict[str, A
 def _resolve_output_path(root: Path, payload: dict[str, Any], output_name: str) -> Path:
     target_type = str(payload.get("targetType") or "").strip()
     target_id = str(payload.get("targetId") or "").strip()
+    use_case = _normalize_output_group(str(payload.get("useCase") or ""), "general")
     if target_type == "chapter":
-        return root / "assets" / "illustrations" / "chapters" / target_id / output_name
+        return root / "assets" / "illustrations" / "chapters" / target_id / use_case / output_name
     if target_type == "entity":
-        return root / "assets" / "illustrations" / "entities" / target_id / output_name
-    return root / "tmp" / "illustrations" / "staging" / (target_id or "temporary") / output_name
+        return root / "assets" / "illustrations" / "entities" / target_id / use_case / output_name
+    return root / "tmp" / "illustrations" / "staging" / (target_id or "temporary") / use_case / output_name
 
 
 def build_illustration_dry_run_response(args) -> dict[str, Any]:
@@ -705,6 +732,8 @@ def _build_generated_entry(
         "id": f"ill-{stable_hash(payload['targetType'] + payload['targetId'] + now_iso())}",
         "type": payload["targetType"],
         "mode": payload["mode"],
+        "useCase": payload["useCase"],
+        "targetName": payload.get("targetName", ""),
         "chapterId": payload["targetId"] if payload["targetType"] == "chapter" else None,
         "entityId": payload["targetId"] if payload["targetType"] == "entity" else None,
         "tempLabel": payload["targetId"] if payload["targetType"] == "temporary" else None,
@@ -872,6 +901,11 @@ def register_illustration_commands(subparsers) -> None:
     prompt_parser.add_argument("--template-id")
     prompt_parser.add_argument("--modifier", action="append")
     prompt_parser.add_argument("--extra-prompt")
+    prompt_parser.add_argument("--text-design-mode", choices=["none", "designed"])
+    prompt_parser.add_argument("--title-text")
+    prompt_parser.add_argument("--subtitle-text")
+    prompt_parser.add_argument("--body-text")
+    prompt_parser.add_argument("--font-style-hint")
     prompt_parser.add_argument("--commercial-mode", choices=["personal", "commercial"])
     prompt_parser.add_argument("--negative-prompt")
     prompt_parser.add_argument("--batch-count", type=int, default=1)
@@ -892,6 +926,11 @@ def register_illustration_commands(subparsers) -> None:
     generate_parser.add_argument("--template-id")
     generate_parser.add_argument("--modifier", action="append")
     generate_parser.add_argument("--extra-prompt")
+    generate_parser.add_argument("--text-design-mode", choices=["none", "designed"])
+    generate_parser.add_argument("--title-text")
+    generate_parser.add_argument("--subtitle-text")
+    generate_parser.add_argument("--body-text")
+    generate_parser.add_argument("--font-style-hint")
     generate_parser.add_argument("--commercial-mode", choices=["personal", "commercial"])
     generate_parser.add_argument("--negative-prompt")
     generate_parser.add_argument("--size")

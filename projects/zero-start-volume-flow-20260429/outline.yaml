@@ -1,0 +1,285 @@
+{
+  "chapters": [
+    {
+      "id": "chapter-001",
+      "title": "第一章",
+      "status": "completed",
+      "beats": [
+        {
+          "id": "beat-a05ab6facafa",
+          "summary": "开场：建立日常世界",
+          "status": "planned",
+          "source": "structure-scaffold",
+          "structureTemplateId": "three-act",
+          "structureBeatName": "开场",
+          "position": 0.0
+        },
+        {
+          "id": "beat-ce46f8fc5fae",
+          "summary": "触发事件：打破平衡的事件",
+          "status": "planned",
+          "source": "structure-scaffold",
+          "structureTemplateId": "three-act",
+          "structureBeatName": "触发事件",
+          "position": 0.12
+        },
+        {
+          "id": "beat-cdab8f9de889",
+          "summary": "第一幕转折：主角做出选择，无法回头",
+          "status": "planned",
+          "source": "structure-scaffold",
+          "structureTemplateId": "three-act",
+          "structureBeatName": "第一幕转折",
+          "position": 0.25
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-cb5963518e",
+          "title": "场景01 林舟蹲在旧书铺后屋的工作台前，指尖被",
+          "summary": "林舟蹲在旧书铺后屋的工作台前，指尖被潮气泡得发白。今晚送来的旧账簿比往常更沉，封皮像是浸过海水，翻开第一页时却没有霉味，",
+          "startParagraph": 1,
+          "endParagraph": 3,
+          "source": "heuristic-detect",
+          "detectionMethod": "scene-candidate-v1",
+          "breakReason": "chapter-start",
+          "createdAt": "2026-04-29T00:34:49+08:00",
+          "updatedAt": "2026-04-29T00:34:49+08:00"
+        },
+        {
+          "id": "scene-5830c70484",
+          "title": "场景02 他把铜纽扣和账簿一并塞进防水布袋，沿",
+          "summary": "他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库门口挂着褪色的封条，封条中央却被人用香灰画了一枚歪斜的记",
+          "startParagraph": 4,
+          "endParagraph": 5,
+          "source": "heuristic-detect",
+          "detectionMethod": "scene-candidate-v1",
+          "breakReason": "transition:relocation",
+          "createdAt": "2026-04-29T00:34:49+08:00",
+          "updatedAt": "2026-04-29T00:34:49+08:00"
+        }
+      ]
+    },
+    {
+      "id": "chapter-002",
+      "title": "第二章 空名仓单",
+      "status": "completed",
+      "beats": [
+        {
+          "id": "beat-2e023dd861aa",
+          "summary": "中点：从被动变主动 / 虚假胜利",
+          "status": "planned",
+          "source": "structure-scaffold",
+          "structureTemplateId": "three-act",
+          "structureBeatName": "中点",
+          "position": 0.5
+        },
+        {
+          "id": "beat-d7703f812da7",
+          "summary": "灵魂暗夜：最低点，失去一切",
+          "status": "planned",
+          "source": "structure-scaffold",
+          "structureTemplateId": "three-act",
+          "structureBeatName": "灵魂暗夜",
+          "position": 0.75
+        },
+        {
+          "id": "beat-7e737c623cb7",
+          "summary": "高潮：最终对决 / 真相揭露",
+          "status": "planned",
+          "source": "structure-scaffold",
+          "structureTemplateId": "three-act",
+          "structureBeatName": "高潮",
+          "position": 0.88
+        },
+        {
+          "id": "beat-a72b5ca22197",
+          "summary": "结局：新平衡",
+          "status": "planned",
+          "source": "structure-scaffold",
+          "structureTemplateId": "three-act",
+          "structureBeatName": "结局",
+          "position": 1.0
+        }
+      ],
+      "scenePlans": [
+        {
+          "id": "scene-113b10c475",
+          "title": "场景01 仓库里堆满发潮木箱，最里面那盏小灯只",
+          "summary": "仓库里堆满发潮木箱，最里面那盏小灯只照出半张女人侧脸。林舟没有立刻往前走，他先把账簿贴到胸口，逼自己去听周围的水声和脚步",
+          "startParagraph": 1,
+          "endParagraph": 3,
+          "source": "heuristic-detect",
+          "detectionMethod": "scene-candidate-v1",
+          "breakReason": "chapter-start",
+          "createdAt": "2026-04-29T00:35:13+08:00",
+          "updatedAt": "2026-04-29T00:35:13+08:00"
+        },
+        {
+          "id": "scene-60e1c168e3",
+          "title": "场景02 半小时后，林舟带着湿透的仓单回到铺子",
+          "summary": "半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一页又多出一串陌生名字，最末那个却被墨团硬生生抹去，只剩下",
+          "startParagraph": 4,
+          "endParagraph": 5,
+          "source": "heuristic-detect",
+          "detectionMethod": "scene-candidate-v1",
+          "breakReason": "transition:relocation",
+          "createdAt": "2026-04-29T00:35:13+08:00",
+          "updatedAt": "2026-04-29T00:35:13+08:00"
+        }
+      ]
+    }
+  ],
+  "chapterDirections": [
+    {
+      "chapterId": "chapter-001",
+      "title": "第一章",
+      "summary": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头"
+    },
+    {
+      "chapterId": "chapter-002",
+      "title": "第二章 空名仓单",
+      "summary": "结构指引：中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡"
+    }
+  ],
+  "volumes": [
+    {
+      "id": "volume-001",
+      "title": "第一卷 雾港吞名案",
+      "theme": "从被卷入到主动追查",
+      "chapters": [
+        {
+          "id": "chapter-001",
+          "title": "第一章",
+          "status": "completed",
+          "beats": [
+            {
+              "id": "beat-a05ab6facafa",
+              "summary": "开场：建立日常世界",
+              "status": "planned",
+              "source": "structure-scaffold",
+              "structureTemplateId": "three-act",
+              "structureBeatName": "开场",
+              "position": 0.0
+            },
+            {
+              "id": "beat-ce46f8fc5fae",
+              "summary": "触发事件：打破平衡的事件",
+              "status": "planned",
+              "source": "structure-scaffold",
+              "structureTemplateId": "three-act",
+              "structureBeatName": "触发事件",
+              "position": 0.12
+            },
+            {
+              "id": "beat-cdab8f9de889",
+              "summary": "第一幕转折：主角做出选择，无法回头",
+              "status": "planned",
+              "source": "structure-scaffold",
+              "structureTemplateId": "three-act",
+              "structureBeatName": "第一幕转折",
+              "position": 0.25
+            }
+          ],
+          "scenePlans": [
+            {
+              "id": "scene-cb5963518e",
+              "title": "场景01 林舟蹲在旧书铺后屋的工作台前，指尖被",
+              "summary": "林舟蹲在旧书铺后屋的工作台前，指尖被潮气泡得发白。今晚送来的旧账簿比往常更沉，封皮像是浸过海水，翻开第一页时却没有霉味，",
+              "startParagraph": 1,
+              "endParagraph": 3,
+              "source": "heuristic-detect",
+              "detectionMethod": "scene-candidate-v1",
+              "breakReason": "chapter-start",
+              "createdAt": "2026-04-29T00:34:49+08:00",
+              "updatedAt": "2026-04-29T00:34:49+08:00"
+            },
+            {
+              "id": "scene-5830c70484",
+              "title": "场景02 他把铜纽扣和账簿一并塞进防水布袋，沿",
+              "summary": "他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库门口挂着褪色的封条，封条中央却被人用香灰画了一枚歪斜的记",
+              "startParagraph": 4,
+              "endParagraph": 5,
+              "source": "heuristic-detect",
+              "detectionMethod": "scene-candidate-v1",
+              "breakReason": "transition:relocation",
+              "createdAt": "2026-04-29T00:34:49+08:00",
+              "updatedAt": "2026-04-29T00:34:49+08:00"
+            }
+          ],
+          "direction": "结构指引：开场：建立日常世界；触发事件：打破平衡的事件；第一幕转折：主角做出选择，无法回头"
+        },
+        {
+          "id": "chapter-002",
+          "title": "第二章 空名仓单",
+          "status": "completed",
+          "beats": [
+            {
+              "id": "beat-2e023dd861aa",
+              "summary": "中点：从被动变主动 / 虚假胜利",
+              "status": "planned",
+              "source": "structure-scaffold",
+              "structureTemplateId": "three-act",
+              "structureBeatName": "中点",
+              "position": 0.5
+            },
+            {
+              "id": "beat-d7703f812da7",
+              "summary": "灵魂暗夜：最低点，失去一切",
+              "status": "planned",
+              "source": "structure-scaffold",
+              "structureTemplateId": "three-act",
+              "structureBeatName": "灵魂暗夜",
+              "position": 0.75
+            },
+            {
+              "id": "beat-7e737c623cb7",
+              "summary": "高潮：最终对决 / 真相揭露",
+              "status": "planned",
+              "source": "structure-scaffold",
+              "structureTemplateId": "three-act",
+              "structureBeatName": "高潮",
+              "position": 0.88
+            },
+            {
+              "id": "beat-a72b5ca22197",
+              "summary": "结局：新平衡",
+              "status": "planned",
+              "source": "structure-scaffold",
+              "structureTemplateId": "three-act",
+              "structureBeatName": "结局",
+              "position": 1.0
+            }
+          ],
+          "scenePlans": [
+            {
+              "id": "scene-113b10c475",
+              "title": "场景01 仓库里堆满发潮木箱，最里面那盏小灯只",
+              "summary": "仓库里堆满发潮木箱，最里面那盏小灯只照出半张女人侧脸。林舟没有立刻往前走，他先把账簿贴到胸口，逼自己去听周围的水声和脚步",
+              "startParagraph": 1,
+              "endParagraph": 3,
+              "source": "heuristic-detect",
+              "detectionMethod": "scene-candidate-v1",
+              "breakReason": "chapter-start",
+              "createdAt": "2026-04-29T00:35:13+08:00",
+              "updatedAt": "2026-04-29T00:35:13+08:00"
+            },
+            {
+              "id": "scene-60e1c168e3",
+              "title": "场景02 半小时后，林舟带着湿透的仓单回到铺子",
+              "summary": "半小时后，林舟带着湿透的仓单回到铺子后屋。旧账簿摊在桌上，最后一页又多出一串陌生名字，最末那个却被墨团硬生生抹去，只剩下",
+              "startParagraph": 4,
+              "endParagraph": 5,
+              "source": "heuristic-detect",
+              "detectionMethod": "scene-candidate-v1",
+              "breakReason": "transition:relocation",
+              "createdAt": "2026-04-29T00:35:13+08:00",
+              "updatedAt": "2026-04-29T00:35:13+08:00"
+            }
+          ],
+          "direction": "结构指引：中点：从被动变主动 / 虚假胜利；灵魂暗夜：最低点，失去一切；高潮：最终对决 / 真相揭露；结局：新平衡"
+        }
+      ]
+    }
+  ]
+}

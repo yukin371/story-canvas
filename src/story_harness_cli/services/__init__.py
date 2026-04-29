@@ -37,6 +37,7 @@ from .workflow_engine import (
 from .volume_self_review import (
     build_volume_self_review_template,
     latest_volume_self_review,
+    merge_volume_self_review_payload,
     normalize_volume_self_review,
     validate_volume_self_review_refs,
 )
@@ -83,6 +84,7 @@ __all__ = [
     "infer_volume_preflight_workflow",
     "infer_workflow_status",
     "latest_volume_self_review",
+    "merge_volume_self_review_payload",
     "normalize_batch_delivery_mode",
     "normalize_volume_self_review",
     "normalize_illustration_batch_spec",

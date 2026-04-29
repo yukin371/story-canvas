@@ -1,0 +1,131 @@
+{
+  "premiseFacts": [
+    {
+      "id": "wf-1055e79872",
+      "label": "我怎么又把事弄成这样了",
+      "fact": "@{陆闲}握着那根裂柄，心里全是“我怎么又把事弄成这样了”。可被那么多人盯着，他总不能当场说自己真只是想保住扫帚，于是只能很老实地回一句：“我其实也没留什么运气。我就是舍不得让东西白坏。你若下次别老冲我的扫帚、桶和井来，说不定我们都能省点事。”这话说得越认真，台下越是笑成一片。",
+      "sourceChapterId": "chapter-003",
+      "confidence": 0.8,
+      "updatedAt": "2026-04-29T21:32:54+08:00",
+      "createdAt": "2026-04-29T21:32:54+08:00"
+    }
+  ],
+  "worldRules": [
+    {
+      "id": "qinglan-wager-rule",
+      "label": "外门小比赌约规则",
+      "rule": "小比再败，青岚宗将失去半坡灵田与东侧水井的控制权。",
+      "summary": "青岚宗与黑沙门约定三日后外门小比，败者需让出半坡灵田与东侧水井代管权。",
+      "aliases": [],
+      "updatedAt": "2026-04-29T19:58:00+08:00",
+      "createdAt": "2026-04-29T19:58:00+08:00"
+    },
+    {
+      "id": "reverse-cultivation-rule",
+      "label": "反常修炼机制",
+      "rule": "对陆闲而言，摆烂、劳作和受压比常规打坐更容易触发灵气流动与短暂顿悟。",
+      "summary": "陆闲的修炼链与常规修士相反，静坐练功会滞涩，做杂活、受压或被喝骂时反而更容易通气顿悟。",
+      "aliases": [],
+      "updatedAt": "2026-04-29T19:58:19+08:00",
+      "createdAt": "2026-04-29T19:58:19+08:00"
+    },
+    {
+      "id": "broken-guard-array-rule",
+      "label": "残护山阵支路规则",
+      "rule": "祖师崖旧剑路与东侧水井同属青岚宗残缺护山阵支路，顺势劳作、搬运和牵引旧器物时，偶尔会把残纹短暂带活。",
+      "summary": "青岚宗旧护山阵早已残破，但祖师崖和东侧水井仍留有少量会被特定动作牵动的旧阵痕迹。",
+      "aliases": [],
+      "updatedAt": "2026-04-29T21:25:00+08:00",
+      "createdAt": "2026-04-29T21:25:00+08:00"
+    }
+  ],
+  "powerProgressions": [
+    {
+      "id": "lu-xian-reverse-path",
+      "label": "陆闲反常修炼链",
+      "stages": [
+        {
+          "name": "未入门摆烂期",
+          "nextStage": "逆窍感应",
+          "aliases": [],
+          "breakthroughRequirements": [
+            "保持低调并持续杂役劳作"
+          ],
+          "bottleneck": "一旦正经打坐反而经脉滞涩"
+        },
+        {
+          "name": "逆窍感应",
+          "nextStage": "杂役顿悟",
+          "aliases": [],
+          "breakthroughRequirements": [
+            "在受压、劳作或挨骂时触发灵气流动"
+          ],
+          "bottleneck": "无法稳定主动复现"
+        },
+        {
+          "name": "杂役顿悟",
+          "nextStage": "",
+          "aliases": [],
+          "breakthroughRequirements": [
+            "在关键压力节点无意借旧物或杂役动作完成顿悟破局"
+          ],
+          "bottleneck": "容易被师姐误判为刻意藏锋，失去摆烂空间"
+        }
+      ],
+      "updatedAt": "2026-04-29T19:59:15+08:00",
+      "owner": "陆闲",
+      "style": "逆练",
+      "createdAt": "2026-04-29T19:58:31+08:00"
+    }
+  ],
+  "factions": [
+    {
+      "id": "qinglan-zong",
+      "name": "青岚宗",
+      "summary": "表面破落、资源紧缺，却被几位师姐和长老死死护住门面的宗门。",
+      "aliases": [],
+      "updatedAt": "2026-04-29T19:57:47+08:00",
+      "hierarchy": "下位宗门",
+      "status": "资源濒危但仍维持山门",
+      "type": "玄门宗派",
+      "territory": "青岚山半坡与东侧水井",
+      "suppressionSource": "黑沙门赌约压力",
+      "createdAt": "2026-04-29T19:46:34+08:00"
+    },
+    {
+      "id": "heisha-men",
+      "name": "黑沙门",
+      "summary": "当前上门施压青岚宗、试图借小比和赌约拿走资源的敌对宗门。",
+      "aliases": [],
+      "updatedAt": "2026-04-29T19:57:47+08:00",
+      "hierarchy": "邻近强势宗门",
+      "status": "借赌约持续扩张",
+      "type": "魔门旁支宗派",
+      "territory": "黑沙岭一带",
+      "relation": "对青岚宗施压",
+      "createdAt": "2026-04-29T19:46:49+08:00"
+    }
+  ],
+  "locations": [
+    {
+      "id": "zushi-ya",
+      "name": "祖师崖",
+      "summary": "青岚宗杂役坡附近的旧崖壁，堆着断剑旧铁，也残留着异常剑路痕迹。",
+      "aliases": [],
+      "updatedAt": "2026-04-29T19:47:31+08:00",
+      "affiliation": "青岚宗",
+      "createdAt": "2026-04-29T19:47:31+08:00"
+    },
+    {
+      "id": "dongce-shuijing",
+      "name": "东侧水井",
+      "summary": "青岚宗山门东侧的旧井，既是日常水源，也是黑沙门赌约盯上的关键资源点。",
+      "aliases": [],
+      "updatedAt": "2026-04-29T21:25:00+08:00",
+      "affiliation": "青岚宗",
+      "createdAt": "2026-04-29T21:25:00+08:00"
+    }
+  ],
+  "artifacts": [],
+  "mysteries": []
+}

@@ -1,0 +1,33 @@
+{
+  "activeStructure": "three-act",
+  "mappings": [
+    {
+      "beatName": "开场",
+      "chapterId": null
+    },
+    {
+      "beatName": "触发事件",
+      "chapterId": null
+    },
+    {
+      "beatName": "第一幕转折",
+      "chapterId": null
+    },
+    {
+      "beatName": "中点",
+      "chapterId": null
+    },
+    {
+      "beatName": "灵魂暗夜",
+      "chapterId": null
+    },
+    {
+      "beatName": "高潮",
+      "chapterId": null
+    },
+    {
+      "beatName": "结局",
+      "chapterId": null
+    }
+  ]
+}

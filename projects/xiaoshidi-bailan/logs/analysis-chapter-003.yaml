@@ -1,0 +1,63 @@
+{
+  "chapterId": "chapter-003",
+  "chapterTitle": "扫帚把脸抽回去",
+  "analyzedAt": "2026-04-29T21:32:30+08:00",
+  "activeEntities": [
+    {
+      "id": "lu-xian",
+      "name": "陆闲",
+      "mentionCount": 20,
+      "source": "registry"
+    },
+    {
+      "id": "huo-fei",
+      "name": "霍飞",
+      "mentionCount": 13,
+      "source": "registry"
+    },
+    {
+      "id": "su-que",
+      "name": "苏雀",
+      "mentionCount": 7,
+      "source": "registry"
+    },
+    {
+      "id": "shen-tinglan",
+      "name": "沈听岚",
+      "mentionCount": 6,
+      "source": "registry"
+    },
+    {
+      "id": "zhu-hongling",
+      "name": "祝红绫",
+      "mentionCount": 5,
+      "source": "registry"
+    },
+    {
+      "id": "han-zhanglao",
+      "name": "韩长老",
+      "mentionCount": 3,
+      "source": "registry"
+    }
+  ],
+  "snapshotCandidates": [],
+  "relationCandidates": [],
+  "sceneScope": {
+    "activeEntityIds": [
+      "lu-xian",
+      "huo-fei",
+      "su-que",
+      "shen-tinglan",
+      "zhu-hongling",
+      "han-zhanglao"
+    ],
+    "activeEntityNames": [
+      "陆闲",
+      "霍飞",
+      "苏雀",
+      "沈听岚",
+      "祝红绫",
+      "韩长老"
+    ]
+  }
+}

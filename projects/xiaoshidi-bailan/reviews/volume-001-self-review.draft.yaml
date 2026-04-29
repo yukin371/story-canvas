@@ -1,0 +1,457 @@
+{
+  "conclusion": {
+    "closureStatus": "closed",
+    "allowHumanReview": false,
+    "strongestPoint": "volume-001 现在已经形成从误会起势、东井反打到山门公开打脸的三章小回合，前三章契约里的异常机制、第一次外部挑衅、第一次清晰打脸和至少两位师姐强记忆点都已正文交付。",
+    "biggestRisk": "当前版本的主要风险已经从“缺章”切到“可读性与评审噪音”：三章都存在段落可读性问题，且 review 链路仍对已兑现 beat 持续误报 outlineDeviation。"
+  },
+  "editorPass": {
+    "completed": true,
+    "reviewerRole": "editor",
+    "mode": "same_agent_fallback",
+    "contextIsolation": "same_thread",
+    "notes": "本轮未启用独立子代理；按卷审模板做 editor fallback，显式区分内容闭环判断与人工审查放行判断，不把作者修稿意图直接当结论。"
+  },
+  "editorAssessment": {
+    "overallVerdict": "revise",
+    "summaryComment": "编辑视角下，这一卷的内容闭环已经成立，但仍不适合直接送人工终审。主要原因不是再缺章节，而是三章的移动端可读性、chapter-002/003 的局部张力与章末牵引仍需补强，同时 tooling 侧的 outlineDeviation 误报会污染卷审信号。",
+    "topProblems": [
+      "三章都稳定触发 paragraphReadability，chapter-002/003 还叠加了 paragraphUniformity，阅读负担偏重。",
+      "chapter-002 和 chapter-003 已交出打脸与身份反转，但局部 scene 的张力、回收和章末追读牵引仍不够稳。",
+      "review chapter / review scene 对已兑现 beat 全量误报 outlineDeviation，会干扰后续卷审判断。"
+    ],
+    "improvementPoints": [
+      "先做一轮段落拆分和节奏重排，优先修 chapter-002/003 的长段与均质段落。",
+      "再针对 chapter-002 的 scene-2/3 和 chapter-003 的 scene-1/2 补更硬的阻力、代价和回收钩子。",
+      "工具侧保持 AIF-012 跟踪，不为迎合误报去重写已经成立的正文承接。"
+    ],
+    "scores": [
+      {
+        "dimensionId": "volumeClosure",
+        "score": 4,
+        "conclusion": "三章已经完成一个清晰的小故事回合：主角从被师姐误判起势，到东井反打，再到公开打脸并失去继续低调的空间，阶段性问题有答案。",
+        "chapterRefs": [
+          "chapter-001",
+          "chapter-002",
+          "chapter-003"
+        ],
+        "evidenceRefs": [
+          "review-packet:volume-001:chapter-001",
+          "review-packet:volume-001:chapter-002",
+          "review-packet:volume-001:chapter-003"
+        ]
+      },
+      {
+        "dimensionId": "openingOnboarding",
+        "score": 4,
+        "conclusion": "开篇已经把主角异常机制、宗门受压与黑沙门挑衅交代清楚，读者理解门槛可控。",
+        "chapterRefs": [
+          "chapter-001"
+        ],
+        "evidenceRefs": [
+          "chapter-001#scene-1",
+          "review-packet:volume-001:chapter-001"
+        ]
+      },
+      {
+        "dimensionId": "worldLogic",
+        "score": 3,
+        "conclusion": "祖师崖、东侧水井和残护山阵支路已经连成同一条宗门压力线，但黑袍执事背后的更深威胁仍偏提要式抬线。",
+        "chapterRefs": [
+          "chapter-001",
+          "chapter-002",
+          "chapter-003"
+        ],
+        "evidenceRefs": [
+          "chapter-001#scene-3",
+          "chapter-002#scene-3",
+          "chapter-003#scene-3"
+        ]
+      },
+      {
+        "dimensionId": "chapterHandoff",
+        "score": 4,
+        "conclusion": "chapter-002 直接承接被大师姐接管后的东井守局，chapter-003 再承接公开再验与山门施压，章间因果链是真实成立的。",
+        "chapterRefs": [
+          "chapter-002",
+          "chapter-003"
+        ],
+        "evidenceRefs": [
+          "chapter-002#scene-1",
+          "chapter-003#scene-1"
+        ]
+      },
+      {
+        "dimensionId": "characterContinuity",
+        "score": 4,
+        "conclusion": "陆闲的摆烂本能、被迫破局逻辑保持稳定，祝红绫、苏雀、沈听岚三位师姐的护短方式和误判方向也各自明确。",
+        "chapterRefs": [
+          "chapter-001",
+          "chapter-002",
+          "chapter-003"
+        ],
+        "evidenceRefs": [
+          "chapter-001#scene-1",
+          "chapter-002#scene-2",
+          "chapter-003#scene-3"
+        ]
+      },
+      {
+        "dimensionId": "antagonistShaping",
+        "score": 3,
+        "conclusion": "霍飞从轻蔑试探到当众吃瘪的对手线已经成立，但黑袍执事和更深层敌意目前仍停在尾巴提示。",
+        "chapterRefs": [
+          "chapter-001",
+          "chapter-002",
+          "chapter-003"
+        ],
+        "evidenceRefs": [
+          "chapter-001#scene-3",
+          "chapter-002#scene-3",
+          "chapter-003#scene-3"
+        ]
+      },
+      {
+        "dimensionId": "conflictEscalation",
+        "score": 3,
+        "conclusion": "冲突确实从祖师崖误判升级到东井暗手、再升级到山门公开试手，但 chapter-002/003 的局部阻力和代价反馈仍能更硬。",
+        "chapterRefs": [
+          "chapter-001",
+          "chapter-002",
+          "chapter-003"
+        ],
+        "evidenceRefs": [
+          "chapter-001#scene-3",
+          "chapter-002#scene-2",
+          "chapter-003#scene-2"
+        ]
+      },
+      {
+        "dimensionId": "payoffDelivery",
+        "score": 4,
+        "conclusion": "东井反打和山门当众把霍飞抽进脏水桶，已经完成本卷应有的第一次清晰打脸与身份反转交付。",
+        "chapterRefs": [
+          "chapter-002",
+          "chapter-003"
+        ],
+        "evidenceRefs": [
+          "chapter-002#scene-3",
+          "chapter-003#scene-3"
+        ]
+      },
+      {
+        "dimensionId": "foreshadowRhythm",
+        "score": 3,
+        "conclusion": "祖师崖与东井的残阵支路已经在卷内得到短线回收，黑袍执事与更深层赌约压力则作为后续钩子留下，节奏基本可用但回收厚度仍偏轻。",
+        "chapterRefs": [
+          "chapter-001",
+          "chapter-002",
+          "chapter-003"
+        ],
+        "evidenceRefs": [
+          "chapter-001#scene-3",
+          "chapter-002#scene-3",
+          "chapter-003#scene-3"
+        ]
+      },
+      {
+        "dimensionId": "styleReadability",
+        "score": 2,
+        "conclusion": "三章都稳定触发 paragraphReadability，chapter-002/003 还触发 paragraphUniformity，当前更适合先修可读性再送人工审查。",
+        "chapterRefs": [
+          "chapter-001",
+          "chapter-002",
+          "chapter-003"
+        ],
+        "evidenceRefs": [
+          "chapter-001#paragraph-10",
+          "chapter-002#paragraph-1",
+          "chapter-003#paragraph-1"
+        ]
+      }
+    ]
+  },
+  "scores": [
+    {
+      "dimensionId": "volumeClosure",
+      "score": 4,
+      "conclusion": "本卷已经完成从误会起势到公开打脸的三章小单元，阶段性主问题有了明确答案。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "review-packet:volume-001:chapter-001",
+        "review-packet:volume-001:chapter-002",
+        "review-packet:volume-001:chapter-003"
+      ]
+    },
+    {
+      "dimensionId": "openingOnboarding",
+      "score": 4,
+      "conclusion": "主角机制、宗门处境、敌对势力与欢乐爽文方向在首章已搭稳。",
+      "chapterRefs": [
+        "chapter-001"
+      ],
+      "evidenceRefs": [
+        "chapter-001#scene-1",
+        "review-packet:volume-001:chapter-001"
+      ]
+    },
+    {
+      "dimensionId": "worldLogic",
+      "score": 3,
+      "conclusion": "祖师崖、东侧水井与残护山阵支路的关系已经建立，但更大层级敌意还需要后续卷再补厚。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-001#scene-3",
+        "chapter-002#scene-3",
+        "chapter-003#scene-3"
+      ]
+    },
+    {
+      "dimensionId": "chapterHandoff",
+      "score": 4,
+      "conclusion": "第二章和第三章都直接吃到了上一章的后果、情绪和行动压力，章间承接是成立的。",
+      "chapterRefs": [
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-002#scene-1",
+        "chapter-003#scene-1"
+      ]
+    },
+    {
+      "dimensionId": "characterContinuity",
+      "score": 4,
+      "conclusion": "陆闲与师姐群像的行为逻辑稳定，三位核心师姐都形成了清晰区分。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-001#scene-1",
+        "chapter-002#scene-2",
+        "chapter-003#scene-3"
+      ]
+    },
+    {
+      "dimensionId": "antagonistShaping",
+      "score": 3,
+      "conclusion": "霍飞的踩场、失衡和记仇都已落地，但更深层施压者仍只有尾巴亮相。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-001#scene-3",
+        "chapter-002#scene-3",
+        "chapter-003#scene-3"
+      ]
+    },
+    {
+      "dimensionId": "conflictEscalation",
+      "score": 3,
+      "conclusion": "冲突台阶已经从宗门受压升级到守井暗斗再到公开试手，但局部 scene 的阻力和代价还能更狠。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-001#scene-3",
+        "chapter-002#scene-2",
+        "chapter-003#scene-2"
+      ]
+    },
+    {
+      "dimensionId": "payoffDelivery",
+      "score": 4,
+      "conclusion": "霍飞在山门前被裂扫帚柄和脏水桶抽回去，已经满足这一卷应有的第一轮打脸兑现。",
+      "chapterRefs": [
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-002#scene-3",
+        "chapter-003#scene-3"
+      ]
+    },
+    {
+      "dimensionId": "foreshadowRhythm",
+      "score": 3,
+      "conclusion": "短线的残阵与东井暗手已有回收，长线黑袍执事和更深赌约被留作后续推进，比例基本能接受。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-001#scene-3",
+        "chapter-002#scene-3",
+        "chapter-003#scene-3"
+      ]
+    },
+    {
+      "dimensionId": "styleReadability",
+      "score": 2,
+      "conclusion": "段落可读性问题在三章都稳定存在，chapter-002/003 的段落均质也需要修一轮。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-001#paragraph-10",
+        "chapter-002#paragraph-1",
+        "chapter-003#paragraph-1"
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "issue": "三章的段落可读性仍然偏重，chapter-002/003 还叠加了段落均质问题。",
+      "evidence": [
+        "style aggregate 显示三章都触发 paragraphReadability。",
+        "chapter-002 和 chapter-003 的 chapter review 都额外触发 paragraphUniformity。"
+      ],
+      "impact": "会直接拉低 styleReadability，也会让爽点与冲突在移动端阅读时被段落密度稀释，当前不适合直接进入人工终审。",
+      "primaryCause": "generation_miss",
+      "secondaryCauses": [
+        "self_review_miss"
+      ],
+      "fixAction": "先对三章做一轮段落拆分，优先把每段收敛到单一动作或反应单位，再复跑 chapter review 与 style 汇总。",
+      "whyToolingMissed": "工具其实已经稳定检出 paragraphReadability 和 paragraphUniformity，当前缺口不在检出，而在修稿动作还没落实。",
+      "whySelfReviewMissed": "这一轮先把卷级内容闭环补齐，导致基础阅读负担被后置到了卷审阶段才统一收口。",
+      "optimizationAction": "继续让 workflow 的弱项摘要把 style 风险直接推到卷级修稿清单，而不是只留在 chapter review 里。",
+      "detectedBy": [
+        "review chapter --root projects/xiaoshidi-bailan --chapter-id chapter-001",
+        "review chapter --root projects/xiaoshidi-bailan --chapter-id chapter-002",
+        "review chapter --root projects/xiaoshidi-bailan --chapter-id chapter-003"
+      ],
+      "ruleIds": [
+        "paragraphReadability",
+        "paragraphUniformity"
+      ],
+      "verificationCommands": [
+        "review chapter --root projects/xiaoshidi-bailan --chapter-id chapter-001",
+        "review chapter --root projects/xiaoshidi-bailan --chapter-id chapter-002",
+        "review chapter --root projects/xiaoshidi-bailan --chapter-id chapter-003",
+        "workflow status --root projects/xiaoshidi-bailan --volume-id volume-001"
+      ],
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-001#paragraph-10",
+        "chapter-002#paragraph-1",
+        "chapter-003#paragraph-1"
+      ]
+    },
+    {
+      "issue": "chapter-002 和 chapter-003 已经交出打脸与身份反转，但局部 scene 的张力、代价和章末牵引还不够稳。",
+      "evidence": [
+        "chapter-002 review 的 priorityActions 仍要求补更明确的阻力、状态变化和人物代价。",
+        "chapter-003 review 与 scene review 仍把冲突张力、伏笔回收和章末追读牵引列为主要弱项。"
+      ],
+      "impact": "会拖低 conflictEscalation、foreshadowRhythm 和人工审查时的追读体验，导致“有闭环但不够硬”。",
+      "primaryCause": "generation_miss",
+      "secondaryCauses": [
+        "self_review_miss"
+      ],
+      "fixAction": "优先回修 chapter-002 的 scene-2/3 与 chapter-003 的 scene-1/2，补更硬的阻力、代价反馈和未完成动作钩子。",
+      "whyToolingMissed": "工具已通过 chapter review 和 lowSceneReviews 暴露问题，但不会自动把这些局部弱项组织成卷级修稿动作。",
+      "whySelfReviewMissed": "在确认三章故事单元已经成形后，作者侧容易过早满足于“已经有打脸”，而没有继续追问打脸后的压力是否足够扎实。",
+      "optimizationAction": "把 lowSceneReviews 的 priorityActions 更直接映射到卷审 repairSuggestions，减少人工二次翻译。",
+      "detectedBy": [
+        "review chapter --root projects/xiaoshidi-bailan --chapter-id chapter-002",
+        "review chapter --root projects/xiaoshidi-bailan --chapter-id chapter-003",
+        "review preflight --root projects/xiaoshidi-bailan --volume-id volume-001"
+      ],
+      "ruleIds": [],
+      "verificationCommands": [
+        "review scene --root projects/xiaoshidi-bailan --chapter-id chapter-002 --scene-index 2",
+        "review scene --root projects/xiaoshidi-bailan --chapter-id chapter-002 --scene-index 3",
+        "review scene --root projects/xiaoshidi-bailan --chapter-id chapter-003 --scene-index 1",
+        "review scene --root projects/xiaoshidi-bailan --chapter-id chapter-003 --scene-index 2"
+      ],
+      "chapterRefs": [
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-002#scene-2",
+        "chapter-002#scene-3",
+        "chapter-003#scene-1",
+        "chapter-003#scene-2"
+      ]
+    },
+    {
+      "issue": "review chapter / review scene 对已兑现 beat 稳定误报 outlineDeviation，正在污染卷级判断。",
+      "evidence": [
+        "volume preflight 的 topRuleJudgements 中，outlineDeviation 命中 24 次，远高于其他规则。",
+        "chapter-002 和 chapter-003 的 chapter review / scene review 都对已在正文兑现的 beat 全量重复发 warning。"
+      ],
+      "impact": "这会制造“正文没写到”的假信号，逼着作者去迎合检测器而不是根据真实故事需要修稿，同时也会污染 volume review 对结构弱项的判断。",
+      "primaryCause": "tooling_miss",
+      "secondaryCauses": [],
+      "fixAction": "保留当前正文判断，不为消除误报去改写已成立的承接与打脸；继续按 AIF-012 跟踪，后续补 beat 命中证据与 scene-local 匹配测试。",
+      "whyToolingMissed": "目前 beat/scene 匹配没有返回正文证据片段或未命中原因，只能机械把 planned beat 当成未出现。",
+      "whySelfReviewMissed": "如果只看卷审模板预填或 topRuleJudgements，容易把这类误报误当成真实结构漏写。",
+      "optimizationAction": "优先让 outlineDeviation 输出正文命中证据，并避免 scene review 机械复制整章 warning。",
+      "detectedBy": [
+        "review chapter --root projects/xiaoshidi-bailan --chapter-id chapter-002",
+        "review chapter --root projects/xiaoshidi-bailan --chapter-id chapter-003",
+        "review preflight --root projects/xiaoshidi-bailan --volume-id volume-001"
+      ],
+      "ruleIds": [
+        "outlineDeviation"
+      ],
+      "verificationCommands": [
+        "review chapter --root projects/xiaoshidi-bailan --chapter-id chapter-002",
+        "review chapter --root projects/xiaoshidi-bailan --chapter-id chapter-003",
+        "review scene --root projects/xiaoshidi-bailan --chapter-id chapter-003 --scene-index 1"
+      ],
+      "chapterRefs": [
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "review-packet:volume-001:chapter-002",
+        "review-packet:volume-001:chapter-003"
+      ]
+    }
+  ],
+  "closureAssessment": {
+    "mainProblem": "陆闲能否在宗门赌约和黑沙门连环试压下，一边继续想摆烂，一边被迫交出第一次公开破局，并因此彻底失去继续低调混日子的空间。",
+    "delivered": [
+      "chapter-001 建立了反常修炼机制、宗门困局和黑沙门挑衅。",
+      "chapter-002 让东井暗手落地，并把残阵支路和师姐误判链推进成真正的局内压力。",
+      "chapter-003 完成山门公开打脸和宗门内部身份反转，核心师姐团正式确认陆闲的阶段性价值。"
+    ],
+    "missing": [
+      "当前仍未达到可直接送人工终审的文本完成度，主要缺口是段落可读性和局部张力打磨。",
+      "评审层的 outlineDeviation 误报尚未收口，后续修稿时需要避免被错误信号带偏。"
+    ],
+    "reasoning": "从内容交付看，volume-001 已经完成一个真实的三章引入卷小闭环，因此 closureStatus 判为 closed；但从放行标准看，styleReadability 仍低于人工审查建议门槛，且评审噪音会干扰修稿判断，所以 allowHumanReview 仍保持 false。"
+  },
+  "repairSuggestions": [
+    "先处理 chapter-001/002/003 的长段与段落均质，至少把最重的移动端阅读负担拆掉。",
+    "再优先回修 chapter-002 的 scene-2/3 与 chapter-003 的 scene-1/2，补更硬的阻力、代价和追读钩子。",
+    "工具侧保留 AIF-012，后续不要为了消除 outlineDeviation 误报去重写已经成立的 beat。"
+  ],
+  "acceptedRisks": [
+    "接受黑袍执事与更大宗门格局只作为后续卷钩子，不要求在本卷提前揭底。",
+    "接受本卷当前处于“内容闭环已成、人工审查未放行”的状态，不再把未放行误写成内容未闭环。"
+  ]
+}

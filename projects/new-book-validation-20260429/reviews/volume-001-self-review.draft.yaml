@@ -1,0 +1,896 @@
+{
+  "generatedAt": "2026-04-30T01:00:49+08:00",
+  "conclusion": {
+    "closureStatus": "closed",
+    "allowHumanReview": true,
+    "strongestPoint": "三章首卷已经完成从雾钟点名、旧站追查到缺页归档的局部小案：余仁失踪从空号变为缺页待补，林照夜从未录取考生变为临时外勤协查。",
+    "biggestRisk": "当前版本仍是能力验证用短卷，部分 scene 评分停在 workable，且 stats 命令仍把章节底线显示为 2000/3000，和项目商业配置 1200/1800 不一致。"
+  },
+  "editorPass": {
+    "completed": true,
+    "reviewerRole": "editor",
+    "mode": "same_agent_fallback",
+    "contextIsolation": "same_thread",
+    "notes": "用户未要求 subagent；本轮以编辑角色复核 volume-self-template、preflight、章节/scene review 和正文修订结果，不沿用作者自我辩护作为结论。"
+  },
+  "editorAssessment": {
+    "overallVerdict": "pass",
+    "summaryComment": "可进入人工审查。结论限定为能力验证卷：三章小案闭环成立，工具侧 gate 清洁；正式连载前仍建议增强第二章中段威胁，并修复 stats 字数目标与 scene-detect 粒度问题。",
+    "topProblems": [
+      "stats 字数目标与 project.yaml 商业配置不一致，容易诱导注水。",
+      "scene-detect --replace 会把无显式分隔符的中文章节压成单 scene，需手工恢复粒度。",
+      "商业追读强度仍偏测试样例，正式连载前可继续打磨。"
+    ],
+    "improvementPoints": [
+      "把 stats/review 的字数目标来源统一。",
+      "为 scene-detect 增加覆盖前 scene count regression warning。",
+      "为测试卷和正式连载卷提供不同商业 hook 门槛。"
+    ],
+    "scores": [
+      {
+        "dimensionId": "volumeClosure",
+        "score": 4,
+        "conclusion": "小案闭环成立，余仁案获得局部归档，主角身份阶段变化明确。",
+        "chapterRefs": [
+          "chapter-003"
+        ],
+        "evidenceRefs": [
+          "chapter-003#scene-3"
+        ]
+      },
+      {
+        "dimensionId": "openingOnboarding",
+        "score": 4,
+        "conclusion": "核心设定在首卷内完成最低可读 onboarding。",
+        "chapterRefs": [
+          "chapter-001",
+          "chapter-002"
+        ],
+        "evidenceRefs": [
+          "review-packet:volume-001:chapter-001"
+        ]
+      },
+      {
+        "dimensionId": "worldLogic",
+        "score": 4,
+        "conclusion": "雾钟、缺页、旧案科和活见证人的规则链条可以支撑当前三章。",
+        "chapterRefs": [
+          "chapter-002",
+          "chapter-003"
+        ],
+        "evidenceRefs": [
+          "chapter-002#scene-3",
+          "chapter-003#scene-2"
+        ]
+      },
+      {
+        "dimensionId": "chapterHandoff",
+        "score": 3,
+        "conclusion": "章间行动接续清楚，但情绪余波仍可更强。",
+        "chapterRefs": [
+          "chapter-002",
+          "chapter-003"
+        ],
+        "evidenceRefs": [
+          "review-packet:volume-001:chapter-002",
+          "review-packet:volume-001:chapter-003"
+        ]
+      },
+      {
+        "dimensionId": "characterContinuity",
+        "score": 4,
+        "conclusion": "林照夜和乔声的行为线连续，乔声担保有父亲缺页线索支撑。",
+        "chapterRefs": [
+          "chapter-001",
+          "chapter-003"
+        ],
+        "evidenceRefs": [
+          "chapter-003#scene-1"
+        ]
+      },
+      {
+        "dimensionId": "antagonistShaping",
+        "score": 3,
+        "conclusion": "制度压力成立，灰帽人作为后续对手只露一角，符合首卷尾巴但不算充分塑造。",
+        "chapterRefs": [
+          "chapter-003"
+        ],
+        "evidenceRefs": [
+          "chapter-003#scene-2"
+        ]
+      },
+      {
+        "dimensionId": "conflictEscalation",
+        "score": 3,
+        "conclusion": "升级链条可用，但第二章中段仍可增加更主动的对抗。",
+        "chapterRefs": [
+          "chapter-002"
+        ],
+        "evidenceRefs": [
+          "chapter-002#scene-3"
+        ]
+      },
+      {
+        "dimensionId": "payoffDelivery",
+        "score": 4,
+        "conclusion": "第三章交付了余仁缺页名单、活见证规则和临时外勤证。",
+        "chapterRefs": [
+          "chapter-003"
+        ],
+        "evidenceRefs": [
+          "chapter-003#scene-2",
+          "chapter-003#scene-3"
+        ]
+      },
+      {
+        "dimensionId": "foreshadowRhythm",
+        "score": 3,
+        "conclusion": "短线有收束，名单第二人和第十四页留下长线；下一卷需尽快回应。",
+        "chapterRefs": [
+          "chapter-003"
+        ],
+        "evidenceRefs": [
+          "chapter-003#scene-3"
+        ]
+      },
+      {
+        "dimensionId": "styleReadability",
+        "score": 4,
+        "conclusion": "风格基本稳定，AI 味检测仅余轻度提示。",
+        "chapterRefs": [
+          "chapter-001",
+          "chapter-002",
+          "chapter-003"
+        ],
+        "evidenceRefs": [
+          "review-packet:volume-001:chapter-001",
+          "review-packet:volume-001:chapter-002",
+          "review-packet:volume-001:chapter-003"
+        ]
+      }
+    ]
+  },
+  "scores": [
+    {
+      "dimensionId": "volumeClosure",
+      "score": 4,
+      "conclusion": "卷主问题已局部回答：雾钟第十三下点名活见证人，余仁案完成缺页待补归档，林照夜获得临时外勤资格。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "review-packet:volume-001:chapter-003",
+        "chapter-003#scene-3"
+      ]
+    },
+    {
+      "dimensionId": "openingOnboarding",
+      "score": 4,
+      "conclusion": "雾钟、活见证人、缺页和雾务局旧案科在前三章内给出最低可读定义，没有继续只堆名词。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002"
+      ],
+      "evidenceRefs": [
+        "review-packet:volume-001:chapter-001",
+        "review-packet:volume-001:chapter-002"
+      ]
+    },
+    {
+      "dimensionId": "worldLogic",
+      "score": 4,
+      "conclusion": "世界规则能支撑本卷：被遗忘者触发雾钟，活见证人会缺页，旧案编号和封存号把案件带入雾务局。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-002#scene-3",
+        "chapter-003#scene-2"
+      ]
+    },
+    {
+      "dimensionId": "chapterHandoff",
+      "score": 3,
+      "conclusion": "章节承接可用：第一章黑色纸夹引到第二章回站查线，第二章旧案编号直接引到第三章旧案科，但仍可在章首增加更强情绪余波。",
+      "chapterRefs": [
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "review-packet:volume-001:chapter-002",
+        "review-packet:volume-001:chapter-003"
+      ]
+    },
+    {
+      "dimensionId": "characterContinuity",
+      "score": 4,
+      "conclusion": "林照夜保持用冷笑话压恐惧的自证姿态，乔声从监视到违规担保的变化由父亲缺页线索支撑。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-003#scene-1",
+        "chapter-003#scene-3"
+      ]
+    },
+    {
+      "dimensionId": "antagonistShaping",
+      "score": 3,
+      "conclusion": "本卷对手更多是雾务局制度、缺页规则和灰帽人残影，功能成立但实体反派还只是露尾巴。",
+      "chapterRefs": [
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-003#scene-2"
+      ]
+    },
+    {
+      "dimensionId": "conflictEscalation",
+      "score": 3,
+      "conclusion": "冲突从异常点名升级到身份缺页，再到旧案科污染判定和临时外勤监管，阶梯清楚但中段压迫还能更尖锐。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-001#scene-2",
+        "chapter-002#scene-2",
+        "chapter-003#scene-1"
+      ]
+    },
+    {
+      "dimensionId": "payoffDelivery",
+      "score": 4,
+      "conclusion": "首卷交付一次明确体验兑现：林照夜听完整第十三下，补回余仁缺页名单，并获得临时外勤协查证。",
+      "chapterRefs": [
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-003#scene-2",
+        "chapter-003#scene-3"
+      ]
+    },
+    {
+      "dimensionId": "foreshadowRhythm",
+      "score": 3,
+      "conclusion": "短线伏笔完成回收，名单第二人和第十四页作为卷后尾巴保留；下一卷需要尽快回应乔姓线索，避免只加谜。",
+      "chapterRefs": [
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-002#scene-3",
+        "chapter-003#scene-3"
+      ]
+    },
+    {
+      "dimensionId": "styleReadability",
+      "score": 4,
+      "conclusion": "风格已基本收敛到潮湿、冷幽默、雾档意象；style report 平均 19.7，仅余轻度句式/感官提示。",
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "review-packet:volume-001:chapter-001",
+        "review-packet:volume-001:chapter-002",
+        "review-packet:volume-001:chapter-003"
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "issue": "stats 字数目标与项目商业配置不一致",
+      "evidence": [
+        "project.yaml commercialPositioning.chapterWordFloor=1200, chapterWordTarget=1800",
+        "stats 输出 minimumPerChapter=2000, recommendedPerChapter=3000，三章仍被标为 below-minimum",
+        "review preflight 的 commercialAlignmentRisks 不再按 1200 字报告缺字数"
+      ],
+      "impact": "会误导 agent 继续注水到 2000 字，而不是按当前测试卷配置判断是否足够。",
+      "primaryCause": "tooling_miss",
+      "secondaryCauses": [],
+      "fixAction": "后续修 stats 的字数目标读取路径，让它与 review/commercialAlignment 使用同一配置源。",
+      "whyToolingMissed": "stats 与 review preflight 显然读取了不同的目标来源，当前 gate 没有把这种配置分叉作为错误报告。",
+      "whySelfReviewMissed": "早期章节复检只看 review commercial risk，直到单独跑 stats 才暴露。",
+      "optimizationAction": "把 stats/review 字数目标一致性纳入 doctor 或 workflow volume preflight。",
+      "detectedBy": [
+        "stats",
+        "review preflight"
+      ],
+      "ruleIds": [
+        "json-compatible-yaml",
+        "commercial-word-target-source"
+      ],
+      "verificationCommands": [
+        "PYTHONPATH=src python -m story_canvas stats --root projects\\\\new-book-validation-20260429",
+        "PYTHONPATH=src python -m story_canvas review preflight --root projects\\\\new-book-validation-20260429 --volume-id volume-001"
+      ],
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "review-packet:volume-001:chapter-001",
+        "review-packet:volume-001:chapter-002",
+        "review-packet:volume-001:chapter-003"
+      ]
+    },
+    {
+      "issue": "scene-detect --replace 把三幕章节压成单一场景",
+      "evidence": [
+        "chapter-001、chapter-002、chapter-003 在 --replace 后均 detected=1",
+        "随后需要手工 scene-update / scene-add 恢复每章 3 个 scenePlans"
+      ],
+      "impact": "会破坏 scene review 粒度，让卷审看不到章节内部起承转收，也容易让用户误以为工具只能检查到单一章节或单一场景。",
+      "primaryCause": "tooling_miss",
+      "secondaryCauses": [
+        "self_review_miss"
+      ],
+      "fixAction": "后续改进 scene-detect 的中文小说分幕启发式，并在覆盖前提示将从 3 scenes 变成 1 scene 的风险。",
+      "whyToolingMissed": "当前 scene-detect 启发式对无显式分隔符的中文连续正文过于保守。",
+      "whySelfReviewMissed": "首次执行 --replace 后如果只看命令成功码，容易忽略 detected=1 造成的审查粒度退化。",
+      "optimizationAction": "把 scene count regression 纳入 outline check 或 scene-detect 输出的 warning。",
+      "detectedBy": [
+        "outline scene-detect --replace",
+        "manual scene boundary review"
+      ],
+      "ruleIds": [
+        "scene-plan-granularity"
+      ],
+      "verificationCommands": [
+        "PYTHONPATH=src python -m story_canvas outline scene-list --root projects\\\\new-book-validation-20260429 --chapter-id chapter-001"
+      ],
+      "chapterRefs": [
+        "chapter-001",
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-001#scene-1",
+        "chapter-002#scene-1",
+        "chapter-003#scene-1"
+      ]
+    },
+    {
+      "issue": "中段追读牵引仍可增强",
+      "evidence": [
+        "review preflight 仍提示已声明商业 hook line，但章节推进或章末追读牵引还不够强",
+        "部分 scene review 停在 workable，而非 solid"
+      ],
+      "impact": "不阻塞本轮能力验证和人工审查，但如果作为正式连载开篇，第二章的危机压迫还可以更尖锐。",
+      "primaryCause": "generation_miss",
+      "secondaryCauses": [
+        "self_review_miss"
+      ],
+      "fixAction": "人工审查后若要继续打磨，优先强化第二章旧库门和第三章灰帽人的主动威胁。",
+      "whyToolingMissed": "工具已给出商业 hook risk，但不能判断当前测试卷是否接受该风险。",
+      "whySelfReviewMissed": "作者侧修稿优先清理字数、scene 粒度和闭环，未继续扩写正式连载强度。",
+      "optimizationAction": "把测试卷和正式连载卷的追读强度门槛区分为不同 profile。",
+      "detectedBy": [
+        "review preflight",
+        "review scene"
+      ],
+      "ruleIds": [
+        "commercial-hook-strength"
+      ],
+      "verificationCommands": [
+        "PYTHONPATH=src python -m story_canvas review preflight --root projects\\\\new-book-validation-20260429 --volume-id volume-001",
+        "PYTHONPATH=src python -m story_canvas review scene --root projects\\\\new-book-validation-20260429 --chapter-id chapter-002 --scene-index 3"
+      ],
+      "chapterRefs": [
+        "chapter-002",
+        "chapter-003"
+      ],
+      "evidenceRefs": [
+        "chapter-002#scene-3",
+        "chapter-003#scene-2"
+      ]
+    }
+  ],
+  "closureAssessment": {
+    "mainProblem": "雾钟为什么点名林照夜，以及余仁为什么会从档案中消失。",
+    "delivered": [
+      "第十三下雾钟点名活见证人，并让林照夜开始缺页。",
+      "余仁案从空号推进到缺页待补，局部真相落定。",
+      "林照夜获得临时外勤协查证，角色状态完成阶段变化。",
+      "乔声父亲和名单第二人留下下一卷尾巴。"
+    ],
+    "missing": [],
+    "reasoning": "本卷已经完成一个三章小故事单元：起点是点名和身份消失，承段是旧站追查与旧案编号，收束是余仁缺页归档和临时外勤资格。剩余问题主要是正式连载强度和工具口径，不改变本卷局部闭环判断。"
+  },
+  "repairSuggestions": [
+    "若进入正式连载打磨，优先增强第二章旧库门处的主动威胁。",
+    "修复 stats 字数目标来源，避免后续 agent 被错误 2000/3000 目标诱导注水。",
+    "改进 scene-detect 对中文连续正文的分幕识别，避免覆盖已有三幕粒度。"
+  ],
+  "acceptedRisks": [
+    "本轮是能力验证用三章短卷，接受部分 scene 仅为 workable 而非 solid。",
+    "未为了 stats 当前 2000/3000 错误目标继续注水，按 project.yaml 的 1200/1800 和 review preflight 口径判断字数足够。",
+    "独立编辑审查使用 same_agent_fallback，因为当前用户未要求启动 subagent；该限制已在 editorPass 中明示。"
+  ],
+  "_templateHints": {
+    "scoreScale": "all score fields must be integers in 0..5",
+    "rootScoresPurpose": "author or primary volume self-review scores; use the shared 10-dimension rubric",
+    "editorScoresPurpose": "independent editor scores; usually mirrors the same 10 dimensions with editor conclusions",
+    "autofillPolicy": "root scores / issues / closureAssessment are heuristically prefilled from current preflight and review evidence; review before saving.",
+    "topProblemsType": "string[]",
+    "improvementPointsType": "string[]",
+    "issuesType": "object[]",
+    "issuesRequiredFields": [
+      "issue",
+      "evidence",
+      "impact",
+      "primaryCause",
+      "fixAction"
+    ],
+    "issuesOptionalButRecommendedFields": [
+      "secondaryCauses",
+      "whyToolingMissed",
+      "whySelfReviewMissed",
+      "optimizationAction",
+      "detectedBy",
+      "ruleIds",
+      "verificationCommands",
+      "chapterRefs",
+      "evidenceRefs"
+    ],
+    "issueExample": {
+      "issue": "卷尾阶段性交付不足",
+      "evidence": [
+        "第二章结尾更像抬出下一条主线，而不是完成本卷回合。"
+      ],
+      "impact": "会削弱本卷闭环感，暂不适合进入人工终审。",
+      "primaryCause": "generation_miss",
+      "secondaryCauses": [
+        "self_review_miss",
+        "tooling_miss"
+      ],
+      "fixAction": "补一层明确的阶段性兑现或输赢结果。",
+      "whyToolingMissed": "现有工具更擅长判断前提是否齐备，不够擅长判断卷尾兑现厚度。",
+      "whySelfReviewMissed": "AI 自审容易把继续抬线索误判为已完成闭环。",
+      "optimizationAction": "把 promised / delivered / missing 的对照写进卷审模板。",
+      "chapterRefs": [
+        "chapter-002"
+      ],
+      "evidenceRefs": [
+        "chapter-002#scene-2",
+        "review-packet:volume-001:chapter-002"
+      ]
+    }
+  },
+  "_templateContext": {
+    "scope": "volume",
+    "volumeId": "volume-001",
+    "volumeTitle": "第一卷 雾钟点名",
+    "chapterCount": 3,
+    "projectAdvisories": [],
+    "preflightSummary": {
+      "chapterPreflightCount": 3,
+      "chapterFileMissingCount": 0,
+      "knownUnwrappedActionCount": 0,
+      "taggedMissingActionCount": 0,
+      "mentionActionCount": 0,
+      "dueForeshadowCount": 0,
+      "overdueForeshadowCount": 0,
+      "unresolvedWithoutScheduleCount": 0,
+      "worldOnboardingGapCount": 0,
+      "factionRegistryGapCount": 0,
+      "capabilityTaskRiskCount": 0,
+      "powerProgressionConflictCount": 0
+    },
+    "volumeStructureCheck": {
+      "role": "intro-volume",
+      "closureContract": {
+        "requiredChapterCount": 3,
+        "requiredChapterCountSource": "commercial.releaseCadence",
+        "actualChapterCount": 3,
+        "releaseCadence": "测试用三章首卷",
+        "volumeGoal": "三章内完成公交站失踪案局部闭环，交付雾钟第一条规则与林照夜外勤资格变化",
+        "readerHook": "钟声为什么念出林照夜的准考证号",
+        "chapterDelivery": "林照夜第一次听见雾钟，确认失踪者留下与自己相关的档案线索"
+      },
+      "phaseAssignments": [
+        {
+          "chapterId": "chapter-001",
+          "chapterTitle": "第十三下雾钟",
+          "phase": "opening"
+        },
+        {
+          "chapterId": "chapter-002",
+          "chapterTitle": "旧站缺页",
+          "phase": "build"
+        },
+        {
+          "chapterId": "chapter-003",
+          "chapterTitle": "缺页归档",
+          "phase": "close"
+        }
+      ],
+      "checklist": [
+        {
+          "id": "outline-coverage",
+          "label": "卷级结构明示度",
+          "status": "pass",
+          "message": "当前卷 3/3 章都已具备 direction / beats / scenePlans 中的至少一项结构信号。",
+          "evidence": [],
+          "targetChapterIds": [],
+          "suggestion": ""
+        },
+        {
+          "id": "intro-world-onboarding",
+          "label": "引入卷 onboarding",
+          "status": "pass",
+          "message": "前几章没有暴露额外 world onboarding 缺口。",
+          "evidence": [],
+          "targetChapterIds": [],
+          "suggestion": ""
+        },
+        {
+          "id": "foreshadow-debt",
+          "label": "伏笔债务",
+          "status": "pass",
+          "message": "当前卷没有积压的到窗 / 逾期 / 未排期伏笔。",
+          "evidence": [],
+          "targetChapterIds": [],
+          "suggestion": ""
+        },
+        {
+          "id": "closure-readiness",
+          "label": "卷尾收束准备度",
+          "status": "pass",
+          "message": "卷尾章节已落正文且没有明显逾期/未排期伏笔，具备进入卷级闭环判断的最低前提。",
+          "evidence": [
+            "缺页归档",
+            "卷目标: 三章内完成公交站失踪案局部闭环，交付雾钟第一条规则与林照夜外勤资格变化",
+            "章节承诺: 3/3"
+          ],
+          "targetChapterIds": [],
+          "suggestion": "",
+          "requiredChapterCount": 3,
+          "actualChapterCount": 3,
+          "requiredChapterCountSource": "commercial.releaseCadence"
+        }
+      ],
+      "summary": {
+        "passCount": 4,
+        "riskCount": 0,
+        "missingCount": 0,
+        "notApplicableCount": 0
+      }
+    },
+    "blockingSignals": [],
+    "chapterSignals": [
+      {
+        "chapterId": "chapter-001",
+        "chapterTitle": "第十三下雾钟",
+        "chapterFileExists": true,
+        "mentionActionCount": 0,
+        "dueForeshadowCount": 0,
+        "overdueForeshadowCount": 0,
+        "worldOnboardingGapCount": 0,
+        "factionRegistryGapCount": 0,
+        "capabilityTaskRiskCount": 0,
+        "powerProgressionConflictCount": 0
+      },
+      {
+        "chapterId": "chapter-002",
+        "chapterTitle": "旧站缺页",
+        "chapterFileExists": true,
+        "mentionActionCount": 0,
+        "dueForeshadowCount": 0,
+        "overdueForeshadowCount": 0,
+        "worldOnboardingGapCount": 0,
+        "factionRegistryGapCount": 0,
+        "capabilityTaskRiskCount": 0,
+        "powerProgressionConflictCount": 0
+      },
+      {
+        "chapterId": "chapter-003",
+        "chapterTitle": "缺页归档",
+        "chapterFileExists": true,
+        "mentionActionCount": 0,
+        "dueForeshadowCount": 0,
+        "overdueForeshadowCount": 0,
+        "worldOnboardingGapCount": 0,
+        "factionRegistryGapCount": 0,
+        "capabilityTaskRiskCount": 0,
+        "powerProgressionConflictCount": 0
+      }
+    ],
+    "chapterReviewSummaries": [
+      {
+        "chapterId": "chapter-001",
+        "chapterTitle": "第十三下雾钟",
+        "generatedAt": "2026-04-30T00:53:14+08:00",
+        "rating": "solid",
+        "totalScore": 77,
+        "weightedTotal": 75.0,
+        "summary": "结合分析结果和正文信号，本章总分 77/100。当前强项在表达控制，最需要补强的是冲突张力。",
+        "priorityActions": [
+          "补一个明确阻力：对手、风险、时间压力或信息缺口，避免章节太平。"
+        ],
+        "styleSummary": "检测到1项AI风格特征：段落可读性。扣1分。",
+        "ruleJudgementIds": [
+          "paragraphReadability"
+        ]
+      },
+      {
+        "chapterId": "chapter-002",
+        "chapterTitle": "旧站缺页",
+        "generatedAt": "2026-04-30T00:51:29+08:00",
+        "rating": "solid",
+        "totalScore": 70,
+        "weightedTotal": 72.0,
+        "summary": "结合分析结果和正文信号，本章总分 70/100。当前强项在场景清晰度，最需要补强的是冲突张力。",
+        "priorityActions": [
+          "补一个明确阻力：对手、风险、时间压力或信息缺口，避免章节太平。",
+          "补一个明确的状态变化、关系变化或决定性动作，让章节前后产生落差。",
+          "补一处人物状态变化或代价反馈，让角色不是只在场而是真的被事件推动。"
+        ],
+        "styleSummary": "未检测到明显AI风格特征。",
+        "ruleJudgementIds": []
+      },
+      {
+        "chapterId": "chapter-003",
+        "chapterTitle": "缺页归档",
+        "generatedAt": "2026-04-30T00:49:48+08:00",
+        "rating": "solid",
+        "totalScore": 81,
+        "weightedTotal": 80.75,
+        "summary": "结合分析结果和正文信号，本章总分 81/100。当前强项在表达控制，最需要补强的是冲突张力。",
+        "priorityActions": [],
+        "styleSummary": "未检测到明显AI风格特征。",
+        "ruleJudgementIds": []
+      }
+    ],
+    "lowSceneReviews": [
+      {
+        "chapterId": "chapter-001",
+        "generatedAt": "2026-04-30T00:53:15+08:00",
+        "rating": "workable",
+        "totalScore": 55,
+        "summary": "基于选定片段的正文与分析信号，这一幕总分 55/100。当前最稳的是场景清晰度，最需要补强的是逻辑性。",
+        "sceneIndex": 1,
+        "startParagraph": 1,
+        "endParagraph": 12,
+        "priorityActions": [
+          "补清楚“为什么现在发生这件事”，避免角色像被作者硬推着走。",
+          "补一个明确变化：决定、冲突升级、信息揭示或关系转向，让这一幕承担任务。",
+          "结尾可以留下一个未解答的问题，增强这一幕的牵引力。"
+        ]
+      },
+      {
+        "chapterId": "chapter-003",
+        "generatedAt": "2026-04-30T00:49:50+08:00",
+        "rating": "workable",
+        "totalScore": 57,
+        "summary": "基于选定片段的正文与分析信号，这一幕总分 57/100。当前最稳的是连续性，最需要补强的是伏笔与回收。",
+        "sceneIndex": 3,
+        "startParagraph": 38,
+        "endParagraph": 42,
+        "priorityActions": [
+          "考虑种下一个后续要兑现的信息点，或让当前冲突形成更明确的回收钩子。",
+          "结尾可以留下一个未解答的问题，增强这一幕的牵引力。",
+          "开头补一个时间、地点或环境锚点，帮助读者快速抓到镜头。"
+        ]
+      },
+      {
+        "chapterId": "chapter-002",
+        "generatedAt": "2026-04-30T00:51:29+08:00",
+        "rating": "workable",
+        "totalScore": 60,
+        "summary": "基于选定片段的正文与分析信号，这一幕总分 60/100。当前最稳的是场景清晰度，最需要补强的是伏笔与回收。",
+        "sceneIndex": 1,
+        "startParagraph": 1,
+        "endParagraph": 12,
+        "priorityActions": [
+          "考虑种下一个后续要兑现的信息点，或让当前冲突形成更明确的回收钩子。",
+          "给角色一个更直白的动机或顾虑提示，读者更容易跟上行动逻辑。",
+          "补一个明确变化：决定、冲突升级、信息揭示或关系转向，让这一幕承担任务。"
+        ]
+      },
+      {
+        "chapterId": "chapter-002",
+        "generatedAt": "2026-04-30T00:51:30+08:00",
+        "rating": "workable",
+        "totalScore": 61,
+        "summary": "基于选定片段的正文与分析信号，这一幕总分 61/100。当前最稳的是场景清晰度，最需要补强的是伏笔与回收。",
+        "sceneIndex": 3,
+        "startParagraph": 21,
+        "endParagraph": 43,
+        "priorityActions": [
+          "考虑种下一个后续要兑现的信息点，或让当前冲突形成更明确的回收钩子。",
+          "补一个明确变化：决定、冲突升级、信息揭示或关系转向，让这一幕承担任务。"
+        ]
+      },
+      {
+        "chapterId": "chapter-003",
+        "generatedAt": "2026-04-30T00:49:49+08:00",
+        "rating": "workable",
+        "totalScore": 64,
+        "summary": "基于选定片段的正文与分析信号，这一幕总分 64/100。当前最稳的是场景清晰度，最需要补强的是伏笔与回收。",
+        "sceneIndex": 1,
+        "startParagraph": 1,
+        "endParagraph": 15,
+        "priorityActions": [
+          "考虑种下一个后续要兑现的信息点，或让当前冲突形成更明确的回收钩子。",
+          "给角色一个更直白的动机或顾虑提示，读者更容易跟上行动逻辑。"
+        ]
+      },
+      {
+        "chapterId": "chapter-003",
+        "generatedAt": "2026-04-30T00:49:49+08:00",
+        "rating": "workable",
+        "totalScore": 64,
+        "summary": "基于选定片段的正文与分析信号，这一幕总分 64/100。当前最稳的是连续性，最需要补强的是伏笔与回收。",
+        "sceneIndex": 2,
+        "startParagraph": 16,
+        "endParagraph": 37,
+        "priorityActions": [
+          "考虑种下一个后续要兑现的信息点，或让当前冲突形成更明确的回收钩子。",
+          "开头补一个时间、地点或环境锚点，帮助读者快速抓到镜头。"
+        ]
+      },
+      {
+        "chapterId": "chapter-001",
+        "generatedAt": "2026-04-30T00:53:15+08:00",
+        "rating": "workable",
+        "totalScore": 68,
+        "summary": "基于选定片段的正文与分析信号，这一幕总分 68/100。当前最稳的是伏笔与回收，最需要补强的是场景清晰度。",
+        "sceneIndex": 2,
+        "startParagraph": 13,
+        "endParagraph": 21,
+        "priorityActions": [
+          "开头补一个时间、地点或环境锚点，帮助读者快速抓到镜头。",
+          "把这一幕里最关键的角色关系点得更明确，减少“有人在说话但局面不清”的感觉。",
+          "结尾补一个钩子、未完成动作或状态余波，让下一幕更自然接上。"
+        ]
+      },
+      {
+        "chapterId": "chapter-002",
+        "generatedAt": "2026-04-30T00:51:30+08:00",
+        "rating": "workable",
+        "totalScore": 68,
+        "summary": "基于选定片段的正文与分析信号，这一幕总分 68/100。当前最稳的是场景清晰度，最需要补强的是逻辑性。",
+        "sceneIndex": 2,
+        "startParagraph": 13,
+        "endParagraph": 20,
+        "priorityActions": [
+          "结尾补一个钩子、未完成动作或状态余波，让下一幕更自然接上。"
+        ]
+      }
+    ],
+    "styleAggregate": {
+      "profile": "default",
+      "volumeId": "volume-001",
+      "chapterCount": 3,
+      "averageOverallScore": 19.7,
+      "averageDeduction": 0.3,
+      "flaggedChapters": [
+        {
+          "chapterId": "chapter-001",
+          "overallScore": 19,
+          "totalDeduction": 1,
+          "detectedPatterns": [
+            "段落可读性"
+          ]
+        }
+      ],
+      "patternCounts": [
+        {
+          "label": "段落可读性",
+          "chapterHits": 1
+        }
+      ]
+    },
+    "styleFlaggedChapters": [
+      {
+        "chapterId": "chapter-001",
+        "overallScore": 19,
+        "totalDeduction": 1,
+        "detectedPatterns": [
+          "段落可读性"
+        ],
+        "summary": "检测到1项AI风格特征：段落可读性。扣1分。"
+      }
+    ],
+    "topRuleJudgements": [
+      {
+        "ruleId": "sensoryVariety",
+        "message": "检测到感官单一问题。",
+        "severity": "medium",
+        "hits": 4
+      },
+      {
+        "ruleId": "paragraphReadability",
+        "message": "检测到段落可读性问题，例如 第11段约91字：那声音没有唤人的温度，更像有人拿他的名字核对一份湿档案。随后又念...。",
+        "severity": "low",
+        "hits": 2
+      },
+      {
+        "ruleId": "contrastFlipPattern",
+        "message": "检测到翻转句式问题，例如 不是审你。是看你还能不能活着听见第二次。",
+        "severity": "medium",
+        "hits": 1
+      },
+      {
+        "ruleId": "hedgeAdverbs",
+        "message": "检测到模糊副词问题，例如 轻轻。",
+        "severity": "high",
+        "hits": 1
+      }
+    ],
+    "contractAlignmentRisks": [
+      "当前主类型偏设定型，但场景/设定锚点偏弱。",
+      "项目已声明情绪契约的核心情绪体验，但本章的压力、冲突或推进还不足以稳定承接。"
+    ],
+    "commercialAlignmentRisks": [
+      "已声明商业 hook line，但本章的推进或章末追读牵引还不够强。"
+    ],
+    "reviewPacketRefs": [
+      "review-packet:volume-001:chapter-001",
+      "review-packet:volume-001:chapter-002",
+      "review-packet:volume-001:chapter-003"
+    ],
+    "draftAutofill": {
+      "used": true,
+      "strongestPointSource": "volume-structure:outline-coverage",
+      "biggestRiskSource": "style-aggregate",
+      "issueCount": 4,
+      "weakDimensionIds": [
+        "worldLogic",
+        "chapterHandoff",
+        "characterContinuity",
+        "conflictEscalation",
+        "payoffDelivery",
+        "foreshadowRhythm",
+        "styleReadability"
+      ]
+    },
+    "incrementalReviewOnly": {
+      "latestPersistedReview": {},
+      "warning": "独立盲审模式默认不要先读取上一轮自审摘要；只有增量复审才使用这里的上下文。"
+    },
+    "evidenceRefExamples": [
+      "chapter-001#scene-1",
+      "chapter-001#paragraph-4",
+      "chapter-001#world-rule-onboarding",
+      "chapter-002#handoff-gap",
+      "review-packet:volume-001:chapter-001"
+    ],
+    "independentEditorExpectation": {
+      "requiredRole": "editor",
+      "preferredMode": "independent_agent",
+      "preferredContextIsolation": "no_context_proxy",
+      "fallbackModes": [
+        "human_editor",
+        "fresh_thread",
+        "same_agent_fallback"
+      ],
+      "fallbackContextIsolation": [
+        "human_manual",
+        "fresh_thread",
+        "not_available"
+      ],
+      "checklist": [
+        "独立编辑评分与 AI 自审评分使用同一套 10 维 rubric。",
+        "优先使用无上下文代理；若宿主不支持，至少切到新线程或明确记录 fallback。",
+        "每个主要问题都要补‘为什么工具没报’、‘为什么 AI 自审漏看’、‘怎么优化’。"
+      ]
+    },
+    "recommendedCommands": [
+      "review preflight --root <root> --volume-id volume-001",
+      "workflow status --root <root> --volume-id volume-001",
+      "export --root <root> --format review-packet --volume-id volume-001"
+    ]
+  }
+}

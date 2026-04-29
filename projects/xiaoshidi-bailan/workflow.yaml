@@ -1,0 +1,158 @@
+{
+  "currentStage": "context_ready",
+  "targetChapterId": "chapter-001",
+  "workflowStatus": "in_progress",
+  "gateHistory": [],
+  "stageResults": {
+    "project_contract": {
+      "stageId": "project_contract",
+      "completed": true,
+      "status": "ready",
+      "missing": [],
+      "nextActions": [],
+      "ruleJudgements": [],
+      "gateDecision": {
+        "gateId": "project_contract",
+        "status": "ready",
+        "blockingRules": [],
+        "notes": []
+      }
+    },
+    "outline_ready": {
+      "stageId": "outline_ready",
+      "completed": true,
+      "status": "ready",
+      "missing": [],
+      "nextActions": [],
+      "chapterId": "chapter-001",
+      "title": "扫地也算修行",
+      "ruleJudgements": [],
+      "gateDecision": {
+        "gateId": "outline_ready",
+        "status": "ready",
+        "blockingRules": [],
+        "notes": []
+      }
+    },
+    "context_ready": {
+      "stageId": "context_ready",
+      "completed": false,
+      "status": "stale-context-refresh",
+      "chapterId": "chapter-001",
+      "chapterFileExists": true,
+      "contextExists": true,
+      "contextUpdatedAt": "2026-04-29T19:41:56+08:00",
+      "contextStale": true,
+      "contextHashStatus": "stale",
+      "contextHashTracked": true,
+      "chapterContentHash": "eba73cf0b2",
+      "contextChapterContentHash": "503e94a16e",
+      "missing": [
+        {
+          "code": "stale-context-refresh",
+          "message": "当前章节正文已变化，需要重新刷新上下文"
+        }
+      ],
+      "nextActions": [
+        "先重新运行 chapter analyze，更新本章分析基础",
+        "再运行 context refresh，刷新当前章节上下文"
+      ],
+      "ruleJudgements": [
+        {
+          "ruleId": "stale-context-refresh",
+          "source": "core",
+          "scope": "chapter",
+          "kind": "gate",
+          "severity": "warning",
+          "status": "triggered",
+          "message": "当前章节正文已变化，需要重新刷新上下文",
+          "suggestion": "先重新运行 chapter analyze，更新本章分析基础",
+          "evidence": [
+            "当前章节正文已变化，需要重新刷新上下文"
+          ],
+          "scopeRef": {
+            "chapterId": "chapter-001"
+          },
+          "payload": {
+            "code": "stale-context-refresh",
+            "message": "当前章节正文已变化，需要重新刷新上下文"
+          },
+          "tags": [
+            "workflow",
+            "context-gate",
+            "context_ready"
+          ]
+        }
+      ],
+      "gateDecision": {
+        "gateId": "context_ready",
+        "status": "blocked",
+        "blockingRules": [
+          "stale-context-refresh"
+        ],
+        "notes": [
+          "先重新运行 chapter analyze，更新本章分析基础",
+          "再运行 context refresh，刷新当前章节上下文"
+        ]
+      }
+    },
+    "chapter_review_ready": {
+      "stageId": "chapter_review_ready",
+      "completed": true,
+      "status": "ready",
+      "chapterId": "chapter-001",
+      "chapterFileExists": true,
+      "chapterReviewCount": 2,
+      "missing": [],
+      "nextActions": [],
+      "ruleJudgements": [],
+      "gateDecision": {
+        "gateId": "chapter_review_ready",
+        "status": "ready",
+        "blockingRules": [],
+        "notes": []
+      }
+    },
+    "scene_review_ready": {
+      "stageId": "scene_review_ready",
+      "completed": true,
+      "status": "ready",
+      "chapterId": "chapter-001",
+      "chapterFileExists": true,
+      "sceneReviewCount": 6,
+      "missing": [],
+      "nextActions": [],
+      "ruleJudgements": [],
+      "gateDecision": {
+        "gateId": "scene_review_ready",
+        "status": "ready",
+        "blockingRules": [],
+        "notes": []
+      }
+    },
+    "export_ready": {
+      "stageId": "export_ready",
+      "completed": true,
+      "status": "ready",
+      "chapterId": "chapter-001",
+      "chapterFileExists": true,
+      "chapterReviewCount": 2,
+      "sceneReviewCount": 6,
+      "missing": [],
+      "nextActions": [
+        "当前章节已具备导出前的最小 review 信号，可继续 export 或转入下一章"
+      ],
+      "ruleJudgements": [],
+      "gateDecision": {
+        "gateId": "export_ready",
+        "status": "ready",
+        "blockingRules": [],
+        "notes": [
+          "当前章节已具备导出前的最小 review 信号，可继续 export 或转入下一章"
+        ]
+      }
+    }
+  },
+  "updatedAt": "2026-04-29T19:42:34+08:00",
+  "lastRunMode": "non-interactive"
+}

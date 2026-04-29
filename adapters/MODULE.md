@@ -32,6 +32,8 @@
 - adapter 可以整合外部写作 skill 的方法论，但不得引入并行真相源或独立状态系统
 - imagegen 类 adapter 也必须消费仓库导出的 batch manifest，并通过 CLI 回录结果，不能自己直接写 `illustrations.yaml`
 - 写作类 adapter 必须支持分层加载：主 skill + references，不得把普适写法、workflow gate、tag overlay、宿主说明无差别堆进单文件
+- 写作类 adapter 可以把语料 overlay 翻译成风格执行规则，但不得把 overlay 写成新的项目状态、审查 gate 或固定命令清单
+- 写作类 adapter 在项目起步与章节起步时，必须优先消费 CLI 返回的 `startGuide` / gate 输出，再由 skill 组织解释；不得绕过 CLI 自行发明平行 bootstrap 流程
 - WebUI 只能作为人类更好参与的辅助层，不能被写成强制工作流前提
 
 ## 4. 文档同步触发条件
