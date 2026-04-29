@@ -153,6 +153,7 @@
 - `chapter suggest` 默认要求目标章节先通过 `outline check`，旧项目如需跳过必须显式传 `--allow-without-outline`
 - `outline check` 默认是严格模式；只有显式传入 `--allow-missing-project-gate`、`--allow-missing-beats`、`--allow-missing-scene-plans` 才会放宽
 - `review chapter` 的 `priorityActions` / `contractAlignment` 已会消费 `structuredPlanBlock` 这类高置信风格信号；若只看到 `patternResults` 没看到动作项，优先检查 style report 是否被截断或文本是否低于检测阈值
+- `review scene` 现在会把 full chapter 与当前 scene 范围一并透传给一致性检测，因此 `outlineDeviation` 只应提示当前 scene 的 beat miss，不再机械复制整章 warning；若看到跨 scene 重复告警，优先检查 `scenePlans` 段落范围是否失真
 - `workflow advance` 只能对当前 gate 执行；如果要回到更早 gate，必须先 `workflow run --resume-from <stage>` 或 `workflow reset --from-gate <stage>`
 - `workflow status` 会把持久化的 `workflow.yaml` 与当前推断结果合并展示，因此 `currentStage` 可能早于 `inferredCurrentStage`
 - chapter workflow 当前最小可验证链路为 `project_contract -> outline_ready -> context_ready -> chapter_review_ready -> scene_review_ready -> export_ready`；其中 `context_ready` 用于确认当前章至少完成一轮 `context refresh`

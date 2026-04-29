@@ -79,6 +79,50 @@ class ConsistencyEngineTest(unittest.TestCase):
         soft = result["softChecks"]
         self.assertTrue(len(soft.get("outlineDeviations", [])) > 0)
 
+    def test_outline_deviation_skips_scene_plan_backed_beat_with_matching_prose(self):
+        state = {
+            "entities": {"entities": [], "enrichmentProposals": []},
+            "projection": {"snapshotProjections": [], "relationProjections": [], "sceneScopeProjections": [], "timelineProjections": [], "causalityProjections": []},
+            "worldbook": {"premiseFacts": [], "worldRules": [], "factions": [], "locations": [], "artifacts": [], "mysteries": []},
+            "outline": {
+                "volumes": [
+                    {
+                        "id": "vol-1",
+                        "title": "第一卷",
+                        "theme": "",
+                        "chapters": [
+                            {
+                                "id": "chapter-001",
+                                "title": "第一章",
+                                "status": "completed",
+                                "direction": "",
+                                "beats": [
+                                    {"id": "beat-1", "summary": "林舟在仓库里和沈昭正面对峙", "status": "planned"},
+                                ],
+                                "scenePlans": [
+                                    {
+                                        "id": "scene-1",
+                                        "title": "仓库对峙",
+                                        "summary": "林舟与沈昭在仓库里摊开彼此怀疑。",
+                                        "startParagraph": 1,
+                                        "endParagraph": 2,
+                                    }
+                                ],
+                            }
+                        ],
+                    },
+                ],
+                "chapters": [],
+                "chapterDirections": [],
+            },
+        }
+        result = check_consistency(
+            state,
+            "林舟推开仓库铁门时，沈昭已经站在里面等他。\n\n两人终于把彼此的怀疑摊开，对峙没有再留任何余地。",
+            "chapter-001",
+        )
+        self.assertEqual(result["softChecks"]["outlineDeviations"], [])
+
     def test_no_issues(self):
         state = {
             "entities": {"entities": [], "enrichmentProposals": []},

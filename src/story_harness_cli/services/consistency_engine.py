@@ -109,6 +109,9 @@ BREAKTHROUGH_NEGATION_PREFIXES = (
 BREAKTHROUGH_FAILURE_SUFFIXES = (
     "失败", "未成", "未果", "受阻", "夭折", "中断",
 )
+OUTLINE_SCENE_SUMMARY_MATCH_THRESHOLD = 0.12
+OUTLINE_SCENE_TEXT_MATCH_THRESHOLD = 0.03
+OUTLINE_PARAGRAPH_MATCH_THRESHOLD = 0.05
 
 
 def check_consistency(
@@ -116,6 +119,9 @@ def check_consistency(
     chapter_text: str,
     chapter_id: str,
     keywords: Dict[str, Any] | None = None,
+    *,
+    full_chapter_text: str | None = None,
+    scene_scope: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
     hard: Dict[str, List] = {
         "stateContradictions": [],
@@ -134,7 +140,13 @@ def check_consistency(
     _check_relation_contradictions(
         state, chapter_text, chapter_id, hard["relationContradictions"], intimate_kw, negation_kw,
     )
-    _check_outline_deviations(state, chapter_id, soft["outlineDeviations"])
+    _check_outline_deviations(
+        state,
+        chapter_id,
+        soft["outlineDeviations"],
+        full_chapter_text=full_chapter_text or chapter_text,
+        scene_scope=scene_scope,
+    )
     _check_thread_status(state, chapter_id, soft["outlineDeviations"])
     _check_arc_alignment(state, chapter_text, chapter_id, soft["outlineDeviations"])
     setting_candidates = _extract_setting_candidates(chapter_text, chapter_id)
@@ -243,26 +255,302 @@ def _check_relation_contradictions(
 
 
 def _check_outline_deviations(
-    state: Dict, chapter_id: str, results: List
+    state: Dict,
+    chapter_id: str,
+    results: List,
+    *,
+    full_chapter_text: str,
+    scene_scope: Dict[str, Any] | None = None,
 ) -> None:
-    outline = state.get("outline", {})
-    volumes = outline.get("volumes", [])
+    chapter_entry = _find_outline_chapter_entry(state, chapter_id)
+    if not isinstance(chapter_entry, dict):
+        return
+    if chapter_entry.get("status") != "completed":
+        return
 
-    for vol in volumes:
-        for ch in vol.get("chapters", []):
-            if ch.get("id") != chapter_id:
-                continue
-            if ch.get("status") != "completed":
-                continue
-            for beat in ch.get("beats", []):
-                if beat.get("status") == "planned":
-                    results.append({
-                        "beatId": beat.get("id"),
-                        "summary": beat.get("summary", ""),
-                        "status": "planned",
-                        "note": "细纲中规划的场景在正文中未出现，可能是故意跳过",
-                        "severity": "advisory",
-                    })
+    beats = [item for item in chapter_entry.get("beats", []) if isinstance(item, dict)]
+    if not beats:
+        return
+
+    paragraphs = paragraphs_from_text(full_chapter_text)
+    scene_plans = _normalize_scene_plans(chapter_entry.get("scenePlans", []))
+    total_beats = len(beats)
+    for beat_index, beat in enumerate(beats, start=1):
+        if beat.get("status") != "planned":
+            continue
+        coverage = _assess_outline_beat_coverage(
+            beat,
+            beat_index=beat_index,
+            total_beats=total_beats,
+            scene_plans=scene_plans,
+            paragraphs=paragraphs,
+        )
+        if coverage.get("matched"):
+            continue
+        if scene_scope and not _should_surface_outline_deviation_for_scope(scene_scope, coverage):
+            continue
+        results.append(
+            {
+                "beatId": beat.get("id"),
+                "summary": beat.get("summary", ""),
+                "status": "planned",
+                "note": _outline_deviation_note(coverage, scene_scope),
+                "severity": "advisory",
+                "expectedSceneIndex": coverage.get("expectedSceneIndex"),
+                "expectedSceneTitle": coverage.get("expectedSceneTitle", ""),
+                "expectedParagraphRange": coverage.get("expectedParagraphRange", {}),
+                "matchedParagraphs": coverage.get("matchedParagraphs", []),
+                "matchedSceneIndexes": coverage.get("matchedSceneIndexes", []),
+                "matchedSnippets": coverage.get("matchedSnippets", []),
+                "matchConfidence": coverage.get("matchConfidence", 0.0),
+                "missReason": coverage.get("missReason", ""),
+                "evidence": coverage.get("evidence", []),
+            }
+        )
+
+
+def _find_outline_chapter_entry(state: Dict[str, Any], chapter_id: str) -> Dict[str, Any]:
+    outline = state.get("outline", {})
+    for volume in outline.get("volumes", []):
+        if not isinstance(volume, dict):
+            continue
+        for chapter in volume.get("chapters", []):
+            if isinstance(chapter, dict) and chapter.get("id") == chapter_id:
+                return chapter
+    for chapter in outline.get("chapters", []):
+        if isinstance(chapter, dict) and chapter.get("id") == chapter_id:
+            return chapter
+    return {}
+
+
+def _normalize_scene_plans(scene_plans: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    normalized: List[Dict[str, Any]] = []
+    for scene_index, scene in enumerate(scene_plans, start=1):
+        if not isinstance(scene, dict):
+            continue
+        start_paragraph = scene.get("startParagraph")
+        end_paragraph = scene.get("endParagraph")
+        if not isinstance(start_paragraph, int) or not isinstance(end_paragraph, int):
+            continue
+        normalized.append(
+            {
+                "sceneIndex": scene_index,
+                "scenePlanId": str(scene.get("id", "")),
+                "title": str(scene.get("title", "")),
+                "summary": str(scene.get("summary", "")),
+                "startParagraph": start_paragraph,
+                "endParagraph": end_paragraph,
+            }
+        )
+    return normalized
+
+
+def _assess_outline_beat_coverage(
+    beat: Dict[str, Any],
+    *,
+    beat_index: int,
+    total_beats: int,
+    scene_plans: List[Dict[str, Any]],
+    paragraphs: List[str],
+) -> Dict[str, Any]:
+    beat_summary = str(beat.get("summary", "")).strip()
+    coverage = {
+        "matched": False,
+        "matchConfidence": 0.0,
+        "matchedParagraphs": [],
+        "matchedSceneIndexes": [],
+        "matchedSnippets": [],
+        "expectedSceneIndex": None,
+        "expectedSceneTitle": "",
+        "expectedParagraphRange": {},
+        "missReason": "正文中未找到足够接近的细纲证据。",
+        "evidence": [],
+    }
+    if not beat_summary:
+        coverage["missReason"] = "beat 缺少 summary，暂时无法做命中判断。"
+        return coverage
+
+    expected_scene = _resolve_expected_scene_for_beat(
+        beat_summary,
+        beat_index=beat_index,
+        total_beats=total_beats,
+        scene_plans=scene_plans,
+    )
+    if expected_scene:
+        coverage["expectedSceneIndex"] = expected_scene["sceneIndex"]
+        coverage["expectedSceneTitle"] = expected_scene.get("title") or expected_scene.get("summary", "")
+        coverage["expectedParagraphRange"] = {
+            "startParagraph": expected_scene["startParagraph"],
+            "endParagraph": expected_scene["endParagraph"],
+        }
+        coverage["evidence"].append(
+            f"scenePlan#{expected_scene['sceneIndex']}: {(expected_scene.get('summary') or expected_scene.get('title') or '').strip()[:80]}"
+        )
+        scene_text = _join_paragraph_range(
+            paragraphs,
+            expected_scene["startParagraph"],
+            expected_scene["endParagraph"],
+        )
+        scene_score = max(
+            _outline_text_overlap_score(beat_summary, scene_text),
+            _outline_text_overlap_score(
+                f"{expected_scene.get('title', '')} {expected_scene.get('summary', '')}",
+                scene_text,
+            ),
+        )
+        best_local = _best_outline_paragraph_match(
+            beat_summary,
+            paragraphs,
+            expected_scene["startParagraph"],
+            expected_scene["endParagraph"],
+        )
+        coverage["matchConfidence"] = round(max(scene_score, best_local["score"]), 3)
+        if coverage["matchConfidence"] >= OUTLINE_SCENE_TEXT_MATCH_THRESHOLD and scene_text.strip():
+            coverage["matched"] = True
+            coverage["matchedParagraphs"] = best_local["paragraphs"] or list(
+                range(expected_scene["startParagraph"], expected_scene["endParagraph"] + 1)
+            )[:2]
+            coverage["matchedSceneIndexes"] = [expected_scene["sceneIndex"]]
+            coverage["matchedSnippets"] = best_local["snippets"] or _paragraph_snippets_for_indexes(
+                paragraphs,
+                coverage["matchedParagraphs"],
+            )
+            return coverage
+        coverage["missReason"] = "预期 scene 已定位，但该段正文与 beat/scene summary 的重合度不足。"
+        return coverage
+
+    best_paragraph = _best_outline_paragraph_match(beat_summary, paragraphs, 1, len(paragraphs))
+    coverage["matchConfidence"] = round(best_paragraph["score"], 3)
+    if best_paragraph["score"] >= OUTLINE_PARAGRAPH_MATCH_THRESHOLD:
+        coverage["matched"] = True
+        coverage["matchedParagraphs"] = best_paragraph["paragraphs"]
+        coverage["matchedSnippets"] = best_paragraph["snippets"]
+        return coverage
+    coverage["missReason"] = "缺少可映射的 scenePlan，且整章正文也未找到足够接近的段落。"
+    return coverage
+
+
+def _resolve_expected_scene_for_beat(
+    beat_summary: str,
+    *,
+    beat_index: int,
+    total_beats: int,
+    scene_plans: List[Dict[str, Any]],
+) -> Dict[str, Any]:
+    if not scene_plans:
+        return {}
+    best_scene: Dict[str, Any] = {}
+    best_score = 0.0
+    for scene in scene_plans:
+        scene_ref = f"{scene.get('title', '')} {scene.get('summary', '')}"
+        score = _outline_text_overlap_score(beat_summary, scene_ref)
+        if score > best_score:
+            best_score = score
+            best_scene = scene
+    if best_scene and best_score >= OUTLINE_SCENE_SUMMARY_MATCH_THRESHOLD:
+        matched = dict(best_scene)
+        matched["matchScore"] = round(best_score, 3)
+        matched["matchReason"] = "scene-summary"
+        return matched
+    if len(scene_plans) == total_beats and 1 <= beat_index <= len(scene_plans):
+        matched = dict(scene_plans[beat_index - 1])
+        matched["matchScore"] = round(best_score, 3)
+        matched["matchReason"] = "scene-order"
+        return matched
+    return {}
+
+
+def _join_paragraph_range(paragraphs: List[str], start_paragraph: int, end_paragraph: int) -> str:
+    if start_paragraph < 1 or end_paragraph < start_paragraph:
+        return ""
+    return "\n\n".join(paragraphs[start_paragraph - 1:end_paragraph])
+
+
+def _best_outline_paragraph_match(
+    beat_summary: str,
+    paragraphs: List[str],
+    start_paragraph: int,
+    end_paragraph: int,
+) -> Dict[str, Any]:
+    best_score = 0.0
+    best_index = 0
+    for paragraph_index in range(start_paragraph, end_paragraph + 1):
+        if paragraph_index < 1 or paragraph_index > len(paragraphs):
+            continue
+        paragraph = paragraphs[paragraph_index - 1]
+        score = _outline_text_overlap_score(beat_summary, paragraph)
+        if score > best_score:
+            best_score = score
+            best_index = paragraph_index
+    if best_index <= 0:
+        return {"score": 0.0, "paragraphs": [], "snippets": []}
+    return {
+        "score": best_score,
+        "paragraphs": [best_index],
+        "snippets": _paragraph_snippets_for_indexes(paragraphs, [best_index]),
+    }
+
+
+def _paragraph_snippets_for_indexes(paragraphs: List[str], paragraph_indexes: List[int]) -> List[str]:
+    snippets: List[str] = []
+    for paragraph_index in paragraph_indexes:
+        if paragraph_index < 1 or paragraph_index > len(paragraphs):
+            continue
+        snippet = paragraphs[paragraph_index - 1].strip()
+        if snippet:
+            snippets.append(snippet[:80])
+    return snippets
+
+
+def _outline_text_overlap_score(source_text: str, target_text: str) -> float:
+    source_units = _outline_match_units(source_text)
+    target_units = _outline_match_units(target_text)
+    if not source_units or not target_units:
+        return 0.0
+    overlap = source_units & target_units
+    return len(overlap) / len(source_units)
+
+
+def _outline_match_units(text: str) -> set[str]:
+    normalized = re.sub(r"[^\w\u4e00-\u9fff]+", "", (text or "").lower())
+    units: set[str] = set()
+    for size in (2, 3, 4):
+        if len(normalized) < size:
+            continue
+        for index in range(len(normalized) - size + 1):
+            units.add(normalized[index:index + size])
+    return units
+
+
+def _should_surface_outline_deviation_for_scope(
+    scene_scope: Dict[str, Any],
+    coverage: Dict[str, Any],
+) -> bool:
+    expected_scene_index = coverage.get("expectedSceneIndex")
+    scoped_scene_index = scene_scope.get("sceneIndex")
+    if isinstance(expected_scene_index, int) and isinstance(scoped_scene_index, int):
+        return expected_scene_index == scoped_scene_index
+
+    expected_range = coverage.get("expectedParagraphRange", {})
+    expected_start = expected_range.get("startParagraph")
+    expected_end = expected_range.get("endParagraph")
+    scope_start = scene_scope.get("startParagraph")
+    scope_end = scene_scope.get("endParagraph")
+    if all(isinstance(value, int) for value in (expected_start, expected_end, scope_start, scope_end)):
+        return not (scope_end < expected_start or scope_start > expected_end)
+    return False
+
+
+def _outline_deviation_note(
+    coverage: Dict[str, Any],
+    scene_scope: Dict[str, Any] | None,
+) -> str:
+    expected_scene_index = coverage.get("expectedSceneIndex")
+    if scene_scope and isinstance(expected_scene_index, int):
+        return f"当前 scene 未找到该 beat 的足够正文证据，预计承载位置是 scene {expected_scene_index}。"
+    if isinstance(expected_scene_index, int):
+        return f"细纲 beat 预计落在 scene {expected_scene_index}，但该 scene 的正文证据不足。"
+    return "细纲中规划的 beat 在正文中未找到足够证据，可能遗漏或被改写。"
 
 
 def _build_ai_context(

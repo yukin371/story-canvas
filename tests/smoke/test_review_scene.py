@@ -238,6 +238,80 @@ class ReviewSceneSmokeTest(unittest.TestCase):
         self.assertEqual(payload["sceneRange"]["source"], "explicit")
         self.assertIn("scenePlanId", payload["sceneRange"])
 
+    def test_review_scene_limits_outline_deviation_to_current_scene(self) -> None:
+        (self.temp_dir / "outline.yaml").write_text(
+            json.dumps(
+                {
+                    "volumes": [
+                        {
+                            "id": "volume-001",
+                            "title": "第一卷",
+                            "theme": "",
+                            "chapters": [
+                                {
+                                    "id": "chapter-001",
+                                    "title": "第一章",
+                                    "status": "completed",
+                                    "direction": "两场冲突依次升级。",
+                                    "beats": [
+                                        {"id": "beat-1", "summary": "林舟在仓库门口先确认接头暗号。", "status": "planned"},
+                                        {"id": "beat-2", "summary": "林舟和沈昭在仓库深处把怀疑摊开。", "status": "planned"},
+                                    ],
+                                    "scenePlans": [
+                                        {
+                                            "id": "scene-001",
+                                            "title": "门口接头",
+                                            "summary": "林舟先在仓库门口确认接头暗号。",
+                                            "startParagraph": 1,
+                                            "endParagraph": 1,
+                                        },
+                                        {
+                                            "id": "scene-002",
+                                            "title": "仓库对峙",
+                                            "summary": "林舟和沈昭在仓库深处摊开彼此怀疑。",
+                                            "startParagraph": 2,
+                                            "endParagraph": 3,
+                                        },
+                                    ],
+                                }
+                            ],
+                        }
+                    ],
+                    "chapters": [],
+                    "chapterDirections": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(
+            "# 第一章\n\n"
+            "林舟直接从侧墙翻了进去，连原定流程都懒得走。\n\n"
+            "沈昭已经站在货架尽头等他。\n\n"
+            "两人很快把彼此的怀疑摊开，对峙不再留余地。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            scene_one_exit = main(["review", "scene", "--root", str(self.temp_dir), "--chapter-id", "chapter-001", "--scene-index", "1"])
+        scene_one_payload = json.loads(buffer.getvalue())
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            scene_two_exit = main(["review", "scene", "--root", str(self.temp_dir), "--chapter-id", "chapter-001", "--scene-index", "2"])
+        scene_two_payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(scene_one_exit, 0)
+        self.assertEqual(scene_two_exit, 0)
+        scene_one_outline = [item for item in scene_one_payload["ruleJudgements"] if item["ruleId"] == "outlineDeviation"]
+        scene_two_outline = [item for item in scene_two_payload["ruleJudgements"] if item["ruleId"] == "outlineDeviation"]
+        self.assertEqual(len(scene_one_outline), 1)
+        self.assertEqual(scene_one_outline[0]["payload"]["beatId"], "beat-1")
+        self.assertEqual(scene_two_outline, [])
+
     def test_review_scene_uses_detected_scene_plans_as_explicit_source(self) -> None:
         chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
         chapter_path.write_text(

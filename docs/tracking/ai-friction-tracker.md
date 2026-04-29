@@ -307,7 +307,7 @@
 
 ### AIF-012 章节/场景评审会对已兑现 beat 稳定误报 `outlineDeviation`
 
-- 状态: `active`
+- 状态: `mitigated`
 - 首次记录: `2026-04-29`
 - 最近核对: `2026-04-29`
 - 现象:
@@ -318,19 +318,25 @@
   - agent 必须手读正文和细纲，判断到底是正文真漏写，还是工具没有识别到已兑现的 beat。
   - 误报会直接污染章节闭环判断，逼着作者为迎合检测器去改写本来已经成立的承接、对抗和打脸段落。
 - 当前缓解:
-  - 无；目前只能人工核对正文与细纲，手动接受该 warning 为工具误报。
+  - `consistency_engine.check_consistency` 现支持 `full_chapter_text + scene_scope` 可选上下文。
+  - `outlineDeviation` 不再按“completed chapter + planned beat”机械告警，而是优先使用显式 `scenePlans`、场景段落和正文段落做 beat coverage。
+  - `review scene` 现会把 full chapter 和当前 scene 范围透传给一致性检测；场景评审只保留 scene-local 的 beat miss，不再复制整章 warning。
 - 当前证据:
   - `projects/xiaoshidi-bailan/chapters/chapter-002.md`
   - `projects/xiaoshidi-bailan/chapters/chapter-003.md`
   - `projects/xiaoshidi-bailan/outline.yaml`
   - `projects/xiaoshidi-bailan/detailed_outlines.yaml`
-  - `2026-04-29` 实跑中，`review chapter --chapter-id chapter-002` 与 `review scene --chapter-id chapter-002 --scene-index 1/2/3` 均对该章三条 beat 全量触发 `outlineDeviation`。
-  - 同日 `review chapter --chapter-id chapter-003` 与 `review scene --chapter-id chapter-003 --scene-index 1/2/3` 继续对“霍飞当众再验 / 陆闲把杂役动作变成破局 / 霍飞吃瘪、师姐团确认底牌”三条已在正文明确兑现的 beat 全量触发 `outlineDeviation`。
+  - `tests.smoke.test_consistency_engine.test_outline_deviation_skips_scene_plan_backed_beat_with_matching_prose`
+  - `tests.smoke.test_review_scene.test_review_scene_limits_outline_deviation_to_current_scene`
+  - `tests.smoke.test_review_chapter.test_review_chapter_does_not_emit_outline_deviation_for_scene_backed_beat`
+  - `tests.smoke.test_full_creative_loop`
+  - `2026-04-29` 修复后只读验证：`projects/xiaoshidi-bailan` 的 `chapter-002/chapter-003` 及各自 `sceneIndex=1/2/3` 的 `outlineDeviationCount` 均为 `0`。
 - 期望收口:
   - beat/scene 匹配至少要给出正文证据片段、命中段落或未命中原因，避免“全量 planned = 未出现”的黑箱告警。
   - scene review 不应在整章已确认误报的前提下，对每个 scene 机械复制同一组 warning。
 - 下次实施必查:
-  - 真实多 scene 章节里，`outlineDeviation` 是否仍会对已兑现 beat 全量误报；若复现，应优先补 beat 命中证据或 scene-local 匹配测试，而不是要求作者改写正文。
+  - 真实多 scene 章节里，`outlineDeviation` 是否仍会对已兑现 beat 误报；尤其检查“scene 数量与 beat 数量不一致”以及“缺少显式 `scenePlans`”的回退口径。
+  - 若仍出现误报，优先补正文证据和 beat/scene 映射，而不是要求作者迎合检测器改写正文。
 
 ## 3. Resolved
 

@@ -290,6 +290,62 @@ class ReviewChapterSmokeTest(unittest.TestCase):
         self.assertTrue(any("设定冲突" in item or "守夜代价" in item for item in alignment_text))
         self.assertTrue(any("蝴蝶效应" in item for item in payload["consistencySignals"]["specialTermRepetition"]["evidence"]))
 
+    def test_review_chapter_does_not_emit_outline_deviation_for_scene_backed_beat(self) -> None:
+        (self.temp_dir / "outline.yaml").write_text(
+            json.dumps(
+                {
+                    "volumes": [
+                        {
+                            "id": "volume-001",
+                            "title": "第一卷",
+                            "theme": "",
+                            "chapters": [
+                                {
+                                    "id": "chapter-001",
+                                    "title": "第一章",
+                                    "status": "completed",
+                                    "direction": "林舟与沈昭在仓库里摊开怀疑。",
+                                    "beats": [
+                                        {"id": "beat-1", "summary": "林舟和沈昭在仓库深处把怀疑摊开。", "status": "planned"},
+                                    ],
+                                    "scenePlans": [
+                                        {
+                                            "id": "scene-001",
+                                            "title": "仓库对峙",
+                                            "summary": "林舟和沈昭在仓库深处摊开彼此怀疑。",
+                                            "startParagraph": 1,
+                                            "endParagraph": 2,
+                                        }
+                                    ],
+                                }
+                            ],
+                        }
+                    ],
+                    "chapters": [],
+                    "chapterDirections": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(
+            "# 第一章\n\n"
+            "林舟走进仓库深处时，沈昭已经等在那里。\n\n"
+            "两人很快把彼此的怀疑摊开，对峙再没有任何遮掩。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["review", "chapter", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        outline_judgements = [item for item in payload["ruleJudgements"] if item["ruleId"] == "outlineDeviation"]
+        self.assertEqual(outline_judgements, [])
+
     def test_review_chapter_counts_procedural_legal_tension(self) -> None:
         chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
         chapter_path.write_text(

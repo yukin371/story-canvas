@@ -194,7 +194,18 @@ def command_review_scene(args) -> int:
                     "scenePlanId": selected_scene_plan_id,
                 },
             ),
-            consistency_result=check_consistency(state, selected_scene_text, chapter_id),
+            consistency_result=check_consistency(
+                state,
+                selected_scene_text,
+                chapter_id,
+                full_chapter_text=chapter_text,
+                scene_scope={
+                    "startParagraph": start_paragraph,
+                    "endParagraph": end_paragraph or start_paragraph,
+                    "sceneIndex": selected_scene_index,
+                    "scenePlanId": selected_scene_plan_id,
+                },
+            ),
         )
     except ValueError as exc:
         raise SystemExit(str(exc)) from exc

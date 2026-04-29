@@ -66,7 +66,7 @@
 - `analyze_chapter(root, state, chapter_id)`: 完整章节分析
 - `generate_change_requests(state, analysis)`: 分析 → 变更请求
 - `apply_projection(state, analysis, chapter_id)`: 投影应用
-- `check_consistency(state, chapter_text, chapter_id)`: 一致性校验，返回 hard/soft checks、设定候选与设定冲突上下文
+- `check_consistency(state, chapter_text, chapter_id, keywords=None, *, full_chapter_text=None, scene_scope=None)`: 一致性校验，返回 hard/soft checks、设定候选与设定冲突上下文；`outlineDeviation` 现优先消费显式 `scenePlans` 与正文段落证据，scene review 可通过 `scene_scope` 只看当前场景
 - `enrich_entities(state, chapter_id, root)`: 实体丰富化
 - `refresh_context_lens(state, chapter_id, analysis)`: 上下文刷新，返回适合当前章节写作的最小约束切片，并显式暴露 `chapterHandoff`；命令层会在持久化前补入当前章节正文内容指纹
 - `evaluate_project_story_gate(state)`: 检查项目是否已具备 `primaryGenre`、`targetAudience`、`corePromises`、`paceContract`
@@ -116,6 +116,7 @@
 
 - `entity_enricher.py` 跨段落实体归属问题：当多个实体出现在同一段落时，提取的属性可能错配给后出现的实体
 - `consistency_engine.py` 的 negation 检查仅适用于 `INTIMATE_WORDS_NEED_NEGATION_CHECK` 集合中的词
+- `consistency_engine.py` 的 `outlineDeviation` 现在优先走 `scenePlans + 正文段落` 的轻量证据匹配；没有显式 `scenePlans` 时才回退到整章段落近似命中，因此“beat 数量与 scene 数量不一致”的章节仍应优先补 scenePlans 再看告警可信度
 - `projection_engine.py` 的 `upsert_by_key` 使用 `|` 合并 dict，确保 payload 完整覆盖
 - `projection_engine.py` 对新设定的自动入账当前只写 `worldbook.premiseFacts`，不会自动升级成 `worldRules`
 - `story_review.py` 里 `primaryGenre` 与 `subGenre`/`styleTags` 的归一化口径不同：前者归主类，后者保留细分类 slug

@@ -115,9 +115,9 @@ class FullCreativeLoopTest(unittest.TestCase):
         context = json.loads((self.temp_dir / "projections" / "context-lens.yaml").read_text(encoding="utf-8"))
         self.assertEqual(context["currentChapterId"], "chapter-001")
 
-        # Verify outline deviation detected (beat-2 is planned but chapter is completed)
+        # Verify scene-backed planned beat is no longer treated as an automatic deviation
         soft = check_data["softChecks"]
-        self.assertTrue(len(soft.get("outlineDeviations", [])) > 0)
+        self.assertEqual(soft.get("outlineDeviations", []), [])
 
 
 if __name__ == "__main__":
