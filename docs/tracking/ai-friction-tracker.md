@@ -95,18 +95,26 @@
 - 最近核对: `2026-04-29`
 - 现象:
   - mention hygiene 或 volume-self 状态改变后，`workflow status` 可能已更新，但 `review-packet` 仍需重新导出才能同步。
+  - 章节闭环里，即使重新执行了 `chapter analyze` 与 `context refresh`，`workflow status/run` 仍可能继续读到旧的 `contextChapterContentHash`，把 `context_ready` 判成 `stale-context-refresh`。
 - AI 负担:
   - agent 需要额外判断哪个文件是最新真相源，并主动重导出。
+  - agent 还需要区分到底是自己漏跑命令，还是 workflow 摘要层没有同步到最新 context hash。
 - 当前缓解:
   - `review volume-self` 成功写入后现在会自动刷新 `reviews/<volume-id>-review-packet.md`，并在命令输出里返回刷新结果与目标文件路径。
   - `entity mention-adopt` / `entity mention-apply` / `entity mention-tag-apply` / `world mention-adopt` 现在也会在章节属于某卷时自动刷新对应的卷级审查包。
 - 当前证据:
   - `projects/agent-volume-e2e-20260429/reviews/volume-001-review-packet.md`
   - `python -m story_canvas export --root .\projects\agent-volume-e2e-20260429 --volume-id volume-001 --format review-packet --output ...`
+  - `projects/xiaoshidi-bailan` 在 `2026-04-29` 的章节闭环中，`context refresh` 输出了最新 `chapterContentHash=eba73cf0b2`，但随后 `workflow status/run` 仍显示 `contextChapterContentHash=503e94a16e` 并阻塞在 `stale-context-refresh`。
+  - 同项目在同日再次串行执行 `chapter analyze -> chapter suggest -> review apply -> projection apply -> context refresh -> review chapter -> review scene -> workflow status` 后，`context refresh` 已刷新到 `chapterContentHash=87cebf26d3`，但 `workflow status` 仍继续读取旧的 `contextChapterContentHash=503e94a16e`。
+  - 同项目继续修稿并串行执行 `chapter analyze -> context refresh -> review chapter -> review scene -> workflow status` 后，`context refresh` 又刷新到 `chapterContentHash=58fdba9b86`，`workflow status` 仍卡在同一个旧值 `contextChapterContentHash=503e94a16e`。
+  - 同项目进一步修稿并串行执行 `chapter analyze -> context refresh -> review scene -> workflow status` 后，`context refresh` 已刷新到 `chapterContentHash=a6106bcb14`，`workflow status` 仍保持 `contextChapterContentHash=503e94a16e` 不变。
 - 期望收口:
   - mention hygiene 等其他卷级关键状态写入后，也能自动刷新 review packet，或在 status 输出中明确提示“导出已过期”。
+  - `workflow status/run` 与 `context refresh` 应共享同一最新 context hash，不应在命令已成功返回后仍需要人工判断到底哪个视图可信。
 - 下次实施必查:
   - 除当前已覆盖的卷审与 mention 修补入口之外，其他卷级状态修改后是否还需要手工补一次 `export review-packet`。
+  - 章节闭环里重新跑完 `chapter analyze` + `context refresh` 后，`workflow status` 是否仍会误报 `stale-context-refresh`；若复现，应继续收口 workflow/context 同步链。
 
 ### AIF-004 mention / entity 修补链稳定性不足
 
@@ -151,22 +159,27 @@
 
 ### AIF-006 多命令并行写入不适合批量建档
 
-- 状态: `active`
+- 状态: `mitigated`
 - 首次记录: `2026-04-29`
 - 最近核对: `2026-04-29`
 - 现象:
   - 新项目初始化时，尝试并行执行 `entity add` / `world add` 这类状态写入命令会触发 stale snapshot 防护。
   - 防护本身正确，但批量种子建档和多代理分工时缺少 repo-native 串行批处理入口。
+  - 同一项目的章节闭环里，若并行执行 `review scene`、`chapter analyze`、`context refresh`、`review chapter` 这类都会写项目状态的命令，也会触发同样的 stale snapshot 防护。
 - AI 负担:
   - agent 必须手动记住“读状态 -> 单条写入 -> 再读状态”的串行约束，不能把独立 seed 命令自然并行化。
+  - agent 还需要区分哪些命令虽然看起来像“分析/评审”，但实际上会写 `story-reviews.yaml`、`detailed_outlines`、`project` 等状态，因此不能并行。
 - 当前缓解:
   - 只靠调用方串行执行；暂无批处理命令。
 - 当前证据:
   - `projects/demo-climate-court-20260429` 初始化阶段并行建档触发状态覆盖保护。
+  - `projects/xiaoshidi-bailan` 章节闭环时，并行执行 `review scene` 与并行执行 `chapter analyze/context refresh/review chapter` 均触发 “项目状态已被其他命令更新，请重新执行当前命令以避免覆盖”。
 - 期望收口:
   - 提供 `entity/world` seed batch 或 project bootstrap spec，一次性写入角色、势力、地点、物件和世界规则。
+  - 明确标注会写状态的闭环命令，或提供 repo-native orchestration/queue，让章节闭环可安全串行调度，而不是靠调用方猜哪些命令不能并发。
 - 下次实施必查:
   - 新项目 seed 阶段是否仍需 agent 逐条敲命令；如果是，应优先实现批量 bootstrap，而不是继续靠提示词约束。
+  - 章节闭环阶段是否仍需调用方手工试错后才能知道哪些命令会写状态；如果是，应继续收口命令元数据或 orchestration 层。
 
 ### AIF-007 分析器会把非角色引用推入角色链路
 
@@ -252,10 +265,72 @@
   - `projects/demo-climate-court-20260429/project.yaml`
   - `projects/demo-climate-court-20260429/PRD.md`
   - `projects/demo-climate-court-20260429/reviews/volume-001-editor-pass.json`
+  - `projects/xiaoshidi-bailan/project.yaml`
+  - `projects/xiaoshidi-bailan/outline.yaml`
+  - `projects/xiaoshidi-bailan/reviews/volume-001-self-review.draft.yaml`
+  - `2026-04-29` 实跑中，`projects/xiaoshidi-bailan` 的 `paceContract` 明确要求“前三章”完成异常机制展示、第一次外部挑衅、一次轻松打脸和至少两位师姐强记忆点，但 `review preflight --volume-id volume-001` / `workflow status --volume-id volume-001` 仍因当前 outline 只有 `chapter-001` 而把 `closure-readiness` 判成 `pass`。
 - 期望收口:
   - `volumeStructureCheck` 应消费明确的卷目标、预期章数、`releaseCadence` / `PRD` 里的首卷交付要求；若当前卷章节数或交付节点不足，应在 preflight 阶段给出 `risk/missing`，而不是等独立编辑人工发现。
 - 下次实施必查:
   - 新项目卷级预检是否仍把“当前 outline 里只有一章”误当作“短卷已满足结构前提”；若复现，应优先实现卷目标/章数承诺解析。
+
+### AIF-011 本地 UI 审查工作区缺少核心卷审视图且项目切换会残留旧章节
+
+- 状态: `active`
+- 首次记录: `2026-04-29`
+- 最近核对: `2026-04-29`
+- 现象:
+  - 审查工作区左侧“角色卡”当前只显示 `name/type` 和“设定图”按钮，没有角色详情阅读面板。
+  - “资料”分组中的 `世界设定 / 卷结构 / 审查包` 仍是硬编码 `待接入`，无法在 UI 内核对卷级闭环所需信息。
+  - 项目切换到另一个同样使用 `chapter-001` 的项目时，主面板会保留旧 `selectedChapter`，直到人工再点一次章节才刷新成正确正文、评分和字数。
+- AI 负担:
+  - agent / 人工审查无法只靠 UI 检查角色卡、世界真相层、卷结构和 review packet，必须退回 CLI/API/文件阅读。
+  - 项目切换后的脏章节面板会制造错误审查上下文，导致 reviewer 以为当前项目内容、评分或字数异常。
+- 当前缓解:
+  - 本地 UI API 的 `ProjectSummary` 已暴露 `entities.profile/seed/aliases`、`worldbook.entries/stats`、`volumes[]` 与 `reviewPackets[]`，审查工作区可直接浏览角色卡、世界设定、卷结构和审查包预览。
+  - `project-registry.json` 已增加工作台私有 `activeRoot`，`useWorkspace` 会在刷新后恢复上次打开项目；退出项目时清空该字段。
+  - `ReviewWorkbenchView` 在 `selectedRoot` 变化时清空旧章节/角色/资料选择，并在章节列表刷新时用新项目的 chapter object 替换同名旧对象，避免 `chapter-001` 跨项目残留。
+- 当前证据:
+  - 本地 UI `http://127.0.0.1:43187/` 在 `2026-04-29` 选中 `projects/xiaoshidi-bailan` 时，角色列表可见，但“资料”区仍显示 `待接入`。
+  - 同轮切换 `projects/小师弟只想摆烂` 与 `projects/xiaoshidi-bailan` 时，主面板一度继续显示旧 stub 项目的 `# 第一章`，手动再点 `chapter-001` 后才切回 `扫地也算修行 / 79 分 / 3171 字`。
+  - `ui/src/components/workbench/ReviewWorkbenchPane.vue`
+  - `ui/src/views/workbench/ReviewWorkbenchView.vue`
+  - `ui/src/api/storyCanvas.ts`
+  - `tests.smoke.test_illustration_command.test_story_canvas_ui_api_project_summary_includes_review_workbench_references`
+  - `tests.smoke.test_illustration_command.test_story_canvas_ui_api_project_registry_persists_active_root`
+- 期望收口:
+  - review workbench 提供 repo-native 的角色详情、世界设定、卷结构和审查包浏览入口，而不是只保留占位字样。
+  - 项目切换时，章节选择状态至少按 `project root + chapter id` 共同校验，避免同名 `chapter-001` 复用脏状态。
+- 下次实施必查:
+  - 在真实浏览器重启 API 服务后，切换两个都含 `chapter-001` 的项目时，主面板是否仍会残留旧章节；若复现，应继续收口 chapter selection identity。
+  - 角色卡和资料视图是否足够支撑人工卷审；若仍需回到文件里读完整 worldbook/review packet，应补更完整的跳转或展开视图。
+
+### AIF-012 章节/场景评审会对已兑现 beat 稳定误报 `outlineDeviation`
+
+- 状态: `active`
+- 首次记录: `2026-04-29`
+- 最近核对: `2026-04-29`
+- 现象:
+  - `projects/xiaoshidi-bailan` 在补齐 `chapter-002`、`chapter-003` 正文并同步 `scenePlans` 后，`review chapter` 与 `review scene` 仍对两个章节的全部已规划 beat 持续报出 `outlineDeviation`。
+  - 告警 payload 能列出正确的 beat summary，但 `evidence` 为空，也没有指出正文里到底缺了哪一段。
+  - 同一章的 chapter review 和 scene review 会重复带出同样的三条 warning，放大“正文没写到”的假信号。
+- AI 负担:
+  - agent 必须手读正文和细纲，判断到底是正文真漏写，还是工具没有识别到已兑现的 beat。
+  - 误报会直接污染章节闭环判断，逼着作者为迎合检测器去改写本来已经成立的承接、对抗和打脸段落。
+- 当前缓解:
+  - 无；目前只能人工核对正文与细纲，手动接受该 warning 为工具误报。
+- 当前证据:
+  - `projects/xiaoshidi-bailan/chapters/chapter-002.md`
+  - `projects/xiaoshidi-bailan/chapters/chapter-003.md`
+  - `projects/xiaoshidi-bailan/outline.yaml`
+  - `projects/xiaoshidi-bailan/detailed_outlines.yaml`
+  - `2026-04-29` 实跑中，`review chapter --chapter-id chapter-002` 与 `review scene --chapter-id chapter-002 --scene-index 1/2/3` 均对该章三条 beat 全量触发 `outlineDeviation`。
+  - 同日 `review chapter --chapter-id chapter-003` 与 `review scene --chapter-id chapter-003 --scene-index 1/2/3` 继续对“霍飞当众再验 / 陆闲把杂役动作变成破局 / 霍飞吃瘪、师姐团确认底牌”三条已在正文明确兑现的 beat 全量触发 `outlineDeviation`。
+- 期望收口:
+  - beat/scene 匹配至少要给出正文证据片段、命中段落或未命中原因，避免“全量 planned = 未出现”的黑箱告警。
+  - scene review 不应在整章已确认误报的前提下，对每个 scene 机械复制同一组 warning。
+- 下次实施必查:
+  - 真实多 scene 章节里，`outlineDeviation` 是否仍会对已兑现 beat 全量误报；若复现，应优先补 beat 命中证据或 scene-local 匹配测试，而不是要求作者改写正文。
 
 ## 3. Resolved
 

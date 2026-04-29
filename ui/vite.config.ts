@@ -2,6 +2,19 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { fileURLToPath, URL } from "node:url";
 
+function resolveManualChunk(id: string): string | undefined {
+  const normalizedId = id.replace(/\\/g, "/");
+
+  if (normalizedId.includes("/node_modules/vue/")) {
+    return "vue";
+  }
+
+  if (normalizedId.includes("/node_modules/tdesign-icons-vue-next/")) {
+    return "tdesign-icons";
+  }
+  return undefined;
+}
+
 export default defineConfig({
   plugins: [vue()],
   resolve: {
@@ -12,10 +25,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          vue: ["vue", "vue-router"],
-          tdesign: ["tdesign-vue-next"],
-        },
+        manualChunks: resolveManualChunk,
       },
     },
   },

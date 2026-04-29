@@ -6,6 +6,7 @@ import {
   fetchWorkbenchSettings,
   markProjectRecent,
   saveWorkbenchSettings,
+  setActiveProject,
   type ProjectOption,
   type ProjectListPayload,
   type ProjectSummary,
@@ -64,6 +65,11 @@ async function refreshProjects() {
     state.libraryProjects = payload.libraryProjects;
     state.projectRegistryFile = payload.registryFile;
     const projects = allProjectsFromState();
+    const activeRoot = payload.activeRoot && projects.some((item) => item.root === payload.activeRoot) ? payload.activeRoot : "";
+    const selectedRootStillAvailable = Boolean(state.selectedRoot && projects.some((item) => item.root === state.selectedRoot));
+    if (!selectedRootStillAvailable && activeRoot) {
+      state.selectedRoot = activeRoot;
+    }
     if (state.selectedRoot && projects.some((item) => item.root === state.selectedRoot)) {
       await Promise.all([refreshSummary(), refreshSettings(state.selectedRoot)]);
     } else {
@@ -110,9 +116,20 @@ async function selectProject(root: string) {
   state.selectedRoot = root;
   if (root) {
     try {
-      await markProjectRecent(root);
+      await setActiveProject(root);
     } catch {
-      // ignore recent-mark failure; the project can still be opened
+      // ignore active-project persistence failure; the project can still be opened
+      try {
+        await markProjectRecent(root);
+      } catch {
+        // ignore recent-mark failure as well
+      }
+    }
+  } else {
+    try {
+      await setActiveProject("");
+    } catch {
+      // ignore active-project clearing failure; the UI state is already cleared
     }
   }
   await Promise.all([refreshSummary(), refreshSettings(root)]);

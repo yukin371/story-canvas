@@ -101,11 +101,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, defineAsyncComponent, onMounted, ref } from "vue";
 
-import SettingsView from "@/views/SettingsView.vue";
-import WorkbenchView from "@/views/WorkbenchView.vue";
+import { TAside, TContent, TLayout } from "@/tdesign/shell";
 import { useWorkspace } from "@/composables/useWorkspace";
+
+const SettingsView = defineAsyncComponent(() => import("@/views/SettingsView.vue"));
+const WorkbenchView = defineAsyncComponent(() => import("@/views/WorkbenchView.vue"));
 
 type WorkbenchStatus = {
   contextLabel: string;

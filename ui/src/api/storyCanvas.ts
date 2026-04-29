@@ -12,6 +12,7 @@ export type ProjectOption = {
 export type ProjectListPayload = {
   recentProjects: ProjectOption[];
   libraryProjects: ProjectOption[];
+  activeRoot: string;
   registryFile: string;
 };
 
@@ -33,8 +34,10 @@ export type IllustrationRecord = {
   type?: string;
   mode?: string;
   useCase?: string;
+  targetName?: string;
   chapterId?: string | null;
   entityId?: string | null;
+  tempLabel?: string | null;
   promptText?: string;
   promptPackRef?: {
     source?: string;
@@ -94,8 +97,45 @@ export type EntityRecord = {
   name: string;
   type: string;
   summary?: string;
+  aliases?: string[];
+  seed?: Record<string, unknown>;
+  profile?: Record<string, unknown>;
   currentState?: string | Record<string, unknown>;
   appearanceSummary?: string;
+};
+
+export type WorldbookRecord = {
+  id: string;
+  type: string;
+  label: string;
+  name: string;
+  summary?: string;
+  detail?: string;
+  sourceKey?: string;
+};
+
+export type ReviewPacketRecord = {
+  id: string;
+  volumeId: string;
+  title: string;
+  filePath: string;
+  exists: boolean;
+  updatedAt?: string;
+  preview?: string;
+};
+
+export type VolumeRecord = {
+  id: string;
+  title: string;
+  theme?: string;
+  chapterCount: number;
+  chapters: Array<{
+    id: string;
+    title: string;
+    status?: string;
+    summary?: string;
+  }>;
+  reviewPacket?: ReviewPacketRecord;
 };
 
 export type PromptPackTemplateDocument = {
@@ -214,6 +254,12 @@ export type ProjectSummary = {
   chapters: ChapterRecord[];
   illustrations: IllustrationRecord[];
   entities: EntityRecord[];
+  worldbook: {
+    entries: WorldbookRecord[];
+    stats: Record<string, number>;
+  };
+  volumes: VolumeRecord[];
+  reviewPackets: ReviewPacketRecord[];
   stats: {
     chapterCount: number;
     reviewedChapterCount: number;
@@ -445,6 +491,8 @@ export type WorkbenchSettings = {
     defaultBatchCount: string;
   };
   workspaceIllustration: {
+    root: string;
+    title?: string;
     adapterName: string;
     responseModel: string;
     imageModel: string;
@@ -457,6 +505,7 @@ export type WorkbenchSettings = {
     defaultBatchCount?: string;
     defaultTemplateByUseCase?: Record<string, string>;
     defaultModifierRefs?: string[];
+    recentIllustrations?: IllustrationRecord[];
     availablePromptPacks?: Array<{
       id: string;
       name: string;
@@ -697,6 +746,16 @@ export async function markProjectRecent(root: string): Promise<void> {
   });
 }
 
+export async function setActiveProject(root: string): Promise<void> {
+  await fetchJson<{ ok: true; activeRoot: string }>("/api/projects/active", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ root }),
+  });
+}
+
 export async function fetchProjectSummary(root: string): Promise<ProjectSummary> {
   return fetchJson<ProjectSummary>(`/api/project?root=${encodeURIComponent(root)}`);
 }
@@ -782,6 +841,20 @@ export async function generateIllustrationForm(body: FormData): Promise<Illustra
   return fetchJson<IllustrationGenerateResult>("/api/illustration/generate", {
     method: "POST",
     body,
+  });
+}
+
+export async function openLocalFolder(body: { root?: string; path: string; scope?: "project" | "workspace" }): Promise<{
+  opened: boolean;
+  path: string;
+  scope: string;
+}> {
+  return fetchJson("/api/system/open-folder", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
   });
 }
 

@@ -27,6 +27,9 @@
             <t-form-item label="Prompt Pack">
               <t-select v-model="promptPack" :options="promptPackOptions" />
             </t-form-item>
+            <t-form-item label="用途">
+              <t-select v-model="useCase" :options="useCaseOptions" />
+            </t-form-item>
             <t-form-item label="模板">
               <t-select v-model="templateId" :options="templateOptions" />
             </t-form-item>
@@ -40,6 +43,29 @@
               v-model="prompt"
               :autosize="{ minRows: 6, maxRows: 9 }"
               placeholder="在模板基础上补充本次想强调的场景、角色、镜头或氛围。"
+            />
+          </t-form-item>
+
+          <div class="form-grid">
+            <t-form-item label="文字设计">
+              <t-select v-model="textDesignMode" :options="ILLUSTRATION_TEXT_DESIGN_OPTIONS" />
+            </t-form-item>
+            <t-form-item v-if="textDesignMode === 'designed'" label="标题">
+              <t-input v-model="titleText" placeholder="可留空" />
+            </t-form-item>
+            <t-form-item v-if="textDesignMode === 'designed'" label="副标题">
+              <t-input v-model="subtitleText" placeholder="可留空" />
+            </t-form-item>
+            <t-form-item v-if="textDesignMode === 'designed'" label="字体气质">
+              <t-input v-model="fontStyleHint" placeholder="例如：墨明风题字、冷峻无衬线" />
+            </t-form-item>
+          </div>
+
+          <t-form-item v-if="textDesignMode === 'designed'" label="简介 / 导语">
+            <t-textarea
+              v-model="bodyText"
+              :autosize="{ minRows: 3, maxRows: 5 }"
+              placeholder="可留空；留空时只保留版式空间，不强行生成具体文字。"
             />
           </t-form-item>
 
@@ -116,16 +142,36 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import type { PrimaryTableCol } from "tdesign-vue-next";
 
 import {
   dryRunIllustration,
   generateIllustration,
+  getIllustrationDefaultUseCase,
+  getIllustrationTemplateOptions,
+  getIllustrationUseCaseOptions,
+  ILLUSTRATION_TEXT_DESIGN_OPTIONS,
+  pickIllustrationTemplateId,
+  pickIllustrationUseCase,
+  type IllustrationTargetType,
+  type IllustrationTextDesignMode,
+  type IllustrationTemplateSummary,
   type IllustrationDryRunResult,
   type IllustrationGenerateResult,
   type IllustrationRecord,
 } from "@/api/storyCanvas";
 import { useWorkspace } from "@/composables/useWorkspace";
+import { TCard } from "@/tdesign/display";
+import {
+  TButton,
+  TForm,
+  TFormItem,
+  TInput,
+  TRadioButton,
+  TRadioGroup,
+  TSelect,
+  TTextarea,
+} from "@/tdesign/forms";
+import { TTable, type PrimaryTableCol } from "@/tdesign/table";
 
 type ConfigFact = {
   label: string;
@@ -145,6 +191,12 @@ type IllustrationHistoryRow = {
 const mode = ref<"text-to-image" | "image-to-image" | "inpaint">("text-to-image");
 const targetType = ref<"chapter" | "entity">("chapter");
 const targetId = ref("");
+const useCase = ref(getIllustrationDefaultUseCase(targetType.value));
+const textDesignMode = ref<IllustrationTextDesignMode>("none");
+const titleText = ref("");
+const subtitleText = ref("");
+const bodyText = ref("");
+const fontStyleHint = ref("");
 const prompt = ref(
   "都市夜港，潮湿柏油路反射橙色路灯，主角林舟站在半开的仓库门前，画面压抑但克制。"
 );
@@ -216,21 +268,15 @@ const availablePromptPacks = computed(() => summary.value?.illustrationConfig.av
 const selectedPromptPack = computed(() => {
   return availablePromptPacks.value.find((item) => item.name === promptPack.value) || availablePromptPacks.value[0];
 });
+const packTemplates = computed<IllustrationTemplateSummary[]>(() => (selectedPromptPack.value?.templates || []) as IllustrationTemplateSummary[]);
 const promptPackOptions = computed(() =>
   availablePromptPacks.value.map((item) => ({
     label: `${item.label} · ${item.version}`,
     value: item.name,
   }))
 );
-const templateOptions = computed(() => {
-  const useCase = targetType.value === "entity" ? "character" : "chapter-scene";
-  return (selectedPromptPack.value?.templates || [])
-    .filter((item) => item.useCase === useCase && item.mode === mode.value)
-    .map((item) => ({
-      label: `${item.label} · ${item.mode}`,
-      value: item.id,
-    }));
-});
+const useCaseOptions = computed(() => getIllustrationUseCaseOptions(packTemplates.value, targetType.value, mode.value));
+const templateOptions = computed(() => getIllustrationTemplateOptions(packTemplates.value, mode.value, useCase.value));
 
 const configFacts = computed<ConfigFact[]>(() => {
   const config = summary.value?.illustrationConfig;
@@ -303,6 +349,11 @@ function syncFromProject() {
   promptPack.value = config.promptPackName || "default";
   commercialMode.value = config.commercialMode || "personal";
   mode.value = "text-to-image";
+  textDesignMode.value = "none";
+  titleText.value = "";
+  subtitleText.value = "";
+  bodyText.value = "";
+  fontStyleHint.value = "";
   inputImagePath.value = "";
   maskPath.value = "";
   resetResultPanels();
@@ -318,8 +369,18 @@ function syncFromProject() {
     targetType.value = "entity";
     targetId.value = projectSummary.entities[0].id;
   }
-  const useCase = targetType.value === "entity" ? "character" : "chapter-scene";
-  templateId.value = config.defaultTemplateByUseCase?.[useCase] || "";
+  useCase.value = pickIllustrationUseCase(
+    packTemplates.value,
+    targetType.value,
+    mode.value,
+    getIllustrationDefaultUseCase(targetType.value)
+  );
+  templateId.value = pickIllustrationTemplateId(
+    packTemplates.value,
+    mode.value,
+    useCase.value,
+    config.defaultTemplateByUseCase?.[useCase.value] || ""
+  );
 }
 
 function buildIllustrationRequest() {
@@ -338,6 +399,13 @@ function buildIllustrationRequest() {
   return {
     root: summary.value.project.root,
     mode: mode.value,
+    targetType: targetType.value,
+    useCase: useCase.value || undefined,
+    textDesignMode: textDesignMode.value,
+    titleText: textDesignMode.value === "designed" ? titleText.value.trim() || undefined : undefined,
+    subtitleText: textDesignMode.value === "designed" ? subtitleText.value.trim() || undefined : undefined,
+    bodyText: textDesignMode.value === "designed" ? bodyText.value.trim() || undefined : undefined,
+    fontStyleHint: textDesignMode.value === "designed" ? fontStyleHint.value.trim() || undefined : undefined,
     chapterId: targetType.value === "chapter" ? targetId.value : undefined,
     entityId: targetType.value === "entity" ? targetId.value : undefined,
     extraPrompt: prompt.value.trim() || undefined,
@@ -364,14 +432,36 @@ function resolveHistoryPromptPack(item: IllustrationRecord): string {
   return match?.name || "";
 }
 
+function resolveHistoryUseCase(item: IllustrationRecord, packName: string, target: IllustrationTargetType): string {
+  if (item.useCase) {
+    return item.useCase;
+  }
+  const templateRef = item.templateId || item.promptSnapshot?.templateRef || "";
+  if (templateRef) {
+    const pack = availablePromptPacks.value.find((entry) => entry.name === packName);
+    const matchedTemplate = pack?.templates.find((template) => template.id === templateRef);
+    if (matchedTemplate?.useCase) {
+      return matchedTemplate.useCase;
+    }
+  }
+  return getIllustrationDefaultUseCase(target);
+}
+
 function applyHistoryItem(item: IllustrationRecord) {
   const nextTargetType = item.targetRef?.type === "entity" || item.entityId ? "entity" : "chapter";
+  const nextPromptPack = resolveHistoryPromptPack(item) || promptPack.value;
   targetType.value = nextTargetType;
   targetId.value = item.targetRef?.targetId || item.chapterId || item.entityId || "";
   mode.value = item.mode === "image-to-image" || item.mode === "inpaint" ? item.mode : "text-to-image";
-  promptPack.value = resolveHistoryPromptPack(item) || promptPack.value;
+  promptPack.value = nextPromptPack;
+  useCase.value = resolveHistoryUseCase(item, nextPromptPack, nextTargetType);
   templateId.value = item.templateId || item.promptSnapshot?.templateRef || "";
   commercialMode.value = item.commercialMode || item.policySnapshot?.commercialMode || "personal";
+  textDesignMode.value = item.promptSnapshot?.textDesign?.mode === "designed" ? "designed" : "none";
+  titleText.value = item.promptSnapshot?.textDesign?.titleText || "";
+  subtitleText.value = item.promptSnapshot?.textDesign?.subtitleText || "";
+  bodyText.value = item.promptSnapshot?.textDesign?.bodyText || "";
+  fontStyleHint.value = item.promptSnapshot?.textDesign?.fontStyleHint || "";
   prompt.value = item.promptSnapshot?.userExtraPrompt || item.promptText || "";
   inputImagePath.value = item.inputImages?.[0] || "";
   maskPath.value = item.maskPath || "";
@@ -427,15 +517,19 @@ watch(
 );
 
 watch(
-  () => [promptPack.value, targetType.value, mode.value, selectedPromptPack.value] as const,
-  ([, kind, currentMode, pack]) => {
-    const useCase = kind === "entity" ? "character" : "chapter-scene";
-    const options = (pack?.templates || []).filter((item) => item.useCase === useCase && item.mode === currentMode);
-    if (!options.some((item) => item.id === templateId.value)) {
-      templateId.value = options[0]?.id || "";
+  () => [packTemplates.value, targetType.value, mode.value, useCase.value] as const,
+  ([templates, kind, currentMode, currentUseCase]) => {
+    const nextUseCase = pickIllustrationUseCase(templates, kind, currentMode, currentUseCase);
+    if (nextUseCase !== useCase.value) {
+      useCase.value = nextUseCase;
+      return;
+    }
+    const nextTemplateId = pickIllustrationTemplateId(templates, currentMode, nextUseCase, templateId.value);
+    if (nextTemplateId !== templateId.value) {
+      templateId.value = nextTemplateId;
     }
   },
-  { immediate: true }
+  { immediate: true, deep: true }
 );
 
 watch(

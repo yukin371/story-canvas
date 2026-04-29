@@ -64,6 +64,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
+import { TCard, TList, TListItem, TListItemMeta, TTag } from "@/tdesign/display";
 import { useWorkspace } from "@/composables/useWorkspace";
 
 type FactItem = {

@@ -175,6 +175,39 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
         self.assertEqual(payload["templateId"], "cover-poster-standard")
         self.assertIn("巨大轮廓主视觉", payload["promptSnapshot"]["resolvedPrompt"])
 
+    def test_illustration_prompt_supports_optional_text_design_layer(self) -> None:
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(
+                [
+                    "illustration",
+                    "prompt",
+                    "--root",
+                    str(self.temp_dir),
+                    "--chapter-id",
+                    "chapter-001",
+                    "--mode",
+                    "text-to-image",
+                    "--text-design-mode",
+                    "designed",
+                    "--title-text",
+                    "明灯照骨",
+                    "--subtitle-text",
+                    "卷一·雾港裂痕",
+                    "--body-text",
+                    "雾港的第一场裂痕，从雨夜仓库开始。",
+                    "--font-style-hint",
+                    "墨明风题字",
+                ]
+            )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["promptSnapshot"]["textDesign"]["mode"], "designed")
+        self.assertEqual(payload["promptSnapshot"]["textDesign"]["titleText"], "明灯照骨")
+        self.assertIn("标题文字使用“明灯照骨”", payload["promptText"])
+        self.assertIn("墨明风题字", payload["promptText"])
+
     def test_illustration_config_persists_and_list_reads(self) -> None:
         buffer = StringIO()
         with redirect_stdout(buffer):
@@ -402,6 +435,8 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
         self.assertEqual(len(payload["outputFiles"]), 3)
         self.assertTrue(payload["outputFiles"][1].endswith("_02.png"))
         self.assertTrue(payload["outputFiles"][2].endswith("_03.png"))
+        self.assertEqual(Path(payload["outputFile"]).parent.name, "chapter-scene")
+        self.assertEqual(Path(payload["outputFile"]).parent.parent.name, "chapter-001")
 
     def test_illustration_generate_temp_target_uses_staging_dir(self) -> None:
         buffer = StringIO()
@@ -430,6 +465,8 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
         self.assertEqual(payload["payload"]["targetId"], "marketing-banner")
         self.assertIn("tmp", payload["outputFile"])
         self.assertIn("staging", payload["outputFile"])
+        self.assertEqual(Path(payload["outputFile"]).parent.name, "promo")
+        self.assertEqual(Path(payload["outputFile"]).parent.parent.name, "marketing-banner")
         self.assertTrue(payload["outputFile"].endswith("marketing-banner_promo.png"))
 
     def test_illustration_batch_export_writes_manifest_for_webui_manual(self) -> None:
@@ -785,6 +822,8 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
         )
         output_file = Path(payload["illustration"]["filePath"])
         self.assertTrue(output_file.exists())
+        self.assertEqual(output_file.parent.name, "chapter-scene")
+        self.assertEqual(output_file.parent.parent.name, "chapter-001")
         self.assertEqual(output_file.read_bytes(), b"fake")
 
         illustrations_state = json.loads((self.temp_dir / "illustrations.yaml").read_text(encoding="utf-8"))
@@ -1116,6 +1155,11 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
                     "root": str(self.temp_dir),
                     "chapterId": "chapter-001",
                     "mode": "text-to-image",
+                    "useCase": "cover-poster",
+                    "textDesignMode": "designed",
+                    "titleText": "明灯照骨",
+                    "subtitleText": "卷一·雾港裂痕",
+                    "fontStyleHint": "墨明风题字",
                     "templateId": "scene-standard",
                     "extraPrompt": "雨夜码头，门缝里透出冷白色灯。",
                     "batchCount": 2,
@@ -1126,6 +1170,9 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
         self.assertTrue(payload["saved"])
         self.assertEqual(call_count["value"], 2)
         self.assertEqual(payload["illustration"]["mode"], "text-to-image")
+        self.assertEqual(payload["illustration"]["useCase"], "cover-poster")
+        self.assertEqual(payload["illustration"]["promptSnapshot"]["textDesign"]["mode"], "designed")
+        self.assertEqual(payload["illustration"]["promptSnapshot"]["textDesign"]["titleText"], "明灯照骨")
         self.assertEqual(payload["illustration"]["revisedPrompt"], "ui api revised 1")
         self.assertEqual(payload["illustration"]["batch"]["count"], 2)
         self.assertEqual(len(payload["illustration"]["artifacts"]), 2)
@@ -1133,6 +1180,9 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
         self.assertTrue(Path(payload["illustration"]["filePath"]).exists())
         self.assertEqual(payload["summary"]["stats"]["illustrationCount"], 1)
         self.assertEqual(payload["summary"]["illustrations"][0]["templateId"], "scene-standard")
+        self.assertEqual(payload["summary"]["illustrations"][0]["useCase"], "cover-poster")
+        self.assertEqual(Path(payload["illustration"]["filePath"]).parent.name, "cover-poster")
+        self.assertEqual(payload["summary"]["illustrations"][0]["promptSnapshot"]["textDesign"]["fontStyleHint"], "墨明风题字")
         self.assertEqual(payload["summary"]["illustrations"][0]["batch"]["count"], 2)
         self.assertEqual(
             payload["summary"]["illustrations"][0]["promptSnapshot"]["userExtraPrompt"],
@@ -1258,6 +1308,137 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
         self.assertTrue(exported_path.exists())
         exported_pack = json.loads(exported_path.read_text(encoding="utf-8"))
         self.assertIn("{subjectPhrases}", exported_pack["templates"][0]["promptTemplate"])
+
+    def test_story_canvas_ui_api_open_local_folder_request_opens_project_folder(self) -> None:
+        api_module = _load_story_canvas_ui_api_module()
+        target_dir = self.temp_dir / "assets" / "illustrations" / "chapters" / "chapter-001" / "chapter-scene"
+        target_dir.mkdir(parents=True, exist_ok=True)
+        target_file = target_dir / "chapter-001_scene.png"
+        target_file.write_bytes(b"fake")
+
+        opened: dict[str, Path] = {}
+
+        def fake_open_path(path: Path) -> None:
+            opened["path"] = path
+
+        with patch.object(api_module, "_open_path_in_shell", new=fake_open_path):
+            payload = api_module._open_local_folder_request(
+                {
+                    "root": str(self.temp_dir),
+                    "path": str(target_file),
+                    "scope": "project",
+                }
+            )
+
+        self.assertTrue(payload["opened"])
+        self.assertEqual(payload["scope"], "project")
+        self.assertEqual(payload["path"], str(target_dir))
+        self.assertEqual(opened["path"], target_dir)
+
+    def test_story_canvas_ui_api_open_local_folder_request_opens_workbench_folder(self) -> None:
+        api_module = _load_story_canvas_ui_api_module()
+        original_root = api_module.WORKBENCH_STATE_ROOT
+        workbench_root = self.temp_dir / "workbench-state"
+        target_dir = workbench_root / "tmp" / "illustration-inputs"
+        target_dir.mkdir(parents=True, exist_ok=True)
+        target_file = target_dir / "workspace-result.png"
+        target_file.write_bytes(b"fake")
+        opened: dict[str, Path] = {}
+
+        def fake_open_path(path: Path) -> None:
+            opened["path"] = path
+
+        api_module.WORKBENCH_STATE_ROOT = workbench_root
+        try:
+            with patch.object(api_module, "_open_path_in_shell", new=fake_open_path):
+                payload = api_module._open_local_folder_request(
+                    {
+                        "path": str(target_file),
+                        "scope": "workspace",
+                    }
+                )
+        finally:
+            api_module.WORKBENCH_STATE_ROOT = original_root
+
+        self.assertTrue(payload["opened"])
+        self.assertEqual(payload["scope"], "workspace")
+        self.assertEqual(payload["path"], str(target_dir))
+        self.assertEqual(opened["path"], target_dir)
+
+    def test_story_canvas_ui_api_project_summary_includes_review_workbench_references(self) -> None:
+        api_module = _load_story_canvas_ui_api_module()
+
+        worldbook_path = self.temp_dir / "worldbook.yaml"
+        worldbook = json.loads(worldbook_path.read_text(encoding="utf-8"))
+        worldbook["worldRules"] = [
+            {
+                "id": "rule-night-ledger",
+                "name": "夜账不可断",
+                "summary": "每次调查必须留下可追溯证据。",
+            }
+        ]
+        worldbook["factions"] = [
+            {
+                "id": "faction-harbor-watch",
+                "name": "雾港巡查组",
+                "summary": "负责夜间异案复核。",
+            }
+        ]
+        worldbook_path.write_text(json.dumps(worldbook, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+        outline_path = self.temp_dir / "outline.yaml"
+        outline = json.loads(outline_path.read_text(encoding="utf-8"))
+        outline["volumes"] = [
+            {
+                "id": "volume-001",
+                "title": "第一卷 雾港夜账",
+                "theme": "建立夜巡调查线。",
+                "chapters": [
+                    {
+                        "id": "chapter-001",
+                        "title": "第一章",
+                        "status": "draft",
+                        "direction": "仓库账册引出第一条线索。",
+                    }
+                ],
+            }
+        ]
+        outline_path.write_text(json.dumps(outline, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+        review_dir = self.temp_dir / "reviews"
+        review_dir.mkdir(exist_ok=True)
+        (review_dir / "volume-001-review-packet.md").write_text(
+            "# 卷级审查包\n\n当前卷已整理角色、线索和章节证据。\n",
+            encoding="utf-8",
+        )
+
+        payload = api_module._build_project_summary(self.temp_dir)
+
+        self.assertEqual(payload["worldbook"]["stats"]["worldRules"], 1)
+        self.assertEqual(payload["worldbook"]["entries"][0]["name"], "夜账不可断")
+        self.assertEqual(payload["volumes"][0]["id"], "volume-001")
+        self.assertEqual(payload["volumes"][0]["chapterCount"], 1)
+        self.assertTrue(payload["reviewPackets"][0]["exists"])
+        self.assertIn("卷级审查包", payload["reviewPackets"][0]["preview"])
+        self.assertEqual(payload["entities"][0]["profile"]["role"], "主角")
+
+    def test_story_canvas_ui_api_project_registry_persists_active_root(self) -> None:
+        api_module = _load_story_canvas_ui_api_module()
+        original_projects_file = api_module.WORKBENCH_PROJECTS_FILE
+        api_module.WORKBENCH_PROJECTS_FILE = self.temp_dir / "workbench-state" / "project-registry.json"
+        try:
+            payload = api_module._set_active_project({"root": str(self.temp_dir)})
+            self.assertEqual(payload["activeRoot"], str(self.temp_dir.resolve()))
+
+            list_payload = api_module._build_project_list_payload()
+            self.assertEqual(list_payload["activeRoot"], str(self.temp_dir.resolve()))
+            self.assertTrue(any(item["root"] == str(self.temp_dir.resolve()) for item in list_payload["recentProjects"]))
+
+            cleared = api_module._set_active_project({"root": ""})
+            self.assertEqual(cleared["activeRoot"], "")
+            self.assertEqual(api_module._build_project_list_payload()["activeRoot"], "")
+        finally:
+            api_module.WORKBENCH_PROJECTS_FILE = original_projects_file
 
 
 if __name__ == "__main__":

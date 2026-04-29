@@ -102,6 +102,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 
+import { TCard, TProgress } from "@/tdesign/display";
 import type { ChapterRecord } from "@/api/storyCanvas";
 import { useWorkspace } from "@/composables/useWorkspace";
 

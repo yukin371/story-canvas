@@ -258,6 +258,61 @@ def _resolve_workbench_asset_path(raw_path: str) -> Path:
     return path
 
 
+def _resolve_project_local_path(root: Path, raw_path: str) -> Path:
+    if not raw_path:
+        raise ValueError("缺少本地路径。")
+    path = Path(raw_path).expanduser()
+    if not path.is_absolute():
+        path = (root / path).resolve()
+    else:
+        path = path.resolve()
+    if not _is_within(path, root.resolve()):
+        raise ValueError("只允许打开项目目录内的文件或文件夹。")
+    if not path.exists():
+        raise FileNotFoundError(path)
+    return path
+
+
+def _resolve_workbench_local_path(raw_path: str) -> Path:
+    if not raw_path:
+        raise ValueError("缺少工作台路径。")
+    path = Path(raw_path).expanduser()
+    if not path.is_absolute():
+        path = (WORKBENCH_STATE_ROOT / path).resolve()
+    else:
+        path = path.resolve()
+    if not _is_within(path, WORKBENCH_STATE_ROOT.resolve()):
+        raise ValueError("只允许打开工作台状态目录下的文件或文件夹。")
+    if not path.exists():
+        raise FileNotFoundError(path)
+    return path
+
+
+def _open_path_in_shell(path: Path) -> None:
+    if os.name == "nt":
+        os.startfile(str(path))
+        return
+    if sys.platform == "darwin":
+        subprocess.run(["open", str(path)], check=True)
+        return
+    subprocess.run(["xdg-open", str(path)], check=True)
+
+
+def _open_local_folder_request(body: dict[str, Any]) -> dict[str, Any]:
+    scope = str(body.get("scope") or "project").strip() or "project"
+    raw_path = str(body.get("path") or "").strip()
+    if scope == "workspace":
+        target = _resolve_workbench_local_path(raw_path)
+    else:
+        root = _coerce_project_root(str(body.get("root") or ""))
+        target = _resolve_project_local_path(root, raw_path)
+    folder = target if target.is_dir() else target.parent
+    if not folder.exists() or not folder.is_dir():
+        raise FileNotFoundError(folder)
+    _open_path_in_shell(folder)
+    return {"opened": True, "path": str(folder), "scope": scope}
+
+
 def _project_key(path: Path) -> str:
     return path.name
 
@@ -481,6 +536,7 @@ def _scan_projects() -> list[Path]:
 
 def _default_project_registry() -> dict[str, Any]:
     return {
+        "activeRoot": "",
         "recentRoots": [],
         "importedRoots": [],
     }
@@ -496,6 +552,9 @@ def _load_project_registry() -> dict[str, Any]:
         return registry
     if not isinstance(payload, dict):
         return registry
+    active_root = str(payload.get("activeRoot") or "").strip()
+    if active_root:
+        registry["activeRoot"] = active_root
     for key in ("recentRoots", "importedRoots"):
         values = payload.get(key)
         if isinstance(values, list):
@@ -538,6 +597,7 @@ def _register_project_root(root: Path, *, imported: bool, recent: bool) -> dict[
         imported_roots.append(normalized_root)
     if recent:
         recent_roots = [normalized_root, *[item for item in recent_roots if item != normalized_root]]
+        registry["activeRoot"] = normalized_root
 
     registry["importedRoots"] = imported_roots
     registry["recentRoots"] = recent_roots[:12]
@@ -575,6 +635,19 @@ def _mark_recent_project(body: dict[str, Any]) -> dict[str, Any]:
     root = _coerce_project_root(root_value)
     _register_project_root(root, imported=False, recent=True)
     return {"ok": True, "root": str(root)}
+
+
+def _set_active_project(body: dict[str, Any]) -> dict[str, Any]:
+    root_value = str(body.get("root") or "").strip()
+    registry = _load_project_registry()
+    if not root_value:
+        registry["activeRoot"] = ""
+        _save_project_registry(registry)
+        return {"ok": True, "activeRoot": ""}
+
+    root = _coerce_project_root(root_value)
+    registry = _register_project_root(root, imported=False, recent=True)
+    return {"ok": True, "activeRoot": registry.get("activeRoot", "")}
 
 
 def _chapter_review_lookup(state: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -666,6 +739,119 @@ def _entity_appearance_summary(entity: dict[str, Any]) -> str:
     return "；".join(compact)
 
 
+def _compact_value(value: Any) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, str):
+        return value.strip()
+    if isinstance(value, list):
+        return "；".join(_compact_value(item) for item in value if _compact_value(item))
+    if isinstance(value, dict):
+        return json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+    return str(value).strip()
+
+
+def _first_text(source: dict[str, Any], *keys: str) -> str:
+    for key in keys:
+        value = _compact_value(source.get(key))
+        if value:
+            return value
+    return ""
+
+
+def _build_worldbook_cards(state: dict[str, Any]) -> dict[str, Any]:
+    worldbook = state.get("worldbook", {}) if isinstance(state.get("worldbook"), dict) else {}
+    groups = [
+        ("premiseFacts", "premise-fact", "前提"),
+        ("worldRules", "world-rule", "规则"),
+        ("powerProgressions", "progression", "进阶"),
+        ("factions", "faction", "势力"),
+        ("locations", "location", "地点"),
+        ("artifacts", "artifact", "物件"),
+        ("mysteries", "mystery", "谜团"),
+    ]
+    entries: list[dict[str, Any]] = []
+    counts: dict[str, int] = {}
+    for state_key, item_type, label in groups:
+        values = worldbook.get(state_key, [])
+        if not isinstance(values, list):
+            values = []
+        counts[state_key] = len(values)
+        for index, item in enumerate(values, start=1):
+            payload = item if isinstance(item, dict) else {"name": _compact_value(item)}
+            name = _first_text(payload, "name", "title", "label", "id") or f"{label} {index}"
+            summary = _first_text(payload, "summary", "description", "rule", "premise", "currentStage", "condition")
+            detail = _first_text(payload, "detail", "notes", "status", "source", "nextStage")
+            entries.append(
+                {
+                    "id": str(payload.get("id") or f"{item_type}-{index}"),
+                    "type": item_type,
+                    "label": label,
+                    "name": name,
+                    "summary": summary,
+                    "detail": detail,
+                    "sourceKey": state_key,
+                }
+            )
+    return {
+        "entries": entries,
+        "stats": counts,
+    }
+
+
+def _read_text_preview(path: Path, limit: int = 1200) -> str:
+    if not path.exists() or not path.is_file():
+        return ""
+    with path.open("r", encoding="utf-8") as handle:
+        return handle.read(limit).strip()
+
+
+def _review_packet_summary(root: Path, volume_id: str) -> dict[str, Any]:
+    path = root / "reviews" / f"{volume_id}-review-packet.md"
+    exists = path.exists()
+    return {
+        "id": f"review-packet::{volume_id}",
+        "volumeId": volume_id,
+        "title": f"{volume_id} 审查包",
+        "filePath": str(path.relative_to(root)) if exists else str(Path("reviews") / f"{volume_id}-review-packet.md"),
+        "exists": exists,
+        "updatedAt": time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime(path.stat().st_mtime)) if exists else "",
+        "preview": _read_text_preview(path) if exists else "",
+    }
+
+
+def _build_volume_cards(root: Path, state: dict[str, Any]) -> list[dict[str, Any]]:
+    volumes = state.get("outline", {}).get("volumes", [])
+    if not isinstance(volumes, list):
+        return []
+    result: list[dict[str, Any]] = []
+    for index, volume in enumerate(volumes, start=1):
+        if not isinstance(volume, dict):
+            continue
+        volume_id = str(volume.get("id") or f"volume-{index:03d}")
+        chapters = [
+            {
+                "id": str(chapter.get("id", "")),
+                "title": str(chapter.get("title") or chapter.get("id") or ""),
+                "status": str(chapter.get("status") or ""),
+                "summary": str(chapter.get("direction") or chapter.get("summary") or ""),
+            }
+            for chapter in volume.get("chapters", [])
+            if isinstance(chapter, dict) and chapter.get("id")
+        ]
+        result.append(
+            {
+                "id": volume_id,
+                "title": str(volume.get("title") or volume_id),
+                "theme": str(volume.get("theme") or volume.get("summary") or ""),
+                "chapterCount": len(chapters),
+                "chapters": chapters,
+                "reviewPacket": _review_packet_summary(root, volume_id),
+            }
+        )
+    return result
+
+
 def _build_chapter_cards(root: Path, state: dict[str, Any]) -> list[dict[str, Any]]:
     review_map = _chapter_review_lookup(state)
     result: list[dict[str, Any]] = []
@@ -709,7 +895,14 @@ def _build_project_summary(root: Path) -> dict[str, Any]:
             "id": entity.get("id", ""),
             "name": entity.get("name", ""),
             "type": entity.get("type", ""),
-            "summary": entity.get("summary", ""),
+            "summary": entity.get("summary", "") or _first_text(
+                entity.get("profile", {}) if isinstance(entity.get("profile"), dict) else {},
+                "summary",
+                "role",
+            ),
+            "aliases": entity.get("aliases", []) if isinstance(entity.get("aliases"), list) else [],
+            "seed": entity.get("seed", {}) if isinstance(entity.get("seed"), dict) else {},
+            "profile": entity.get("profile", {}) if isinstance(entity.get("profile"), dict) else {},
             "currentState": entity.get("currentState", ""),
             "appearanceSummary": _entity_appearance_summary(entity),
         }
@@ -718,6 +911,7 @@ def _build_project_summary(root: Path) -> dict[str, Any]:
     ]
     workflow = state.get("workflow_progress", {})
     project = state.get("project", {})
+    volumes = _build_volume_cards(root, state)
     return {
         "project": {
             "key": _project_key(root),
@@ -755,6 +949,9 @@ def _build_project_summary(root: Path) -> dict[str, Any]:
         "chapters": chapters,
         "illustrations": illustrations,
         "entities": entities,
+        "worldbook": _build_worldbook_cards(state),
+        "volumes": volumes,
+        "reviewPackets": [volume["reviewPacket"] for volume in volumes if volume.get("reviewPacket")],
         "stats": {
             "chapterCount": len(chapters),
             "reviewedChapterCount": sum(1 for item in chapters if item.get("reviewScore", 0) > 0),
@@ -783,6 +980,13 @@ def _build_project_list_payload() -> dict[str, Any]:
     scanned_roots = _scan_projects()
     imported_roots = _coerce_registered_roots(registry.get("importedRoots", []))
     recent_roots = _coerce_registered_roots(registry.get("recentRoots", []))
+    active_root = ""
+    active_root_value = str(registry.get("activeRoot") or "").strip()
+    if active_root_value:
+        try:
+            active_root = str(_coerce_project_root(active_root_value))
+        except (Exception, SystemExit):
+            active_root = ""
 
     library_roots: list[Path] = []
     seen_roots: set[str] = set()
@@ -799,6 +1003,7 @@ def _build_project_list_payload() -> dict[str, Any]:
     return {
         "recentProjects": recent_projects,
         "libraryProjects": library_projects,
+        "activeRoot": active_root,
         "registryFile": str(WORKBENCH_PROJECTS_FILE),
     }
 
@@ -1001,6 +1206,7 @@ def _build_settings_response(root: Path | None = None) -> dict[str, Any]:
     local_profiles = _runtime_provider_profiles(settings)
     env_api_key = resolve_api_key("")
     workspace_root = _ensure_workbench_illustration_sandbox()
+    workspace_summary = _build_project_summary(workspace_root)
     workspace_packs = [summarize_prompt_pack(pack) for pack in load_available_prompt_packs(workspace_root)]
     if local_profiles:
         api_key_source = "local"
@@ -1040,6 +1246,8 @@ def _build_settings_response(root: Path | None = None) -> dict[str, Any]:
             "defaultBatchCount": illustration.get("defaultBatchCount") or ILLUSTRATION_DEFAULTS["defaultBatchCount"],
         },
         "workspaceIllustration": {
+            "root": str(workspace_root),
+            "title": workspace_summary["project"]["title"],
             "adapterName": "openai",
             "responseModel": illustration.get("defaultModel") or ILLUSTRATION_DEFAULTS["defaultModel"],
             "imageModel": "gpt-image-2",
@@ -1053,6 +1261,7 @@ def _build_settings_response(root: Path | None = None) -> dict[str, Any]:
             "defaultModifierRefs": [],
             "availablePromptPacks": workspace_packs,
             "defaultBatchCount": illustration.get("defaultBatchCount") or ILLUSTRATION_DEFAULTS["defaultBatchCount"],
+            "recentIllustrations": workspace_summary["illustrations"],
         },
         "project": project_payload,
         "capabilities": {
@@ -1575,6 +1784,18 @@ class StoryCanvasApiHandler(BaseHTTPRequestHandler):
                 return
             _json_response(self, payload)
             return
+        if parsed.path == "/api/projects/active":
+            try:
+                body = _load_json_request(self)
+                payload = _set_active_project(body)
+            except json.JSONDecodeError:
+                _json_response(self, {"error": "Invalid JSON body"}, HTTPStatus.BAD_REQUEST)
+                return
+            except (Exception, SystemExit) as exc:
+                _json_response(self, {"error": str(exc)}, HTTPStatus.BAD_REQUEST)
+                return
+            _json_response(self, payload)
+            return
         if parsed.path == "/api/illustration/dry-run":
             cleanup_paths: list[Path] = []
             try:
@@ -1603,6 +1824,18 @@ class StoryCanvasApiHandler(BaseHTTPRequestHandler):
                 return
             finally:
                 _cleanup_paths(cleanup_paths)
+            _json_response(self, payload)
+            return
+        if parsed.path == "/api/system/open-folder":
+            try:
+                body = _load_json_request(self)
+                payload = _open_local_folder_request(body)
+            except json.JSONDecodeError:
+                _json_response(self, {"error": "Invalid JSON body"}, HTTPStatus.BAD_REQUEST)
+                return
+            except (Exception, SystemExit) as exc:
+                _json_response(self, {"error": str(exc)}, HTTPStatus.BAD_REQUEST)
+                return
             _json_response(self, payload)
             return
         if parsed.path == "/api/settings":

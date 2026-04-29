@@ -136,15 +136,12 @@ import { computed, reactive, ref, watch } from "vue";
 import type { LocalProviderProfile } from "@/api/storyCanvas";
 import WorkbenchPaneCard from "@/components/WorkbenchPaneCard.vue";
 import { useWorkspace } from "@/composables/useWorkspace";
-import {
-  TButton,
-  TForm,
-  TFormItem,
-  TInput,
-  TInputNumber,
-  TSelect,
-  TSwitch,
-} from "@/tdesign/forms";
+import { TButton } from "@/tdesign/button";
+import { TForm, TFormItem } from "@/tdesign/form";
+import { TInput } from "@/tdesign/input";
+import { TInputNumber } from "@/tdesign/input-number";
+import { TSelect } from "@/tdesign/select";
+import { TSwitch } from "@/tdesign/switch";
 
 type ProviderDraft = {
   id: string;
