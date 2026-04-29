@@ -1005,6 +1005,20 @@ RULE_REGISTRY: Dict[str, Dict[str, Any]] = {
         "severity": "warning",
         "tags": ["workflow", "review-gate"],
     },
+    "missing-context-refresh": {
+        "source": "core",
+        "scope": "chapter",
+        "kind": "gate",
+        "severity": "warning",
+        "tags": ["workflow", "context-gate"],
+    },
+    "stale-context-refresh": {
+        "source": "core",
+        "scope": "chapter",
+        "kind": "gate",
+        "severity": "warning",
+        "tags": ["workflow", "context-gate"],
+    },
     "missing-scene-review": {
         "source": "core",
         "scope": "scene",

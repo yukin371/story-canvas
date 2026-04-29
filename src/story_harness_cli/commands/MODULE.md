@@ -47,7 +47,7 @@
 - `init` 当前默认只创建空白章节 stub，不再把结构说明文案写进正文；命令输出会附带 `startGuide/suggestedCommands`，直接提示 AI 下一步该跑什么
 - `init` 当前支持 `--volume-id/--volume-title/--volume-theme`，可直接把首章放进首卷，避免“有卷级审查命令但从零起项目不能建卷”的断链
 - `init` 当前还支持通过 `--volume-goal` / `--reader-hook` / `--suppression-source` / `--onboarding-focus` / `--chapter-handoff` / `--chapter-delivery` 直接回填 PRD 启动焦点，减少后续 agent/UI 继续手改 `PRD.md`
-- `context refresh` 的 command-side 编排：加载 analysis 日志，刷新并持久化包含情绪契约、题材模板、世界约束、线索和伏笔切片的写作上下文；当前还会输出 `chapterHandoff`
+- `context refresh` 的 command-side 编排：加载 analysis 日志，刷新并持久化包含情绪契约、题材模板、世界约束、线索和伏笔切片的写作上下文；当前还会输出 `chapterHandoff`，并记录当前章节正文内容指纹供 workflow 判断 context 是否过期
 - `context refresh/show` 当前还会在命令输出层附带 `projectAdvisories`；不仅会提示缺少 `PRD.md`，也会提示 `PRD.md` 仍停留在模板占位状态，让 AI 在真正拿写作上下文时就能看到项目级立项缺口，同时不污染持久化 `context-lens.yaml`
 - doctor 类命令中的项目元数据校验编排
 - doctor 现在还会检查项目根目录是否存在 `PRD.md`，在缺失时给出只读 warning，提醒项目仍缺正式立项/卷职责文档入口
@@ -107,7 +107,7 @@
 - `workflow status/export --volume-id` 当前还会额外输出只读 `changeRequestDrafts`，把当前卷级 gate 的阻塞项收敛成带章节定位与 evidence 的 change-request 风格草案；若尚未进入卷级自审，也会附带 `volumeStructureCheck` 派生的结构修补草案，便于 UI 或 agent 直接组织修稿闭环
 - 当卷级自审的 `issues` 已带 `chapterRefs/evidenceRefs` 时，`workflow status/export --volume-id` 当前会优先复用这些结构化定位，而不是只靠 preflight 启发式推断
 - `workflow status/export` 当前还会统一输出顶层 `projectAdvisories`；既会提示缺少 `PRD.md`，也会提示 `PRD.md` 是否仍停留在模板占位状态，用于提醒项目尚未补齐立项/卷职责文档入口，但不会改变 gate blocking 结果
-- `workflow status` 当前在 chapter scope 下还会带出 `startGuide`；当起步门禁未齐备时返回 bootstrap 命令建议，门禁齐备后则切换到 analyze / context / review 闭环建议，避免在后续阶段继续误报“缺 direction / beats / scenePlans”
+- `workflow status` 当前在 chapter scope 下还会带出 `startGuide`；当起步门禁未齐备时返回 bootstrap 命令建议，门禁齐备后则切换到 analyze / context / review 闭环建议，避免在后续阶段继续误报“缺 direction / beats / scenePlans”；`startGuide` 只消费章节起步三类 outline 缺口，不混入当前 gate 的 context/review 阻塞项
 - `doctor` 与 `workflow` 现也开始对外暴露统一规则语义：`doctor.judgements`、workflow gate 下的 `ruleJudgements/gateDecision`，用于把结构校验和流程门禁逐步收口到同一规则协议
 
 ## 3. Must Not Own
@@ -156,6 +156,7 @@
 - `workflow advance` 只能对当前 gate 执行；如果要回到更早 gate，必须先 `workflow run --resume-from <stage>` 或 `workflow reset --from-gate <stage>`
 - `workflow status` 会把持久化的 `workflow.yaml` 与当前推断结果合并展示，因此 `currentStage` 可能早于 `inferredCurrentStage`
 - chapter workflow 当前最小可验证链路为 `project_contract -> outline_ready -> context_ready -> chapter_review_ready -> scene_review_ready -> export_ready`；其中 `context_ready` 用于确认当前章至少完成一轮 `context refresh`
+- 对带有 `chapterContentHash` 的新 context lens，`context_ready` 会在章节正文变化后重新阻塞并要求刷新 context；旧 lens 缺少该字段时保持兼容，不强制判 stale；状态输出用 `contextHashStatus/contextHashTracked` 显式标记 fresh、stale 或 `legacy-untracked`
 - `workflow status/export --volume-id` 当前仍不会写 `workflow.yaml`；卷级状态依旧由 `review preflight` + `review volume-self` 的组合结果临时推断，而不是持久化成独立 volume workflow 文件
 - `status` 只做只读聚合；若 `scenePlans` 段落范围已越界，它只会报告 `invalidScenePlans`，不会自动回写修正
 - `status.targetChapter.mentionHygiene` 只输出紧凑摘要和 top items；需要完整 action plan 时仍应改用 `entity mention-plan`

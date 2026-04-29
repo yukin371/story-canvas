@@ -562,6 +562,60 @@ class StatusCommandSmokeTest(unittest.TestCase):
             "out-of-range",
         )
 
+    def test_status_exposes_start_guide_for_bootstrap_chapter(self) -> None:
+        self._init_project()
+
+        exit_code, payload = self._run_json(["status", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+
+        self.assertEqual(exit_code, 0)
+        start_guide = payload["targetChapter"]["startGuide"]
+        self.assertFalse(start_guide["hasBodyParagraphs"])
+        self.assertIn("missing-direction", start_guide["missingCodes"])
+        self.assertIn("missing-beats", start_guide["missingCodes"])
+        self.assertIn("missing-scene-plans", start_guide["missingCodes"])
+        self.assertTrue(any("structure apply" in item for item in start_guide["suggestedCommands"]))
+        self.assertFalse(any("scene-detect" in item for item in start_guide["suggestedCommands"]))
+
+    def test_status_start_guide_does_not_fall_back_to_fake_missing_codes_when_outline_is_ready(self) -> None:
+        self._init_project()
+        self._write_json(
+            "outline.yaml",
+            {
+                "chapters": [
+                    {
+                        "id": "chapter-001",
+                        "title": "灯尽人未绝",
+                        "status": "draft",
+                        "direction": "立住死局。",
+                        "beats": [{"id": "beat-001", "summary": "死局开场", "status": "planned"}],
+                        "scenePlans": [
+                            {
+                                "id": "scene-001",
+                                "title": "废棚等死",
+                                "summary": "立住死局。",
+                                "startParagraph": 1,
+                                "endParagraph": 2,
+                            }
+                        ],
+                    }
+                ],
+                "chapterDirections": [],
+                "volumes": [],
+            },
+        )
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 灯尽人未绝\n\n沈照在废棚里等死。\n\n旧灯芯忽然回亮了一线。\n",
+            encoding="utf-8",
+        )
+
+        exit_code, payload = self._run_json(["status", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+
+        self.assertEqual(exit_code, 0)
+        start_guide = payload["targetChapter"]["startGuide"]
+        self.assertEqual(start_guide["missingCodes"], [])
+        self.assertTrue(any("chapter analyze" in item for item in start_guide["suggestedCommands"]))
+        self.assertTrue(any("context refresh" in item for item in start_guide["suggestedCommands"]))
+
     def test_status_includes_mention_hygiene_summary_for_target_chapter(self) -> None:
         self._init_project()
         self._write_json(

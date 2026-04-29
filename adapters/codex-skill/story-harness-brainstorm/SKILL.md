@@ -1,6 +1,6 @@
 ---
 name: story-harness-brainstorm
-description: Pre-project Chinese fiction brainstorming adapter for Codex. Use when Codex needs to explore raw story ideas before a Story Canvas project exists: premise discovery, hook finding, protagonist abnormal state, serial-loop design, first-volume promise, direction comparison, and PRD seed drafting. Use this skill when the user is still exploring and does not yet need chapter drafting, project-state workflow gates, or illustration generation.
+description: "Pre-project Chinese fiction brainstorming adapter for Codex. Use when Codex needs to explore raw story ideas before a Story Canvas project exists: premise discovery, hook finding, protagonist abnormal state, serial-loop design, first-volume promise, direction comparison, and PRD seed drafting. Use this skill when the user is still exploring and does not yet need chapter drafting, project-state workflow gates, or illustration generation."
 ---
 
 # Story Canvas Brainstorm

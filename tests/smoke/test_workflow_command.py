@@ -380,7 +380,7 @@ class WorkflowCommandSmokeTest(unittest.TestCase):
         self.assertIn("missing-beats", start_guide["missingCodes"])
         self.assertIn("missing-scene-plans", start_guide["missingCodes"])
         self.assertTrue(any("structure scaffold" in item for item in start_guide["suggestedCommands"]))
-        self.assertTrue(any("scene-detect" in item for item in start_guide["suggestedCommands"]))
+        self.assertFalse(any("scene-detect" in item for item in start_guide["suggestedCommands"]))
 
     def test_workflow_status_reports_missing_project_prd_as_advisory(self) -> None:
         self._init_project(ready_project_gate=True)
@@ -478,7 +478,65 @@ class WorkflowCommandSmokeTest(unittest.TestCase):
         self.assertEqual(payload["workflowStatus"], "in_progress")
         self.assertEqual(payload["currentGateDecision"]["blockingRules"], ["missing-context-refresh"])
         self.assertTrue(any("context refresh" in item for item in payload["nextActions"]))
+        self.assertEqual(payload["startGuide"]["missingCodes"], [])
+        self.assertTrue(any("context refresh" in item for item in payload["startGuide"]["suggestedCommands"]))
 
+    def test_workflow_allows_legacy_context_lens_without_hash(self) -> None:
+        self._prepare_review_ready_project()
+        context_path = self.temp_dir / "projections" / "context-lens.yaml"
+        context_path.write_text(
+            json.dumps(
+                {
+                    "currentChapterId": "chapter-001",
+                    "lenses": [
+                        {
+                            "chapterId": "chapter-001",
+                            "updatedAt": "2026-04-29T10:00:00+08:00",
+                            "focus": [],
+                        }
+                    ],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        exit_code, payload = self._run_json(["workflow", "status", "--root", str(self.temp_dir)])
+
+        context_stage = payload["stageResults"]["context_ready"]
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["currentStage"], "chapter_review_ready")
+        self.assertTrue(context_stage["completed"])
+        self.assertFalse(context_stage["contextStale"])
+        self.assertFalse(context_stage["contextHashTracked"])
+        self.assertEqual(context_stage["contextHashStatus"], "legacy-untracked")
+
+    def test_workflow_marks_context_stale_after_chapter_changes(self) -> None:
+        self._prepare_review_ready_project()
+
+        exit_code, _ = self._run_json(["chapter", "analyze", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+        self.assertEqual(exit_code, 0)
+        exit_code, _ = self._run_json(["context", "refresh", "--root", str(self.temp_dir), "--chapter-id", "chapter-001"])
+        self.assertEqual(exit_code, 0)
+        exit_code, payload = self._run_json(["workflow", "status", "--root", str(self.temp_dir)])
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["stageResults"]["context_ready"]["contextHashStatus"], "fresh")
+        self.assertTrue(payload["stageResults"]["context_ready"]["contextHashTracked"])
+
+        chapter_path = self.temp_dir / "chapters" / "chapter-001.md"
+        chapter_path.write_text(chapter_path.read_text(encoding="utf-8") + "\n\n林舟把账册塞进怀里，转身追进雨里。\n", encoding="utf-8")
+
+        exit_code, payload = self._run_json(["workflow", "status", "--root", str(self.temp_dir)])
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["currentStage"], "context_ready")
+        self.assertEqual(payload["currentGateDecision"]["blockingRules"], ["stale-context-refresh"])
+        self.assertTrue(payload["stageResults"]["context_ready"]["contextStale"])
+        self.assertTrue(payload["stageResults"]["context_ready"]["contextHashTracked"])
+        self.assertEqual(payload["stageResults"]["context_ready"]["contextHashStatus"], "stale")
+        self.assertTrue(any("context refresh" in item for item in payload["nextActions"]))
 
     def test_workflow_advance_modify_and_reset(self) -> None:
         self._prepare_review_ready_project()

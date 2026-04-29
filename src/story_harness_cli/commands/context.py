@@ -4,10 +4,10 @@ import json
 from pathlib import Path
 
 from story_harness_cli.commands.project_support import build_project_advisories
-from story_harness_cli.protocol import ensure_project_root, load_project_state, save_state
+from story_harness_cli.protocol import chapter_path, ensure_project_root, load_project_state, save_state
 from story_harness_cli.protocol.io import load_json_compatible_yaml
 from story_harness_cli.services import refresh_context_lens
-from story_harness_cli.utils import now_iso
+from story_harness_cli.utils import now_iso, stable_hash
 
 
 def _decorate_context_lens(root: Path, lens: dict) -> dict:
@@ -29,6 +29,8 @@ def command_context_refresh(args) -> int:
         analysis = load_json_compatible_yaml(root / "logs" / "latest-analysis.yaml", {})
 
     lens = refresh_context_lens(state, chapter_id, analysis)
+    chapter_file = chapter_path(root, chapter_id)
+    lens["chapterContentHash"] = stable_hash(chapter_file.read_text(encoding="utf-8")) if chapter_file.exists() else ""
     state["project"]["activeChapterId"] = chapter_id
     state["project"]["updatedAt"] = now_iso()
     save_state(root, state)

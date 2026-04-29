@@ -24,6 +24,7 @@ from story_harness_cli.services import (
     reset_workflow_progress,
 )
 from story_harness_cli.utils import now_iso
+from story_harness_cli.utils import stable_hash
 
 
 def _collect_chapter_files(root: Path, state: dict[str, Any], explicit_chapter_id: str | None) -> dict[str, bool]:
@@ -37,11 +38,29 @@ def _collect_chapter_files(root: Path, state: dict[str, Any], explicit_chapter_i
     return {chapter_id: chapter_path(root, chapter_id).exists() for chapter_id in chapter_ids if chapter_id}
 
 
+def _collect_chapter_file_signatures(root: Path, state: dict[str, Any], explicit_chapter_id: str | None) -> dict[str, str]:
+    chapter_ids = {
+        item.get("id")
+        for item in state.get("outline", {}).get("chapters", [])
+        if item.get("id")
+    }
+    if explicit_chapter_id:
+        chapter_ids.add(explicit_chapter_id)
+    signatures: dict[str, str] = {}
+    for chapter_id in chapter_ids:
+        if not chapter_id:
+            continue
+        path = chapter_path(root, chapter_id)
+        signatures[chapter_id] = stable_hash(path.read_text(encoding="utf-8")) if path.exists() else ""
+    return signatures
+
+
 def _infer(root: Path, state: dict[str, Any], chapter_id: str | None) -> dict[str, Any]:
     return infer_workflow_status(
         state,
         chapter_id=chapter_id,
         chapter_files=_collect_chapter_files(root, state, chapter_id),
+        chapter_file_signatures=_collect_chapter_file_signatures(root, state, chapter_id),
     )
 
 
@@ -159,9 +178,7 @@ def command_workflow_status(args) -> int:
                 root,
                 workflow_progress.get("targetChapterId") or args.chapter_id or "",
                 missing_codes=list(
-                    workflow_progress["stageResults"][workflow_progress["currentStage"]]["gateDecision"].get(
-                        "blockingRules", []
-                    )
+                    workflow_progress["stageResults"].get("outline_ready", {}).get("gateDecision", {}).get("blockingRules", [])
                 ),
             )
             if (workflow_progress.get("targetChapterId") or args.chapter_id)

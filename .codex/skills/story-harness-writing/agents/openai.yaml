@@ -1,0 +1,4 @@
+interface:
+  display_name: "Story Canvas Writing"
+  short_description: "Novel writing and review only, with Story Canvas gates"
+  default_prompt: "Use $story-harness-writing for prose-first Story Canvas work: plan, draft, revise, review, and close the loop on novel chapters and volumes. Use imagegen separately for illustration tasks."

@@ -231,6 +231,54 @@ class OutlineLoopSmokeTest(unittest.TestCase):
         self.assertEqual(len(chapter["scenePlans"]), 2)
         self.assertTrue(chapter["scenePlans"][0]["title"].startswith("场景01"))
 
+    def test_outline_scene_detect_rejects_empty_bootstrap_chapter(self) -> None:
+        args_root = str(self.temp_dir)
+
+        with self.assertRaises(SystemExit) as exc_info:
+            main(["outline", "scene-detect", "--root", args_root, "--chapter-id", "chapter-001"])
+
+        self.assertIn("当前章节还没有正文段落", str(exc_info.exception))
+
+    def test_outline_scene_detect_handles_utf8_bom_chapter(self) -> None:
+        args_root = str(self.temp_dir)
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "\ufeff# 第一章\n\n"
+            "林舟在雨里翻开账页。\n\n"
+            "他看见自己的名字被划掉了一半。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["outline", "scene-detect", "--root", args_root, "--chapter-id", "chapter-001"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["detected"], 1)
+        self.assertFalse(payload["scenes"][0]["title"].startswith("\ufeff"))
+
+    def test_outline_scene_detect_splits_relocation_without_explicit_time_jump(self) -> None:
+        args_root = str(self.temp_dir)
+        (self.temp_dir / "chapters" / "chapter-001.md").write_text(
+            "# 第一章\n\n"
+            "@{林舟}蹲在旧书铺后屋的工作台前，盯着账页上的死期。\n\n"
+            "他在灯下翻出@{周晚}留下的铜纽扣，越看越觉得不对劲。\n\n"
+            "@{郑叔}隔门压低声音，说旧六码头仓库又有人喊周晚的名字。\n\n"
+            "他把铜纽扣和账簿一并塞进防水布袋，沿着积水巷子赶去旧六码头。仓库门口挂着褪色封条。\n\n"
+            "@{林舟}刚把门推开一掌宽，就听见黑暗深处传来女人的咳嗽声。\n",
+            encoding="utf-8",
+        )
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            exit_code = main(["outline", "scene-detect", "--root", args_root, "--chapter-id", "chapter-001"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["detected"], 2)
+        self.assertEqual(payload["scenes"][1]["startParagraph"], 4)
+        self.assertEqual(payload["scenes"][1]["breakReason"], "transition:relocation")
+
     def test_outline_scene_detect_requires_replace_for_existing_scene_plans(self) -> None:
         args_root = str(self.temp_dir)
         (self.temp_dir / "chapters" / "chapter-001.md").write_text(
@@ -503,6 +551,9 @@ class OutlineLoopSmokeTest(unittest.TestCase):
         self.assertEqual(payload["projectAdvisories"][0]["ruleId"], "project-prd-incomplete")
         self.assertEqual(payload["summary"]["notReadyChapters"], 1)
         self.assertEqual(payload["chapters"][0]["status"], "missing-direction")
+        self.assertIn("missing-direction", payload["startGuide"]["missingCodes"])
+        self.assertTrue(any("structure scaffold" in item for item in payload["startGuide"]["suggestedCommands"]))
+        self.assertFalse(any("scene-detect" in item for item in payload["startGuide"]["suggestedCommands"]))
 
         with redirect_stdout(StringIO()):
             self.assertEqual(

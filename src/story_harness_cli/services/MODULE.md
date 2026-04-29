@@ -29,7 +29,7 @@
 - `illustration_prompting.py`: 当前还支持 freeform / temporary 目标 payload；当图片不绑定具体章节或角色时，仍走相同 pack/template 展开，但 target type 会标记为 `temporary`；pack 没有专用模板时，服务层会按同类 use-case fallback 解析模板与词库
 - `illustration_batching.py`: batch spec 归一化、delivery mode 约束、batch manifest summary，以及 `webui-manual` / `external-agent` 的纯说明载荷组装
 - `reference_mentions.py`: 章节内结构化引用 mention 的纯分析，负责已建档引用目录、已包裹/未包裹/未建档分组、plain mention 的确定性 tag replacement 候选，以及最小 related context
-- `workflow_engine.py`: workflow 状态机纯函数，负责阶段推断、状态 hydration/build、gate 决策推进、reset 与导出快照
+- `workflow_engine.py`: workflow 状态机纯函数，负责阶段推断、状态 hydration/build、gate 决策推进、reset 与导出快照；章节级 `context_ready` 会消费命令层传入的章节正文指纹，对新生成的 context lens 做过期判断，并通过 `contextHashStatus/contextHashTracked` 显式区分 fresh、stale 与旧 lens 兼容状态
 - `workflow_engine.py`: workflow gate 现会为阻塞项补统一 `ruleJudgements` 与 `gateDecision`，让门禁结果能引用具体规则 id，而不是只返回散乱说明
 - `workflow_engine.py` 现还负责卷级 gate 的纯推断：先消费卷级 `review preflight` 聚合结果，再结合最新 `review volume-self` 结论，输出“工具侧是否清障 / 是否可进入人工审查”的只读 workflow 视图
 - `workflow_engine.py` 的卷级摘要当前还会透出 `repairCoverage` 紧凑字段，供 `workflow status/export --volume-id` 直接显示弱项覆盖状态，而不必额外反查原始自审记录
@@ -68,7 +68,7 @@
 - `apply_projection(state, analysis, chapter_id)`: 投影应用
 - `check_consistency(state, chapter_text, chapter_id)`: 一致性校验，返回 hard/soft checks、设定候选与设定冲突上下文
 - `enrich_entities(state, chapter_id, root)`: 实体丰富化
-- `refresh_context_lens(state, chapter_id, analysis)`: 上下文刷新，返回适合当前章节写作的最小约束切片，并显式暴露 `chapterHandoff`
+- `refresh_context_lens(state, chapter_id, analysis)`: 上下文刷新，返回适合当前章节写作的最小约束切片，并显式暴露 `chapterHandoff`；命令层会在持久化前补入当前章节正文内容指纹
 - `evaluate_project_story_gate(state)`: 检查项目是否已具备 `primaryGenre`、`targetAudience`、`corePromises`、`paceContract`
 - `evaluate_chapter_outline_readiness(state, chapter_id, require_beats=True, require_scene_plans=True, require_project_gate=True)`: 检查单章是否已具备严格大纲前置设计
 - `evaluate_project_outline_readiness(state, chapter_id=None, require_beats=True, require_scene_plans=True, require_project_gate=True)`: 生成项目级或章节级大纲门禁报告
@@ -158,6 +158,7 @@
 - `evaluate_project_story_gate` 的用途是把“先确定市场定位和故事承诺，再拆章节”变成硬门禁，而不是 review 阶段的软建议
 - workflow 的 `currentStage` 口径是“第一个未满足 inferred 条件的 gate”，不是“所有前置 gate 都必须先人工 accept 才算通过”
 - `advance_workflow_progress` 只允许对当前 gate 执行 `accept`；若 inferred 条件未满足，会直接拒绝推进
+- `context_ready` 的 stale 判断只对带有 `chapterContentHash` 的 lens 生效；旧项目旧 lens 继续按存在性兼容，刷新后才进入内容指纹校验；输出中的 `contextHashStatus=legacy-untracked` 用于暴露这种兼容状态
 
 ## 8. 测试方式
 

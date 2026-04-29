@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from story_harness_cli.commands.project_support import build_project_advisories
+from story_harness_cli.commands.project_support import build_chapter_start_guide, build_project_advisories
 from story_harness_cli.commands.review_support import build_review_preflight_payload
 from story_harness_cli.protocol import (
     chapter_path,
@@ -23,6 +23,7 @@ from story_harness_cli.services import (
     latest_volume_self_review,
 )
 from story_harness_cli.services.reference_mentions import build_reference_mention_report
+from story_harness_cli.utils import stable_hash
 from story_harness_cli.utils.text import count_words, paragraphs_from_text, strip_entity_tags, strip_markdown
 
 
@@ -106,6 +107,23 @@ def _collect_chapter_files(root: Path, state: dict[str, Any], explicit_chapter_i
     if explicit_chapter_id:
         chapter_ids.add(explicit_chapter_id)
     return {chapter_id: chapter_path(root, chapter_id).exists() for chapter_id in chapter_ids if chapter_id}
+
+
+def _collect_chapter_file_signatures(root: Path, state: dict[str, Any], explicit_chapter_id: str | None) -> dict[str, str]:
+    chapter_ids = {
+        item.get("id")
+        for item in _ordered_outline_chapters(state)
+        if item.get("id")
+    }
+    if explicit_chapter_id:
+        chapter_ids.add(explicit_chapter_id)
+    signatures: dict[str, str] = {}
+    for chapter_id in chapter_ids:
+        if not chapter_id:
+            continue
+        path = chapter_path(root, chapter_id)
+        signatures[chapter_id] = stable_hash(path.read_text(encoding="utf-8")) if path.exists() else ""
+    return signatures
 
 
 def _latest_matching(items: list[dict[str, Any]], predicate) -> dict[str, Any]:
@@ -363,6 +381,13 @@ def _build_target_chapter_summary(root: Path, state: dict[str, Any], chapter_id:
     direction = detailed_entry.get("direction") or chapter_entry.get("direction", "")
     beats = detailed_entry.get("beats") or chapter_entry.get("beats", [])
     scene_plans = detailed_entry.get("scenePlans") or chapter_entry.get("scenePlans", [])
+    missing_codes: list[str] = []
+    if not direction:
+        missing_codes.append("missing-direction")
+    if not beats:
+        missing_codes.append("missing-beats")
+    if not scene_plans:
+        missing_codes.append("missing-scene-plans")
 
     return {
         "exists": bool(chapter_entry),
@@ -379,6 +404,7 @@ def _build_target_chapter_summary(root: Path, state: dict[str, Any], chapter_id:
         "completedBeatCount": sum(1 for item in beats if item.get("status") == "completed"),
         "scenePlanStatus": _scene_plan_status(scene_plans, len(paragraphs) if chapter_file.exists() else None),
         "mentionHygiene": _build_mention_hygiene_summary(state, chapter_text if chapter_file.exists() else None),
+        "startGuide": build_chapter_start_guide(root, chapter_id, missing_codes=missing_codes),
     }
 
 
@@ -655,6 +681,7 @@ def _build_workflow_summary(root: Path, state: dict[str, Any], chapter_id: str |
         state,
         chapter_id=chapter_id,
         chapter_files=_collect_chapter_files(root, state, chapter_id),
+        chapter_file_signatures=_collect_chapter_file_signatures(root, state, chapter_id),
     )
     workflow_progress = hydrate_workflow_progress(state.get("workflow_progress", {}), inferred)
     current_stage = workflow_progress["currentStage"]
@@ -672,6 +699,19 @@ def _build_workflow_summary(root: Path, state: dict[str, Any], chapter_id: str |
         "targetChapterTitle": inferred.get("targetChapterTitle", ""),
         "currentGateDecision": current_stage_payload.get("gateDecision", {}),
         "nextActions": list(current_stage_payload.get("nextActions", []))[:3],
+        "startGuide": (
+            build_chapter_start_guide(
+                root,
+                workflow_progress.get("targetChapterId") or chapter_id or "",
+                missing_codes=list(
+                    workflow_progress["stageResults"].get("outline_ready", {}).get("gateDecision", {}).get(
+                        "blockingRules", []
+                    )
+                ),
+            )
+            if (workflow_progress.get("targetChapterId") or chapter_id)
+            else {}
+        ),
     }
 
 

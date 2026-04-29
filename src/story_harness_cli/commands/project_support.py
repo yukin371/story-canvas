@@ -3,6 +3,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+from story_harness_cli.protocol import chapter_path
+from story_harness_cli.utils.text import paragraphs_from_text
+
 
 _PRD_BOOTSTRAP_PLACEHOLDERS = {
     "- 卷目标: TBD": "卷目标",
@@ -62,3 +65,81 @@ def build_project_advisories(root: Path, *, include_prd_content: bool = False) -
     if prd_path.exists():
         return _build_incomplete_prd_advisories(prd_path) if include_prd_content else []
     return [_build_missing_prd_advisory()]
+
+
+def _append_once(items: list[str], value: str) -> None:
+    if value and value not in items:
+        items.append(value)
+
+
+def build_chapter_start_guide(
+    root: Path,
+    chapter_id: str,
+    *,
+    missing_codes: list[str] | None = None,
+) -> dict[str, Any]:
+    chapter_file = chapter_path(root, chapter_id)
+    chapter_text = chapter_file.read_text(encoding="utf-8") if chapter_file.exists() else ""
+    has_body_paragraphs = bool(paragraphs_from_text(chapter_text)) if chapter_text else False
+    startup_codes = {"missing-direction", "missing-beats", "missing-scene-plans"}
+    codes = startup_codes if missing_codes is None else {code for code in missing_codes if code in startup_codes}
+
+    notes: list[str] = []
+    suggested_commands: list[str] = []
+    root_arg = f'"{root}"'
+
+    if not has_body_paragraphs:
+        notes.append("当前章节正文仍为空；先在章节文件里按场景写 1 段骨架，再继续 scenePlans 闭环。")
+
+    if "missing-direction" in codes or "missing-beats" in codes:
+        notes.append("如果还没定章节结构，先用 structure 模板落一版 direction/beats；已有明确想法时再手工补 beat。")
+        _append_once(suggested_commands, f"story-canvas structure list --root {root_arg}")
+        _append_once(suggested_commands, f"story-canvas structure apply --root {root_arg} --template three-act")
+        _append_once(suggested_commands, f"story-canvas structure scaffold --root {root_arg}")
+        if "missing-beats" in codes:
+            _append_once(
+                suggested_commands,
+                f'story-canvas outline beat-add --root {root_arg} --chapter-id {chapter_id} --summary "补一条本章关键推进 beat"',
+            )
+
+    if "missing-scene-plans" in codes:
+        if has_body_paragraphs:
+            notes.append("当前章节已经有正文段落，可以直接用 scene-detect 生成首版 scenePlans。")
+            _append_once(suggested_commands, f"story-canvas outline scene-detect --root {root_arg} --chapter-id {chapter_id}")
+        else:
+            notes.append("scenePlans 当前依赖段落边界；如果还没正文，先在章节文件中为每个计划 scene 写一段骨架。")
+        _append_once(suggested_commands, f"story-canvas outline scene-list --root {root_arg} --chapter-id {chapter_id}")
+
+    if not codes:
+        if has_body_paragraphs:
+            notes.append("当前章节起步门禁已齐备，可继续 analyze / suggest / context / review 闭环。")
+            _append_once(suggested_commands, f"story-canvas chapter analyze --root {root_arg} --chapter-id {chapter_id}")
+            _append_once(suggested_commands, f"story-canvas chapter suggest --root {root_arg} --chapter-id {chapter_id}")
+            _append_once(
+                suggested_commands,
+                f"story-canvas review apply --root {root_arg} --all-pending --decision accepted",
+            )
+            _append_once(suggested_commands, f"story-canvas projection apply --root {root_arg} --chapter-id {chapter_id}")
+            _append_once(suggested_commands, f"story-canvas context refresh --root {root_arg} --chapter-id {chapter_id}")
+            _append_once(suggested_commands, f"story-canvas review chapter --root {root_arg} --chapter-id {chapter_id}")
+            _append_once(suggested_commands, f"story-canvas outline scene-list --root {root_arg} --chapter-id {chapter_id}")
+            _append_once(
+                suggested_commands,
+                f"story-canvas review scene --root {root_arg} --chapter-id {chapter_id} --scene-index 1",
+            )
+        else:
+            notes.append("当前章节结构门禁已齐备，但正文仍为空；先按 beats / scenePlans 写出首版正文。")
+            _append_once(suggested_commands, f"story-canvas outline scene-list --root {root_arg} --chapter-id {chapter_id}")
+    else:
+        _append_once(suggested_commands, f"story-canvas outline check --root {root_arg} --chapter-id {chapter_id}")
+    _append_once(suggested_commands, f"story-canvas status --root {root_arg} --chapter-id {chapter_id}")
+
+    return {
+        "chapterId": chapter_id,
+        "chapterFile": str(chapter_file),
+        "chapterFileExists": chapter_file.exists(),
+        "hasBodyParagraphs": has_body_paragraphs,
+        "missingCodes": sorted(codes),
+        "notes": notes,
+        "suggestedCommands": suggested_commands,
+    }

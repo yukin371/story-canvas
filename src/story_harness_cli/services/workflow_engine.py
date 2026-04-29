@@ -39,6 +39,7 @@ def infer_workflow_status(
     *,
     chapter_id: str | None = None,
     chapter_files: Dict[str, bool] | None = None,
+    chapter_file_signatures: Dict[str, str] | None = None,
 ) -> Dict[str, Any]:
     target_chapter_id = _resolve_target_chapter_id(state, chapter_id)
     project_gate = evaluate_project_story_gate(state)
@@ -67,6 +68,7 @@ def infer_workflow_status(
             state,
             target_chapter_id,
             chapter_exists=chapter_exists,
+            chapter_content_hash=(chapter_file_signatures or {}).get(target_chapter_id or "", ""),
         ),
         "chapter_review_ready": _build_chapter_review_stage(
             target_chapter_id,
@@ -457,6 +459,7 @@ def _build_context_stage(
     chapter_id: str | None,
     *,
     chapter_exists: bool,
+    chapter_content_hash: str = "",
 ) -> Dict[str, Any]:
     context_lens = state.get("context_lens", {})
     matching_lens = next(
@@ -470,6 +473,19 @@ def _build_context_stage(
 
     missing = []
     next_actions = []
+    context_hash = matching_lens.get("chapterContentHash", "") if matching_lens else ""
+    context_hash_status = _context_hash_status(
+        matching_lens=matching_lens,
+        chapter_exists=chapter_exists,
+        chapter_content_hash=chapter_content_hash,
+        context_hash=context_hash,
+    )
+    context_stale = bool(
+        matching_lens
+        and context_hash
+        and chapter_content_hash
+        and context_hash != chapter_content_hash
+    )
     if not chapter_exists:
         missing.append({"code": "missing-chapter-file", "message": "缺少目标章节正文文件"})
         next_actions.append("先补正文章节文件，再进入 context refresh")
@@ -482,19 +498,60 @@ def _build_context_stage(
                 "最后运行 context refresh，为目标章节生成可复用上下文",
             ]
         )
+    elif context_stale:
+        missing.append({"code": "stale-context-refresh", "message": "当前章节正文已变化，需要重新刷新上下文"})
+        next_actions.extend(
+            [
+                "先重新运行 chapter analyze，更新本章分析基础",
+                "再运行 context refresh，刷新当前章节上下文",
+            ]
+        )
 
-    completed = chapter_exists and bool(matching_lens)
+    completed = chapter_exists and bool(matching_lens) and not context_stale
+    status = "ready"
+    if not completed:
+        if not chapter_exists:
+            status = "missing-chapter-file"
+        elif context_stale:
+            status = "stale-context-refresh"
+        else:
+            status = "missing-context-refresh"
     return {
         "stageId": "context_ready",
         "completed": completed,
-        "status": "ready" if completed else ("missing-chapter-file" if not chapter_exists else "missing-context-refresh"),
+        "status": status,
         "chapterId": chapter_id,
         "chapterFileExists": chapter_exists,
         "contextExists": bool(matching_lens),
         "contextUpdatedAt": matching_lens.get("updatedAt", "") if matching_lens else "",
+        "contextStale": context_stale,
+        "contextHashStatus": context_hash_status,
+        "contextHashTracked": context_hash_status in {"fresh", "stale"},
+        "chapterContentHash": chapter_content_hash,
+        "contextChapterContentHash": context_hash,
         "missing": missing,
         "nextActions": next_actions,
     }
+
+
+def _context_hash_status(
+    *,
+    matching_lens: Dict[str, Any] | None,
+    chapter_exists: bool,
+    chapter_content_hash: str,
+    context_hash: str,
+) -> str:
+    if not chapter_exists:
+        return "no-chapter-file"
+    if not matching_lens:
+        return "missing-lens"
+    if not context_hash:
+        return "legacy-untracked"
+    if not chapter_content_hash:
+        return "missing-current-hash"
+    if context_hash != chapter_content_hash:
+        return "stale"
+    return "fresh"
 
 
 def _build_chapter_review_stage(
