@@ -11,6 +11,7 @@ import subprocess
 import sys
 import time
 import uuid
+from functools import lru_cache
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -49,7 +50,15 @@ from story_harness_cli.protocol.schema import default_project_state
 from story_harness_cli.providers.image import OpenAIImageHTTPClient
 from story_harness_cli.providers.image.openai_http import resolve_api_key
 from story_harness_cli.providers.image.openai_http import resolve_base_url
+from story_harness_cli.providers import load_embedding_provider
+from story_harness_cli.providers.embedding import resolve_model_name as resolve_embedding_model_name
+from story_harness_cli.providers.text import (
+    OpenAITextHTTPClient,
+    resolve_api_key as resolve_text_api_key,
+    resolve_base_url as resolve_text_base_url,
+)
 from story_harness_cli.services import build_chapter_illustration_payload, build_entity_illustration_payload
+from story_harness_cli.services.text_provider_review import parse_text_provider_json_object
 from story_harness_cli.utils import now_iso
 from story_harness_cli.utils.project_meta import normalize_primary_genre
 from story_harness_cli.utils.text import count_words, paragraphs_from_text
@@ -689,6 +698,491 @@ def _chapter_content(root: Path, chapter_id: str) -> str:
     if not path.exists():
         return ""
     return path.read_text(encoding="utf-8")
+
+
+def _context_index_path(root: Path) -> Path:
+    return root / ".story-canvas" / "context-index.json"
+
+
+@lru_cache(maxsize=4)
+def _load_context_embedding_provider_cached(resolved_model_name: str):
+    return load_embedding_provider(resolved_model_name)
+
+
+def _load_context_embedding_provider(model_name: str = ""):
+    resolved_model_name = resolve_embedding_model_name(model_name)
+    return _load_context_embedding_provider_cached(resolved_model_name)
+
+
+def _split_context_chunks(text: str, size: int = 900) -> list[str]:
+    paragraphs = [paragraph.strip() for paragraph in paragraphs_from_text(text) if paragraph.strip()]
+    if not paragraphs:
+        return [text[i : i + size].strip() for i in range(0, len(text), size) if text[i : i + size].strip()]
+    chunks: list[str] = []
+    current = ""
+    for paragraph in paragraphs:
+        if not current:
+            current = paragraph
+            continue
+        if len(current) + len(paragraph) + 2 <= size:
+            current = f"{current}\n\n{paragraph}"
+        else:
+            chunks.append(current)
+            current = paragraph
+    if current:
+        chunks.append(current)
+    return chunks
+
+
+def _embedding_provider_info(provider: Any, result: dict[str, Any] | None = None) -> dict[str, Any]:
+    payload = result or {}
+    return {
+        "provider": str(payload.get("provider") or getattr(provider, "provider_name", "builtin")),
+        "model": str(payload.get("model") or getattr(provider, "model_name", "")),
+        "dimension": int(payload.get("dimension") or getattr(provider, "dimension", 0) or 0),
+    }
+
+
+def _embedding_provider_matches(index_provider: dict[str, Any], provider: Any) -> bool:
+    current = _embedding_provider_info(provider)
+    return (
+        str(index_provider.get("provider") or "") == current["provider"]
+        and str(index_provider.get("model") or "") == current["model"]
+        and int(index_provider.get("dimension") or 0) == current["dimension"]
+    )
+
+
+def _embedding_vectors(payload: dict[str, Any]) -> list[list[float]]:
+    embeddings = payload.get("embeddings", [])
+    if not isinstance(embeddings, list):
+        return []
+    normalized: list[list[float]] = []
+    for vector in embeddings:
+        if not isinstance(vector, list):
+            continue
+        normalized.append([float(value) for value in vector])
+    return normalized
+
+
+def _vector_cosine_similarity(left: list[float], right: list[float]) -> float:
+    if not left or not right:
+        return 0.0
+    dimension = min(len(left), len(right))
+    if dimension <= 0:
+        return 0.0
+    dot = sum(left[index] * right[index] for index in range(dimension))
+    if dot <= 0:
+        return 0.0
+    left_norm = sum(value * value for value in left[:dimension]) ** 0.5
+    right_norm = sum(value * value for value in right[:dimension]) ** 0.5
+    if not left_norm or not right_norm:
+        return 0.0
+    return dot / (left_norm * right_norm)
+
+
+def _load_context_index(root: Path) -> dict[str, Any]:
+    path = _context_index_path(root)
+    if not path.exists():
+        return {"version": 2, "provider": {}, "chunks": []}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {"version": 2, "provider": {}, "chunks": []}
+    if not isinstance(payload, dict):
+        return {"version": 2, "provider": {}, "chunks": []}
+    chunks = payload.get("chunks", [])
+    if not isinstance(chunks, list):
+        chunks = []
+    normalized_chunks: list[dict[str, Any]] = []
+    for chunk in chunks:
+        if not isinstance(chunk, dict):
+            continue
+        normalized_chunk = dict(chunk)
+        embedding = normalized_chunk.get("embedding", [])
+        if isinstance(embedding, list):
+            normalized_chunk["embedding"] = [float(value) for value in embedding]
+        else:
+            normalized_chunk["embedding"] = []
+        normalized_chunks.append(normalized_chunk)
+    provider = payload.get("provider", {})
+    if not isinstance(provider, dict):
+        provider = {}
+    normalized_provider = {
+        "provider": str(provider.get("provider") or ""),
+        "model": str(provider.get("model") or ""),
+        "dimension": int(provider.get("dimension") or 0),
+    }
+    return {
+        "version": int(payload.get("version") or 1),
+        "provider": normalized_provider,
+        "chunks": normalized_chunks,
+    }
+
+
+def _save_context_index(root: Path, payload: dict[str, Any]) -> None:
+    path = _context_index_path(root)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def _rebuild_context_index(root: Path, provider: Any | None = None) -> dict[str, Any]:
+    state = load_project_state(root)
+    provider = provider or _load_context_embedding_provider()
+    chunks: list[dict[str, Any]] = []
+    for chapter_order, chapter in enumerate(_flatten_chapters(state.get("outline", {})), start=1):
+        chapter_id = str(chapter.get("id") or "").strip()
+        if not chapter_id:
+            continue
+        chapter_title = str(chapter.get("title") or chapter_id).strip()
+        chapter_text = _chapter_content(root, chapter_id).strip()
+        if not chapter_text:
+            continue
+        chunk_texts = _split_context_chunks(chapter_text)
+        chunk_embeddings = _embedding_vectors(provider.embed_texts(chunk_texts))
+        for chunk_index, chunk_text in enumerate(chunk_texts, start=1):
+            chunks.append(
+                {
+                    "chapterId": chapter_id,
+                    "chapterTitle": chapter_title,
+                    "chapterOrder": chapter_order,
+                    "chunkIndex": chunk_index,
+                    "text": chunk_text,
+                    "embedding": chunk_embeddings[chunk_index - 1] if chunk_index - 1 < len(chunk_embeddings) else [],
+                }
+            )
+    payload = {
+        "version": 2,
+        "provider": _embedding_provider_info(provider),
+        "chunks": chunks,
+    }
+    _save_context_index(root, payload)
+    return payload
+
+
+def _load_or_rebuild_context_index(root: Path, provider: Any | None = None) -> dict[str, Any]:
+    provider = provider or _load_context_embedding_provider()
+    payload = _load_context_index(root)
+    if (
+        int(payload.get("version") or 0) >= 2
+        and payload.get("chunks")
+        and _embedding_provider_matches(payload.get("provider", {}), provider)
+    ):
+        return payload
+    return _rebuild_context_index(root, provider)
+
+
+def _outline_chapter_lookup(root: Path) -> dict[str, dict[str, Any]]:
+    state = load_project_state(root)
+    lookup: dict[str, dict[str, Any]] = {}
+    for order, chapter in enumerate(_flatten_chapters(state.get("outline", {})), start=1):
+        chapter_id = str(chapter.get("id") or "").strip()
+        if not chapter_id:
+            continue
+        lookup[chapter_id] = {
+            "chapterId": chapter_id,
+            "chapterTitle": str(chapter.get("title") or chapter_id).strip(),
+            "chapterOrder": order,
+            "direction": str(chapter.get("direction") or chapter.get("summary") or "").strip(),
+        }
+    return lookup
+
+
+def _build_related_context(root: Path, chapter_id: str, n: int = 3) -> list[dict[str, Any]]:
+    provider = _load_context_embedding_provider()
+    index = _load_or_rebuild_context_index(root, provider)
+    outline_lookup = _outline_chapter_lookup(root)
+    query_text = _chapter_content(root, chapter_id).strip()
+    if not query_text:
+        lookup_entry = outline_lookup.get(chapter_id, {})
+        query_text = f"{lookup_entry.get('chapterTitle', '')}\n{lookup_entry.get('direction', '')}".strip()
+    query_embedding_payload = provider.embed_texts([query_text])
+    query_embeddings = _embedding_vectors(query_embedding_payload)
+    query_embedding = query_embeddings[0] if query_embeddings else []
+    scored_items: list[tuple[float, dict[str, Any]]] = []
+    for chunk in index.get("chunks", []):
+        if not isinstance(chunk, dict):
+            continue
+        if str(chunk.get("chapterId") or "") == chapter_id:
+            continue
+        chunk_embedding = chunk.get("embedding", [])
+        if not isinstance(chunk_embedding, list):
+            continue
+        score = _vector_cosine_similarity(query_embedding, [float(value) for value in chunk_embedding])
+        if score <= 0:
+            continue
+        scored_items.append((score, chunk))
+
+    if not scored_items:
+        ordered_ids = [chapter.get("chapterId", "") for chapter in sorted(outline_lookup.values(), key=lambda item: int(item.get("chapterOrder") or 0))]
+        try:
+            current_index = ordered_ids.index(chapter_id)
+        except ValueError:
+            current_index = len(ordered_ids)
+        fallback_ids = [item for item in ordered_ids[:current_index] if item and item != chapter_id][-n:]
+        result: list[dict[str, Any]] = []
+        for fallback_id in reversed(fallback_ids):
+            text = _chapter_content(root, fallback_id).strip()
+            if not text:
+                continue
+            lookup_entry = outline_lookup.get(fallback_id, {})
+            result.append(
+                {
+                    "chapterId": fallback_id,
+                    "chapterTitle": lookup_entry.get("chapterTitle", fallback_id),
+                    "chapterOrder": lookup_entry.get("chapterOrder", 0),
+                    "chunkIndex": 1,
+                    "score": 0.0,
+                    "text": paragraphs_from_text(text)[0][:600] if paragraphs_from_text(text) else text[:600],
+                }
+            )
+        return result
+
+    scored_items.sort(
+        key=lambda item: (
+            item[0],
+            int(item[1].get("chapterOrder") or 0),
+            int(item[1].get("chunkIndex") or 0),
+        ),
+        reverse=True,
+    )
+    seen: set[str] = set()
+    result: list[dict[str, Any]] = []
+    for score, chunk in scored_items:
+        chapter_key = str(chunk.get("chapterId") or "")
+        if not chapter_key or chapter_key in seen:
+            continue
+        seen.add(chapter_key)
+        result.append(
+            {
+                "chapterId": chapter_key,
+                "chapterTitle": chunk.get("chapterTitle", chapter_key),
+                "chapterOrder": chunk.get("chapterOrder", 0),
+                "chunkIndex": chunk.get("chunkIndex", 0),
+                "score": round(float(score), 4),
+                "text": str(chunk.get("text") or "")[:900],
+            }
+        )
+        if len(result) >= n:
+            break
+    return result
+
+
+def _upsert_context_index(root: Path, chapter_id: str, chapter_text: str) -> None:
+    provider = _load_context_embedding_provider()
+    index = _load_or_rebuild_context_index(root, provider)
+    outline_lookup = _outline_chapter_lookup(root)
+    chapter_info = outline_lookup.get(chapter_id, {"chapterId": chapter_id, "chapterTitle": chapter_id, "chapterOrder": 0})
+    chunks = [chunk for chunk in index.get("chunks", []) if str(chunk.get("chapterId") or "") != chapter_id]
+    chunk_texts = _split_context_chunks(chapter_text)
+    chunk_embeddings = _embedding_vectors(provider.embed_texts(chunk_texts))
+    for chunk_index, chunk_text in enumerate(chunk_texts, start=1):
+        chunks.append(
+            {
+                "chapterId": chapter_id,
+                "chapterTitle": chapter_info.get("chapterTitle", chapter_id),
+                "chapterOrder": chapter_info.get("chapterOrder", 0),
+                "chunkIndex": chunk_index,
+                "text": chunk_text,
+                "embedding": chunk_embeddings[chunk_index - 1] if chunk_index - 1 < len(chunk_embeddings) else [],
+            }
+        )
+    _save_context_index(
+        root,
+        {
+            "version": 2,
+            "provider": _embedding_provider_info(provider),
+            "chunks": chunks,
+        },
+    )
+
+
+def _load_workbench_text_provider_profile() -> dict[str, str]:
+    if not WORKBENCH_SETTINGS_FILE.exists():
+        return {}
+    try:
+        settings = json.loads(WORKBENCH_SETTINGS_FILE.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+    providers = settings.get("illustration", {}).get("providers", [])
+    if not isinstance(providers, list):
+        return {}
+    enabled_profiles = [
+        item
+        for item in providers
+        if isinstance(item, dict) and item.get("enabled", True) and str(item.get("apiKey", "")).strip()
+    ]
+    if not enabled_profiles:
+        return {}
+    enabled_profiles.sort(key=lambda item: int(item.get("priority", 100) or 100))
+    selected = enabled_profiles[0]
+    return {
+        "label": str(selected.get("label") or selected.get("id") or "workbench-provider"),
+        "apiKey": str(selected.get("apiKey", "")).strip(),
+        "baseUrl": str(selected.get("baseUrl", "")).strip(),
+    }
+
+
+def _build_workflow_generation_prompt(
+    stage: str,
+    body: dict[str, Any],
+    *,
+    related_context: list[dict[str, Any]] | None = None,
+) -> tuple[str, str]:
+    title = str(body.get("projectTitle") or body.get("title") or "").strip()
+    genre = str(body.get("genre") or "").strip()
+    topic = str(body.get("topic") or "").strip()
+    num_chapters = int(body.get("numChapters") or body.get("chapterCount") or 0)
+    setting_text = str(body.get("settingText") or body.get("setting") or "").strip()
+    outline_text = str(body.get("outlineText") or body.get("outline") or "").strip()
+    chapter_num = int(body.get("chapterNum") or 1)
+    chapter_title = str(body.get("chapterTitle") or "").strip()
+    context_text = "\n\n".join(
+        f"[{item.get('chapterId')}] {item.get('chapterTitle')}\n{item.get('text')}" for item in (related_context or [])
+    ).strip()
+
+    system_prompt = "你是中文连载故事工作流助手。只返回 JSON 对象，不要返回解释、序言或 Markdown。"
+    if stage == "setting":
+        user_prompt = (
+            "请生成小说设定 JSON，对象必须包含 setting 字段。\n"
+            f"项目标题：{title or '未命名项目'}\n"
+            f"题材：{genre or '未指定'}\n"
+            f"主题：{topic or '未指定'}\n"
+            f"章节数：{num_chapters or '未指定'}\n"
+            "请输出适合后续章节写作的设定，包含主线、核心承诺、节奏和卷级钩子。"
+        )
+    elif stage == "outline":
+        user_prompt = (
+            "请基于设定生成章节大纲 JSON，对象必须包含 outline 字段。\n"
+            f"设定：\n{setting_text or '（未提供设定）'}\n"
+            f"章节数：{num_chapters or '未指定'}\n"
+            "请输出每章的标题、目的和推进要点。"
+        )
+    elif stage == "chapter":
+        user_prompt = (
+            "请生成章节正文 JSON，对象必须包含 chapter 字段。\n"
+            f"章号：第{chapter_num}章\n"
+            f"章标题：{chapter_title or '未指定'}\n"
+            f"大纲：\n{outline_text or '（未提供大纲）'}\n"
+            f"相关前文：\n{context_text or '（暂无相关前文）'}\n"
+            "请写出可直接继续的章节正文，并保持和前文一致的语气与事实。"
+        )
+    else:
+        user_prompt = (
+            "请生成 workflow 辅助 JSON，对象必须包含 chapter 字段或 setting 字段。\n"
+            "如果你无法识别阶段，请返回一个包含 error 的 JSON 对象。"
+        )
+    return system_prompt, user_prompt
+
+
+def _run_workflow_generation(body: dict[str, Any]) -> dict[str, Any]:
+    root_value = str(body.get("root") or "").strip()
+    if not root_value:
+        raise ValueError("缺少 root。")
+    root = _coerce_project_root(root_value)
+    stage = str(body.get("stage") or "").strip().lower()
+    if stage not in {"setting", "outline", "chapter"}:
+        raise ValueError("未知 workflow 阶段。")
+
+    workbench_profile = _load_workbench_text_provider_profile()
+    api_key = resolve_text_api_key(str(body.get("apiKey") or ""))
+    credential_source = "request" if str(body.get("apiKey") or "").strip() else ""
+    if not api_key and workbench_profile.get("apiKey"):
+        api_key = workbench_profile["apiKey"]
+        credential_source = "workbench"
+    base_url_source = "request" if str(body.get("baseUrl") or "").strip() else ""
+    configured_base_url = str(body.get("baseUrl") or "").strip()
+    if not configured_base_url and workbench_profile.get("baseUrl"):
+        configured_base_url = workbench_profile["baseUrl"]
+        base_url_source = "workbench"
+    base_url = resolve_text_base_url(str(body.get("baseUrl") or ""), configured_base_url)
+    model = str(body.get("model") or body.get("responseModel") or "gpt-5.4-mini").strip() or "gpt-5.4-mini"
+    timeout_seconds = int(body.get("timeoutSeconds") or 300)
+    client = OpenAITextHTTPClient(
+        api_key=api_key or "dry-run",
+        base_url=base_url,
+        timeout_seconds=timeout_seconds,
+    )
+    related_context = _build_related_context(root, str(body.get("chapterId") or ""), n=int(body.get("contextCount") or 3)) if stage == "chapter" else []
+    system_prompt, user_prompt = _build_workflow_generation_prompt(stage, body, related_context=related_context)
+    provider_request = client.build_response_request(
+        system_prompt=system_prompt,
+        user_prompt=user_prompt,
+        model=model,
+        temperature=body.get("temperature"),
+    )
+    if body.get("dryRun"):
+        return {
+            "saved": False,
+            "dryRun": True,
+            "stage": stage,
+            "model": model,
+            "providerCredential": {
+                "source": credential_source or "env",
+                "available": bool(api_key),
+                "workbenchProviderLabel": workbench_profile.get("label", ""),
+            },
+            "providerBaseUrl": {
+                "source": base_url_source or "default",
+                "workbenchProviderLabel": workbench_profile.get("label", "") if base_url_source == "workbench" else "",
+            },
+            "providerRequest": provider_request,
+        }
+
+    if not api_key:
+        raise ValueError("缺少文本 provider API key。请在本地工作台配置中启用 provider，或通过请求体传入 apiKey。")
+
+    if stage == "chapter" and not str(body.get("chapterId") or "").strip():
+        raise ValueError("生成章节时缺少 chapterId。")
+
+    provider_result = client.generate_text(provider_request)
+    raw_payload = parse_text_provider_json_object(provider_result.get("text", ""))
+    response: dict[str, Any] = {
+        "saved": False,
+        "dryRun": False,
+        "stage": stage,
+        "model": model,
+        "provider": provider_result.get("provider", "openai-text-http"),
+        "responseId": provider_result.get("responseId", ""),
+        "providerCredentialSource": credential_source or "env",
+        "providerBaseUrlSource": base_url_source or "default",
+        "providerRequest": provider_request,
+        "raw": raw_payload,
+    }
+
+    if stage == "setting":
+        setting_text = str(raw_payload.get("setting") or raw_payload.get("text") or provider_result.get("text", "")).strip()
+        response["setting"] = setting_text
+    elif stage == "outline":
+        outline_text = str(raw_payload.get("outline") or raw_payload.get("text") or provider_result.get("text", "")).strip()
+        response["outline"] = outline_text
+    elif stage == "chapter":
+        chapter_text = str(raw_payload.get("chapter") or raw_payload.get("text") or provider_result.get("text", "")).strip()
+        response["chapter"] = chapter_text
+        response["contextUsed"] = related_context
+    return response
+
+
+def _finalize_workflow_chapter(body: dict[str, Any]) -> dict[str, Any]:
+    root_value = str(body.get("root") or "").strip()
+    if not root_value:
+        raise ValueError("缺少 root。")
+    root = _coerce_project_root(root_value)
+    chapter_num = int(body.get("chapterNum") or 1)
+    chapter_id = f"chapter-{chapter_num:03d}"
+    chapter_text = str(body.get("chapterText") or body.get("chapter") or "").strip()
+    if not chapter_text:
+        raise ValueError("缺少 chapterText。")
+    chapter_file = chapter_path(root, chapter_id)
+    chapter_file.parent.mkdir(parents=True, exist_ok=True)
+    chapter_file.write_text(chapter_text + ("\n" if not chapter_text.endswith("\n") else ""), encoding="utf-8")
+    _upsert_context_index(root, chapter_id, chapter_text)
+    return {
+        "saved": True,
+        "stage": "finalize",
+        "chapterId": chapter_id,
+        "chapterFile": str(chapter_file.resolve()),
+        "indexed": True,
+    }
 
 
 def _coerce_text_fragments(*values: Any) -> list[str]:
@@ -1693,6 +2187,22 @@ class StoryCanvasApiHandler(BaseHTTPRequestHandler):
                 return
             _json_response(self, payload)
             return
+        if parsed.path == "/api/context":
+            query = parse_qs(parsed.query)
+            root_value = (query.get("root") or [""])[0]
+            chapter_id = (query.get("chapterId") or [""])[0].strip()
+            n_value = (query.get("n") or ["3"])[0]
+            try:
+                root = _coerce_project_root(root_value)
+                payload = {
+                    "chapterId": chapter_id,
+                    "contexts": _build_related_context(root, chapter_id, n=max(1, int(n_value or 3))),
+                }
+            except Exception as exc:
+                _json_response(self, {"error": str(exc)}, HTTPStatus.BAD_REQUEST)
+                return
+            _json_response(self, payload)
+            return
         if parsed.path == "/api/prompt-packs":
             query = parse_qs(parsed.query)
             root_value = (query.get("root") or [""])[0]
@@ -1842,6 +2352,30 @@ class StoryCanvasApiHandler(BaseHTTPRequestHandler):
             try:
                 body = _load_json_request(self)
                 payload = _save_settings_request(body)
+            except json.JSONDecodeError:
+                _json_response(self, {"error": "Invalid JSON body"}, HTTPStatus.BAD_REQUEST)
+                return
+            except (Exception, SystemExit) as exc:
+                _json_response(self, {"error": str(exc)}, HTTPStatus.BAD_REQUEST)
+                return
+            _json_response(self, payload)
+            return
+        if parsed.path == "/api/workflow/generate":
+            try:
+                body = _load_json_request(self)
+                payload = _run_workflow_generation(body)
+            except json.JSONDecodeError:
+                _json_response(self, {"error": "Invalid JSON body"}, HTTPStatus.BAD_REQUEST)
+                return
+            except (Exception, SystemExit) as exc:
+                _json_response(self, {"error": str(exc)}, HTTPStatus.BAD_REQUEST)
+                return
+            _json_response(self, payload)
+            return
+        if parsed.path == "/api/workflow/finalize":
+            try:
+                body = _load_json_request(self)
+                payload = _finalize_workflow_chapter(body)
             except json.JSONDecodeError:
                 _json_response(self, {"error": "Invalid JSON body"}, HTTPStatus.BAD_REQUEST)
                 return

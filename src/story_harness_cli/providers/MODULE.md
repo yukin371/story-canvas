@@ -16,6 +16,7 @@
 - image / similarity 等外部能力 wrapper
 - OpenAI image HTTP client 这类最小 provider 骨架
 - OpenAI-compatible text HTTP client 这类最小 provider 骨架
+- sentence-transformers embedding wrapper 与 builtin fallback
 - OpenAI image edits multipart 组装与上传
 - OpenAI image response 的 artifact 归一化与字节提取
 - 多图返回结果的统一 materialize 语义

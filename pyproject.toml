@@ -25,6 +25,9 @@ style-local = [
 image-openai = [
   "openai>=1.0,<2.0",
 ]
+embedding-local = [
+  "sentence-transformers>=2.2.0",
+]
 
 [dependency-groups]
 dev = []

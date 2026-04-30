@@ -296,6 +296,8 @@
   - 本地 UI API 的 `ProjectSummary` 已暴露 `entities.profile/seed/aliases`、`worldbook.entries/stats`、`volumes[]` 与 `reviewPackets[]`，审查工作区可直接浏览角色卡、世界设定、卷结构和审查包预览。
   - `project-registry.json` 已增加工作台私有 `activeRoot`，`useWorkspace` 会在刷新后恢复上次打开项目；退出项目时清空该字段。
   - `ReviewWorkbenchView` 在 `selectedRoot` 变化时清空旧章节/角色/资料选择，并在章节列表刷新时用新项目的 chapter object 替换同名旧对象，避免 `chapter-001` 跨项目残留。
+  - 本地 UI API 已新增 `/api/context`、`/api/workflow/generate` 与 `/api/workflow/finalize`，`ReviewWorkbenchPane` 通过独立 `ContextPanel` 拉取相关前文，`WorkflowView` 通过同一 API 进入设定→大纲→章节→定稿流程。
+  - 相关前文索引已切到 `providers/` 下的 embedding provider；优先使用 `sentence-transformers`，缺失时降级到 builtin hash embedding，避免上下文面板在 base install 下失效。
 - 当前证据:
   - 本地 UI `http://127.0.0.1:43187/` 在 `2026-04-29` 选中 `projects/xiaoshidi-bailan` 时，角色列表可见，但“资料”区仍显示 `待接入`。
   - 同轮切换 `projects/小师弟只想摆烂` 与 `projects/xiaoshidi-bailan` 时，主面板一度继续显示旧 stub 项目的 `# 第一章`，手动再点 `chapter-001` 后才切回 `扫地也算修行 / 79 分 / 3171 字`。
@@ -442,6 +444,34 @@
 - 下次实施必查:
   - 对已有 3 个 scenePlans 的章节执行 `scene-detect --replace` 是否仍退化到 1 scene。
   - `review scene` 是否能在不手工恢复 scenePlans 的情况下保持稳定局部审查粒度。
+
+### AIF-017 实验命令注册链会阻断核心 CLI 导入
+
+- 状态: `mitigated`
+- 首次记录: `2026-04-30`
+- 最近核对: `2026-04-30`
+- 现象:
+  - 新增实验命令注册到 `commands/__init__.py` / `cli.py` 后，即使本轮只运行 `review editor-draft`，也会先导入所有命令模块。
+  - 未完成模块中的 `yaml` 依赖、错误导入、函数名漂移和语法错误会导致整个 CLI 启动失败。
+- AI 负担:
+  - agent 在实现 review provider 时必须先修复无关实验模块的导入链，才能验证目标命令。
+  - 这会放大“新增写作/综合审查能力”与“核心命令稳定性”之间的耦合风险。
+- 当前缓解:
+  - 修复了 `story_review.py` 中 `@{}` f-string 未转义导致的语法错误。
+  - `setting_expansion.py` 不再直接依赖第三方 `yaml`；实验模板加载暂按 JSON-compatible YAML 读取，失败时降级为空模板。
+  - `protocol.io` 增加 `load_state` / `save_state` 兼容 wrapper，承接早期实验命令的旧调用方式。
+  - 修复了 `setting.py` 的 `chapter_title` 导入和 `writing.py` 的 `collect_tag_replacements` 函数名漂移。
+  - 修复了 `comprehensive_review.py` 的类型标注语法错误。
+- 当前证据:
+  - `python -m py_compile src\story_harness_cli\services\story_review.py src\story_harness_cli\services\text_provider_review.py src\story_harness_cli\providers\text\openai_http.py src\story_harness_cli\commands\review.py`
+  - `PYTHONPATH=src python -m unittest tests.smoke.test_review_volume_self -v`
+  - `PYTHONPATH=src python -m story_canvas review editor-draft --root projects\agent-volume-e2e-20260429 --volume-id volume-001 --model test-text-model --dry-run`
+- 期望收口:
+  - 实验命令在注册前至少通过导入级 smoke test，不允许破坏无关 CLI 命令。
+  - 新增命令若依赖 optional provider 或非核心资源，应延迟导入或提供 stdlib fallback。
+- 下次实施必查:
+  - 新增 `setting` / `writing` / `comprehensive_review` 类实验入口前，先跑 `python -m story_canvas --help` 与目标命令 dry-run。
+  - `src/story_harness_cli/data/genre_templates.yaml` 当前仍不是 JSON-compatible YAML；若 setting 命令要正式收口，应先转换数据文件或迁入 builtin Python/JSON 资源。
 
 ## 3. Resolved
 

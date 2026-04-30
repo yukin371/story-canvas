@@ -37,6 +37,17 @@ class TextProviderClient(Protocol):
         ...
 
 
+class EmbeddingProviderClient(Protocol):
+    """Protocol for text embedding clients."""
+
+    provider_name: str
+    model_name: str
+    dimension: int
+
+    def embed_texts(self, texts: list[str]) -> dict[str, Any]:
+        ...
+
+
 def load_optional_attribute(module_name: str, extra_name: str, attribute_path: str) -> Any:
     """Load an attribute from an optional dependency."""
     try:

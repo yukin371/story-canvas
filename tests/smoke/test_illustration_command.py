@@ -1422,6 +1422,196 @@ class IllustrationCommandSmokeTest(unittest.TestCase):
         self.assertIn("卷级审查包", payload["reviewPackets"][0]["preview"])
         self.assertEqual(payload["entities"][0]["profile"]["role"], "主角")
 
+    def test_story_canvas_ui_api_workflow_generation_uses_requested_model(self) -> None:
+        api_module = _load_story_canvas_ui_api_module()
+
+        def fake_generate_text(self, request):
+            return {
+                "provider": "openai-text-http",
+                "responseId": "resp-test-setting",
+                "text": "{\"setting\":\"雾港夜巡设定\"}",
+            }
+
+        with patch.object(api_module.OpenAITextHTTPClient, "generate_text", new=fake_generate_text):
+            payload = api_module._run_workflow_generation(
+                {
+                    "root": str(self.temp_dir),
+                    "stage": "setting",
+                    "topic": "港口异案",
+                    "genre": "mystery",
+                    "numChapters": 12,
+                    "projectTitle": "Fog Harbor",
+                    "model": "gpt-5.4-mini",
+                    "apiKey": "test-key",
+                }
+            )
+
+        self.assertEqual(payload["stage"], "setting")
+        self.assertEqual(payload["model"], "gpt-5.4-mini")
+        self.assertEqual(payload["setting"], "雾港夜巡设定")
+        self.assertEqual(payload["providerRequest"]["json"]["model"], "gpt-5.4-mini")
+
+    def test_story_canvas_ui_api_finalize_indexes_chapter_context(self) -> None:
+        api_module = _load_story_canvas_ui_api_module()
+
+        class FakeEmbeddingProvider:
+            provider_name = "fake-embedding"
+            model_name = "fake-model"
+            dimension = 2
+
+            def embed_texts(self, texts):
+                embeddings = []
+                for text in texts:
+                    if "追查" in text or "账册" in text:
+                        embeddings.append([1.0, 0.0])
+                    else:
+                        embeddings.append([0.0, 1.0])
+                return {
+                    "provider": self.provider_name,
+                    "model": self.model_name,
+                    "dimension": self.dimension,
+                    "embeddings": embeddings,
+                }
+
+        outline_path = self.temp_dir / "outline.yaml"
+        outline = json.loads(outline_path.read_text(encoding="utf-8"))
+        outline["volumes"] = [
+            {
+                "id": "volume-001",
+                "title": "第一卷",
+                "chapters": [
+                    {"id": "chapter-001", "title": "第一章", "direction": "仓库夜巡"},
+                    {"id": "chapter-002", "title": "第二章", "direction": "追查账册"},
+                ],
+            }
+        ]
+        outline_path.write_text(json.dumps(outline, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+        with patch.object(api_module, "load_embedding_provider", return_value=FakeEmbeddingProvider()):
+            finalize_payload = api_module._finalize_workflow_chapter(
+                {
+                    "root": str(self.temp_dir),
+                    "chapterNum": 1,
+                    "chapterText": "林舟沿着仓库的湿痕追到码头，发现账册被人提前转移。",
+                }
+            )
+            related_context = api_module._build_related_context(self.temp_dir, "chapter-002", n=1)
+            index_payload = json.loads(
+                (self.temp_dir / ".story-canvas" / "context-index.json").read_text(encoding="utf-8")
+            )
+
+        self.assertTrue(finalize_payload["indexed"])
+        self.assertTrue(Path(finalize_payload["chapterFile"]).exists())
+        self.assertEqual(index_payload["version"], 2)
+        self.assertEqual(index_payload["provider"]["provider"], "fake-embedding")
+        self.assertEqual(index_payload["chunks"][0]["embedding"], [1.0, 0.0])
+        self.assertGreaterEqual(len(related_context), 1)
+        self.assertEqual(related_context[0]["chapterId"], "chapter-001")
+
+    def test_embedding_provider_falls_back_when_optional_dependency_is_missing(self) -> None:
+        from story_harness_cli.providers import embedding as embedding_module
+        from story_harness_cli.providers.base import OptionalDependencyUnavailableError
+
+        with patch.object(
+            embedding_module,
+            "load_optional_attribute",
+            side_effect=OptionalDependencyUnavailableError("sentence_transformers", "embedding-local"),
+        ):
+            provider = embedding_module.load_embedding_provider("demo-model")
+
+        payload = provider.embed_texts(["仓库账册", ""])
+        self.assertEqual(provider.provider_name, "builtin-hash")
+        self.assertEqual(payload["provider"], "builtin-hash")
+        self.assertEqual(payload["model"], "builtin-hash-384")
+        self.assertEqual(payload["dimension"], 384)
+        self.assertEqual(len(payload["embeddings"]), 2)
+        self.assertTrue(any(value != 0.0 for value in payload["embeddings"][0]))
+
+    def test_embedding_provider_uses_sentence_transformer_wrapper_when_available(self) -> None:
+        from story_harness_cli.providers import embedding as embedding_module
+
+        class FakeModel:
+            def __init__(self, model_name: str) -> None:
+                self.model_name = model_name
+
+            def get_sentence_embedding_dimension(self) -> int:
+                return 3
+
+            def encode(self, texts, normalize_embeddings=True, convert_to_numpy=True, show_progress_bar=False):
+                vectors = []
+                for text in texts:
+                    if "夜巡" in text:
+                        vectors.append([1.0, 2.0, 2.0])
+                    else:
+                        vectors.append([0.0, 3.0, 4.0])
+                return vectors
+
+        with patch.object(embedding_module, "load_optional_attribute", return_value=FakeModel):
+            provider = embedding_module.load_embedding_provider("demo-model")
+
+        payload = provider.embed_texts(["夜巡仓库", "平静街道"])
+        self.assertEqual(provider.provider_name, "sentence-transformers")
+        self.assertEqual(provider.model_name, "demo-model")
+        self.assertEqual(payload["provider"], "sentence-transformers")
+        self.assertEqual(payload["model"], "demo-model")
+        self.assertEqual(payload["dimension"], 3)
+        self.assertEqual(len(payload["embeddings"]), 2)
+        self.assertAlmostEqual(sum(value * value for value in payload["embeddings"][0]), 1.0, places=6)
+
+    def test_story_canvas_ui_api_rebuilds_context_index_when_embedding_provider_changes(self) -> None:
+        api_module = _load_story_canvas_ui_api_module()
+
+        class FirstEmbeddingProvider:
+            provider_name = "first-provider"
+            model_name = "first-model"
+            dimension = 2
+
+            def embed_texts(self, texts):
+                return {
+                    "provider": self.provider_name,
+                    "model": self.model_name,
+                    "dimension": self.dimension,
+                    "embeddings": [[1.0, 0.0] for _ in texts],
+                }
+
+        class SecondEmbeddingProvider:
+            provider_name = "second-provider"
+            model_name = "second-model"
+            dimension = 2
+
+            def embed_texts(self, texts):
+                return {
+                    "provider": self.provider_name,
+                    "model": self.model_name,
+                    "dimension": self.dimension,
+                    "embeddings": [[0.0, 1.0] for _ in texts],
+                }
+
+        outline_path = self.temp_dir / "outline.yaml"
+        outline = json.loads(outline_path.read_text(encoding="utf-8"))
+        outline["volumes"] = [
+            {
+                "id": "volume-001",
+                "title": "第一卷",
+                "chapters": [
+                    {"id": "chapter-001", "title": "第一章", "direction": "追查账册"},
+                    {"id": "chapter-002", "title": "第二章", "direction": "仓库夜巡"},
+                ],
+            }
+        ]
+        outline_path.write_text(json.dumps(outline, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+        with patch.object(api_module, "load_embedding_provider", return_value=FirstEmbeddingProvider()):
+            first_index = api_module._rebuild_context_index(self.temp_dir)
+
+        api_module._load_context_embedding_provider_cached.cache_clear()
+        with patch.object(api_module, "load_embedding_provider", return_value=SecondEmbeddingProvider()):
+            refreshed_index = api_module._load_or_rebuild_context_index(self.temp_dir)
+
+        self.assertEqual(first_index["provider"]["provider"], "first-provider")
+        self.assertEqual(refreshed_index["provider"]["provider"], "second-provider")
+        self.assertEqual(refreshed_index["chunks"][0]["embedding"], [0.0, 1.0])
+
     def test_story_canvas_ui_api_project_registry_persists_active_root(self) -> None:
         api_module = _load_story_canvas_ui_api_module()
         original_projects_file = api_module.WORKBENCH_PROJECTS_FILE
