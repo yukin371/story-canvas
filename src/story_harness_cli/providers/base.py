@@ -30,6 +30,13 @@ class ImageProviderClient(Protocol):
         ...
 
 
+class TextProviderClient(Protocol):
+    """Protocol for text generation clients."""
+
+    def generate_text(self, request: dict[str, Any]) -> dict[str, Any]:
+        ...
+
+
 def load_optional_attribute(module_name: str, extra_name: str, attribute_path: str) -> Any:
     """Load an attribute from an optional dependency."""
     try:

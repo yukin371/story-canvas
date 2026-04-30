@@ -16,6 +16,7 @@ if str(SRC_ROOT) not in sys.path:
 
 from story_harness_cli.cli import main
 from story_harness_cli.protocol.state import load_project_state, save_state
+from story_harness_cli.services import normalize_editor_provider_fragment, parse_text_provider_json_object
 
 
 class ReviewVolumeSelfSmokeTest(unittest.TestCase):
@@ -188,7 +189,6 @@ class ReviewVolumeSelfSmokeTest(unittest.TestCase):
         review_packet_content = review_packet_file.read_text(encoding="utf-8")
         self.assertIn("## 卷级 AI 自审", review_packet_content)
         self.assertIn("章间承接稳定", review_packet_content)
-
         state = load_project_state(self.temp_dir)
         self.assertEqual(state["story_reviews"]["volumeSelfReviewRubricVersion"], "volume-self-review-v1")
         self.assertEqual(len(state["story_reviews"]["volumeSelfReviews"]), 1)
@@ -206,6 +206,75 @@ class ReviewVolumeSelfSmokeTest(unittest.TestCase):
             saved_review["issues"][0]["evidenceRefs"],
             ["chapter-001#paragraph-1", "review-packet:volume-001:chapter-001"],
         )
+
+    def test_review_editor_draft_dry_run_builds_provider_request(self) -> None:
+        self._init_volume_project()
+        self._write_minimal_volume_chapters()
+
+        exit_code, payload = self._run_json(
+            [
+                "review",
+                "editor-draft",
+                "--root",
+                str(self.temp_dir),
+                "--volume-id",
+                "volume-001",
+                "--model",
+                "test-text-model",
+                "--dry-run",
+            ]
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertTrue(payload["dryRun"])
+        self.assertFalse(payload["saved"])
+        self.assertEqual(payload["provider"], "openai")
+        self.assertEqual(payload["model"], "test-text-model")
+        self.assertTrue((self.temp_dir / "reviews" / "volume-001-review-packet.md").exists())
+        request = payload["providerRequest"]
+        self.assertEqual(request["transport"], "json")
+        self.assertTrue(request["endpoint"].endswith("/v1/responses"))
+        self.assertEqual(request["json"]["model"], "test-text-model")
+        self.assertEqual(request["json"]["text"]["format"]["type"], "json_object")
+        self.assertIn("reviewPacketMarkdown", payload["prompt"]["userPrompt"])
+
+    def test_text_provider_editor_fragment_normalization_accepts_fenced_json(self) -> None:
+        raw = parse_text_provider_json_object(
+            """```json
+{
+  "editorAssessment": {
+    "overallVerdict": "revise",
+    "summaryComment": "需要补强卷尾兑现。",
+    "topProblems": ["卷尾胜负感不足"],
+    "improvementPoints": ["补一处明确代价和结果"],
+    "scores": [
+      {"dimensionId": "volumeClosure", "score": 2, "conclusion": "闭环不足"},
+      {"dimensionId": "openingOnboarding", "score": 3, "conclusion": "开篇可读"},
+      {"dimensionId": "worldLogic", "score": 3, "conclusion": "逻辑基本成立"},
+      {"dimensionId": "chapterHandoff", "score": 3, "conclusion": "承接基本成立"},
+      {"dimensionId": "characterContinuity", "score": 3, "conclusion": "连续性基本成立"},
+      {"dimensionId": "antagonistShaping", "score": 3, "conclusion": "对手可读"},
+      {"dimensionId": "conflictEscalation", "score": 3, "conclusion": "冲突递进"},
+      {"dimensionId": "payoffDelivery", "score": 2, "conclusion": "兑现偏弱"},
+      {"dimensionId": "foreshadowRhythm", "score": 3, "conclusion": "伏笔可控"},
+      {"dimensionId": "styleReadability", "score": 3, "conclusion": "可读"}
+    ]
+  }
+}
+```"""
+        )
+        fragment = normalize_editor_provider_fragment(
+            raw,
+            provider_name="openai-text-http",
+            model="test-text-model",
+            generated_at="2026-04-30T00:00:00+08:00",
+        )
+
+        self.assertTrue(fragment["editorPass"]["completed"])
+        self.assertEqual(fragment["editorPass"]["mode"], "independent_agent")
+        self.assertEqual(fragment["editorPass"]["contextIsolation"], "no_context_proxy")
+        self.assertEqual(fragment["editorAssessment"]["overallVerdict"], "revise")
+        self.assertIn("openai-text-http", fragment["editorPass"]["notes"])
 
     def test_review_volume_self_template_generates_prefilled_template_file(self) -> None:
         self._init_volume_project()

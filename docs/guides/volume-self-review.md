@@ -1,6 +1,6 @@
 # 卷级 AI 自审模板
 
-> 最后更新: 2026-04-27
+> 最后更新: 2026-04-30
 > 适用对象: 作者 / 外部 AI / 审查代理
 > 关联规则: [写作规则包](./writing-rules.md)
 > 关联流程: [创作流程指南](./creative-workflow.md)
@@ -35,6 +35,15 @@ python -m story_harness_cli review volume-self --root <project-root> --volume-id
 - `--editor-input`：只导入 `editorPass` / `editorAssessment`，适合独立编辑代理产物
 - 当 `review volume-self-template` 存在 merge 输入且 `--output` 指向目录时，当前默认导出 `*.draft.yaml`
 - 不带 merge 输入时，模板仍会预填 root `scores/issues/closureAssessment`，用于减少从零手写；但默认 `conclusion.closureStatus` 仍是 `not_closed`
+
+如果当前宿主上下文污染较重，可以先用可选文本 provider 生成独立编辑 fragment：
+
+```powershell
+python -m story_harness_cli review editor-draft --root <project-root> --volume-id <volume-id> --dry-run
+python -m story_harness_cli review editor-draft --root <project-root> --volume-id <volume-id> --model <model> --output reviews/<volume-id>-editor-pass.json
+```
+
+`editor-draft --dry-run` 只刷新 / 读取 review packet 并输出 clean-room prompt 与 provider request，不调用网络。真实运行需要 `--api-key` 或 `TEXT_PROVIDER_API_KEY` / `OPENAI_API_KEY`，并只写 `editorPass` / `editorAssessment` fragment；它不会直接写入卷级自审真相层。
 
 卷级自审现在默认包含两个视角：
 

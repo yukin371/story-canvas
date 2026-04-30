@@ -1,6 +1,6 @@
 # Commands 模块说明
 
-> 最后更新: 2026-04-28
+> 最后更新: 2026-04-30
 > 状态: 当前有效模块文档
 
 ## 1. 模块职责
@@ -28,6 +28,7 @@
 - `review volume-self` 现负责 repo-native 的卷级 AI 自审结果写入：从外部结构化输入读取卷级闭环结论、评分、归因、独立编辑审查结果和修正建议，落盘到 `reviews/story-reviews.yaml`，避免继续手改该状态文件
 - `review volume-self` 成功写入后当前还会自动刷新 repo-native 的卷级审查包 `reviews/<volume-id>-review-packet.md`，减少 agent 另跑一次 `export review-packet`
 - `review volume-self` 现支持 `--merge-input` 与 `--editor-input`：在最终校验和持久化前，先把局部 author/editor 产物结构化合并到基础输入，减少多代理场景下的手工抄写
+- `review editor-draft` 现负责可选文本 AI provider 的独立编辑 fragment 生成：dry-run 只输出 clean-room prompt 与 provider request，真实运行写入 `reviews/<volume-id>-editor-pass.json`，供 `review volume-self-template --editor-input` 或 `review volume-self --editor-input` 消费；该命令不直接写卷级自审真相层
 - `review volume-self` 当前还会显式拒绝模板占位值（如 `待填写`），避免把未完成的自审草稿写入真相层
 - `review volume-self` 当前还会做最小健康检查：不接受所有维度都为 `0` 的空白评分；`closed` 必须写出 `delivered`，`not_closed` 必须写出 `missing`
 - `review volume-self` 当前还会做最小一致性检查：`allowHumanReview=true` 时最低门槛维度必须过线，且独立编辑审查必须完成并给出放行 verdict；`not_closed` 或存在 `0-2` 分弱项时至少要写出一项 `issues`
@@ -143,6 +144,7 @@
 - 忘记在 `cli.py` 的 `build_parser()` 中调用 `register_xxx_commands(subparsers)` 会导致命令不可见
 - `argparse` 的 `dest` 参数和 `--entity-id` 的 kebab-case 需要显式 `dest="entity_id"`
 - `review scene` 的段落范围是 1-based 且基于“去掉标题后的正文段落”计数，和 markdown 原始行号不是一回事
+- `review editor-draft --dry-run` 不会调用 provider，也不会写 editor fragment；真实运行需要 `--api-key` 或 `TEXT_PROVIDER_API_KEY` / `OPENAI_API_KEY`
 - `review scene --scene-index` 在没有 `scenePlans` 时会回退到启发式候选场景
 - 一旦章节里存在显式 `scenePlans`，`review scene --scene-index` 会优先使用显式边界，而不是启发式切分
 - `outline scene-update` 更新段落范围时，必须同时提供 `--start-paragraph` 和 `--end-paragraph`

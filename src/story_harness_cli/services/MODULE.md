@@ -1,6 +1,6 @@
 # Services 模块说明
 
-> 最后更新: 2026-04-28
+> 最后更新: 2026-04-30
 > 状态: 当前有效模块文档
 
 ## 1. 模块职责
@@ -38,6 +38,7 @@
 - `workflow_engine.py` 在卷级 `human_review_ready` gate 中，当前还会把 `repairCoverage.uncoveredWeakDimensionLabels` 视为显式阻塞，并把这些弱项翻译成更具体的 `nextActions`
 - `workflow_engine.py` 当前还会为卷级当前 gate 生成只读 `changeRequestDrafts`：工具侧阻塞会转成带 `chapterId/evidence` 的修复草案，卷级自审阻塞会转成修稿动作草案；当卷级自审尚未生成时，还会把 `volumeStructureCheck` 中的 `risk/missing` 检查项转成结构修补草案，供 UI/agent 直接消费而不必二次解析 `nextActions`
 - `volume_self_review.py`: 卷级 AI 自审的纯校验与归一化，负责固定评分维度、缺陷归因、独立编辑审查元数据、问题级工具/自审漏检解释，以及人工审查门槛判断，并提供最近一次卷级自审结果读取 helper
+- `text_provider_review.py`: 文本 provider 独立编辑审查的纯 prompt 构造、JSON 输出解析与 editor fragment 归一化；不调用网络、不读写文件
 - `volume_self_review.py` 当前还提供卷级自审 payload merge helper，供命令层把 author/editor 分片输入结构化合稿，而不是让 agent 手工拼整份 YAML
 - `volume_self_review.py` 生成模板时当前还会透传 command 层卷级预检中的 `volumeStructureCheck`、chapter/scene/style 证据摘要，并显式提示独立编辑审查模式 / 上下文隔离要求，让 AI 自审能直接对照卷级阶段映射与结构检查稿
 - `volume_self_review.py` 当前还会把这些卷级工具信号启发式收敛成 root `scores/issues/closureAssessment` draft，优先产出可审阅起点而不是全空模板，但不会擅自把默认结论抬成 `closed`
@@ -83,6 +84,9 @@
 - `infer_volume_preflight_workflow(preflight_payload, volume_self_review=None)`: 基于卷级 preflight 聚合结果与最新卷级自审结论推断只读 volume workflow gate
 - `build_volume_self_review_template(preflight_payload, generated_at, latest_review=None)`: 生成卷级 AI 自审模板骨架，并附带当前卷的预检摘要、逐章信号和建议修补方向
 - `normalize_volume_self_review(raw_payload, volume_id, volume_title, generated_at)`: 校验并归一化卷级 AI 自审结构，计算 `finalAllowHumanReview`
+- `build_volume_editor_provider_prompt(preflight_payload, review_packet_text, generated_at)`: 为 clean-room 独立编辑 provider 构造 prompt payload
+- `parse_text_provider_json_object(text)`: 解析 provider 返回的严格 JSON 对象，兼容 fenced json
+- `normalize_editor_provider_fragment(raw_payload, provider_name, model, generated_at)`: 将 provider 输出归一为 `editorPass` + `editorAssessment` fragment
 - `latest_volume_self_review(story_reviews, volume_id)`: 读取指定卷最近一次卷级 AI 自审结果
 - `hydrate_workflow_progress(workflow_progress, inferred)`: 合并持久化 workflow 元数据与当前推断阶段结果
 - `build_workflow_progress(inferred, existing=None, now_iso, run_mode, resume_from=None)`: 构造或刷新 `workflow.yaml` 快照，并支持从指定 gate 回卷

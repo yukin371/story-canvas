@@ -19,16 +19,24 @@ from story_harness_cli.protocol import (
     save_state,
 )
 from story_harness_cli.protocol.io import load_json_compatible_yaml
-from story_harness_cli.providers import load_style_similarity_scorer
+from story_harness_cli.providers import ProviderError, load_style_similarity_scorer
+from story_harness_cli.providers.text import (
+    OpenAITextHTTPClient,
+    resolve_api_key as resolve_text_api_key,
+    resolve_base_url as resolve_text_base_url,
+)
 from story_harness_cli.services import (
     analyze_style_text,
+    build_volume_editor_provider_prompt,
     build_volume_self_review_template,
     build_chapter_review,
     build_scene_review,
     check_consistency,
     latest_volume_self_review,
     merge_volume_self_review_payload,
+    normalize_editor_provider_fragment,
     normalize_volume_self_review,
+    parse_text_provider_json_object,
     resolve_scene_candidates,
     review_change_requests,
     validate_volume_self_review_refs,
@@ -207,7 +215,7 @@ def command_review_scene(args) -> int:
                 },
             ),
         )
-    except ValueError as exc:
+    except (ProviderError, ValueError) as exc:
         raise SystemExit(str(exc)) from exc
     review["styleAnalysis"]["profileSource"] = profile_source
     review["styleAnalysis"]["reviewRuleProfileSource"] = review_rule_source
@@ -393,6 +401,90 @@ def command_review_volume_self_template(args) -> int:
             "editorInput": str(editor_input_path) if editor_input_path else "",
             "template": payload,
         }
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
+def command_review_editor_draft(args) -> int:
+    root = Path(args.root).resolve()
+    ensure_project_root(root)
+    state = load_project_state(root)
+    volume = _find_volume(state, args.volume_id)
+    preflight_payload = build_review_preflight_payload(root, state, volume_id=args.volume_id)
+    review_packet_path = write_volume_review_packet(root, state, volume)
+    review_packet_text = review_packet_path.read_text(encoding="utf-8")
+    generated_at = now_iso()
+    prompt_payload = build_volume_editor_provider_prompt(
+        preflight_payload,
+        review_packet_text,
+        generated_at=generated_at,
+    )
+
+    provider = args.provider
+    if provider != "openai":
+        raise SystemExit(f"暂不支持文本 provider: {provider}")
+    base_url = resolve_text_base_url(args.base_url or "")
+    api_key = resolve_text_api_key(args.api_key or "")
+    client = OpenAITextHTTPClient(
+        api_key=api_key or "dry-run",
+        base_url=base_url,
+        timeout_seconds=args.timeout_seconds,
+    )
+    provider_request = client.build_response_request(
+        system_prompt=prompt_payload["systemPrompt"],
+        user_prompt=prompt_payload["userPrompt"],
+        model=args.model,
+        temperature=args.temperature,
+    )
+
+    if args.dry_run:
+        result = {
+            "saved": False,
+            "dryRun": True,
+            "provider": provider,
+            "model": args.model,
+            "baseUrl": base_url,
+            "volumeId": args.volume_id,
+            "reviewPacketFile": str(review_packet_path),
+            "prompt": prompt_payload,
+            "providerRequest": provider_request,
+            "outputFile": "",
+        }
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 0
+
+    if not api_key:
+        raise SystemExit("缺少文本 provider API key。请传 --api-key 或设置 TEXT_PROVIDER_API_KEY / OPENAI_API_KEY。")
+
+    try:
+        provider_result = client.generate_text(provider_request)
+        raw_fragment = parse_text_provider_json_object(provider_result.get("text", ""))
+        editor_fragment = normalize_editor_provider_fragment(
+            raw_fragment,
+            provider_name=provider_result.get("provider", provider),
+            model=args.model,
+            generated_at=generated_at,
+        )
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
+
+    output_path = Path(args.output) if args.output else root / "reviews" / f"{args.volume_id}-editor-pass.json"
+    if output_path.exists() and output_path.is_dir():
+        output_path = output_path / f"{args.volume_id}-editor-pass.json"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(editor_fragment, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    result = {
+        "saved": True,
+        "dryRun": False,
+        "provider": provider_result.get("provider", provider),
+        "model": args.model,
+        "responseId": provider_result.get("responseId", ""),
+        "volumeId": args.volume_id,
+        "reviewPacketFile": str(review_packet_path),
+        "outputFile": str(output_path.resolve()),
+        "editorFragment": editor_fragment,
+    }
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
 
@@ -609,6 +701,22 @@ def register_review_commands(subparsers) -> None:
     volume_self_template_parser.add_argument("--merge-input", action="append")
     volume_self_template_parser.add_argument("--editor-input")
     volume_self_template_parser.set_defaults(func=command_review_volume_self_template)
+
+    editor_draft_parser = review_subparsers.add_parser(
+        "editor-draft",
+        help="Generate an independent editor fragment with an optional text AI provider",
+    )
+    editor_draft_parser.add_argument("--root", required=True)
+    editor_draft_parser.add_argument("--volume-id", required=True)
+    editor_draft_parser.add_argument("-o", "--output")
+    editor_draft_parser.add_argument("--provider", choices=["openai"], default="openai")
+    editor_draft_parser.add_argument("--model", default="gpt-5.4")
+    editor_draft_parser.add_argument("--base-url", default="")
+    editor_draft_parser.add_argument("--api-key", default="")
+    editor_draft_parser.add_argument("--temperature", type=float)
+    editor_draft_parser.add_argument("--timeout-seconds", type=int, default=300)
+    editor_draft_parser.add_argument("--dry-run", action="store_true")
+    editor_draft_parser.set_defaults(func=command_review_editor_draft)
 
     scene_parser = review_subparsers.add_parser("scene", help="Review one scene fragment by paragraph range or scene index")
     scene_parser.add_argument("--root", required=True)

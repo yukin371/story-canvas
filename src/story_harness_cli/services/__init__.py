@@ -41,6 +41,11 @@ from .volume_self_review import (
     normalize_volume_self_review,
     validate_volume_self_review_refs,
 )
+from .text_provider_review import (
+    build_volume_editor_provider_prompt,
+    normalize_editor_provider_fragment,
+    parse_text_provider_json_object,
+)
 from .story_review import (
     build_chapter_review,
     build_scene_review,
@@ -81,15 +86,18 @@ __all__ = [
     "export_workflow_payload",
     "hydrate_workflow_progress",
     "build_volume_self_review_template",
+    "build_volume_editor_provider_prompt",
     "infer_volume_preflight_workflow",
     "infer_workflow_status",
     "latest_volume_self_review",
     "merge_volume_self_review_payload",
     "normalize_batch_delivery_mode",
+    "normalize_editor_provider_fragment",
     "normalize_volume_self_review",
     "normalize_illustration_batch_spec",
     "validate_volume_self_review_refs",
     "refresh_context_lens",
+    "parse_text_provider_json_object",
     "reset_workflow_progress",
     "resolve_entities",
     "review_change_requests",

@@ -45,7 +45,7 @@
 
 - 状态: `mitigated`
 - 首次记录: `2026-04-29`
-- 最近核对: `2026-04-29`
+- 最近核对: `2026-04-30`
 - 现象:
   - `review volume-self` 输入过长，`scores` 与 `editorAssessment.scores` 需要双写。
   - 低分项还要求手工补 `issues`、`repairSuggestions`、`evidenceRefs`、`verificationCommands`。
@@ -77,11 +77,13 @@
   - `review volume-self --editor-input`
   - 两者都已能直接消费结构化 editor 产物，不再要求把 `editorPass` / `editorAssessment` 手工抄进主输入文件。
   - `repairCoverage` 现在会把独立编辑评分中的 `0-2` 分弱项合并到卷审弱项摘要，并保留 `rootWeakDimensionLabels` / `editorWeakDimensionLabels`，让 `workflow status --volume-id` 的下一步提示能直接看到多代理审查发现的卷级闭环、爽点兑现、伏笔节奏等弱项。
+  - `review editor-draft` 已提供可选文本 provider 路径：dry-run 输出 clean-room prompt / provider request，真实运行写 `reviews/<volume-id>-editor-pass.json`，可直接作为 `--editor-input` 消费，减少宿主编程工具提示词污染同线程自评。
 - 当前证据:
   - `Kant` 的 fresh-context editor pass
   - `projects/agent-volume-e2e-20260429/reviews/volume-001-self-review.yaml`
   - `projects/demo-climate-court-20260429/reviews/volume-001-editor-pass.json`
   - `tests.smoke.test_review_volume_self.test_review_volume_self_repair_coverage_includes_editor_weak_dimensions`
+  - `tests.smoke.test_review_volume_self.test_review_editor_draft_dry_run_builds_provider_request`
 - 期望收口:
   - 增加导入 editor pass 的正式入口，而不是让 agent 手工抄写。
 - 下次实施必查:
