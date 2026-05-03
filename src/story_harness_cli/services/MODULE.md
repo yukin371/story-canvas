@@ -1,6 +1,6 @@
 # Services 模块说明
 
-> 最后更新: 2026-04-30
+> 最后更新: 2026-05-03
 > 状态: 当前有效模块文档
 
 ## 1. 模块职责
@@ -55,6 +55,7 @@
 - `volume_self_review.py` 对 `chapter-xxx#scene-n` 的纯校验当前还会要求 command 层传入对应章节的 persisted `scene review` 映射，确保 scene 锚点能稳定落到 review-packet / scene review 对象
 - `inspiration.py`: 随机灵感生成（姓名、角色、世界、大纲骨架）
 - `stats.py`: 项目统计（进度、字数、实体、投影）
+- `setting_expansion.py`: 设定准备度评估、类型模板 prompt 构造与 provider 返回解析；类型模板来自 `data/genre_templates.py` 的 builtin dict 或 command 层传入的 dict，service 本身不读文件
 
 ## 3. Must Not Own
 
@@ -161,6 +162,7 @@
 - `illustration_prompting.py` 当前会优先把 modifier 转成自然短句，再和 pack 的 `lexicon` 一起渲染进模板；兼容旧模板时仍保留 `styleModifiers/userExtraPrompt/commercialPrompt` 这组旧 placeholder
 - `illustration_prompting.py` 当前会把 `textDesignMode/titleText/subtitleText/bodyText/fontStyleHint` 收敛进 `promptSnapshot.textDesign`，并转成自然语言版式 brief；该层是请求级参数，不是新的模板分类
 - `illustration_prompting.py` 当前按 use-case 家族解析 subject / guardrail / lexicon；即使 pack 只定义了 `chapter-scene`，`duel-scene`、`chase-escape`、`manga-panel` 也应优先沿同类模板 fallback，而不是退成不相关模板
+- `setting_expansion.py` 只能消费已经解析好的模板 dict；不要在 service 内读取 `.yaml` / `.json` 资源，否则会破坏 service 无副作用边界
 - `evaluate_project_story_gate` 的用途是把“先确定市场定位和故事承诺，再拆章节”变成硬门禁，而不是 review 阶段的软建议
 - workflow 的 `currentStage` 口径是“第一个未满足 inferred 条件的 gate”，不是“所有前置 gate 都必须先人工 accept 才算通过”
 - `advance_workflow_progress` 只允许对当前 gate 执行 `accept`；若 inferred 条件未满足，会直接拒绝推进

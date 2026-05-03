@@ -276,6 +276,205 @@ chapter.md
 - `projects/`：样例项目与回归基线
 - `tests/`：smoke tests 与 fixtures
 
+## 项目架构与约束机制
+
+### 分层架构
+
+项目采用清晰的分层设计，每层职责明确：
+
+```
+src/story_harness_cli/
+├── protocol/          # 协议层：状态管理、schema定义、文件读写
+│   ├── files.py       # 项目文件结构约定（ROOT_FILES、路径规则）
+│   ├── io.py          # JSON-compatible YAML 统一读写
+│   ├── state.py       # 状态加载/保存/指纹校验/大纲同步
+│   ├── schema.py      # 默认项目状态结构
+│   ├── style_profiles.py    # 风格配置：术语、语域、框架策略
+│   ├── review_rules.py      # 审查规则：启停列表、豁免机制
+│   └── prompt_packs.py      # 插图提示词系统
+├── services/          # 业务逻辑层：分析、约束引擎
+│   ├── analyzer.py        # 章节分析：实体识别、状态检测、关系检测
+│   ├── consistency_engine.py  # 一致性校验：矛盾检查、设定冲突检测
+│   ├── style_detector.py  # AI风格检测：句式识别、可读性、方案文档腔
+│   ├── context_lens.py    # 写作上下文构建：角色、关系、情绪契约切片
+│   ├── story_review.py    # 章节质量回顾：评分、契约对齐、商业连载检查
+│   ├── workflow_engine.py # 工作流状态机：门禁、决策推进、回卷
+│   ├── projection_engine.py  # 投影状态管理：设定去重、worldbook同步
+│   └── text_provider_review.py  # 独立编辑审查：prompt构造、JSON解析
+├── providers/         # 适配层：外部服务集成
+│   ├── text/openai_http.py  # 文本生成：OpenAI兼容API客户端
+│   └── image/         # 图片生成：多provider抽象层
+├── commands/          # CLI命令层：用户交互入口
+└── utils/             # 工具函数：文本处理、哈希、关键词匹配
+```
+
+### AI写作约束机制
+
+项目通过多层约束确保AI写作的质量和一致性：
+
+#### 1. 风格配置约束 (`style_profiles.yaml`)
+
+**术语策略** (`termPolicy`)
+- `watchTerms`: 高频术语监控，防止过度重复
+- `allowRepeated`: 白名单术语（如母题关键词）
+- `perTermThresholds`: 词级阈值配置
+- `specialTermSuffixes`: 特殊术语后缀识别
+
+**语域策略** (`registerPolicy`)
+- `allowTerms`: 允许的题材语汇
+- `disallowedCategories`: 禁止的语域类别
+  - 示例：玄幻题材禁止"优先级""框架""闭环"等现代项目管理语汇
+
+**框架策略** (`framePolicy`)
+- `allowPrefixes`: 允许的叙事框架前缀
+- `perPrefixThresholds`: 框架复用阈值
+  - 示例：检测"前世的记忆""前世的经验"等重复叙事支架
+
+**方案块策略** (`planBlockPolicy`)
+- `allowLabels`: 允许的标签类型
+- `minLabels`: 最小标签数量
+- `minDistinctLabels`: 最小不同标签数
+  - 检测"目标：/风险：/约束：/时间窗口："等结构化清单
+
+#### 2. 审查规则约束 (`review-rules.yaml`)
+
+```yaml
+activeProfile: "default"
+profiles:
+  default:
+    enabledRules: []  # 启用的规则ID列表
+    exemptions:       # 细粒度豁免配置
+      - ruleId: "metaLeakage"
+        scope:
+          chapterIds: ["chapter-001"]
+          volumeIds: []
+          scenePlanIds: []
+        allowWhen:
+          quotedOnly: false
+          matchPatterns: []
+        reason: "测试章节允许元信息泄露"
+```
+
+#### 3. AI风格检测引擎
+
+**中文高频AI句式簇检测**
+- "不是……是……"
+- "不像……更像……"
+- "真正……从来都是……"
+- "还有什么？"
+
+**移动端可读性检测**
+- 长段落识别（影响移动端阅读体验）
+
+**方案文档腔检测**
+- 连续块内≥3个标签命中 + ≥2种标签类型
+- 示例：`目标：xxx 风险：xxx 约束：xxx`
+
+**聚合风险层** (`clusteredAIPhrasing`)
+- 把多项轻度AI句式/可读性问题收敛成统一风险
+
+#### 4. 上下文约束 (`context_lens.py`)
+
+**写作上下文切片**
+- 活跃角色/关系状态
+- 情绪契约（核心情绪、禁止情绪、揭露偏好）
+- 题材模板关注点
+- 世界规则与伏笔窗口
+- 线索/伏笔切片
+
+**章节承接摘要**
+- `previous chapter`: 上一章余波和交付
+- `current chapter`: 当前章写作目标
+- `next chapter`: 下一章方向预览
+
+**最小约束原则**
+- 只输出"够写当前章"的上下文，避免prompt过长
+
+#### 5. 工作流门禁机制
+
+**项目级gate**
+- 检查`positioning.primaryGenre`
+- 检查`storyContract.corePromises`
+- 检查`emotionalContract.coreEmotion`
+
+**章节级gate**
+- 检查`direction`是否存在
+- 检查`beats`是否完整
+- 检查`scenePlans`是否定义
+
+**上下文gate**
+- 校验context lens是否过期（通过章节内容指纹）
+- 区分`fresh`/`stale`/`legacy-untracked`状态
+
+#### 6. 文本Provider独立审查
+
+**Clean-room独立编辑模式**
+- 独立的HTTP客户端，支持任意OpenAI兼容API
+- 通过`TEXT_PROVIDER_API_KEY`/`BASE_URL`环境变量配置
+- 支持structured output (`json_object`格式)
+
+**审查流程**
+1. 构造独立审查prompt（包含章节全文+style分析+consistency信号）
+2. 发送到外部provider
+3. 解析返回的JSON对象
+4. 归一为`editorPass + editorAssessment` fragment
+
+#### 7. 约束流程总览
+
+```
+写作前 → 检查项目gate → 检查章节gate → 构建context lens
+        ↓
+写作中 → 应用style profile → 应用review rules → 生成文本
+        ↓
+写作后 → style detector检测 → consistency检查 → story review
+        ↓
+迭代   → 生成change request → 修正正文 → 重新审查
+```
+
+### 约束配置示例
+
+**项目级风格配置** (`style-profiles.yaml`)
+
+```yaml
+profiles:
+  xuanhuan-zh:
+    patternThresholds:
+      formulaicTransition: 2.5
+    extraPatterns:
+      formulaicTransition: ["下一刻", "下一秒", "话音未落"]
+    registerPolicy:
+      disallowedCategories:
+        - id: "modern-planning"
+          label: "现代项目管理语汇"
+          terms: ["优先级", "框架", "闭环", "底层逻辑"]
+          suggestion: "玄幻正文避免使用现代项目管理语汇"
+```
+
+**项目级审查规则** (`review-rules.yaml`)
+
+```yaml
+activeProfile: "strict"
+profiles:
+  strict:
+    enabledRules:
+      - "metaLeakage"
+      - "povOverreach"
+      - "outlineDeviation"
+    exemptions:
+      - ruleId: "metaLeakage"
+        scope:
+          chapterIds: ["chapter-001"]
+        reason: "第一章允许元信息泄露"
+```
+
+### 关键设计原则
+
+1. **纯函数设计**: services层不修改输入state，返回新dict
+2. **状态指纹校验**: 防止旧快照覆盖新状态
+3. **根目录级写锁**: 避免多命令同时写同一项目
+4. **JSON-compatible YAML**: 所有状态文件必须为合法JSON
+5. **分层责任**: protocol层负责状态，services层负责逻辑，commands层负责交互
+
 ## 已实现功能
 
 当前实现已经覆盖：

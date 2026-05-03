@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 from story_harness_cli.commands.export import write_volume_review_packet
@@ -43,6 +44,9 @@ from story_harness_cli.services import (
 )
 from story_harness_cli.utils import now_iso
 from story_harness_cli.utils.text import paragraphs_from_text
+
+
+TEXT_PROVIDER_DEFAULT_MODEL = "gpt-5.4-mini"
 
 
 def command_review_apply(args) -> int:
@@ -423,8 +427,19 @@ def command_review_editor_draft(args) -> int:
     provider = args.provider
     if provider != "openai":
         raise SystemExit(f"暂不支持文本 provider: {provider}")
-    base_url = resolve_text_base_url(args.base_url or "")
+    workbench_profile = _load_workbench_text_provider_profile()
     api_key = resolve_text_api_key(args.api_key or "")
+    credential_source = _text_provider_credential_source(args.api_key or "", api_key)
+    if not api_key and workbench_profile.get("apiKey"):
+        api_key = str(workbench_profile.get("apiKey", "")).strip()
+        credential_source = "workbench"
+
+    configured_base_url = ""
+    base_url_source = _text_provider_base_url_source(args.base_url or "")
+    if not base_url_source and workbench_profile.get("baseUrl"):
+        configured_base_url = str(workbench_profile.get("baseUrl", "")).strip()
+        base_url_source = "workbench"
+    base_url = resolve_text_base_url(args.base_url or "", configured_base_url)
     client = OpenAITextHTTPClient(
         api_key=api_key or "dry-run",
         base_url=base_url,
@@ -444,6 +459,15 @@ def command_review_editor_draft(args) -> int:
             "provider": provider,
             "model": args.model,
             "baseUrl": base_url,
+            "providerCredential": {
+                "source": credential_source,
+                "available": bool(api_key),
+                "workbenchProviderLabel": workbench_profile.get("label", ""),
+            },
+            "providerBaseUrl": {
+                "source": base_url_source or "default",
+                "workbenchProviderLabel": workbench_profile.get("label", "") if base_url_source == "workbench" else "",
+            },
             "volumeId": args.volume_id,
             "reviewPacketFile": str(review_packet_path),
             "prompt": prompt_payload,
@@ -479,6 +503,8 @@ def command_review_editor_draft(args) -> int:
         "dryRun": False,
         "provider": provider_result.get("provider", provider),
         "model": args.model,
+        "providerCredentialSource": credential_source,
+        "providerBaseUrlSource": base_url_source or "default",
         "responseId": provider_result.get("responseId", ""),
         "volumeId": args.volume_id,
         "reviewPacketFile": str(review_packet_path),
@@ -487,6 +513,50 @@ def command_review_editor_draft(args) -> int:
     }
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
+
+
+def _load_workbench_text_provider_profile() -> dict:
+    settings_path = Path.home() / ".story-canvas" / "workbench-settings.json"
+    if not settings_path.exists():
+        return {}
+    try:
+        settings = json.loads(settings_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+    providers = settings.get("illustration", {}).get("providers", [])
+    if not isinstance(providers, list):
+        return {}
+    enabled_profiles = [
+        item
+        for item in providers
+        if isinstance(item, dict) and item.get("enabled", True) and str(item.get("apiKey", "")).strip()
+    ]
+    if not enabled_profiles:
+        return {}
+    enabled_profiles.sort(key=lambda item: int(item.get("priority", 100) or 100))
+    selected = enabled_profiles[0]
+    return {
+        "label": str(selected.get("label") or selected.get("id") or "workbench-provider"),
+        "apiKey": str(selected.get("apiKey", "")).strip(),
+        "baseUrl": str(selected.get("baseUrl", "")).strip(),
+    }
+
+
+def _text_provider_credential_source(cli_value: str, resolved_key: str) -> str:
+    if cli_value.strip():
+        return "cli"
+    if resolved_key:
+        return "env"
+    return ""
+
+
+def _text_provider_base_url_source(cli_value: str) -> str:
+    if cli_value.strip():
+        return "cli"
+    for env_name in ("TEXT_PROVIDER_BASE_URL", "OPENAI_BASE_URL", "BASE_URL"):
+        if os.environ.get(env_name, "").strip():
+            return "env"
+    return ""
 
 
 def _find_volume(state: dict, volume_id: str) -> dict:
@@ -710,7 +780,7 @@ def register_review_commands(subparsers) -> None:
     editor_draft_parser.add_argument("--volume-id", required=True)
     editor_draft_parser.add_argument("-o", "--output")
     editor_draft_parser.add_argument("--provider", choices=["openai"], default="openai")
-    editor_draft_parser.add_argument("--model", default="gpt-5.4")
+    editor_draft_parser.add_argument("--model", default=TEXT_PROVIDER_DEFAULT_MODEL)
     editor_draft_parser.add_argument("--base-url", default="")
     editor_draft_parser.add_argument("--api-key", default="")
     editor_draft_parser.add_argument("--temperature", type=float)

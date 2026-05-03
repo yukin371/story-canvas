@@ -21,3 +21,16 @@ def load_json_compatible_yaml(path: Path, default: Dict[str, Any]) -> Dict[str, 
     except json.JSONDecodeError as exc:
         raise SystemExit(f"无法解析 {path}。本原型要求 *.yaml 文件使用 JSON 兼容格式。{exc}") from exc
 
+
+def load_state(root: Path | str | None = None) -> Dict[str, Any]:
+    """Compatibility wrapper for experimental commands; prefer load_project_state."""
+    from .state import load_project_state
+
+    return load_project_state(Path(root or ".").resolve())
+
+
+def save_state(state: Dict[str, Any], root: Path | str | None = None) -> None:
+    """Compatibility wrapper for experimental commands; prefer protocol.save_state."""
+    from .state import save_state as save_project_state
+
+    save_project_state(Path(root or ".").resolve(), state)

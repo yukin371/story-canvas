@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import re
 from typing import Any, Dict, Iterable, List
@@ -321,6 +321,150 @@ PLATFORM_WEIGHT_DELTAS = {
 }
 
 
+
+# Enhanced review issue structures
+def _build_enhanced_issue(
+    severity: str,  # "critical", "major", "moderate", "minor"
+    category: str,  # "plot", "character", "style", "consistency", "foreshadowing", "handoff"
+    location: str,  # Description of where in the chapter
+    description: str,  # What the issue is
+    evidence: List[str],  # Supporting evidence
+    suggestions: List[Dict[str, str]],  # Each with "suggestion" and "example" keys
+) -> Dict[str, Any]:
+    """Build a structured issue entry for enhanced review output."""
+    return {
+        "severity": severity,
+        "category": category,
+        "location": location,
+        "description": description,
+        "evidence": evidence,
+        "suggestions": suggestions,
+    }
+
+
+def _build_enhanced_issues(
+    dimensions: List[Dict[str, Any]],
+    consistency_signals: Dict[str, Any],
+    style_report: Dict[str, Any],
+    wrapped_entity_signals: Dict[str, Any],
+    chapter_handoff_signals: Dict[str, Any] | None = None,
+) -> List[Dict[str, Any]]:
+    """Build enhanced structured issues from review signals."""
+    issues = []
+
+    # Process dimension issues
+    for dim in sorted(dimensions, key=lambda d: d["score"]):
+        if dim["score"] < 12:  # Only include significant issues
+            severity = "critical" if dim["score"] < 6 else ("major" if dim["score"] < 9 else "moderate")
+            category_map = {
+                "plotMomentum": "plot",
+                "characterPressure": "character",
+                "conflictTension": "plot",
+                "sceneClarity": "style",
+                "proseControl": "style",
+            }
+            category = category_map.get(dim["id"], "style")
+
+            # Build suggestions from dimension data
+            suggestions = []
+            for sugg in dim.get("suggestions", [])[:3]:
+                suggestions.append({
+                    "suggestion": sugg,
+                    "example": _get_example_for_suggestion(dim["id"], sugg),
+                })
+
+            issues.append(_build_enhanced_issue(
+                severity=severity,
+                category=category,
+                location=f"整体章节（{dim['label']}）",
+                description=dim["comment"],
+                evidence=[dim.get("evidence", "")] if dim.get("evidence") else [],
+                suggestions=suggestions,
+            ))
+
+    # Process consistency issues
+    for gap in consistency_signals.get("entityGaps", []):
+        issues.append(_build_enhanced_issue(
+            severity="moderate",
+            category="consistency",
+            location=f"实体引用：{gap.get('entityName', '未知')}",
+            description=f"实体 @{gap.get('entityName', '')} 已被引用但未在设定中注册",
+            evidence=[f"在文本中发现引用但缺少实体注册"],
+            suggestions=[{
+                "suggestion": f"使用 `world add --name '{gap.get('entityName', '')}'` 注册实体",
+                "example": f"world add --name '{gap.get('entityName', '')}' --kind character",
+            }],
+        ))
+
+    # Process handoff issues
+    if chapter_handoff_signals:
+        if chapter_handoff_signals.get("hasHandoffGap"):
+            issues.append(_build_enhanced_issue(
+                severity="major",
+                category="handoff",
+                location="章节开头",
+                description="章节开头缺少与上一章的有效衔接",
+                evidence=chapter_handoff_signals.get("gapEvidence", ["未检测到上下文锚点"]),
+                suggestions=[{
+                    "suggestion": "在章节开头添加对上一章结尾的呼应，可以使用关键词、场景或状态延续",
+                    "example": "承接上一章的紧张氛围，主角依然心跳加速...",
+                }],
+            ))
+
+    # Process wrapped entity issues
+    for unwrapped in wrapped_entity_signals.get("unwrappedMentions", []):
+        issues.append(_build_enhanced_issue(
+            severity="minor",
+            category="consistency",
+            location=f"文本位置：{unwrapped.get('context', '未知')}",
+            description=f"实体 '{unwrapped.get('name', '')}' 未使用 @{{}} 包裹",
+            evidence=[unwrapped.get("mention", "")],
+            suggestions=[{
+                "suggestion": f"将 '{unwrapped.get('name', '')}' 用 @{{}} 包裹以便追踪",
+                "example": f"@{{{unwrapped.get('name', '')}}}",
+            }],
+        ))
+
+    # Sort by severity
+    severity_order = {"critical": 0, "major": 1, "moderate": 2, "minor": 3}
+    return sorted(issues, key=lambda i: severity_order.get(i["severity"], 4))
+
+
+def _get_example_for_suggestion(dimension_id: str, suggestion: str) -> str:
+    """Get an example for a suggestion based on dimension type."""
+    examples = {
+        "plotMomentum": [
+            "添加外部压力：突然收到威胁信",
+            "增加角色冲突：意见不合导致争吵",
+            "推进情节：发现重要线索",
+        ],
+        "characterPressure": [
+            "主角内心纠结：两个选择都艰难",
+            "外部施压： deadline 临近",
+            "情感冲突：信任被背叛",
+        ],
+        "conflictTension": [
+            "对话升级：从讨论变成争吵",
+            "增加风险：失败后果更严重",
+            "时间压力：必须在时限内完成",
+        ],
+        "sceneClarity": [
+            "明确场景：用环境描写交代地点",
+            "标明时间：通过光线/天气表现时间",
+            "理清转换：用空行或分隔符标明场景切换",
+        ],
+        "proseControl": [
+            "控制句长：长短句交替使用",
+            "减少形容词：用动词增强表现力",
+            "对话优化：删除冗余寒暄",
+        ],
+    }
+
+    dimension_examples = examples.get(dimension_id, [])
+    if dimension_examples:
+        return dimension_examples[0]
+    return "（具体示例需结合文本调整）"
+
 def build_chapter_review(
     state: Dict[str, Dict[str, Any]],
     chapter_id: str,
@@ -402,6 +546,15 @@ def build_chapter_review(
         limit=4,
     )
 
+    # Build enhanced structured issues
+    enhanced_issues = _build_enhanced_issues(
+        dimensions,
+        consistency_signals=consistency_signals,
+        style_report=style_report,
+        wrapped_entity_signals=wrapped_entity_signals,
+        chapter_handoff_signals=chapter_handoff_signals,
+    )
+
     fingerprint = f"{RUBRIC_VERSION}:{chapter_id}:{stable_hash(clean_text, size=16)}"
     contract_alignment = _finalize_contract_alignment(
         _evaluate_contract_alignment(
@@ -433,6 +586,15 @@ def build_chapter_review(
         "weightedScores": weighted_scores,
         "strengths": strengths,
         "priorityActions": priority_actions,
+        # Enhanced structured issues
+        "issues": enhanced_issues,
+        "issueSummary": {
+            "critical": len([i for i in enhanced_issues if i["severity"] == "critical"]),
+            "major": len([i for i in enhanced_issues if i["severity"] == "major"]),
+            "moderate": len([i for i in enhanced_issues if i["severity"] == "moderate"]),
+            "minor": len([i for i in enhanced_issues if i["severity"] == "minor"]),
+            "total": len(enhanced_issues),
+        },
         "textMetrics": text_metrics,
         "analysisSignals": analysis_signals,
         "chapterHandoffSignals": chapter_handoff_signals,
@@ -545,6 +707,14 @@ def build_scene_review(
         limit=4,
     )
 
+    # Build enhanced structured issues for scene
+    enhanced_issues = _build_enhanced_issues(
+        dimensions,
+        consistency_signals=consistency_signals,
+        style_report=style_report,
+        wrapped_entity_signals=wrapped_entity_signals,
+    )
+
     fingerprint = (
         f"{SCENE_RUBRIC_VERSION}:{chapter_id}:{start_paragraph}:{end_paragraph}:{stable_hash(scene_text, size=16)}"
     )
@@ -582,6 +752,15 @@ def build_scene_review(
         },
         "strengths": strengths,
         "priorityActions": priority_actions,
+        # Enhanced structured issues
+        "issues": enhanced_issues,
+        "issueSummary": {
+            "critical": len([i for i in enhanced_issues if i["severity"] == "critical"]),
+            "major": len([i for i in enhanced_issues if i["severity"] == "major"]),
+            "moderate": len([i for i in enhanced_issues if i["severity"] == "moderate"]),
+            "minor": len([i for i in enhanced_issues if i["severity"] == "minor"]),
+            "total": len(enhanced_issues),
+        },
         "textMetrics": text_metrics,
         "analysisSignals": analysis_signals,
         "styleAnalysis": style_report,

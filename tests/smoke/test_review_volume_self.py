@@ -238,6 +238,26 @@ class ReviewVolumeSelfSmokeTest(unittest.TestCase):
         self.assertEqual(request["json"]["text"]["format"]["type"], "json_object")
         self.assertIn("reviewPacketMarkdown", payload["prompt"]["userPrompt"])
 
+    def test_review_editor_draft_defaults_to_mini_model(self) -> None:
+        self._init_volume_project()
+        self._write_minimal_volume_chapters()
+
+        exit_code, payload = self._run_json(
+            [
+                "review",
+                "editor-draft",
+                "--root",
+                str(self.temp_dir),
+                "--volume-id",
+                "volume-001",
+                "--dry-run",
+            ]
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["model"], "gpt-5.4-mini")
+        self.assertEqual(payload["providerRequest"]["json"]["model"], "gpt-5.4-mini")
+
     def test_text_provider_editor_fragment_normalization_accepts_fenced_json(self) -> None:
         raw = parse_text_provider_json_object(
             """```json

@@ -39,6 +39,18 @@
             />
           </svg>
         </button>
+        <button
+          class="activitybar-button"
+          :class="{ 'is-active': activePage === 'workflow' }"
+          type="button"
+          aria-label="工作流"
+          title="工作流"
+          @click="setActivePage('workflow')"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7.5A3.5 3.5 0 0 1 7.5 4h9A3.5 3.5 0 0 1 20 7.5v9a3.5 3.5 0 0 1-3.5 3.5h-9A3.5 3.5 0 0 1 4 16.5Zm3.5-1.5A1.5 1.5 0 0 0 6 7.5v9A1.5 1.5 0 0 0 7.5 18h9a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 16.5 6Zm1.25 3.5h6.5v1.5h-6.5Zm0 3h4.5v1.5h-4.5Zm0 3h6.5v1.5h-6.5Z" />
+          </svg>
+        </button>
       </div>
 
       <div class="activitybar-footer">
@@ -62,6 +74,7 @@
     <t-layout class="main-layout">
       <t-content class="page-content">
         <SettingsView v-if="activePage === 'settings'" />
+        <WorkflowView v-else-if="activePage === 'workflow'" />
         <WorkbenchView
           v-else
           :workspace-mode="workbenchMode"
@@ -107,6 +120,7 @@ import { TAside, TContent, TLayout } from "@/tdesign/shell";
 import { useWorkspace } from "@/composables/useWorkspace";
 
 const SettingsView = defineAsyncComponent(() => import("@/views/SettingsView.vue"));
+const WorkflowView = defineAsyncComponent(() => import("@/views/WorkflowView.vue"));
 const WorkbenchView = defineAsyncComponent(() => import("@/views/WorkbenchView.vue"));
 
 type WorkbenchStatus = {
@@ -119,7 +133,7 @@ type WorkbenchStatus = {
 };
 
 const workspace = useWorkspace();
-const activePage = ref<"review" | "illustration" | "settings">("review");
+const activePage = ref<"review" | "illustration" | "workflow" | "settings">("review");
 const workbenchStatus = ref<WorkbenchStatus | null>(null);
 
 const summary = computed(() => workspace.summary.value);
@@ -130,17 +144,26 @@ const currentProjectTitle = computed(() => {
   if (activePage.value === "settings") {
     return "工作台";
   }
+  if (activePage.value === "workflow") {
+    return "工作流";
+  }
   return activePage.value === "illustration" ? "自由模式" : "未选择项目";
 });
 const currentContextLabel = computed(() => {
   if (activePage.value === "settings") {
     return "页面";
   }
+  if (activePage.value === "workflow") {
+    return "阶段";
+  }
   return workbenchStatus.value?.contextLabel || (activePage.value === "review" ? "章节" : "范围");
 });
 const currentContextValue = computed(() => {
   if (activePage.value === "settings") {
     return "设置";
+  }
+  if (activePage.value === "workflow") {
+    return "设定 → 大纲 → 章节 → 定稿";
   }
   return workbenchStatus.value?.contextValue || (activePage.value === "illustration" ? "自由模式" : "未选择章节");
 });
@@ -149,11 +172,17 @@ const currentDetailLabel = computed(() => {
   if (activePage.value === "settings") {
     return "状态";
   }
+  if (activePage.value === "workflow") {
+    return "任务";
+  }
   return workbenchStatus.value?.detailLabel || "-";
 });
 const currentDetailValue = computed(() => {
   if (activePage.value === "settings") {
     return "本地配置";
+  }
+  if (activePage.value === "workflow") {
+    return projectTitleLabel.value;
   }
   return workbenchStatus.value?.detailValue || "-";
 });
@@ -161,19 +190,26 @@ const currentAuxLabel = computed(() => {
   if (activePage.value === "settings") {
     return "范围";
   }
+  if (activePage.value === "workflow") {
+    return "当前";
+  }
   return workbenchStatus.value?.auxLabel || "-";
 });
 const currentAuxValue = computed(() => {
   if (activePage.value === "settings") {
     return summary.value?.project.title || "-";
   }
+  if (activePage.value === "workflow") {
+    return summary.value?.project.genre || "-";
+  }
   return workbenchStatus.value?.auxValue || "-";
 });
 const workbenchMode = computed<"review" | "illustration">(() =>
   activePage.value === "illustration" ? "illustration" : "review"
 );
+const projectTitleLabel = computed(() => summary.value?.project.title || "-");
 
-function setActivePage(value: "review" | "illustration" | "settings") {
+function setActivePage(value: "review" | "illustration" | "workflow" | "settings") {
   activePage.value = value;
 }
 

@@ -241,6 +241,10 @@
                   </div>
                 </div>
               </div>
+
+              <div v-if="view.selectedChapter.value" class="focus-section focus-section-compact">
+                <ContextPanel :root="view.selectedRoot.value" :chapter-id="view.selectedChapter.value.id" />
+              </div>
             </aside>
           </div>
         </template>
@@ -326,6 +330,7 @@
 </template>
 
 <script setup lang="ts">
+import ContextPanel from "@/components/workbench/ContextPanel.vue";
 import WorkbenchPaneCard from "@/components/WorkbenchPaneCard.vue";
 import WorkbenchSidebarCard from "@/components/WorkbenchSidebarCard.vue";
 

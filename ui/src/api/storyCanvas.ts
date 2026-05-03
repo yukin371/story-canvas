@@ -29,6 +29,20 @@ export type ChapterRecord = {
   wordCount: number;
 };
 
+export type ChapterContextItem = {
+  chapterId: string;
+  chapterTitle: string;
+  chapterOrder: number;
+  chunkIndex: number;
+  score: number;
+  text: string;
+};
+
+export type ChapterContextPayload = {
+  chapterId: string;
+  contexts: ChapterContextItem[];
+};
+
 export type IllustrationRecord = {
   id?: string;
   type?: string;
@@ -266,6 +280,61 @@ export type ProjectSummary = {
     illustrationCount: number;
     entityCount: number;
   };
+};
+
+export type WorkflowStage = "setting" | "outline" | "chapter";
+
+export type WorkflowGenerateRequest = {
+  root: string;
+  stage: WorkflowStage;
+  topic?: string;
+  genre?: string;
+  numChapters?: number;
+  settingText?: string;
+  outlineText?: string;
+  chapterId?: string;
+  chapterNum?: number;
+  chapterTitle?: string;
+  projectTitle?: string;
+  model?: string;
+  responseModel?: string;
+  apiKey?: string;
+  baseUrl?: string;
+  temperature?: number;
+  timeoutSeconds?: number;
+  contextCount?: number;
+  dryRun?: boolean;
+};
+
+export type WorkflowGenerateResult = {
+  saved: boolean;
+  dryRun: boolean;
+  stage: WorkflowStage;
+  model: string;
+  provider?: string;
+  responseId?: string;
+  providerCredentialSource?: string;
+  providerBaseUrlSource?: string;
+  providerRequest?: Record<string, unknown>;
+  raw?: Record<string, unknown>;
+  setting?: string;
+  outline?: string;
+  chapter?: string;
+  contextUsed?: ChapterContextItem[];
+};
+
+export type WorkflowFinalizeRequest = {
+  root: string;
+  chapterNum: number;
+  chapterText: string;
+};
+
+export type WorkflowFinalizeResult = {
+  saved: boolean;
+  stage: "finalize";
+  chapterId: string;
+  chapterFile: string;
+  indexed: boolean;
 };
 
 export type IllustrationDryRunRequest = {
@@ -758,6 +827,35 @@ export async function setActiveProject(root: string): Promise<void> {
 
 export async function fetchProjectSummary(root: string): Promise<ProjectSummary> {
   return fetchJson<ProjectSummary>(`/api/project?root=${encodeURIComponent(root)}`);
+}
+
+export async function fetchChapterContext(root: string, chapterId: string, n = 3): Promise<ChapterContextPayload> {
+  const query = new URLSearchParams({
+    root,
+    chapterId,
+    n: String(n),
+  });
+  return fetchJson<ChapterContextPayload>(`/api/context?${query.toString()}`);
+}
+
+export async function generateStage(body: WorkflowGenerateRequest): Promise<WorkflowGenerateResult> {
+  return fetchJson<WorkflowGenerateResult>("/api/workflow/generate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+}
+
+export async function finalizeStage(body: WorkflowFinalizeRequest): Promise<WorkflowFinalizeResult> {
+  return fetchJson<WorkflowFinalizeResult>("/api/workflow/finalize", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
 }
 
 export async function fetchWorkbenchSettings(root?: string): Promise<WorkbenchSettings> {

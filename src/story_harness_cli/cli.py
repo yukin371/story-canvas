@@ -29,6 +29,13 @@ from story_harness_cli.commands import (
     register_workflow_commands,
     register_migrate_commands,
     register_world_commands,
+    register_setting_commands,
+    register_architecture_commands,
+    register_review_setting_command,
+    register_review_outline_command,
+    register_writing_commands,
+    register_comprehensive_review_commands,
+
 )
 
 
@@ -62,7 +69,14 @@ def build_parser() -> argparse.ArgumentParser:
     register_structure_commands(subparsers)
     register_migrate_commands(subparsers)
     register_world_commands(subparsers)
+    register_setting_commands(subparsers)
+    register_architecture_commands(subparsers)
+    register_review_setting_command(subparsers)
+    register_review_outline_command(subparsers)
+    register_writing_commands(subparsers)
+    register_comprehensive_review_commands(subparsers)
     return parser
+
 
 
 def main(argv: List[str] | None = None) -> int:

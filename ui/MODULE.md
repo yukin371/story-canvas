@@ -10,7 +10,7 @@
 - 降低章节审查、插画测试、结果确认、配置校验与历史复用的人肉成本
 - 当前工作台 shell 采用窄 activity bar + VS Code 风格 explorer 侧栏，负责项目切换与工作区快速跳转
 - App shell 负责活动栏与状态栏，重工作区视图应优先通过异步组件装配，避免把整块工作台逻辑压回主入口
-- App shell 当前直接负责 review / illustration / settings 的页面切换；不要再并行维护一套未接入真实入口的旧路由页
+- App shell 当前直接负责 review / illustration / workflow / settings 的页面切换；不要再并行维护一套未接入真实入口的旧路由页
 - TDesign 本地适配层若出现共享 chunk 膨胀，应优先拆到组件级 wrapper，而不是继续扩大 `forms` / `display` 这类粗粒度 barrel
 - TDesign 的 JS 组件可继续走本地 wrapper 按需拆分，但基础样式入口应保持单点注入，避免开发态或异步视图切换时出现“组件逻辑在、样式缺失”的半失效状态
 - 审查工作区首屏若只需要项目切换、导入或创建这类轻交互，应优先使用原生控件或极轻壳实现，避免把 `select` / `input` / `button` 这类 TDesign 表单运行时重新压回 review 路径
@@ -28,6 +28,8 @@
 - 用户自定义模板若由前端创建或编辑，必须回传本地 API 落到项目或工作台自身的 `prompts/illustration-packs/`，不能只停在前端内存态；模板包文件名允许使用中文，只需清理非法路径字符
 - 审查工作区展示章节时，正文内容与审查摘要必须分开传输和渲染；不得再把 review summary 伪装成章节正文
 - 审查工作区的角色卡、世界设定、卷结构与审查包浏览必须来自 `ProjectSummary` 的只读聚合；前端可以切换阅读面板，但不能回写这些协议事实
+- 审查工作区的“相关前文”侧栏必须通过本地 UI API 的 context 检索接口加载，不能在前端手写一套独立上下文缓存
+- 工作流页面必须通过本地 UI API 的 workflow 生成 / 定稿接口驱动，不能在前端伪造 chapter / outline 真相源
 - 当前打开项目属于工作台私有状态，应通过本地 API 持久化到项目 registry；刷新恢复只能读取该 registry，不能写入项目协议
 
 ## 2. Owns

@@ -38,7 +38,7 @@
 
 - `protocol/__init__.py`: `ensure_project_root`, `load_project_state`, `save_state`
 - `protocol/files.py`: `ROOT_FILES`, `chapter_path`, `root_file`
-- `protocol/io.py`: `dump_json_compatible_yaml`, `load_json_compatible_yaml`
+- `protocol/io.py`: `dump_json_compatible_yaml`, `load_json_compatible_yaml`；当前还提供 `load_state` / `save_state` 兼容 wrapper，仅用于承接早期实验命令，新增正式命令仍应优先使用 `protocol.load_project_state` / `protocol.save_state`
 - `protocol/style_profiles.py`: style profile 的 builtin 默认值、项目级覆盖与自动选择；当前也承载术语观察词、重复白名单、词级阈值、题材语域失真词表，以及叙事支架例外配置
 - `protocol/review_rules.py`: review rule profile 的 builtin 默认值、项目级 `review-rules.yaml` 加载与白名单豁免归一化；当前承载规则启停列表与 `ruleId + scope + allowWhen + reason` 结构化豁免
 - `protocol/schema.py`: `default_project_state`

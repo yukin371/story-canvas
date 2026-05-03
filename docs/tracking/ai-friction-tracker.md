@@ -449,7 +449,7 @@
 
 - 状态: `mitigated`
 - 首次记录: `2026-04-30`
-- 最近核对: `2026-04-30`
+- 最近核对: `2026-05-03`
 - 现象:
   - 新增实验命令注册到 `commands/__init__.py` / `cli.py` 后，即使本轮只运行 `review editor-draft`，也会先导入所有命令模块。
   - 未完成模块中的 `yaml` 依赖、错误导入、函数名漂移和语法错误会导致整个 CLI 启动失败。
@@ -458,20 +458,25 @@
   - 这会放大“新增写作/综合审查能力”与“核心命令稳定性”之间的耦合风险。
 - 当前缓解:
   - 修复了 `story_review.py` 中 `@{}` f-string 未转义导致的语法错误。
-  - `setting_expansion.py` 不再直接依赖第三方 `yaml`；实验模板加载暂按 JSON-compatible YAML 读取，失败时降级为空模板。
+  - `setting_expansion.py` 不再直接依赖第三方 `yaml`，也不再读取模板文件；类型模板改由 builtin Python 数据表提供。
   - `protocol.io` 增加 `load_state` / `save_state` 兼容 wrapper，承接早期实验命令的旧调用方式。
   - 修复了 `setting.py` 的 `chapter_title` 导入和 `writing.py` 的 `collect_tag_replacements` 函数名漂移。
   - 修复了 `comprehensive_review.py` 的类型标注语法错误。
+  - `genre_templates.yaml` 已迁入 `data/genre_templates.py` builtin dict，移除了非 JSON-compatible YAML 资源。
+  - `setting assess/expand/validate/check` 已补显式 `--root`，`setting expand` 不再调用不存在的 `services.ai_provider`，只生成 provider prompt 或消费 `--input` suggestions 后写入。
+  - `writing.py` 已去掉重复命令函数定义，`entity-only` 收敛为 `mention-only` 兼容别名，并补最小 smoke tests。
 - 当前证据:
   - `python -m py_compile src\story_harness_cli\services\story_review.py src\story_harness_cli\services\text_provider_review.py src\story_harness_cli\providers\text\openai_http.py src\story_harness_cli\commands\review.py`
   - `PYTHONPATH=src python -m unittest tests.smoke.test_review_volume_self -v`
   - `PYTHONPATH=src python -m story_canvas review editor-draft --root projects\agent-volume-e2e-20260429 --volume-id volume-001 --model test-text-model --dry-run`
+  - `PYTHONPATH=src python -m story_canvas setting template --list`
+  - `PYTHONPATH=src python -m unittest tests.smoke.test_setting_command tests.smoke.test_writing_command -v`
 - 期望收口:
   - 实验命令在注册前至少通过导入级 smoke test，不允许破坏无关 CLI 命令。
   - 新增命令若依赖 optional provider 或非核心资源，应延迟导入或提供 stdlib fallback。
 - 下次实施必查:
   - 新增 `setting` / `writing` / `comprehensive_review` 类实验入口前，先跑 `python -m story_canvas --help` 与目标命令 dry-run。
-  - `src/story_harness_cli/data/genre_templates.yaml` 当前仍不是 JSON-compatible YAML；若 setting 命令要正式收口，应先转换数据文件或迁入 builtin Python/JSON 资源。
+  - `review-comprehensive`、`architecture`、`review-setting`、`review-outline` 仍需各自补最小命令 smoke；不能只依赖全量导入成功。
 
 ## 3. Resolved
 

@@ -1,6 +1,6 @@
 # Commands 模块说明
 
-> 最后更新: 2026-04-30
+> 最后更新: 2026-05-03
 > 状态: 当前有效模块文档
 
 ## 1. 模块职责
@@ -112,6 +112,8 @@
 - `workflow status/export` 当前还会统一输出顶层 `projectAdvisories`；既会提示缺少 `PRD.md`，也会提示 `PRD.md` 是否仍停留在模板占位状态，用于提醒项目尚未补齐立项/卷职责文档入口，但不会改变 gate blocking 结果
 - `workflow status` 当前在 chapter scope 下还会带出 `startGuide`；当起步门禁未齐备时返回 bootstrap 命令建议，门禁齐备后则切换到 analyze / context / review 闭环建议，避免在后续阶段继续误报“缺 direction / beats / scenePlans”；`startGuide` 只消费章节起步三类 outline 缺口，不混入当前 gate 的 context/review 阻塞项
 - `doctor` 与 `workflow` 现也开始对外暴露统一规则语义：`doctor.judgements`、workflow gate 下的 `ruleJudgements/gateDecision`，用于把结构校验和流程门禁逐步收口到同一规则协议
+- `setting template/assess/expand/validate/check` 当前是实验设定扩展入口；`assess/expand/validate/check` 必须显式传 `--root`，`expand` 只稳定生成 provider prompt 或消费 `--input` 的结构化 suggestions 后 `--apply`，不直接调用未收口的 AI provider
+- `writing assist/mention-check/auto-wrap` 当前复用 `services.reference_mentions` 的 mention 检测与替换候选；`entity-only` 只是 `mention-only` 的兼容别名，自动包裹写入前必须做 malformed tag post-check
 
 ## 3. Must Not Own
 
@@ -138,6 +140,7 @@
 - 输出统一使用 `print(json.dumps(result, ensure_ascii=False, indent=2))`
 - 在兼容旧字段的前提下，新增输出字段应优先挂在统一语义层（如 `judgements`、`ruleJudgements`），而不是继续为每个命令单独发明平行结构
 - 新命令必须在 `__init__.py` 和 `cli.py` 双重注册
+- 已注册的实验命令也必须至少通过导入级 smoke test 和最小命令级 smoke test；不能只因为 `--help` 可见就视为发布级能力
 
 ## 7. 常见坑
 
@@ -152,6 +155,7 @@
 - `outline scene-detect` 当前会拒绝对“没有正文段落的空白章节”生成 scenePlans，避免把 bootstrap 空稿误判成可用场景
 - `outline scene-sync` 当前不会强行重排 scene 数量；若现有 scene 数量与 heuristic 切分数量不一致，它会保留为只读报告，避免把人工结构直接覆盖掉
 - `entity mention-check` 对引号内的 plain mention 默认降级忽略，避免把角色彼此的称呼变化机械当成“必须补 `@{}`”的问题
+- `writing mention-check` 只做轻量写作辅助；需要完整 action plan、adopt 分流、卷级预览或 review packet 自动刷新时，仍以 `entity mention-plan/mention-apply/mention-tag-apply` 与 `world mention-adopt` 为 canonical 入口
 - `entity mention-apply` 只接受 `mention-plan` 中的确定性 tag action；若把缺失建档 action id 直接喂给它，会明确报错并要求改走 adopt 命令
 - `foreshadow check` 的 overdue 判断当前只基于 chapter id / chapter number 顺序，不理解更复杂的非线性时间轴
 - `chapter suggest` 默认要求目标章节先通过 `outline check`，旧项目如需跳过必须显式传 `--allow-without-outline`

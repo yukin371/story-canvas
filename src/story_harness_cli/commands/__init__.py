@@ -23,6 +23,12 @@ from .thread import register_thread_commands
 from .workflow import register_workflow_commands
 from .migrate import register_migrate_commands
 from .world import register_world_commands
+from .setting import register_setting_commands
+from .architecture import register_architecture_commands, register_review_setting_command, register_review_outline_command
+from .writing import register_writing_commands
+from .comprehensive_review import register_comprehensive_review_commands
+
+
 
 __all__ = [
     "register_arc_commands",
@@ -50,4 +56,10 @@ __all__ = [
     "register_workflow_commands",
     "register_migrate_commands",
     "register_world_commands",
+    "register_setting_commands",
+    "register_architecture_commands",
+    "register_review_setting_command",
+    "register_review_outline_command",
+    "register_writing_commands",
+    "register_comprehensive_review_commands",
 ]
