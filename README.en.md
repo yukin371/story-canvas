@@ -2,13 +2,13 @@
 
 [English](./README.en.md) | [简体中文](./README.md)
 
-Story Canvas is an agent-native story and visual workflow project. The current primary command entrypoint is `story-canvas`, with an early single-page UI acting as the visual shell.
+Story Canvas is starting to feel more like a shared story workspace for agents and authors. The main entrypoint is still `story-canvas`, and the UI is still early, so the focus is on making the flow work first and polishing the interface later.
 
-It helps AI agents and authors work with structured story state instead of relying on a single giant prompt. The workflow separates prose, proposals, reviews, projection, local context refresh, and an expanding illustration layer, so long-form writing can evolve with clearer constraints and less state drift.
+It does not try to finish a novel with one giant prompt. Instead, it splits the work into pieces that can actually be managed: prose, proposals, reviews, projection, local context refresh, plus the illustration and visual side that is being added step by step. That keeps the process steadier, with less drift and fewer lost bits of state.
 
 If you want the canonical end-to-end writing loop first, read [docs/guides/creative-workflow.md](./docs/guides/creative-workflow.md).
 
-This repository currently provides:
+What the repository can do right now looks roughly like this:
 
 - a file-based story protocol
 - a Python CLI for state transitions
@@ -18,20 +18,20 @@ This repository currently provides:
 - provider-backed illustration generation capabilities
 - commercial long-form samples with project-level positioning and serial-writing blueprint
 
-It is not yet a full creative workstation, but it is no longer just a standalone CLI either. The current product surface combines the file protocol, the Python workflow entrypoint, and an early single-page UI; in the short term, the command workflow stays primary while image generation and UI move forward in parallel. See [docs/plans/story-canvas-parallel-roadmap.md](./docs/plans/story-canvas-parallel-roadmap.md).
+It is not a full creative workstation yet, but it is also well past the point of being just a standalone CLI. The current surface is a mix of file protocol, Python workflow entrypoint, and an early single-page UI; for now, the command flow still leads, while image generation and UI keep moving in parallel. See [docs/plans/story-canvas-parallel-roadmap.md](./docs/plans/story-canvas-parallel-roadmap.md).
 
-## What It Solves
+## What It Helps With
 
 - Keep proposals separate from canon
-- Turn chapter analysis into explicit review steps
-- Update machine-readable projection only after a decision step
-- Refresh a local writing context for the next loop
-- Review both chapter-level and scene-level quality before stopping
-- Manage fiction as an iterative engineering workflow instead of a single drafting pass
+- Turn chapter analysis into an explicit review step instead of a guess
+- Update machine-readable state only after a clear decision
+- Refresh local context for the next round instead of stuffing the whole project back in every time
+- Check chapter-level and scene-level quality before stopping
+- Treat fiction writing as an iterative workflow, not a one-shot draft
 
 ## Writing Capability Matrix
 
-The current writing stack is no longer just `characters + chapters`. It already covers a practical constraint-driven loop, but the maturity level differs by area.
+The writing stack is no longer just `characters + chapters`. It already has a usable constraint-driven loop, but the maturity level still varies by area, and the table below shows what is working and what is still missing.
 
 | Capability area | Current status | What is already implemented | Current gap |
 |------|------|------|------|
@@ -47,17 +47,17 @@ The current writing stack is no longer just `characters + chapters`. It already 
 | Template richness and workflow freedom | Partially implemented | structure templates, style profiles, story template fields, and workflow state machine already exist | broader genre templates and freer workflow composition are planned for `v1.2` |
 | Illustration and visual asset flow | Partially implemented | `illustration` commands, provider abstraction, and provider-backed image requests already exist | asset history, parameter reuse, bulk review, and a practical visual surface are still missing |
 
-In short: the repository already has a usable "story engineering core" for constrained writing, review, projection, and export. What it still lacks is mainly interface polish, easier human review, and richer template packs.
+You can think of it as a working "story engineering core" now: it can handle constraints, writing, review, projection, and export. What is still obviously missing is interface polish, easier human review, and richer template packs.
 
-Current release-boundary note:
+The current release boundary looks like this:
 
 - `v1.0.x` remains anchored on stable story protocol, workflow closure, and sample-backed regression
 - illustration generation and early UI work are no longer fully postponed to `v1.1`; they move in parallel to reduce manual testing cost in fiction workflows
 - `story-canvas` is now the primary CLI command, while `story-harness` stays as a legacy compatibility alias
 
-## Core Model
+## How It Is Split Up
 
-The current workflow uses these layers:
+The current workflow is split into these layers:
 
 1. `chapters/*.md` for prose
 2. `proposals/draft-proposals.yaml` for write-before-canon proposals
@@ -65,16 +65,16 @@ The current workflow uses these layers:
 4. `projections/projection.yaml` for current machine-facing truth
 5. `projections/context-lens.yaml` for local chapter context
 
-## Quickstart
+## Getting Started
 
-Option A: initialize a new project
+Option A: start a new project
 
 ```powershell
 uv sync
 uv run story-canvas init --root .\demo --title "Fog Harbor" --genre "Mystery"
 ```
 
-For a real web-serial project, initialize the commercial blueprint at the same time instead of leaving it as afterthought metadata:
+For a real web-serial project, it is better to set the commercial blueprint up front instead of treating it as metadata you fill in later:
 
 ```powershell
 uv run story-canvas init `
@@ -98,7 +98,7 @@ uv run story-canvas init `
   --chapter-word-target 3000
 ```
 
-For a constraint-heavy long-form project, initialize the emotional contract and template policy up front so the later review loop has something concrete to consume:
+For a constraint-heavy long-form project, it is also worth setting the emotional contract and template policy early, so later review and context refresh steps have something concrete to work with:
 
 ```powershell
 uv run story-canvas init `
@@ -180,22 +180,22 @@ uv run story-canvas review scene --root .\projects\demo-xuanhuan-short --chapter
 uv run story-canvas export --root .\projects\demo-xuanhuan-short --format markdown --output .\projects\demo-xuanhuan-short\manuscript.md
 ```
 
-Repository fallback:
+Repo fallback:
 
 ```powershell
 $env:PYTHONPATH='src'
 python -m story_canvas chapter analyze --root .\demo --chapter-id chapter-001
 ```
 
-Use `demo-short-story` when you want a genre-neutral regression baseline. Use `demo-light-novel-short` when you want to verify that `subGenre`, `styleTags`, and `targetAudience` survive the review loop. Use `demo-xuanhuan-short` when you want to verify `xuanhuan + web-serial` weighting and short-form progression pacing. For the current sample catalog, see [docs/guides/sample-matrix.md](./docs/guides/sample-matrix.md).
+Use `demo-short-story` when you want a genre-neutral regression baseline. Use `demo-light-novel-short` when you want to check that `subGenre`, `styleTags`, and `targetAudience` survive the review loop. Use `demo-xuanhuan-short` when you want to check `xuanhuan + web-serial` weighting and short-form pacing. For the current sample catalog, see [docs/guides/sample-matrix.md](./docs/guides/sample-matrix.md).
 
-Use `demo-urban-occult-long` when you want a more realistic commercial-serial baseline with explicit `commercialPositioning`, volume skeleton, and chapter word targets.
+Use `demo-urban-occult-long` if you want a more realistic commercial-serial baseline with explicit `commercialPositioning`, a volume skeleton, and chapter word targets.
 
-For the full close-the-loop sequence and stop conditions, see [docs/guides/creative-workflow.md](./docs/guides/creative-workflow.md) and [docs/guides/quickstart.md](./docs/guides/quickstart.md).
+For the full loop and the stop conditions, see [docs/guides/creative-workflow.md](./docs/guides/creative-workflow.md) and [docs/guides/quickstart.md](./docs/guides/quickstart.md).
 
-## Example Workflow
+## One-Glance Flow
 
-Single chapter loop:
+Single-chapter loop:
 
 ```text
 chapter.md
@@ -220,7 +220,7 @@ goal or reasoning
   -> projection apply
 ```
 
-## Command Overview
+## Command List
 
 - `story-canvas init`
 - `story-canvas brainstorm character|world|outline`
@@ -260,7 +260,7 @@ goal or reasoning
 - `story-canvas export --format json|markdown|txt`
 - `story-canvas doctor`
 
-## Project Layout
+## What Is in the Repo
 
 - `src/story_canvas/` - public Python module and primary CLI entry wrapper
 - `src/story_harness_cli/` - current internal owner for commands, protocol, and service implementation
@@ -271,9 +271,9 @@ goal or reasoning
 - `projects/` - tracked sample projects and regression baselines
 - `tests/` - smoke tests and fixtures
 
-## Implemented Features
+## What Is Already in Place
 
-The current implementation already covers:
+The current implementation already covers a fair amount:
 
 - layered file protocol for prose, proposals, reviews, projections, and context
 - chapter analysis, suggestion generation, and explicit review-then-apply workflow
@@ -288,7 +288,7 @@ The current implementation already covers:
 - tracked sample projects in `projects/` covering short-form, style-driven, xuanhuan, and commercial long-form baselines
 - optional dependency boundary for provider-backed capabilities, while keeping base install stdlib-only
 
-## Improvement Directions
+## What Still Needs Work
 
 The next round should stay focused on a small set of practical gaps:
 

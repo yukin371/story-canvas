@@ -2,13 +2,13 @@
 
 [English](./README.en.md) | [简体中文](./README.md)
 
-Story Canvas 是一个面向 Agent 的故事与视觉工作流项目，当前以 `story-canvas` 作为主命令入口，并提供早期单页 UI 作为视觉壳。
+Story Canvas 现在更像一个给 Agent 和作者一起用的故事工作台骨架。主入口还是 `story-canvas`，UI 也还在早期阶段，先把流程跑顺，再慢慢把界面补齐。
 
-它的目标不是用一个超大 Prompt 一次性写完小说，而是把创作过程拆成结构化状态：正文、提案、审查、投影、上下文刷新，以及逐步纳入的插画生成与可视化操作面。这样作者和 AI 可以在更明确的约束下协作，减少设定漂移、状态丢失和长篇写作中的“越写越散”。
+它不打算靠一个超大 Prompt 直接把小说写完，而是把创作拆成几段能落地的状态：正文、提案、审查、投影、上下文刷新，还有逐步加进来的插画生成和可视化操作。这样写作过程会更稳一点，设定不容易飘，状态也不至于写着写着就丢了。
 
 如果你想先看标准闭环流程，建议先读 [docs/guides/creative-workflow.md](./docs/guides/creative-workflow.md)。
 
-当前仓库提供：
+现在仓库里能用的东西大致是这些：
 
 - 基于文件协议的故事工程状态层
 - 用于状态推进的 Python CLI
@@ -18,20 +18,20 @@ Story Canvas 是一个面向 Agent 的故事与视觉工作流项目，当前以
 - 面向插画生成的 provider-backed 图片能力
 - 带有商业化定位与连载蓝图的长篇样例
 
-它目前还不是一个完整创作工作台，但已经不再只是“单纯 CLI”。当前产品由文件协议、Python 工作流入口与单页 UI 共同构成；短期内主工作流仍以命令入口驱动，UI 和图片能力会并行推进。并行开发清单见 [docs/plans/story-canvas-parallel-roadmap.md](./docs/plans/story-canvas-parallel-roadmap.md)。
+它还不是那种“一站式创作工作台”，但也早就不只是单纯 CLI 了。现在这套东西是文件协议、Python 工作流入口和早期单页 UI 拼在一起的，短期里还是命令行先跑主流程，UI 和图片能力边做边补。并行开发清单见 [docs/plans/story-canvas-parallel-roadmap.md](./docs/plans/story-canvas-parallel-roadmap.md)。
 
 ## 它解决什么问题
 
-- 把“提案”和“正史”分开管理
-- 把章节分析变成显式审查步骤，而不是隐式脑补
-- 只有在明确决策后，才更新机器可读状态
-- 为下一轮写作刷新本地上下文，而不是反复重塞整个项目
-- 在停止前同时检查章节级和场景级质量
-- 把小说写作管理成一个可迭代、可追溯的工程流程
+- 把“提案”和“正史”分开，别混在一起
+- 章节分析不靠脑补，先审再动手
+- 只有做了明确决策，才去改机器可读状态
+- 给下一轮写作先刷新本地上下文，别每次都把整个项目重新塞一遍
+- 停之前顺手看一下章节级和场景级质量，省得漏掉问题
+- 把小说写作收成一个能反复迭代、还能回头查的流程
 
 ## 写作能力矩阵
 
-这个仓库已经不再只是“角色卡 + 章节正文”。它已经具备约束式写作闭环，但不同能力的完成度并不完全相同。
+这个仓库现在已经不只是“角色卡 + 章节正文”了，能跑的约束式写作闭环也有了，只是不同能力的成熟度还不太一样，下面这张表就是现在能做什么、还差什么。
 
 | 能力域 | 当前状态 | 已实现内容 | 当前缺口 |
 |------|------|------|------|
@@ -47,17 +47,17 @@ Story Canvas 是一个面向 Agent 的故事与视觉工作流项目，当前以
 | 模板丰富度与工作流自由编排 | 部分完成 | 已有 structure templates、style profiles、storyTemplate 字段、workflow 状态机 | 更丰富的题材模板和自由编排能力计划在 `v1.2` 增强 |
 | 插画生成与视觉资产流 | 部分完成 | 已有 `illustration` 命令、provider 抽象，以及 OpenAI / 兼容网关图像请求链路 | 仍缺少历史浏览、参数复用、批量确认和更顺手的视觉界面 |
 
-一句话总结：这个仓库已经具备一个可用的“小说工程内核”，可以做约束、写作、审查、投影和导出；当前主要缺的是界面层、人工审查体验，以及更丰富的模板资源。
+现在可以把它理解成一个能用的“小说工程内核”了：约束、写作、审查、投影、导出这些事都能做，差得比较明显的还是界面手感、人工审查体验，还有更丰富的模板包。
 
-当前发布边界补充：
+现在这版的边界大概是这样：
 
 - `v1.0.x` 仍以故事协议、workflow 闭环和样例回归为发布锚点
 - 插画生成和早期 UI 不再完全后置到 `v1.1`，而是提前并行开发，用于降低小说生成测试的人力成本
 - 当前主 CLI 命令为 `story-canvas`，旧命令 `story-harness` 仅保留为兼容别名
 
-## 核心模型
+## 这套东西怎么分层
 
-当前工作流以这些层次组织：
+现在写作流程大概分成这几层：
 
 1. `chapters/*.md`：正文
 2. `proposals/draft-proposals.yaml`：进入正史前的提案
@@ -65,16 +65,16 @@ Story Canvas 是一个面向 Agent 的故事与视觉工作流项目，当前以
 4. `projections/projection.yaml`：当前机器可读真相层
 5. `projections/context-lens.yaml`：当前章节的局部写作上下文
 
-## 快速开始
+## 上手方式
 
-方案 A：初始化一个新项目
+方式 A：先起一个新项目
 
 ```powershell
 uv sync
 uv run story-canvas init --root .\demo --title "Fog Harbor" --genre "Mystery"
 ```
 
-如果你在做真实的商业化连载项目，建议初始化时就把商业定位写进去，而不是事后补元数据：
+如果你在做真实的商业化连载项目，商业定位最好一开始就写进去，别留到后面补：
 
 ```powershell
 uv run story-canvas init `
@@ -98,7 +98,7 @@ uv run story-canvas init `
   --chapter-word-target 3000
 ```
 
-如果你在做重约束长篇，建议初始化时就把情绪契约和模板策略写进去，让后续审查与上下文刷新有明确消费对象：
+如果你在做重约束长篇，情绪契约和模板策略也最好一开始就放进去，后面的审查和上下文刷新才知道该看什么：
 
 ```powershell
 uv run story-canvas init `
@@ -148,7 +148,7 @@ uv run story-canvas doctor --root .\demo
 uv run story-canvas export --root .\demo --chapter-id chapter-001 --format review-packet --output .\demo\chapter-001-review.md
 ```
 
-方案 B：直接跑已验证的短篇基线
+方式 B：直接跑已验证的短篇基线
 
 ```powershell
 uv run story-canvas doctor --root .\projects\demo-short-story
@@ -161,7 +161,7 @@ uv run story-canvas review chapter --root .\projects\demo-short-story --chapter-
 uv run story-canvas review scene --root .\projects\demo-short-story --chapter-id chapter-001 --scene-index 1
 ```
 
-方案 C：运行已验证的风格驱动短篇基线
+方式 C：跑已验证的风格驱动短篇基线
 
 ```powershell
 uv run story-canvas doctor --root .\projects\demo-light-novel-short
@@ -171,7 +171,7 @@ uv run story-canvas review scene --root .\projects\demo-light-novel-short --chap
 uv run story-canvas export --root .\projects\demo-light-novel-short --format markdown --output .\projects\demo-light-novel-short\manuscript.md
 ```
 
-方案 D：运行已验证的玄幻网文短篇基线
+方式 D：跑已验证的玄幻网文短篇基线
 
 ```powershell
 uv run story-canvas doctor --root .\projects\demo-xuanhuan-short
@@ -181,25 +181,25 @@ uv run story-canvas review scene --root .\projects\demo-xuanhuan-short --chapter
 uv run story-canvas export --root .\projects\demo-xuanhuan-short --format markdown --output .\projects\demo-xuanhuan-short\manuscript.md
 ```
 
-仓库直跑回退方式：
+仓库直跑的回退方式：
 
 ```powershell
 $env:PYTHONPATH='src'
 python -m story_canvas chapter analyze --root .\demo --chapter-id chapter-001
 ```
 
-如果你想看当前样例矩阵，请读 [docs/guides/sample-matrix.md](./docs/guides/sample-matrix.md)。
+要看当前样例矩阵，直接读 [docs/guides/sample-matrix.md](./docs/guides/sample-matrix.md)。
 
-如果你想跑更接近真实商业连载的长篇基线，可以使用 `demo-urban-occult-long`。它包含显式 `commercialPositioning`、卷结构骨架和章节字数目标。
+如果你更想看接近真实商业连载的长篇基线，可以直接用 `demo-urban-occult-long`。它已经带了显式 `commercialPositioning`、卷结构骨架和章节字数目标。
 
-完整闭环和停止条件见：
+完整流程和什么时候停，见：
 
 - [docs/guides/creative-workflow.md](./docs/guides/creative-workflow.md)
 - [docs/guides/quickstart.md](./docs/guides/quickstart.md)
 
-## 工作流示例
+## 一眼看流程
 
-单章循环：
+单章循环大概长这样：
 
 ```text
 chapter.md
@@ -215,7 +215,7 @@ chapter.md
   -> 继续迭代直到可接受
 ```
 
-大纲循环：
+大纲循环就更短：
 
 ```text
 目标或想法
@@ -224,7 +224,7 @@ chapter.md
   -> projection apply
 ```
 
-## 命令概览
+## 命令一览
 
 - `story-canvas init`
 - `story-canvas brainstorm character|world|outline`
@@ -265,7 +265,7 @@ chapter.md
 - `story-canvas export --format spec-outline|spec-characters|spec-global-outline|spec-detail|review-packet`
 - `story-canvas doctor`
 
-## 仓库结构
+## 仓库里有什么
 
 - `src/story_canvas/`：对外 Python 模块与主 CLI 入口包装
 - `src/story_harness_cli/`：当前内部命令、协议、服务实现 owner
@@ -276,11 +276,11 @@ chapter.md
 - `projects/`：样例项目与回归基线
 - `tests/`：smoke tests 与 fixtures
 
-## 项目架构与约束机制
+## 里面的规矩
 
 ### 分层架构
 
-项目采用清晰的分层设计，每层职责明确：
+这套实现是按层拆开的，每层干自己的活：
 
 ```
 src/story_harness_cli/
@@ -310,27 +310,27 @@ src/story_harness_cli/
 
 ### AI写作约束机制
 
-项目通过多层约束确保AI写作的质量和一致性：
+这边主要靠几层约束把 AI 写作稳住：
 
 #### 1. 风格配置约束 (`style_profiles.yaml`)
 
-**术语策略** (`termPolicy`)
+**术语这层** (`termPolicy`)
 - `watchTerms`: 高频术语监控，防止过度重复
 - `allowRepeated`: 白名单术语（如母题关键词）
 - `perTermThresholds`: 词级阈值配置
 - `specialTermSuffixes`: 特殊术语后缀识别
 
-**语域策略** (`registerPolicy`)
+**语域这层** (`registerPolicy`)
 - `allowTerms`: 允许的题材语汇
 - `disallowedCategories`: 禁止的语域类别
   - 示例：玄幻题材禁止"优先级""框架""闭环"等现代项目管理语汇
 
-**框架策略** (`framePolicy`)
+**框架这层** (`framePolicy`)
 - `allowPrefixes`: 允许的叙事框架前缀
 - `perPrefixThresholds`: 框架复用阈值
   - 示例：检测"前世的记忆""前世的经验"等重复叙事支架
 
-**方案块策略** (`planBlockPolicy`)
+**方案块这层** (`planBlockPolicy`)
 - `allowLabels`: 允许的标签类型
 - `minLabels`: 最小标签数量
 - `minDistinctLabels`: 最小不同标签数
@@ -383,9 +383,9 @@ profiles:
 - 线索/伏笔切片
 
 **章节承接摘要**
-- `previous chapter`: 上一章余波和交付
-- `current chapter`: 当前章写作目标
-- `next chapter`: 下一章方向预览
+- `previous chapter`: 上一章留下了什么
+- `current chapter`: 这一章要干什么
+- `next chapter`: 下一章大概往哪走
 
 **最小约束原则**
 - 只输出"够写当前章"的上下文，避免prompt过长

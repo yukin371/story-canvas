@@ -20,50 +20,57 @@
 
 ```mermaid
 flowchart TD
-  A[init / 定位] --> B[storyContract + outline / 结构]
-  B --> C[outline check]
-  C -->|通过| D[chapters/*.md / 写正文]
-  C -->|未通过| B
-  D --> E[chapter analyze]
-  E --> F[chapter suggest]
-  F --> G[review apply]
-  G --> H[projection apply]
-  H --> I[context refresh]
-  I --> J[review chapter]
-  J --> K[review scene]
-  K --> L{分数是否达标}
-  L -- 否 --> M[修改正文 / beats / scenePlans]
-  M --> C
-  L -- 是 --> N{当前卷/小故事是否完成}
-  N -- 否 --> D
-  N -- 是 --> O[卷级 AI 自审 / 缺陷归因 / 修正]
-  O --> P{卷级风险是否收敛}
-  P -- 否 --> M
-  P -- 是 --> Q[人工审查]
-  Q --> R[必要修正与复检]
-  R --> S[export]
+  A[init / 项目定位] --> B[先补项目契约]
+  B --> C[再搭章节结构]
+  C --> D{outline check 过了没}
+  D -- 否 --> B
+  D -- 是 --> E[chapters/*.md / 写正文]
+  E --> F[chapter analyze]
+  F --> G[chapter suggest]
+  G --> H[review apply]
+  H --> I[projection apply]
+  I --> J[context refresh]
+  J --> K[review chapter]
+  K --> L[review scene]
+  L --> M{这一章够不够稳}
+  M -- 否 --> N[改正文 / beats / scenePlans]
+  N --> C
+  M -- 是 --> O{这一卷 / 这个小单元写完了吗}
+  O -- 否 --> E
+  O -- 是 --> P[卷级 AI 自审 / 找问题 / 定修法]
+  P --> Q{卷级风险收没收住}
+  Q -- 否 --> N
+  Q -- 是 --> R[人工审查]
+  R --> S[必要修正与复检]
+  S --> T[export]
 ```
+
+这张图看的是主线，不是把所有命令都塞进去：
+
+- 前半段是章节闭环，重点是先把门禁过掉，再写，再审，再回写
+- 后半段是卷级闭环，重点是别把“单章能过”误判成“整卷能交”
+- 只要卷级风险还没收住，就继续回到正文、结构或场景边界去改
 
 ### 3.1 章节闭环
 
-章节闭环用于保证：
+章节闭环主要是在卡这几件事：
 
-- 当前章先通过最小前置门禁
-- 当前章完成 analyze / suggest / apply / projection / context / review
-- 当前章经过至少一轮修正与复检
+- 这一章先过最小前置门禁
+- 这一章完整跑过 analyze / suggest / apply / projection / context / review
+- 这一章至少经历过一轮修正和复检
 
-章节闭环完成后，默认动作是继续推进下一章，而不是立刻进入人工终审。
+章节闭环跑完以后，默认还是接着往下写，不会立刻跳去人工终审。
 
 ### 3.2 卷级闭环
 
-卷级闭环用于保证：
+卷级闭环主要是在确认这些事：
 
-- 一个完整卷或一个明确的小故事单元已经写完
-- AI 先从整卷视角复查承接、逻辑、人物、冲突、高潮和 AI 味
-- AI 先输出缺陷归因与修正动作
-- 再把相对收敛的版本交给人工审查
+- 一个完整卷，或者一个明确的小故事单元，已经写完了
+- AI 要先站在整卷视角看承接、逻辑、人物、冲突、高潮和 AI 味
+- 先把缺陷归因和修正动作列出来
+- 再把收敛过的版本交给人工审查
 
-当前实验阶段，卷级 AI 自审至少要回答：
+当前还在实验阶段，所以卷级 AI 自审至少要把这些问题说清楚：
 
 1. 章与章之间是否自然承接
 2. 是否只是把细纲事项平铺成正文
